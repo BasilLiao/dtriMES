@@ -1,0 +1,40 @@
+https://matthung0807.blogspot.com/2019/02/springbootspring-bootjar.html
+1.打包用 maven 2
+
+***********************
+2.創建SQL USER
+mes_admin
+mes_579@123
+
+***********************
+3.放入SSL KEY 到dtriMES-0.0.1-SNAPSHOT.jar\BOOT-INF\classes\下
+keystore.p12
+
+***********************
+4.一般執行
+
+cd C:\Users\Basil\git\dtri_PMS\dtriPMS\target
+java -Dfile.encoding=utf-8 -jar dtriMES-0.0.1-SNAPSHOT.jar
+線上
+C:\apache-tomcat-MES
+C:\apache-tomcat-9.0.34-windows-x64\AdoptOpenJDK\jdk8u252-b09\bin\java -Dfile.encoding=utf-8 -jar dtriMES-0.0.1-SNAPSHOT.jar
+使用cmd 跑的話 
+
+***********************
+5.使用Windows service 註冊
+https://blog.csdn.net/fly_duck/article/details/106063647
+http://www.nssm.cc/download
+5-1.使用管理員身份打開cmd命令行工具，執行nssm install <servicename>命令安裝windows服務。輸入命令回車後，會自動彈出nssm工具的GUI界面：
+5-2.在Path中選擇上一步製作的批處理bat文件，Startup directory會根據選擇的文件自動設置。點擊Install Service按鈕完成windows服務的安裝：
+5-3.Windows服務安裝後，我們可以通過nssm start <servicename>啟動服務：
+
+5-4.常用語法
+nssm install <servicename>
+nssm remove <servicename>
+nssm start <servicename>
+nssm stop <servicename>
+nssm restart <servicename>
+nssm status <servicename>
+
+
+

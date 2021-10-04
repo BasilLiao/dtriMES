@@ -1,0 +1,61 @@
+<!-- 列印 -->
+<div id="print">
+	<div class="shadow mt-0 text-left">
+		<div class=" bg-white rounded-top m-0 pl-1 h5">
+			<i class="bi bi-printer mr-1"></i>Print
+		</div>
+		<div class="p-2">
+			<table class="table table-sm table-hover table-striped  table-bordered table-responsive m-0">
+				<thead class="thead bg-dark table-dark">
+					<tr>
+						<th style="min-width: 35px;" class="text-center"><i class="bi bi-file-earmark-word"></i></th>
+						<th style="min-width: 1100px; width: 100%">Info</th>
+					</tr>
+				</thead>
+				<tbody class="text-muted">
+					<tr>
+						<td colspan="2" class="border border-dark p-1 pt-5 pb-5">
+							<div class=" d-flex justify-content-center table-responsive ">
+								<div class="p-0 m-0 bg-white" style="height: 1570px; width: 1110px;">test</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- 功能 -->
+	<div class="shadow mt-2 text-left">
+		<div class=" bg-white rounded-top m-0 pl-1 h5">
+			<i class="bi bi-file-earmark-check mr-1"></i>Action
+		</div>
+		<div class="col-12 p-2 m-0 row justify-content-center">
+			<button class="col-sm-2 mt-1 btn btn-primary btn-sm" type="submit">Print</button>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//控制端
+	print = new Vue({
+		el : "#print",
+		//資料區
+		data : {
+			test : 300
+		},
+		//初始化
+		created : function() {
+			console.log("print.html(created)");
+		},
+		//可呼叫方法
+		methods : {
+			ajaxSend : function(url, dataSend) {
+
+			},
+		},
+		//移除監聽事件
+		beforeDestroy : function() {
+			console.log("print.html(beforeDestroy)");
+
+		}
+	});
+</script>

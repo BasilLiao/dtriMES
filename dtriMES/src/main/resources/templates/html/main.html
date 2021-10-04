@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DTR_MES(製程系統)</title>
+<script src="./thirdparty/js/jquery-3.5.1.min.js"></script>
+<script src="./thirdparty/js/jquery-ui-1.12.1.min.js"></script>
+<script src="./thirdparty/js/bootstrap-4.6.0.min.js"></script>
+<script src="./thirdparty/js/bootstrap-datetimepicker.min.js"></script>
+<script src="./thirdparty/js/vue-2.6.11.min.js"></script>
+<script src="./thirdparty/js/jquery-barcode.min.js"></script>
+<script src="./thirdparty/js/jquery-table2excel.js"></script>
+
+<link rel="stylesheet" href="./thirdparty/css/jquery-ui-1.12.1.min.css" />
+<link rel="stylesheet" href="./thirdparty/css/bootstrap-4.6.0.min.css" />
+<link rel="stylesheet" href="./thirdparty/css/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" href="./thirdparty/bootstrap-icons-1.4.0/bootstrap-icons.css" />
+<link rel="icon" type="img/svg" href="./img/icon.png">
+<style type="text/css">
+body {
+	background-color: #f8f9fc;
+}
+
+.custom-select {
+	height: 34px;
+}
+</style>
+</head>
+<body id="main">
+	<!-- 開頭(header) -->
+	<div id="header_t_all"></div>
+	<!-- 選單(nav) -->
+	<div id="nav_t_all"></div>
+	<!-- 讀取中(nav_loading) -->
+	<div id="nav_t_loading"></div>
+	<!-- 登出中(nav_logout) -->
+	<div id="nav_t_logout"></div>
+	<!-- 錯誤訊息(alert) -->
+	<div id="alert_t_all"></div>
+	<!-- 本體(body) -->
+	<div id="body_t_all"></div>
+	<!-- 底部(footer) -->
+	<div id="footer_t_all"></div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+	//各類主頁面 Vue 位置(需註冊)
+	var t_header = "",t_nav = "",t_alert = "",t_body = "",t_footer = "",t_logout="";
+	//Body 各類-模板 Vue 位置(需註冊)
+	var home = "",search = "",modify = "",print = "",download = "",upload = "",analysis = "",workstation = "",customized="";
+	//控制端
+	var main = new Vue({
+		el : "#main",
+		data : {
+			//登入存入資料
+			loginData:{
+				user_name : '',	user_status : '',user_position : '',
+				user_login_time : '',user_login_last_time : '',
+			},
+			//每次回傳資料/使用者資料
+			allData: "",info_user:{},
+			
+			//換頁樣式
+			page_total:100,	//每次_總筆數
+			page_batch:0,	//每次_第幾批
+			
+			page_show_size:10,//目前_每分頁顯示數量
+			page_now_size:0,//目前_實際筆數
+			page_now:1,		//目前_頁數
+		},
+		//初始化
+		created() {
+			console.log("main.html(created)");
+			//基本資料
+			this.allData = JSON.parse(/*[[${initMain}]]*/+"")['resp_content'];
+			this.info_user = this.allData['info_user'];
+			//console.log(this.allData);
+			//模板-清單-家(default)
+			$("#header_t_all").load("./html/header/header_index.html");
+			//模版-Menu
+			$("#nav_t_all").load("./html/nav/nav_index.html", function() {
+				//帶入模板內資料			
+				var menus=[];
+				var nav = main.allData['body']['nav'];
+				for(var i = 0;i<nav.length ;i++){
+					var menus_one = {};
+					menus_one.g_name = nav[i]['g_name'];
+					menus_one.i_name = nav[i]['i_name'];
+					menus_one.url = nav[i]['i_url'];
+					menus_one.sort = nav[i]['i_sort'];
+					menus_one.sp_type = nav[i]['sp_type'];
+					menus.push(menus_one);
+				}
+				t_nav.setMenu(menus);
+			});
+			//模板-訊息資訊
+			$("#alert_t_all").load("./html/nav/nav_alert.html",function(){
+				t_alert.alertshow(main.allData['info_color'],main.allData['info']);
+			});
+			//模板-主體
+			$("#body_t_all").load("./html/body/body_index.html",function(){
+				t_body.initHome();
+			});
+			//模板-網站宣告
+			$("#footer_t_all").load("./html/footer/footer_index.html");
+			
+			//模板-讀取中...
+			$("#nav_t_loading").load("./html/nav/nav_loading.html");
+			
+			//模板-登出中...
+			$("#nav_t_logout").load("./html/nav/nav_logout.html",function(){
+				//啟動計時
+				t_logout.timeOut(true);
+			});
+			
+			
+		},
+		methods : {
+			//請求模組
+			ajaxSend(s_url,s_type,s_data) {
+				//排除{!=}/{複製上Tab}
+				var s_data = JSON.stringify(s_data).replaceAll("!", "").replaceAll("=", "").replaceAll("\\t","");
+				console.log("ajax to send:"+s_data);
+				//Ajax 傳輸模組
+				var ajax = {
+						url :  "ajax/"+s_url,
+						type : s_type,//POST/GET/PUT/DELETE
+						dataType : "JSON",
+						contentType : "application/json; charset=utf-8",
+						data : s_data,
+					};
+				//Cell 
+				$.ajax({
+					url :ajax.url,
+					type : ajax.type,
+					dataType : ajax.dataType,
+					contentType : ajax.contentType,
+					data : ajax.data,
+					success(event) {
+						//進入倒數中
+						clearInterval(this.countDownId);
+						t_logout.timeOut(false);
+						
+						console.log("ajax to success:");
+						//console.log("ajax to success:"+JSON.stringify(event));
+						//Step1.顯示 訊息
+						if(event['resp_content']!=""){
+							t_alert.alertshow(event['resp_content']['info_color'],event['resp_content']['info']);
+							//if(event['resp_content']['info_color']!="success")
+							//return null;
+						}else{
+							t_alert.alertshow("danger", "[007] The command was executed [ERROR]!!");
+							return null;
+						}
+						//Step2.是否 轉跳畫面
+						if(event['resp_content']['html_body']!=""){
+							main.allData = event['resp_content'];
+							//銷毀舊_樣板
+							t_body.$destroy();
+							home.$destroy();
+							if(search!="")
+							search.$destroy();
+							if(modify!="")
+							modify.$destroy();
+							if(print!="")
+							print.$destroy();
+							if(download!="")
+							download.$destroy();
+							if(upload!="")
+							upload.$destroy();
+							if(analysis!="")
+							analysis.$destroy();
+							if(workstation!="")
+							workstation.$destroy();
+							if(customized!="")
+							customized.$destroy();
+							console.log("./html/body/"+main.allData['html_body']);
+							//刷新_模板
+							$("#body_t_all").load("./html/body/"+main.allData['html_body'],function(){
+								t_body.html_body=main.allData['html_body'];
+							});							
+						}else if(event['resp_content']['call_bk_fn']!=""){
+							//Step3.非轉跳畫面(更新資料/新增資料/查詢資料)
+							 switch (event['resp_content']['call_bk_fn']) {
+                                case "search":
+									main.allData = event['resp_content']; 
+                                	search.searchReturn();
+                                    break;
+                                case "modify":
+                                	main.allData['call_bk_fn'] = event['resp_content']['call_bk_fn'];
+                                	main.allData['call_bk_vals'] = event['resp_content']['call_bk_vals'];
+                                	main.allData['action'] = event['resp_content']['action'];
+                                	modify.modifyReturn();
+                                    break;
+                                case "workstation_save":
+                                	main.allData = event['resp_content']; 
+                                	workstation.saveReturn();
+                                    break;    
+                                case "workstation":
+									main.allData = event['resp_content']; 
+									workstation.searchReturn();
+                                    break;
+                                case "report":
+									main.allData = event['resp_content']; 
+									analysis.reportReturn();
+                                    break;
+                                case "customized":
+									main.allData = event['resp_content']; 
+									customized.checkReturn();
+                                    break;
+                                case "customized_save":
+									main.allData = event['resp_content']; 
+									customized.saveReturn();
+                                    break;
+                            }
+						}else{
+							t_alert.alertshow("warning", "[5478] Didn't find anything [WARNING]!!");
+						}
+						
+					
+					},
+					error(event) {
+						console.log("ajax to fail:" + JSON.stringify(event));
+						
+						if (event.status == 200) {
+							t_alert.alertshow("danger", "[200] You have not logged in [ERROR]!!");
+							//沒有session 拒絕
+							window.location.replace("login.basil");
+						}
+						else if (event.status == 404) {
+							t_alert.alertshow("warning", "[404] The command failed [Warning]!!");
+							//沒有網頁時 不移動
+						
+						}else if (event.status == 403) {
+							t_alert.alertshow("warning", "[403] The command has been rejected [Warning]!!");
+							//沒有權限時 不移動
+						
+						}else {
+							//其他問題
+							t_alert.alertshow("danger", "[999] The command error [ERROR]!!"+event);
+						}
+						//main.loading(false);
+					},
+				});
+			},
+			//排序jsonObj 功能
+			orderedSort(title){const ordered = Object.keys(title).sort().reduce((obj, key) => {obj[key] = title[key]; return obj;}, {});return ordered;	},
+
+			//程序運作中~
+			loading : function(open) {
+				if (open) {
+					t_alert.alertshow('close',"");
+					$("#nav_loading").removeClass("d-none");
+				} else {
+					$("#nav_loading").addClass("d-none");
+				}
+			},
+		},
+	});
+</script>
+</html>
+

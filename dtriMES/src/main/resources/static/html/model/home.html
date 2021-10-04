@@ -1,0 +1,124 @@
+<!-- 查詢項目 -->
+<div id="home">
+	<div class="shadow mt-0 text-left">
+		<div class=" bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-house mr-1"></i>Home
+		</div>
+		<div class="row m-0">
+			<div id="bulletinBoard" class="col-lg-8 p-2">
+				<div class="h6 mb-1">Bulletin Board</div>
+				<div class="p-0">
+					<!-- 快速移動 -->
+					<div class="col m-0 p-1 border border-dark rounded" style="min-height: 450px;">
+						<div class="row m-0">
+							<div class="col-5 m-0 p-1">
+								<input name="barcode_function" placeholder="Go?:Code Ex:[Workstation=WK000]" id="barcode_function" type="text" class="col p-1 rounded" value="">
+							</div>
+							<div class="col-sm-2 m-0 p-1">
+								<button id="send_home_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit" style="height: 36px;">Where to go ...</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="userInfo" class="col-lg-4 p-2">
+				<div class="h6 mb-1">User Info</div>
+				<div class="p-0">
+					<div class="col m-0 p-1 border border-dark rounded row" style="min-height: 450px;">
+						<div class="col-4 p-0 font-weight-bold">
+							<div>Name:</div>
+							<div>Position:</div>
+							<div>Email:</div>
+							<div>Status:</div>
+							<div>Time:</div>
+						</div>
+						<div class="col-8 p-0">
+							<div id='user_name'></div>
+							<div id='user_position'></div>
+							<div id='user_email'></div>
+							<div id='user_status'></div>
+							<div id='user_now'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//控制端
+	home = new Vue({
+		el : "#home",
+		//資料區
+		data : {
+		},
+		//初始化
+		created() {
+			console.log("home.html(created)");
+			main.loading(false);
+		},
+		//可呼叫方法
+		methods : {
+			setUserInfo(name,position, email, status,now) {
+				$('#user_name').text(name);
+				$('#user_position').text(position);
+				$('#user_email').text(email);
+				$('#user_status').text(status);
+				$('#user_now').text(now);
+				$('#barcode_function').focus();
+				
+				$(document).on("click", "#send_home_btn", function (event) {
+					home.send_command();
+				});
+				$(document).on('keyup',"#barcode_function",function (event) {
+					if (event.keyCode == 13) {
+						setTimeout(function(){
+							$("#send_home_btn").trigger("click");
+						},200);
+					}
+				});
+			},
+			//執行動作
+	   		send_command(){
+				var code = $('#barcode_function').val().toUpperCase();//排除多餘字
+				console.log("send_command :"+code );
+				switch(code){
+				case "WK000":
+					var s_url = "workstation_work.basil";
+					var s_type = "POST";
+					var s_data =
+						
+					main.loading(true);
+					console.log("turnMenu:"+"workstation_work.basil");
+					var s_url = "workstation_work.basil";
+					var	s_type = "POST";
+					var	s_data = {};
+					var req = {};
+					req.user="";
+					req.date=new Date();
+					req.action="AC";
+					req.body={};
+					req.page_total=main.page_total;
+					req.page_batch=main.page_batch;
+					req.page_now_nb=main.page_now_nb;
+					req.html_body= "body_workstation_work.html";
+					req.call_bk_fn="";
+					req.call_bk_vals={};
+					s_data.req_content = req;
+					main.ajaxSend(s_url,s_type,s_data);
+   					break;
+				}
+			
+			},
+			ajaxSend(url, dataSend) {
+
+			},
+		},
+		//移除監聽事件
+		beforeDestroy() {
+			console.log("home.html(beforeDestroy)");
+			$(document).off("click", "#send_home_btn");
+			$(document).off("keyup", "#barcode_function");
+		}
+	});
+</script>

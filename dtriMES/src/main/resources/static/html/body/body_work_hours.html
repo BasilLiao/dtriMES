@@ -1,0 +1,126 @@
+<div class="text-center col-md" id="index">
+	<div class="p-1 mt-5">
+		<h4 class="m-0">
+			<b id="title_name"></b>
+		</h4>
+	</div>
+	<div class="p-1">
+		<ul class="nav nav-tabs shadow-sm" id="myTab" role="tablist">
+			<li class="nav-item"><a id="home_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="true" aria-controls="home_tab" href="#home_tab" id="tab-home"><i
+					class="bi bi-house mr-1"></i>Home</a></li>
+			<li class="nav-item"><a id="search_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="search_tab" href="#search_tab" id="tab-search"><i
+					class="bi bi-search mr-1"></i>Search</a></li>
+			<li class="nav-item"><a id="modify_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="modify_tab" href="#modify_tab" id="tab-modify"> <i
+					class="bi bi-vector-pen mr-1"></i>Detail / Create / Modify / Delete
+			</a></li>
+			<li class="nav-item"><a id="print_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="print_tab" href="#print_tab" id="tab-print"><i
+					class="bi bi-printer mr-1"></i>Print</a></li>
+			<li class="nav-item"><a id="download_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="download_tab" href="#download_tab"
+				id="tab-download"> <i class="bi bi-cloud-download mr-1"></i>Download
+			</a></li>
+			<li class="nav-item"><a id="upload_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="upload_tab" href="#upload_tab" id="tab-upload"><i
+					class="bi bi-cloud-upload mr-1"></i>Upload</a></li>
+			<li class="nav-item"><a id="analysis_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="analysis_tab" href="#analysis_tab"
+				id="tab-analysis"> <i class="bi bi-graph-up mr-1"></i>Analysis report
+			</a></li>
+			<li class="nav-item"><a id="workstation_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="workstation_tab" href="#workstation_tab"
+				id="tab-workstation"> <i class="bi bi-joystick mr-1"></i>Workstation mode
+			</a></li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<!-- tab-home -->
+			<div class="tab-pane fade" id="home_tab" role="tabpanel" aria-labelledby="tab-home"></div>
+			<!-- tab-search -->
+			<div class="tab-pane fade" id="search_tab" role="tabpanel" aria-labelledby="tab-search"></div>
+			<!-- tab-modify -->
+			<div class="tab-pane fade" id="modify_tab" role="tabpanel" aria-labelledby="tab-modify"></div>
+			<!-- tab-print -->
+			<div class="tab-pane fade" id="print_tab" role="tabpanel" aria-labelledby="tab-print"></div>
+			<!-- tab-download -->
+			<div class="tab-pane fade" id="download_tab" role="tabpanel" aria-labelledby="tab-download"></div>
+			<!-- tab-upload -->
+			<div class="tab-pane fade" id="upload_tab" role="tabpanel" aria-labelledby="tab-upload"></div>
+			<!-- tab-analysis -->
+			<div class="tab-pane fade" id="analysis_tab" role="tabpanel" aria-labelledby="tab-analysis"></div>
+			<!-- tab-workstation -->
+			<div class="tab-pane fade" id="workstation_tab" role="tabpanel" aria-labelledby="tab-workstation"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//控制端
+	t_body = new Vue({
+		el : "#index",
+		//資料區
+		data : {
+			test : 300,
+			html_body:"",
+		},
+		//初始化前
+		created() {
+			console.log("body_work_hours.html(created)");
+		},
+		//初始化後
+		mounted() {
+			//模板-清單-家
+			$("#index #home_tab").load("./html/model/home.html", function() {
+				//帶入模板內資料
+				 home.setUserInfo(
+               		main.info_user["name"], 
+               		main.info_user["position"], 
+               		main.info_user["email"], 
+               		main.info_user["status"], 
+               		new Date());
+			});
+			//查詢-模板
+			$("#index #search_tab").load("./html/model/search.html", function() {
+				search.setDataTitle(main.allData.header);
+				search.setDataList(main.allData.body.search,main.allData.body_type);
+				search.setSearch(main.allData.cell_searchs);
+				search.selectAllInit();
+			});
+			//編輯-模板
+			$("#index #modify_tab").load("./html/model/modify.html", function() {
+				modify.setDataTitle(main.allData.cell_modify);
+				modify.setDataTitleDelete(main.allData.header);
+				modify.setDataGroupTitle(main.allData.cell_g_modify);
+				modify.selectAllInit();
+			});
+			//列印-模板
+			//$("#index #print_tab").load("./html/model/print.html");
+			//下載-模板
+			//$("#index #download_tab").load("./html/model/download.html");
+			//上傳-模板
+			//$("#index #upload_tab").load("./html/model/upload.html");
+			//報告-模板
+			//$("#index #analysis_tab").load("./html/model/analysis.html");
+			//工作站-模板
+			//$("#index #workstation_tab").load("./html/model/workstation.html");
+			
+			//模板-關閉不需要的分頁 disabled
+            $("#index #home_nav").addClass("disabled");
+            //$("#index #search_nav").addClass("disabled");
+            //$("#index #modify_nav").addClass("disabled");
+            $("#index #print_nav").addClass("disabled");
+            $("#index #download_nav").addClass("disabled");
+            $("#index #upload_nav").addClass("disabled");
+            $("#index #analysis_nav").addClass("disabled");
+            $("#index #workstation_nav").addClass("disabled");
+            //模板-預設分頁 active
+            $("#index #search_nav").addClass("active");
+            $("#index #search_tab").addClass("show");
+            $("#index #search_tab").addClass("active");
+            
+          	//單元名稱
+            $("#title_name").text(t_nav.nav_list['body_work_hours']);
+		},
+		//可呼叫方法
+		methods : {
+
+		},
+		//移除監聽事件
+		beforeDestroy() {
+			console.log("body_work_hours.html(beforeDestroy)");
+		}
+	});
+</script>

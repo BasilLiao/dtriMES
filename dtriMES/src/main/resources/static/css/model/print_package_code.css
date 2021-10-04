@@ -1,0 +1,40 @@
+@page {
+	margin: 2mm; /*print邊界*/
+	size: 80mm 20mm; /*列印紙張大小*/
+	/*size: portrait; */ /* 直向 */
+	/*size: landscape;*/ /* 橫向 */
+}
+
+.print {
+	page-break-after: always; /*print分頁面*/
+}
+
+@media print {
+	.imgs {
+		width: 100px;
+	}
+	html {
+		width: 80mm;
+		float: left;
+		/*transform-origin: 12% 38%;*/
+		/*transform: scale(1) rotate(90deg);*/
+		font-size: 18px;
+	}
+	body {
+		width: 80mm;
+		float: left;
+	}
+}
+
+html {
+	width: 80mm;
+	float: left;
+	/*transform-origin: 12% 38%;*/
+	/*transform: scale(1) rotate(90deg);*/
+	font-size: 18px;
+}
+
+body {
+	width: 80mm;
+	float: left;
+}

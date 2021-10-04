@@ -1,0 +1,43 @@
+@page {
+	margin-top: 0.2cm; /*print邊界*/
+	/*size: 30mm 20mm; /*列印紙張大小*/
+	/*size: portrait; */ /* 直向 */
+	/*size: landscape;*/ /* 橫向 */
+}
+
+.print {
+	page-break-after: always; /*print分頁面*/
+}
+
+@media print {
+}
+
+#barcode_sn_print {
+	transform-origin: 50% 10%;
+	transform: scale(1.96);
+}
+
+.barcode_sn_print_list {
+	transform-origin: 50% 5%;
+	transform: scale(1.96);
+}
+
+#barcode_sn_double_print {
+	transform-origin: 50% 5%;
+	transform: scale(1.96);
+}
+
+#barcode_sn_big_list {
+	transform-origin: 50% 0%;
+	transform: scale(4);
+}
+
+#barcode_sn_all_list {
+	transform-origin: 50% 0%;
+	transform: scale(4);
+}
+
+.barcode_sn_big_title {
+	font-size: 20px;
+	line-height: 20px;
+}

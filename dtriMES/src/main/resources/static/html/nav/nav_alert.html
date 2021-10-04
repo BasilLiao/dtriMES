@@ -1,0 +1,91 @@
+<div id="alert" class="alert alert-primary fixed-top p-2 row m-0 justify-content-between d-none" role="alert" style="top: 43px; font-size: 20px;">
+	<div>
+		<strong id="alert_message">You should check in on some of those fields below.</strong>
+	</div>
+	<button id="close_message" type="button" class="close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<audio id="success_0" src="./img/yisell_sound_success.mp3" preload="auto" ></audio>
+<audio id="warning_1" src="./img/yisell_sound_warning.mp3" preload="auto" ></audio>
+<script type="text/javascript">
+	//控制端
+	t_alert = new Vue({
+		el : "#alert",
+		//資料區
+		data : {
+			show_alert:"",
+			test : 300,
+			sound_warning:false,
+		},
+		//初始化
+		created() {
+			console.log("alert.html(created)");
+			//動態監聽顯示Table 物件 查看開關
+			$(document).on("click", "#alert button", function(event) {
+				$("#alert").addClass("d-none");
+		   		$("#success_0").get(0).pause();
+		   		$("#success_0").get(0).currentTime = 0;
+				$("#warning_1").get(0).pause();
+		   		$("#warning_1").get(0).currentTime = 0;
+			});
+		},
+		//可呼叫方法
+		methods : {
+			//顯示: 資訊/警訊/錯誤
+			alertshow(color,info) {
+				clearTimeout(t_alert.show_alert);
+				$("#alert").removeClass("alert-warning");
+				$("#alert").removeClass("alert-danger");
+				$("#alert").removeClass("alert-success");
+				switch (color) {
+				  case 'danger':
+					//danger
+					$("#alert").addClass("alert-danger");
+					if(this.sound_warning){
+						$('#warning_1').get(0).play(); 	
+					}
+				  break;
+				  case 'warning':
+					//warning
+					$("#alert").addClass("alert-warning");
+					if(this.sound_warning){
+						$('#warning_1').get(0).play(); 	
+					}
+				  break;
+				  case 'success':
+					//success
+					$("#alert").addClass("alert-success");
+					//$('#success_0').get(0).play(); 
+				  break;
+				  case 'close':
+					//close
+					$("#alert").addClass("d-none");
+					$("#alert_message").text("");
+					
+					return;
+				break;
+				  default:
+				}
+				//關閉以外
+				if(color!='close'){
+					$("#alert_message").text("INFO : " + info);
+					$("#alert").removeClass("d-none");
+					t_alert.show_alert = setTimeout(function() {
+						$("#alert").addClass("d-none");
+						$("#alert_message").text("");
+						$("#warning_1").get(0).pause();
+				   		$("#warning_1").get(0).currentTime = 0;
+				   		$("#success_0").get(0).pause();
+				   		$("#success_0").get(0).currentTime = 0;
+					}, 10000);
+				}
+			}
+		},
+		//移除監聽事件
+		beforeDestroy() {
+			console.log("alert.html(beforeDestroy)");
+			$(document).off("click", "#alert button");
+		}
+	});
+</script>

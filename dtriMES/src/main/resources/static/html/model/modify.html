@@ -1,0 +1,1415 @@
+<style>
+.big-checkbox {
+	width: 28px;
+	height: 28px;
+}
+
+.delete_example_body td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.datetimepicker {
+	margin-top: 50px;
+}
+
+.bg-yellow-30 {
+	background-color: #fdf59a;
+}
+</style>
+<div id="modify">
+	<!-- 細節 -->
+	<div class="shadow mt-0 text-left mb-2 d-none" id="m_detail_all">
+		<div class=" bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-file-earmark-medical mr-1"></i>Detail
+		</div>
+		<div class="p-2">
+			<table class="table table-sm table-bordered table-responsive m-0">
+				<thead class="thead bg-dark table-dark">
+					<tr>
+						<th style="min-width: 35px;" class="text-center"><i class="bi bi-receipt"></i></th>
+						<th style="min-width: 35px;" class="text-center"><i class="bi bi-diagram-3"></i></th>
+						<th style="width: 100vw;">Content</th>
+					</tr>
+				</thead>
+				<tbody class="detail_example">
+					<tr id="detail_example_tr">
+						<td class="border border-secondary p-1">
+							<div class="detail_example_remove">
+								<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+							</div>
+							<div class="detail_example_add">
+								<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
+							</div>
+						</td>
+						<td class="border border-secondary detail_example_group p-0">
+							<div class="detail_group_i border-top border-dark p-1">
+								<i class="bi bi-text-indent-left h4"></i>
+							</div>
+						</td>
+						<td colspan="2" class="border border-secondary p-0">
+							<div class="row p-0 m-0  detail_example_body border-top border-dark">
+								<div class="col-md-2 p-2 detail_example_input">
+									<div class="h6 mb-1 detail_name">Name</div>
+									<input disabled class="col border border-dark rounded p-1 save_value" value="" type="text">
+								</div>
+								<div class="col-md-2 p-2 detail_example_select">
+									<div class="h6 mb-1 detail_name">Name</div>
+									<select disabled class="col custom-select custom-select-sm save_value">
+										<option class="example_select_def" value="" selected>select</option>
+										<option class="example_select_one" value="1">One</option>
+									</select>
+								</div>
+								<div class="col-md-2 p-2 detail_example_checkbox">
+									<div class="h6 mb-1 detail_name">Name</div>
+									<div class="p-0">
+										<input disabled class="col p-1 border border-dark rounded save_value big-checkbox" name="" value="false" type="checkbox">
+									</div>
+								</div>
+								<div class="col-md-12 p-2 detail_example_textarea">
+									<div class="h6 mb-1 detail_name">Name</div>
+									<textarea disabled style="width: 100%" rows="5" class="border border-dark rounded p-1 save_value"></textarea>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<form onsubmit="return modify.sendSave();">
+		<!-- 另存 -->
+		<div class="shadow text-left mb-2 d-none" id="m_save_as_all">
+			<div class=" bg-white rounded-top m-0 pl-1 h4 text-info">
+				<i class="bi bi-files mr-1"></i>Save as ...
+			</div>
+			<div class="p-2">
+				<table class="table table-sm table-bordered table-responsive m-0">
+					<thead class="thead bg-dark table-dark">
+						<tr>
+							<th style="min-width: 35px"><i class="m-1 bi bi-pencil-square"></i></th>
+							<th style="min-width: 35px;" class="text-center"><i class="bi bi-diagram-3"></i></th>
+							<th style="width: 100vw;">Content</th>
+						</tr>
+					</thead>
+					<tbody class="save_as_example">
+						<tr id="save_as_example_tr">
+							<td class="border border-secondary p-1">
+								<div class="save_as_example_remove">
+									<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+								</div>
+							</td>
+							<td class="border border-secondary save_as_example_group p-0">
+								<div class="save_as_group_i border-top border-dark p-1">
+									<i class="bi bi-text-indent-left h4"></i>
+								</div>
+							</td>
+							<td colspan="2" class="border border-secondary p-0">
+								<div class="row p-0 m-0 save_as_example_body border-top border-dark">
+									<div class="col-md-2 p-2 save_as_example_input">
+										<div class="h6 mb-1 save_as_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value" type="text">
+										</div>
+									</div>
+									<div class="col-md-2 p-2 save_as_example_select">
+										<div class="h6 mb-1 save_as_name">Name</div>
+										<select class="col-12 custom-select custom-select-sm save_value">
+											<option class="example_select_def" value="" selected>select</option>
+											<option class="example_select_one" value="1">One</option>
+										</select>
+									</div>
+									<div class="col-md-2 p-2 save_as_example_checkbox">
+										<div class="h6 mb-1 save_as_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value big-checkbox" name="" value="false" type="checkbox">
+										</div>
+									</div>
+									<div class="col-md-12 p-2  save_as_example_textarea">
+										<div class="h6 mb-1 save_as_name">Name</div>
+										<textarea style="width: 100%" rows="5" class="border border-dark rounded p-1 save_value"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 修改 -->
+		<div class="shadow text-left mb-2 d-none" id="m_modify_all">
+			<div class=" bg-white rounded-top m-0 pl-1 h4 text-warning">
+				<i class="bi bi-file-earmark-font mr-1"></i>Modify
+			</div>
+			<div class="p-2">
+				<table class="table table-sm table-bordered table-responsive m-0">
+					<thead class="thead bg-dark table-dark">
+						<tr>
+							<th style="min-width: 35px"><i class="m-1 bi bi-pencil-square"></i></th>
+							<th style="min-width: 35px;" class="text-center"><i class="bi bi-diagram-3"></i></th>
+							<th style="width: 100vw;">Content</th>
+						</tr>
+					</thead>
+					<tbody class="modify_example">
+						<tr id="modify_example_tr">
+							<td class="border border-secondary p-1">
+								<div class="modify_example_remove">
+									<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+								</div> <!-- <div class="modify_example_add">
+									<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
+								</div>
+								 -->
+							</td>
+							<td class="border border-secondary modify_example_group p-0">
+								<div class="modify_group_i border-top border-dark p-1">
+									<i class="bi bi-text-indent-left h4"></i>
+								</div>
+							</td>
+							<td colspan="2" class="border border-secondary p-0">
+								<div class="row p-0 m-0 modify_example_body border-top border-dark">
+									<div class="col-md-2 p-2 modify_example_input">
+										<div class="h6 mb-1 modify_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value" type="text">
+										</div>
+									</div>
+									<div class="col-md-2 p-2 modify_example_select">
+										<div class="h6 mb-1 modify_name">Name</div>
+										<select class="col-12 custom-select custom-select-sm save_value">
+											<option class="example_select_def" value="" selected>select</option>
+											<option class="example_select_one" value="1">One</option>
+										</select>
+									</div>
+									<div class="col-md-2 p-2 modify_example_checkbox">
+										<div class="h6 mb-1 modify_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value big-checkbox" name="" value="false" type="checkbox">
+										</div>
+									</div>
+									<div class="col-md-12 p-2 modify_example_textarea">
+										<div class="h6 mb-1 modify_name">Name</div>
+										<textarea style="width: 100%" rows="5" class="border border-dark rounded p-1 save_value"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 新增 -->
+		<div class="shadow text-left mb-2" id="m_create_all">
+			<div class=" bg-white rounded-top m-0 pl-1 h4 text-success">
+				<i class="bi bi-file-earmark-plus mr-1"></i>Create
+			</div>
+			<div class="p-2">
+				<table class="table table-sm table-bordered table-responsive m-0">
+					<thead class="thead bg-dark table-dark">
+						<tr>
+							<th style="min-width: 35px"><i class="m-1 bi bi-pencil-square"></i></th>
+							<th style="min-width: 35px;" class="text-center"><i class="bi bi-diagram-3"></i></th>
+							<th style="width: 100vw;">Content</th>
+						</tr>
+					</thead>
+					<tbody class="create_example">
+						<tr id="create_example_tr">
+							<td class="border border-secondary p-1 ">
+								<div class="create_example_remove">
+									<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0 d-none"></i>
+								</div>
+								<div class="create_example_add">
+									<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
+								</div>
+							</td>
+							<td class="border border-secondary create_example_group p-0">
+								<div class="create_group_i border-top border-dark p-1">
+									<i class="bi bi-text-indent-left h4"></i>
+								</div>
+							</td>
+							<td colspan="2" class="border border-secondary p-0 ">
+								<div class="row p-0 m-0 create_example_body border-top border-dark">
+									<div class="col-md-2 p-2 create_example_input">
+										<div class="h6 mb-1 create_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value" name="" value="" type="text">
+										</div>
+									</div>
+									<div class="col-md-2 p-2 create_example_select">
+										<div class="h6 mb-1 create_name">Name</div>
+										<select class="col-12 custom-select custom-select-sm save_value">
+											<option class="example_select_def" value="" selected>select</option>
+											<option class="example_select_one" value="1">One</option>
+										</select>
+									</div>
+									<div class="col-md-2 p-2 create_example_checkbox">
+										<div class="h6 mb-1 create_name">Name</div>
+										<div class="p-0">
+											<input class="col p-1 border border-dark rounded save_value big-checkbox" name="" value="false" type="checkbox">
+										</div>
+									</div>
+									<div class="col-md-12 p-2 create_example_textarea">
+										<div class="h6 mb-1 create_name">Name</div>
+										<textarea style="width: 100%" rows="5" class="border border-dark rounded p-1 save_value"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 刪除 -->
+		<div class="shadow text-left mb-2 d-none" id="m_delete_all">
+			<div class=" bg-white rounded-top m-0 pl-1 h4 text-danger">
+				<i class="bi bi-file-earmark-x mr-1"></i>Delete
+			</div>
+			<div class="p-2">
+				<table class="table table-sm table-hover table-striped table-bordered table-responsive m-0 delete_example">
+					<thead class="thead bg-dark table-dark delete_example_title" style="white-space: nowrap;">
+						<tr>
+							<th style="min-width: 35px"><i class="m-1 bi bi-pencil-square"></i></th>
+							<th style="min-width: 35px;" class="text-center"><i class="bi bi-diagram-3"></i></th>
+							<th class="d_title_body" style="min-width: 50px">ID</th>
+							<th class="d_title_last" style="width: 100%;">Handle</th>
+						</tr>
+					</thead>
+					<tbody class="delete_example_body" style="white-space: nowrap;">
+						<tr id="delete_example_tr">
+							<td class="p-1 ">
+								<!-- border border-secondary -->
+								<div class="delete_example_remove">
+									<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+								</div>
+							</td>
+							<td class="delete_example_group p-0">
+								<div class="delete_group_i border-dark p-1">
+									<i class="bi bi-text-indent-left h4"></i>
+								</div>
+							</td>
+							<td class="d_list_body">1</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- 功能 -->
+		<div class="shadow text-left mb-2">
+			<div class=" bg-white rounded-top m-0 pl-1 h5">
+				<i class="bi bi-file-earmark-check mr-1"></i>Action
+			</div>
+			<div class="col-12 p-2 m-0 row justify-content-center">
+				<button class="col-sm-2 mt-1 btn btn-primary btn-sm" type="submit">Save</button>
+				<div class="col-1"></div>
+				<button id="m_cancel" class="col-sm-2 mt-1 btn btn-warning btn-sm" type="button">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	//控制端
+	modify = new Vue({
+		el : "#modify",
+		//資料區
+		data : {
+			test : 300,
+			detail_nb:1,
+			create_nb:1,
+			save_as_nb:1,
+			modify_nb:1,
+			delete_nb:1,
+			//克隆-(功能區塊)
+			detail_example_tr:"",
+			create_example_tr:"",
+			save_as_example_tr:"",
+			modify_example_tr:"",
+			delete_example_tr:"",
+			//save data
+			save_as_datas:[],
+			create_datas :[],
+			modify_datas :[],
+			delete_datas :[],
+			//群組代表格式
+			modify_g_datas :[],
+		},
+		//初始化
+		created() {
+			console.log("modify.html(created)");
+		},
+		//可呼叫方法
+		methods : {
+			//標題注入資訊(Delete)
+			setDataTitleDelete(title) {
+            //標題注入資訊
+            console.log("標題注入資訊(Delete)");
+            //排序
+            title = main.orderedSort(title);
+            for (var i = 0; i < Object.keys(title).length - 1; i++) {
+                var one_item = $(".delete_example_title .d_title_body").clone(); //複製樣本
+                var key_id = Object.keys(title)[i];
+                var value_name = title[Object.keys(title)[i]];
+                //console.log(key_id+" "+value_name);
+                one_item[0].className = "";
+                one_item[0].id = key_id;
+                one_item[0].innerText = value_name.name;
+                one_item[0].attributes.style.value="min-width : "+value_name.size;
+                one_item.insertBefore(".d_title_last");
+                
+           		}
+            //結尾
+            var key_id = Object.keys(title)[Object.keys(title).length - 1];
+            var value_name = title[Object.keys(title)[Object.keys(title).length - 1]];
+            
+            $(".d_title_last").attr("id", key_id);
+            $(".d_title_last").text(value_name.name);
+            $(".d_title_last").css('min-width', value_name.size);
+            //console.log(key_id+" "+value_name);
+            //關閉範例
+            $(".d_title_body").remove();
+			},
+			setDataGroupTitle(title){
+				//標題群組注入資訊(Modify)
+				this.modify_g_datas = title;
+				console.log(this.modify_g_datas);
+			},
+			setDataTitleUpdate(title){
+				//更新樣板
+				
+				console.log();
+				for(var s=0;s<title.length;s++){
+					
+					var t_s = this.create_example_tr[0].children[2].children[0].children;
+					for(var t=0;t<t_s.length;t++){
+						var classN = this.create_example_tr[0].children[2].children[0].children[t].className;
+						if(classN.indexOf(title[s].id)>1){
+							console.log(classN+" : "+title[s].id+" : "+title[s].value+" : "+(classN.indexOf(title[s].id)>1));
+							this.create_example_tr[0].children[2].children[0].children[t].children[1].children[0].value = title[s].value;
+							console.log(this.create_example_tr[0].children[2].children[0].children[t].children[1].children);
+						}
+					}
+				}
+			},
+			
+			setDataTitle(title){
+				//標題注入資訊(Detail / Create / Modify)
+				for(var d =0;d<title.length;d++){
+					//console.log(title[d]);
+					title[d].id;
+					title[d].placeholder;
+					title[d].required;
+					title[d].write;
+					title[d].tag;
+					title[d].type;
+					title[d].values;
+					title[d].col;
+					switch(title[d].tag){
+					case "checkbox":
+						var checkbox =$(".detail_example .detail_example_checkbox").clone();
+						checkbox[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						checkbox.appendTo(".detail_example_body");
+						$(".detail_example ."+title[d].id+" .detail_name").text(title[d].name);
+						$(".detail_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						
+						//新增模板
+						checkbox =$(".create_example .create_example_checkbox").clone();
+						checkbox[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						checkbox.appendTo(".create_example_body");
+						$(".create_example ."+title[d].id+" .create_name").text(title[d].name);
+						$(".create_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						if(title[d].required){
+							$(".create_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".create_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".create_example ."+title[d].id).addClass('d-none');
+						}
+						
+						//另存模板
+						checkbox =$(".save_as_example .save_as_example_checkbox").clone();
+						checkbox[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						checkbox.appendTo(".save_as_example_body");
+						$(".save_as_example ."+title[d].id+" .save_as_name").text(title[d].name);
+						$(".save_as_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						if(title[d].required){
+							$(".save_as_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".save_as_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".save_as_example ."+title[d].id).addClass('d-none');
+						}
+						
+						//修改模板
+						checkbox =$(".modify_example .modify_example_checkbox").clone();
+						checkbox[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						checkbox.appendTo(".modify_example_body");
+						$(".modify_example ."+title[d].id+" .modify_name").text(title[d].name);
+						$(".modify_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						if(title[d].required){
+							$(".modify_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".modify_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".modify_example ."+title[d].id).addClass('d-none');
+						}
+						
+						break;
+					case "input":
+						var input =$(".detail_example .detail_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".detail_example_body");
+						$(".detail_example ."+title[d].id+" .detail_name").text(title[d].name);
+						if(title[d].d_none=='d-none'){
+							$(".detail_example ."+title[d].id).addClass('d-none');
+						}
+						
+						//新增模板
+						input =$(".create_example .create_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".create_example_body");
+						$(".create_example ."+title[d].id+" .create_name").text(title[d].name);
+						$(".create_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						$(".create_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
+						$(".create_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						if(title[d].required){
+							$(".create_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".create_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].type=='date'){
+							$(".create_example ."+title[d].id+" input").addClass('datetimepicker_date');
+							$(".create_example ."+title[d].id+" .save_value").attr("type","text");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".create_example ."+title[d].id).addClass('d-none');
+						}
+						
+						//另存模板
+						input =$(".save_as_example .save_as_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".save_as_example_body");
+						$(".save_as_example ."+title[d].id+" .save_as_name").text(title[d].name);
+						$(".save_as_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						$(".save_as_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
+						$(".save_as_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						if(title[d].required){
+							$(".save_as_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".save_as_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].type=='date'){
+							$(".save_as_example ."+title[d].id+" input").addClass('datetimepicker_date');
+							$(".save_as_example ."+title[d].id+" .save_value").attr("type","text");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".save_as_example ."+title[d].id).addClass('d-none');
+						}
+						
+						//修改模板
+						input =$(".modify_example .modify_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".modify_example_body");
+						$(".modify_example ."+title[d].id+" .modify_name").text(title[d].name);
+						$(".modify_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						$(".modify_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
+						$(".modify_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						if(title[d].required){
+							$(".modify_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".modify_example ."+title[d].id+" input").attr("disabled","disabled");
+						}
+						if(title[d].type=='date'){
+							$(".modify_example ."+title[d].id+" input").addClass('datetimepicker_date');
+							$(".modify_example ."+title[d].id+" .save_value").attr("type","text");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".modify_example ."+title[d].id).addClass('d-none');
+						}
+						
+						break;
+						/*
+					case "input":
+						var input =$(".detail_example .detail_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".detail_example_body");
+						$(".detail_example ."+title[d].id+" .detail_name").text(title[d].name);
+						
+						//新增模板
+						input =$(".create_example .create_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".create_example_body");
+						$(".create_example ."+title[d].id+" .create_name").text(title[d].name);
+						$(".create_example ."+title[d].id+" .save_value").attr("type",title[d].type);
+						$(".create_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
+						$(".create_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						if(title[d].required){
+							$(".create_example ."+title[d].id+" input").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".create_example ."+title[d].id+" input").attr("disabled","disabled");
+						}	
+						*/
+					case "select":
+						var select =$(".detail_example .detail_example_select").clone();
+						select[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						select.appendTo(".detail_example_body");
+						$(".detail_example ."+title[d].id+" .detail_name").text(title[d].name);
+						if(title[d].d_none=='d-none'){
+							$(".detail_example ."+title[d].id).addClass('d-none');
+						}
+						//--
+						select =$(".create_example .create_example_select").clone();
+						select[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						select.appendTo(".create_example_body");
+						$(".create_example ."+title[d].id+" .create_name").text(title[d].name);						
+						$(".create_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						$(".create_example ."+title[d].id+" .save_value .example_select_def").removeAttr('selected');
+						if(title[d].required){
+							$(".create_example ."+title[d].id+" select").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".create_example ."+title[d].id+" select").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".create_example ."+title[d].id).addClass('d-none');
+						}
+						//--
+						select =$(".save_as_example .save_as_example_select").clone();
+						select[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						select.appendTo(".save_as_example_body");
+						$(".save_as_example ."+title[d].id+" .save_as_name").text(title[d].name);
+						$(".save_as_example ."+title[d].id+" .save_value").attr("value",title[d].value);
+						$(".save_as_example ."+title[d].id+" .save_value .example_select_def").removeAttr('selected');
+						if(title[d].required){
+							$(".save_as_example ."+title[d].id+" select").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".save_as_example ."+title[d].id+" select").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".save_as_example ."+title[d].id).addClass('d-none');
+						}
+						//--
+						select =$(".modify_example .modify_example_select").clone();
+						select[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						select.appendTo(".modify_example_body");
+						$(".modify_example ."+title[d].id+" .modify_name").text(title[d].name);
+						$(".modify_example ."+title[d].id+" .save_value .example_select_def").removeAttr('selected');
+						if(title[d].required){
+							$(".modify_example ."+title[d].id+" select").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".modify_example ."+title[d].id+" select").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".modify_example ."+title[d].id).addClass('d-none');
+						}
+						
+						for(var o =0; o<title[d].values.length ;o++){							
+							var one_option = $(".detail_example_select select .example_select_one").clone();//複製樣本
+							one_option[0].id="select_"+title[d]['values'][o]["key"];
+							one_option[0].value = title[d]['values'][o]["key"];
+							one_option[0].innerText = title[d]['values'][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo(".detail_example_body ."+title[d].id+" select");
+							if(title[d].value==one_option[0].value){
+								$(".detail_example_body ."+title[d].id+" #"+one_option[0].id).attr("selected","true")
+							}
+							if(title[d]['values'][o]['dis']=="disabled"){
+								$(".detail_example_body ."+title[d].id+" #"+one_option[0].id).attr("disabled","disabled")
+							}
+							//--
+							one_option = $(".create_example_select select .example_select_one").clone();//複製樣本
+							one_option[0].id="select_"+title[d]['values'][o]["key"];
+							one_option[0].value = title[d]['values'][o]["key"];
+							one_option[0].innerText = title[d]['values'][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo(".create_example_body ."+title[d].id+" select");
+							if(title[d].value==one_option[0].value){
+								$(".create_example_body ."+title[d].id+" #"+one_option[0].id).attr("selected","true")
+							}
+							if(title[d]['values'][o]['dis']=="disabled"){
+								$(".create_example_body ."+title[d].id+" #"+one_option[0].id).attr("disabled","disabled")
+							}
+							//--
+							one_option = $(".save_as_example_select select .example_select_one").clone();//複製樣本
+							one_option[0].id="select_"+title[d]['values'][o]["key"];
+							one_option[0].value = title[d]['values'][o]["key"];
+							one_option[0].innerText = title[d]['values'][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo(".save_as_example_body ."+title[d].id+" select");
+							if(title[d].value==one_option[0].value){
+								$(".save_as_example_body ."+title[d].id+" #"+one_option[0].id).attr("selected","true")
+							}
+							if(title[d]['values'][o]['dis']=="disabled"){
+								$(".save_as_example_body ."+title[d].id+" #"+one_option[0].id).attr("disabled","disabled")
+							}
+							//--
+							one_option = $(".modify_example_select select .example_select_one").clone();//複製樣本
+							one_option[0].id="select_"+title[d]['values'][o]["key"];
+							one_option[0].value = title[d]['values'][o]["key"];
+							one_option[0].innerText = title[d]['values'][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo(".modify_example_body ."+title[d].id+" select");
+							if(title[d].value==one_option[0].value){
+								$(".modify_example_body ."+title[d].id+" #"+one_option[0].id).attr("selected","true")
+							}
+							if(title[d]['values'][o]['dis']=="disabled"){
+								$(".modify_example_body ."+title[d].id+" #"+one_option[0].id).attr("disabled","disabled")
+							}
+							
+						}
+						break;
+						
+					case "textarea":
+						//--
+						var textarea = $(".detail_example .detail_example_textarea").clone();
+						textarea[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						textarea.appendTo(".detail_example_body");
+						$(".detail_example ."+title[d].id+" .detail_name").text(title[d].name);
+						$(".detail_example ."+title[d].id+" .detail_example").attr("placeholder",title[d].placeholder);
+						if(title[d].d_none=='d-none'){
+							$(".detail_example ."+title[d].id).addClass('d-none');
+						}
+						
+						textarea = $(".create_example .create_example_textarea").clone();
+						textarea[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						textarea.appendTo(".create_example_body");
+						$(".create_example ."+title[d].id+" .create_name").text(title[d].name);
+						if(title[d].required){
+							$(".create_example ."+title[d].id+" textarea").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".create_example ."+title[d].id+" textarea").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".create_example ."+title[d].id).addClass('d-none');
+						}
+						//--
+						textarea = $(".save_as_example .save_as_example_textarea").clone();
+						textarea[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						textarea.appendTo(".save_as_example_body");
+						$(".save_as_example ."+title[d].id+" .save_as_name").text(title[d].name);
+						$(".save_as_example ."+title[d].id+" .save_as_example").attr("placeholder",title[d].placeholder);
+						if(title[d].required){
+							$(".save_as_example ."+title[d].id+" textarea").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".save_as_example ."+title[d].id+" textarea").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".save_as_example ."+title[d].id).addClass('d-none');
+						}
+						//--
+						textarea = $(".modify_example .modify_example_textarea").clone();
+						textarea[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						textarea.appendTo(".modify_example_body");
+						$(".modify_example ."+title[d].id+" .modify_name").text(title[d].name);
+						if(title[d].required){
+							$(".modify_example ."+title[d].id+" textarea").attr("required","required");							
+						}
+						if(title[d].write=='disabled'){
+							$(".modify_example ."+title[d].id+" textarea").attr("disabled","disabled");
+						}
+						if(title[d].d_none=='d-none'){
+							$(".modify_example ."+title[d].id).addClass('d-none');
+						}
+						break;
+					}
+				}
+				//關閉/移除樣本
+				//$(".detail_example").addClass("d-none");
+				$(".detail_example .example_select_one").remove();
+				$(".detail_example .detail_example_input").remove();
+				$(".detail_example .detail_example_select").remove();
+				$(".detail_example .detail_example_textarea").remove();
+				$(".detail_example .detail_example_checkbox").remove();
+				
+				$(".create_example .example_select_one").remove();
+				$(".create_example .create_example_input").remove();
+				$(".create_example .create_example_date").remove();
+				$(".create_example .create_example_select").remove();
+				$(".create_example .create_example_textarea").remove();
+				$(".create_example .create_example_textarea").remove();
+				$(".create_example .create_example_checkbox").remove();
+				
+				$(".save_as_example .example_select_one").remove();
+				$(".save_as_example .save_as_example_input").remove();
+				$(".save_as_example .save_as_example_select").remove();
+				$(".save_as_example .save_as_example_textarea").remove();
+				$(".save_as_example .save_as_example_checkbox").remove();
+				
+				$(".modify_example .example_select_one").remove();
+				$(".modify_example .modify_example_input").remove();
+				$(".modify_example .modify_example_select").remove();
+				$(".modify_example .modify_example_textarea").remove();
+				$(".modify_example .modify_example_checkbox").remove();
+				
+				//完成注入後 複製(克隆)
+				this.create_example_tr = $("#create_example_tr").clone();
+				this.detail_example_tr = $("#detail_example_tr").clone();
+				this.save_as_example_tr = $("#save_as_example_tr").clone();
+				this.modify_example_tr = $("#modify_example_tr").clone();
+				this.delete_example_tr = $("#delete_example_tr").clone();
+				//移除 範本(因為已經複製)
+				$("#create_example_tr .create_example_body").remove();
+				$("#detail_example_tr").remove();
+				$("#save_as_example_tr").remove();
+				$("#modify_example_tr").remove();
+				$("#delete_example_tr").remove();
+				
+				
+			},
+			setData(obj_all){
+				//帶入資料區
+				console.log(obj_all); 
+				//移除舊資料
+				$(".detail_really_tr").remove();
+				$(".create_really_tr").remove();
+				$(".save_as_really_tr").remove();
+				$(".modify_really_tr").remove();
+				$(".delete_really_tr").remove();
+				
+				//需要顯示功能
+				$("#m_detail_all").addClass("d-none");
+				$("#m_save_as_all").addClass("d-none");
+				$("#m_modify_all").addClass("d-none");
+				$("#m_delete_all").addClass("d-none");
+				if(obj_all.a_detail.length>0){$("#m_detail_all").removeClass("d-none");}
+				if(obj_all.a_save_as.length>0){$("#m_save_as_all").removeClass("d-none");}
+				if(obj_all.a_modify.length>0){$("#m_modify_all").removeClass("d-none");}
+				if(obj_all.a_delete.length>0){$("#m_delete_all").removeClass("d-none");}
+				
+				//細節建置
+				for(var a_d=0;a_d < obj_all.a_detail.length;a_d++){
+					var obj_one = obj_all.a_detail[a_d];
+					var one_option = this.detail_example_tr.clone();//複製樣本
+					one_option[0].id="detail_really_tr_"+this.detail_nb;
+					one_option.appendTo(".detail_example");
+					$("#detail_really_tr_"+this.detail_nb).addClass("detail_really_tr");
+					$("#detail_really_tr_"+this.detail_nb+" .detail_example_remove").attr("id","detail_example_remove_"+this.detail_nb);
+					$("#detail_really_tr_"+this.detail_nb+" .detail_example_add").attr("id","detail_example_add_"+ this.detail_nb);
+					
+					//資料欄位
+                    for (var i = 0; i < Object.keys(obj_one).length; i++) {
+                    	 var key_id = Object.keys(obj_one)[i];
+                         var key_value = obj_one[Object.keys(obj_one)[i]];                	
+						 $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").val(key_value);
+						 //僅限於checkbox
+						 if ($("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
+							 $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").prop("checked", key_value);
+						 }
+                    }
+					//群組類型-因為全部都反白
+                    if($("#detail_really_tr_"+this.detail_nb+" .m__sys_header input").val()=="true"){
+						//群組不可顯示+號(因為後端無法檢核新的群組資料還是 舊的子類別)                    	
+                    	$("#detail_really_tr_"+this.detail_nb +" .detail_example_add").addClass("d-none");
+    					$("#detail_really_tr_"+this.detail_nb+" .detail_example_group").addClass("d-none");
+                    	$("#detail_really_tr_"+this.detail_nb).addClass("bg-yellow-30");
+                    	//群組特定設定
+    					for(var g =0;g<this.modify_g_datas.length;g++){
+    	                  	//d_none?
+    						if(this.modify_g_datas[g].d_none=="d-none"){
+    							$("#detail_really_tr_"+this.detail_nb+" ."+this.modify_g_datas[g].id).addClass("d-none");
+    						}else{
+    							$("#detail_really_tr_"+this.detail_nb+" ."+this.modify_g_datas[g].id).removeClass("d-none");
+    						}
+    					}
+                    }else{
+                    	$("#detail_really_tr_"+this.detail_nb+" .detail_example_group").removeClass("d-none");
+                    }
+                    this.detail_nb+=1;
+				}
+				//另存
+				for(var a_s_as=0;a_s_as < obj_all.a_save_as.length;a_s_as++){
+					var obj_one = obj_all.a_save_as[a_s_as];
+					var one_option = this.save_as_example_tr.clone();//複製樣本
+					one_option[0].id="save_as_really_tr_"+this.save_as_nb;
+					one_option.appendTo(".save_as_example");
+					$("#save_as_really_tr_"+this.save_as_nb).addClass("save_as_really_tr");
+					$("#save_as_really_tr_"+this.save_as_nb+" .save_as_example_remove").attr("id","save_as_example_remove_"+this.save_as_nb);
+					
+					//資料欄位
+                    for (var i = 0; i < Object.keys(obj_one).length; i++) {
+                    	 var key_id = Object.keys(obj_one)[i];
+                         var key_value = obj_one[Object.keys(obj_one)[i]];                	
+						 $("#save_as_really_tr_"+this.save_as_nb+" .m__"+key_id+" .save_value").val(key_value);
+						 //僅限於checkbox
+						 if ($("#save_as_really_tr_"+this.save_as_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
+							 $("#save_as_really_tr_"+this.save_as_nb+" .m__"+key_id+" .save_value").prop("checked", key_value);
+						 }
+                    }
+                  	//群組類型
+                    if($("#save_as_really_tr_"+this.save_as_nb+" .m__sys_header input").val()=="true"){
+    					$("#save_as_really_tr_"+this.save_as_nb+" .save_as_example_group").addClass("d-none");
+    					$("#save_as_really_tr_"+this.save_as_nb).addClass("bg-yellow-30");
+    					//群組特定設定
+						for(var g =0;g<this.modify_g_datas.length;g++){
+							if(this.modify_g_datas[g].write=="disabled"){
+								//不顯示?
+	    						$("#save_as_really_tr_"+this.save_as_nb+" ."+this.modify_g_datas[g].id+" .save_value").attr("disabled","disabled");
+							}else{
+								$("#save_as_really_tr_"+this.save_as_nb+" ."+this.modify_g_datas[g].id+" .save_value").removeAttr("disabled");
+							}
+							//d_none?
+							if(this.modify_g_datas[g].d_none=="d-none"){
+								$("#save_as_really_tr_"+this.save_as_nb+" ."+this.modify_g_datas[g].id).addClass("d-none");
+							}else{
+    							$("#save_as_really_tr_"+this.save_as_nb+" ."+this.modify_g_datas[g].id).removeClass("d-none");
+    						}
+						}
+                    }else{
+                    	$("#save_as_really_tr_"+this.save_as_nb+" .save_as_example_group").removeClass("d-none");
+                    }
+                    this.save_as_nb+=1;
+					
+				}
+				//修改				
+				for(var a_m=0;a_m < obj_all.a_modify.length;a_m++){
+					var obj_one = obj_all.a_modify[a_m];
+					var one_option = this.modify_example_tr.clone();//複製樣本
+					one_option[0].id="modify_really_tr_"+this.modify_nb;
+					one_option.appendTo(".modify_example");
+					$("#modify_really_tr_"+this.modify_nb).addClass("modify_really_tr");
+					$("#modify_really_tr_"+this.modify_nb+" .modify_example_remove").attr("id","modify_example_remove_"+this.modify_nb);
+					//$("#modify_really_tr_"+this.modify_nb+" .modify_example_add").attr("id","modify_example_add_"+ this.modify_nb);
+					//資料欄位
+                    for (var i = 0; i < Object.keys(obj_one).length; i++) {
+                    	 var key_id = Object.keys(obj_one)[i];
+                         var key_value = obj_one[Object.keys(obj_one)[i]];                	
+						 $("#modify_really_tr_"+this.modify_nb+" .m__"+key_id+" .save_value").val(key_value);
+						 //僅限於checkbox
+						 if ($("#modify_really_tr_"+this.modify_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
+							 $("#modify_really_tr_"+this.modify_nb+" .m__"+key_id+" .save_value").prop("checked", key_value);
+						 }
+                    }
+                	//群組類型
+                    if($("#modify_really_tr_"+this.modify_nb+" .m__sys_header input").val()=="true"){
+   						$("#modify_really_tr_"+this.modify_nb).addClass("bg-yellow-30");
+    					$("#modify_really_tr_"+this.modify_nb+" .modify_example_group").addClass("d-none");
+    					
+    					//群組特定設定
+						for(var g =0;g<this.modify_g_datas.length;g++){
+							if(this.modify_g_datas[g].write=="disabled"){
+								//不顯示?
+	    						$("#modify_really_tr_"+this.modify_nb+" ."+this.modify_g_datas[g].id+" .save_value").attr("disabled","disabled");
+							}else{
+								$("#modify_really_tr_"+this.modify_nb+" ."+this.modify_g_datas[g].id+" .save_value").removeAttr("disabled");
+							}
+							//d_none?
+							if(this.modify_g_datas[g].d_none=="d-none"){
+								$("#modify_really_tr_"+this.modify_nb+" ."+this.modify_g_datas[g].id).addClass("d-none");
+							}else{
+    							$("#modify_really_tr_"+this.modify_nb+" ."+this.modify_g_datas[g].id).removeClass("d-none");
+    						}
+						}
+                    }else{
+                    	$("#modify_really_tr_"+this.modify_nb+" .modify_example_group").removeClass("d-none");
+                    }
+                    this.modify_nb+=1;
+					
+				}
+				//移除
+				for(var a_d=0;a_d < obj_all.a_delete.length;a_d++){
+					var obj_one = obj_all.a_delete[a_d];
+					var one_option = this.delete_example_tr.clone();//複製樣本
+					one_option[0].id="delete_really_tr_"+this.delete_nb;
+					one_option.appendTo(".delete_example_body");
+					$("#delete_really_tr_"+this.delete_nb).addClass("delete_really_tr");
+					$("#delete_really_tr_"+this.delete_nb+" .delete_example_remove").attr("id","delete_example_remove_"+this.delete_nb);
+					
+                    //資料欄位
+                    for (var i = 0; i < Object.keys(obj_one).length; i++) {
+                        var one_item = $(".delete_example_body #delete_really_tr_"+this.delete_nb+" .d_list_body").clone(); //複製樣本
+                        var key_id = Object.keys(obj_one)[i];
+                        var value_name = obj_one[Object.keys(obj_one)[i]];
+                        
+                        var with_style = $(".delete_example_title tr th")[i].style['min-width'];
+                        console.log(key_id+" "+value_name+" "+with_style);
+                        one_item[0].className = "datalist "+key_id;
+                        one_item[0].id = "";
+                       // one_item[0].title = key_id;
+                        one_item[0].innerText = value_name;
+                        console.log($("#" + one_option[0].id + " .d_list_body"));
+                        one_item.insertBefore("#" + one_option[0].id + " .d_list_body");
+                        //樣式
+                       $("#delete_really_tr_"+this.delete_nb+" ."+key_id).css("maxWidth",with_style);
+                   		//顯示與不顯示
+                   		for(var nb =0;nb <this.modify_g_datas.length;nb++){
+                   			var nb_id = (this.modify_g_datas[nb].id).replace('m__','');
+                   			var nb_none = (this.modify_g_datas[nb].d_none);
+	                     	if(nb_id==key_id){
+	                     		if(nb_none=="d-none"){
+		                     		$("#delete_really_tr_"+this.delete_nb+" ."+key_id).attr("disabled","disabled");
+	                     		}
+		                     	continue;
+	                     	}
+                   		}
+                    }
+                  	//群組類型
+                    if($("#delete_really_tr_"+this.delete_nb+" .sys_header").text()=="true"){
+                    	$("#delete_really_tr_"+this.delete_nb).css('background-color','#fdf59a');
+    					$("#delete_really_tr_"+this.delete_nb+" .delete_example_group i").addClass("d-none");
+    					$("#delete_really_tr_"+this.delete_nb+" .delete_example_group div").text("Header");
+                    }else{
+                    	$("#delete_really_tr_"+this.delete_nb+" .delete_example_group i").removeClass("d-none");
+                    }
+                  
+                  	
+                  	
+                    $("#" + one_option[0].id + " .d_list_body").remove();
+                    this.delete_nb+=1;
+				}
+				
+				//時間格式
+                $('.datetimepicker_date').datetimepicker({
+                    format: 'yyyy-mm-dd hh:ii:00',
+                    pickerPosition:'bottom-right',
+                    //minView:1,
+                   // hoursDisabled: [00, 1, 2, 3, 4, 5, 6],
+                    minuteStep: 30,
+                    autoclose:true,
+                    endDate: '+1d',
+                    datesDisabled: '+1d',
+                    todayBtn:true,
+                    //......可以同上項目代碼自定義設置
+                });
+				
+				/*印出
+				for(var a_p=0;a_p <= obj_all.a_print.length;a_p++){
+					obj_all.a_print[a_s_as];
+					
+				}*/
+				/*下載
+				for(var a_d=0;a_d <= obj_all.a_download.length;a_d++){
+					obj_all.a_download[a_s_as];
+					
+				}*/        
+				
+			},
+			//存檔
+			sendSave() {
+				console.log("sendSave");
+
+                this.create_datas=[];
+				this.save_as_datas=[];
+				this.modify_datas=[];
+				this.delete_datas=[];
+								
+				//Create 
+				// body{create:[{key1:value1,key2:value2},{key1:value1,key2:value2},]}
+				
+				for(var c = 0 ;c<$(".create_really_tr").length;c++){
+					var id = $(".create_really_tr")[c].id;
+					var create_one={};
+					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
+						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
+						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						create_one[key] = value;
+						console.log(key+" "+value);
+					}
+					this.create_datas.push(create_one);
+				}
+				
+				//Sava as
+				for(var c = 0 ;c<$(".save_as_really_tr").length;c++){
+					var id = $(".save_as_really_tr")[c].id;
+					var save_as_one={};
+					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
+						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
+						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						save_as_one[key] = value;
+						console.log(key+" "+value);
+					}
+					this.save_as_datas.push(save_as_one);
+				}
+				
+				//modify
+				for(var c = 0 ;c<$(".modify_really_tr").length;c++){
+					var id = $(".modify_really_tr")[c].id;
+					var modify_one={};
+					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
+						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
+						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						modify_one[key] = value;
+						console.log(key+" "+value);
+					}
+					this.modify_datas.push(modify_one);
+				}
+				
+				//delete
+				for(var c = 0 ;c<$(".delete_really_tr").length;c++){
+					var id = $(".delete_really_tr")[c].id;
+					var delete_one={};
+					for(var c_i =0 ;c_i <$("#"+id+" .datalist").length;c_i++){
+						var key = ($("#"+id+" .datalist")[c_i].className).split(" ")[1];
+						var value = $("#"+id+" ."+key).text();
+						delete_one[key] = value;
+						console.log(key+" "+value);
+					}
+					this.delete_datas.push(delete_one);
+				}
+				
+				var action = "";
+				var	s_type = "POST";
+				var s_url = "";
+				var	s_data = {};
+				var req = {};
+				req.user="";
+				req.date=new Date();
+				req.body={};
+				req.page_total=this.page_total;
+				req.page_batch=this.page_batch;
+				req.page_now_nb=this.page_now_nb;
+				req.html_body= "";
+				req.call_bk_fn="modify";
+				req.call_bk_vals={};
+				s_data.req_content = req;
+				
+				//新增
+				if(this.create_datas!="" || this.save_as_datas!=""){
+					//包裝(action = AR_AC/AR_AU/AR_AD)
+					action = "AC";
+					s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+					req.action=action;
+					req.body={};
+					req.body['create'] = this.create_datas;
+					req.body['save_as'] = this.save_as_datas;
+					req.call_bk_vals={};
+					if(this.modify_datas!="" || this.delete_datas!="" ){
+						req.call_bk_vals['search']=false;
+					}else{
+						req.call_bk_vals['search']=true;
+					}
+					main.ajaxSend(s_url, s_type, s_data);
+				}
+				//更新
+				if(this.modify_datas!="" ){
+					//包裝(action = AR_AC/AR_AU/AR_AD)
+					action = "AU";
+					s_type = "PUT";
+					s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+					req.action=action;
+					req.body={};
+					req.body['modify'] = this.modify_datas;
+					req.call_bk_vals={};
+					if(this.delete_datas!="" ){
+						req.call_bk_vals['search']=false;
+					}else{
+						req.call_bk_vals['search']=true;
+					}
+					main.ajaxSend(s_url, s_type, s_data);
+				}
+				//移除
+				if(this.delete_datas!="" ){
+					//包裝(action = AR_AC/AR_AU/AR_AD)
+					action = "AD";
+					s_type = "DELETE";
+					s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+					req.action=action;
+					req.body={};
+					req.body['delete'] = this.delete_datas;
+					req.call_bk_vals={};
+					req.call_bk_vals['search']=true;
+					main.ajaxSend(s_url, s_type, s_data);
+				}
+				
+				return false; //防止真傳送
+			},
+			//回傳
+			modifyReturn() {
+                console.log("modifyReturn");
+                if(main.allData.call_bk_vals['search']){
+	                search.searchSend();
+	                $("#search_nav").trigger("click");
+                }
+                //新增成功
+                if(main.allData['action']=="AC"){
+                	$(".create_really_tr").remove();
+    				$(".save_as_really_tr").remove();
+                }
+                //修改成功
+                if(main.allData['action']=="AU"){
+	     			$(".modify_really_tr").remove();
+                }
+                //刪除成功
+                if(main.allData['action']=="AD"){
+                	$(".delete_really_tr").remove();
+                }
+            	
+            },
+            selectAllInit() {
+                //監聽-同步相同屬性
+                //新增
+            	 $(document).on("click", ".create_example_add", function (event) {
+                    console.log("create_example_add");
+                    modify.create_example_data();
+                 });
+                //移除
+            	 $(document).on("click", ".create_example_remove", function (event) {
+                 	console.log("create_example_remove");
+            		var id = event.target.id.replace("create_really_id_","");
+            		
+            		//如果是群組模式(只剩下兩筆資料+只刪除子資料) 則不給移除
+            		if(main.allData.body_type.type=="group" && $(".create_really_tr").length==2 &&
+            				!$("#create_really_tr_"+id+" .create_example_group").hasClass( "d-none")){
+            			//如果有群組則不能動
+            			if($('.create_example .create_example_group').hasClass( "d-none")){
+	            			return false;            				
+            			}
+            		}
+            		
+            		//群組移除
+            		if($("#create_really_tr_"+id+" .create_example_group").hasClass( "d-none")){
+            			$(".create_really_tr").remove();
+            		}else{
+            			$("#create_really_tr_"+id).remove();
+            		}
+                  });
+                //Save_as
+            	 $(document).on("click", ".save_as_example_remove", function (event) {
+                 	console.log("save_as_example_remove");
+                    var id = (event.currentTarget.id).replace("save_as_example_remove_","");
+                    
+            		//$("#save_as_really_tr_"+id).remove(); 
+                   	//群組移除
+             		if($("#save_as_really_tr_"+id+" .save_as_example_group").hasClass( "d-none")){
+             			var id_nb = parseInt(id);
+             			var save_as = $(".save_as_really_tr").length+id_nb;
+	                    var last_id = $(".save_as_really_tr")[$(".save_as_really_tr").length-1].id;
+	                    last_id = last_id.replace("save_as_really_tr_","");
+	                    save_as +=last_id;
+             			for(id_nb;id_nb<= save_as;id_nb++ ){
+             				var id_remove = $("#save_as_really_tr_"+id_nb);
+             				if(id_remove.length>0){
+             					$("#save_as_really_tr_"+id_nb).remove();
+             					//下個是群組則跳出
+             					if($("#save_as_really_tr_"+(id_nb+1)+" .save_as_example_group").hasClass("d-none")){
+             						break;
+             					}
+             				}
+             			}
+             		}else{
+             			$("#save_as_really_tr_"+id).remove();
+             		}
+                 });
+            	 //--modify--
+            	 $(document).on("click", ".modify_example_remove", function (event) {
+                     console.log("modify_example_remove");
+            		 var id = (event.currentTarget.id).replace("modify_example_remove_","");
+            		// $("#modify_really_tr_"+id).remove(); 
+            		//群組移除
+              		if($("#modify_really_tr_"+id+" .modify_example_group").hasClass( "d-none")){
+              			var id_nb = parseInt(id);
+              			var modify = $(".modify_really_tr").length+id_nb;
+              		  	var last_id = $(".modify_really_tr")[$(".modify_really_tr").length-1].id;
+	                    last_id = last_id.replace("modify_really_tr_","");
+	                    modify +=last_id;
+              			for(id_nb;id_nb<= modify;id_nb++ ){
+              				var id_remove = $("#modify_really_tr_"+id_nb);
+              				if(id_remove!=null){
+              					$("#modify_really_tr_"+id_nb).remove();
+              					//下個是群組則跳出
+              					if($("#modify_really_tr_"+(id_nb+1)+" .modify_example_group").hasClass("d-none")){
+              						break;
+              					}
+              				}
+              			}
+              		}else{
+              			$("#modify_really_tr_"+id).remove();
+              		}
+                 });
+            	//--detail--
+            	 $(document).on("click", ".detail_example_remove", function (event) {
+                     console.log("detail_example_remove");
+            		 var id = (event.currentTarget.id).replace("detail_example_remove_","");
+            		 //$("#detail_really_tr_"+id).remove(); 
+            		//群組移除
+               		if($("#detail_really_tr_"+id+" .detail_example_group").hasClass( "d-none")){
+               			var id_nb = parseInt(id);
+               			var detail = $(".detail_really_tr").length+id_nb;
+              		  	var last_id = $(".detail_really_tr")[$(".detail_really_tr").length-1].id;
+	                    last_id = last_id.replace("detail_really_tr_","");
+	                    detail +=last_id;
+               			for(id_nb;id_nb<= detail;id_nb++ ){
+               				var id_remove = $("#detail_really_tr_"+id_nb);
+               				if(id_remove!=null){
+               					$("#detail_really_tr_"+id_nb).remove();
+               					//下個是群組則跳出
+               					if($("#detail_really_tr_"+(id_nb+1)+" .detail_example_group").hasClass("d-none")){
+               						break;
+               					}
+               				}
+               			}
+               		}else{
+               			$("#detail_really_tr_"+id).remove();
+               		}
+                 });
+            	 //複製->新增
+            	 $(document).on("click", ".modify_example_add", function (event) {
+                     console.log("modify_example_add");
+            		 var id = (event.currentTarget.id).replace("modify_example_add","modify_really_tr");
+            		 console.log(id);
+					//自動觸發+複製All value 至新增
+            		 $( "#create_example_tr .create_example_add" ).trigger( "click" );
+            		 for(var cell =0;cell<$("#"+id+" .save_key").length;cell++){
+	            		 var value = $("#"+id+" .save_key .save_value")[cell].value;
+	            		 $("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].value=value
+	            		 
+	            		//僅限於checkbox
+						 if ($("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].type=="checkbox" && value=="true"){
+							$("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].checked=true;
+						 }
+            		 }
+            			//群組類型
+                     if($("#create_really_tr_"+(modify.create_nb-1)+" .m__sys_header input").val()=="true"){
+                    	 $("#create_really_tr_"+(modify.create_nb-1)+" .create_example_group").addClass("d-none");
+                     }else{
+                    	 $("#create_really_tr_"+(modify.create_nb-1)+" .create_example_group").removeClass("d-none");
+                     }
+                 });
+            	 
+            	 //複製->新增
+            	 $(document).on("click", ".detail_example_add", function (event) {
+                     console.log("detail_example_add");
+            		 var id = (event.currentTarget.id).replace("detail_example_add","detail_really_tr");
+            		 console.log(id);
+					 //自動觸發+複製All value 至新增
+					 if($("#"+id+" .detail_example_group").hasClass( "d-none")){
+						 //父類別->要雙複製
+						 modify.create_example_data();
+					 }else{
+						 //子類別->單複製
+						 modify.create_example_data("son_data");						 
+					 }
+            		 for(var cell =0;cell<$("#"+id+" .save_key").length;cell++){
+	            		 var value = $("#"+id+" .save_key .save_value")[cell].value;
+	            		 $("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].value=value
+	            		 
+	            		//僅限於checkbox
+						 if ($("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].type=="checkbox" && value=="true"){
+							$("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].checked=true;
+						 }
+            		 }
+                 });
+            	 
+            	 $(document).on("click", ".delete_example_remove", function (event) {
+                     console.log("delete_example_remove");
+                     var id = (event.currentTarget.id).replace("delete_example_remove_","");
+            		 $("#delete_really_tr_"+id).remove(); 
+            		 
+                 });
+            	 //--如果有checkbox--
+            	 $(document).on("click", ".big-checkbox", function (event) {
+                     console.log(" big-checkbox");
+                     if(event.target.value=="true"){
+                    	 event.target.value = false;
+                     }else{
+                    	 event.target.value = true;
+                     }
+                     console.log( event.target.value);
+                 });
+            	
+            	 
+            	 $(document).on("click", "#m_cancel", function (event) {
+                     console.log("m_cancel");
+	                 //移除舊資料
+                    $( "#search_nav" ).trigger( "click" );
+               		$(".detail_really_tr").remove();
+	     			$(".create_really_tr").remove();
+	     			$(".save_as_really_tr").remove();
+	     			$(".modify_really_tr").remove();
+	     			$(".delete_really_tr").remove();
+                 });
+
+			},
+			//added_new_data--添加新資料
+			create_example_data(type_data){
+				//取得暫存(克隆)
+                var create_example = modify.create_example_tr.clone();
+                create_example[0].id="create_really_tr_"+modify.create_nb;
+                create_example.appendTo(".create_example");
+               
+                //群組類型-呈現形式
+                if($(".create_really_tr").length==0 && main.allData.body_type.type=="group"){
+               		//呈現群組
+                	if(main.allData.body_type.createOnly=="all" && type_data !="son_data"){
+                    	$('#'+create_example[0].id+" .create_example_group").addClass('d-none'); 
+                    	$("#create_really_tr_"+modify.create_nb).addClass("bg-yellow-30");
+                    	//群組特定設定
+						for(var g =0;g<modify.modify_g_datas.length;g++){
+							if(modify.modify_g_datas[g].write=="disabled"){
+								//不顯示?
+	    						$("#create_really_tr_"+modify.create_nb+" ."+modify.modify_g_datas[g].id+" .save_value").attr("disabled","disabled");
+							}else{
+								$("#create_really_tr_"+modify.create_nb+" ."+modify.modify_g_datas[g].id+" .save_value").removeAttr("disabled");
+							}
+							//d_none?
+							if(modify.modify_g_datas[g].d_none=="d-none"){
+								$("#create_really_tr_"+modify.create_nb+" ."+modify.modify_g_datas[g].id).addClass("d-none");
+							}else{
+    							$("#create_really_tr_"+modify.create_nb+" ."+modify.modify_g_datas[g].id).removeClass("d-none");
+    						}
+							//df_value?
+							if(modify.modify_g_datas[g].df_value!=""){
+								$("#create_really_tr_"+modify.create_nb+" ."+modify.modify_g_datas[g].id+" input").val(modify.modify_g_datas[g].df_value);
+							}
+						}
+                	}
+                }
+                
+                //交換顯示按鈕+添加ID
+                $("#create_really_tr_"+modify.create_nb+" .create_example_remove .bi").removeClass("d-none");
+                $("#create_really_tr_"+modify.create_nb+" .create_example_remove .bi").attr("id","create_really_id_"+modify.create_nb);
+                $("#create_really_tr_"+modify.create_nb+" .create_example_add .bi").addClass("d-none");
+                $("#create_really_tr_"+modify.create_nb).addClass('create_really_tr');
+                modify.create_nb+=1;
+                
+              	//時間格式
+                $('.datetimepicker_date').datetimepicker({
+                    format: 'yyyy-mm-dd hh:ii:00',
+                    pickerPosition:'bottom-right',
+                    //minView:1,
+                    //hoursDisabled: [00, 1, 2, 3, 4, 5, 6],
+                    minuteStep: 30,
+                    autoclose:true,
+                    endDate: '+1d',
+                    datesDisabled: '+1d',
+                    todayBtn:true,
+                    //......可以同上項目代碼自定義設置
+                });
+              	
+              	//如果是群組類型 在自動新增一次
+                if($(".create_really_tr").length==1 && main.allData.body_type.type=="group" && type_data !="son_data" && main.allData.body_type.createOnly=="all"){
+                	 $( "#create_example_tr .create_example_add" ).trigger( "click" );
+                }
+			},
+		},
+		//移除監聽事件
+		beforeDestroy() {
+			console.log("modify.html(beforeDestroy)");
+			
+			$(document).off("click", ".big-checkbox");
+			$(document).off("click", "#m_cancel");
+			$(document).off("click", ".create_example_remove");
+			$(document).off("click", ".create_example_add");
+			$(document).off("click", ".save_as_example_remove");
+			$(document).off("click", ".save_as_example_add");
+			$(document).off("click", ".modify_example_remove");
+			$(document).off("click", ".modify_example_add");
+			$(document).off("click", ".detail_example_remove");
+			$(document).off("click", ".detail_example_add");
+			$(document).off("click", ".delete_example_remove");
+		}
+	});
+</script>
