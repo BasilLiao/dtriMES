@@ -6,7 +6,7 @@ public class FFM {
 		H, M, B
 	}
 
-	/** 限制規格-可填入? **/
+	/** 限制規格-可 填入? **/
 	public static enum Wri {
 		W_Y, W_N
 	}
