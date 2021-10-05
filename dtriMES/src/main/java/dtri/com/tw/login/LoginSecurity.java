@@ -44,6 +44,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String workstation_repeat = "/ajax/workstation_repeat.basil";
 		String workstation_disassemble = "/ajax/workstation_disassemble.basil";
 		
+		String own_user = "/ajax/own_user.basil";
+		
 		
 		String maintain_code = "/ajax/maintain_code.basil";
 		String work_hours = "/ajax/work_hours.basil";
@@ -183,6 +185,15 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, work_type + ".AC").hasAuthority(actionRole(work_type, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, work_type + ".AU").hasAuthority(actionRole(work_type, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, work_type + ".AD").hasAuthority(actionRole(work_type, "AD"))// (移除)
+				
+				// ----請求-work_type-(訪問) ----
+				.antMatchers(HttpMethod.POST, own_user).hasAuthority(actionRole(own_user, ""))//
+				.antMatchers(HttpMethod.POST, own_user + ".AR").hasAuthority(actionRole(own_user, "AR"))// (查詢)
+				//.antMatchers(HttpMethod.POST, own_user + ".AC").hasAuthority(actionRole(own_user, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, own_user + ".AU").hasAuthority(actionRole(own_user, "AU"))// (修改)
+				//.antMatchers(HttpMethod.DELETE, own_user + ".AD").hasAuthority(actionRole(own_user, "AD"))// (移除)
+				
+				
 
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();

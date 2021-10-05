@@ -469,7 +469,7 @@ public class ProductionBodyService {
 			// one.getPbltext() == null ? "" : one.getPbltext());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_size", one.getPblsize() == null ? "" : one.getPblsize());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_dt", one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbldt()));
-			
+
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_schedule", one.getPbschedule() == null ? "" : one.getPbschedule());
 			try {
 				// 有效設定的欄位
@@ -879,6 +879,7 @@ public class ProductionBodyService {
 				pro_b.setPbfvalue(data.getString("pb_f_value"));
 				// pro_b.setPbltext(data.getString("pb_l_text"));
 				pro_b.setSysstatus(data.getInt("sys_status"));
+				pro_b.setSysnote(data.getString("sys_note"));
 				pro_b.setPbwyears(data.getInt("pb_w_years"));
 				pro_b.setSyssort(data.getInt("sys_sort"));
 				pro_b.setSysmuser(user.getSuaccount());
