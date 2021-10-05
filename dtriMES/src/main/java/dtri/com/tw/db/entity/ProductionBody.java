@@ -57,6 +57,82 @@ public class ProductionBody implements Serializable {
 		this.syssort = 0;
 		this.sysstatus = 0;
 		this.sysheader = false;
+
+		this.pbwname01 = "";
+		this.pbwname02 = "";
+		this.pbwname03 = "";
+		this.pbwname04 = "";
+		this.pbwname05 = "";
+		this.pbwname06 = "";
+		this.pbwname07 = "";
+		this.pbwname08 = "";
+		this.pbwname09 = "";
+		this.pbwname10 = "";
+		this.pbwname11 = "";
+		this.pbwname12 = "";
+		this.pbwname13 = "";
+		this.pbwname14 = "";
+		this.pbwname15 = "";
+		this.pbwname16 = "";
+		this.pbwname17 = "";
+		this.pbwname18 = "";
+		this.pbwname19 = "";
+		this.pbwname20 = "";
+
+		this.pbvalue01 = "";
+		this.pbvalue02 = "";
+		this.pbvalue03 = "";
+		this.pbvalue04 = "";
+		this.pbvalue05 = "";
+		this.pbvalue06 = "";
+		this.pbvalue07 = "";
+		this.pbvalue08 = "";
+		this.pbvalue09 = "";
+		this.pbvalue10 = "";
+		this.pbvalue11 = "";
+		this.pbvalue12 = "";
+		this.pbvalue13 = "";
+		this.pbvalue14 = "";
+		this.pbvalue15 = "";
+		this.pbvalue16 = "";
+		this.pbvalue17 = "";
+		this.pbvalue18 = "";
+		this.pbvalue19 = "";
+		this.pbvalue20 = "";
+		this.pbvalue21 = "";
+		this.pbvalue22 = "";
+		this.pbvalue23 = "";
+		this.pbvalue24 = "";
+		this.pbvalue25 = "";
+		this.pbvalue26 = "";
+		this.pbvalue27 = "";
+		this.pbvalue28 = "";
+		this.pbvalue29 = "";
+		this.pbvalue30 = "";
+		this.pbvalue31 = "";
+		this.pbvalue32 = "";
+		this.pbvalue33 = "";
+		this.pbvalue34 = "";
+		this.pbvalue35 = "";
+		this.pbvalue36 = "";
+		this.pbvalue37 = "";
+		this.pbvalue38 = "";
+		this.pbvalue39 = "";
+		this.pbvalue40 = "";
+		this.pbvalue41 = "";
+		this.pbvalue42 = "";
+		this.pbvalue43 = "";
+		this.pbvalue44 = "";
+		this.pbvalue45 = "";
+		this.pbvalue46 = "";
+		this.pbvalue47 = "";
+		this.pbvalue48 = "";
+		this.pbvalue49 = "";
+		this.pbvalue50 = "";
+		this.pblsize = "";
+		this.pblpath = "";
+		this.pbltext = "";
+
 	}
 
 	// 共用型
@@ -124,45 +200,45 @@ public class ProductionBody implements Serializable {
 	@Column(name = "pb_position", columnDefinition = "varchar(50)")
 	private String pbposition;
 
-	@Column(name = "pb_w_name01", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name01", columnDefinition = "varchar(30) default ''")
 	private String pbwname01;
-	@Column(name = "pb_w_name02", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name02", columnDefinition = "varchar(30) default ''")
 	private String pbwname02;
-	@Column(name = "pb_w_name03", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name03", columnDefinition = "varchar(30) default ''")
 	private String pbwname03;
-	@Column(name = "pb_w_name04", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name04", columnDefinition = "varchar(30) default ''")
 	private String pbwname04;
-	@Column(name = "pb_w_name05", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name05", columnDefinition = "varchar(30) default ''")
 	private String pbwname05;
-	@Column(name = "pb_w_name06", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name06", columnDefinition = "varchar(30) default ''")
 	private String pbwname06;
-	@Column(name = "pb_w_name07", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name07", columnDefinition = "varchar(30) default ''")
 	private String pbwname07;
-	@Column(name = "pb_w_name08", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name08", columnDefinition = "varchar(30) default ''")
 	private String pbwname08;
-	@Column(name = "pb_w_name09", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name09", columnDefinition = "varchar(30) default ''")
 	private String pbwname09;
-	@Column(name = "pb_w_name10", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name10", columnDefinition = "varchar(30) default ''")
 	private String pbwname10;
-	@Column(name = "pb_w_name11", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name11", columnDefinition = "varchar(30) default ''")
 	private String pbwname11;
-	@Column(name = "pb_w_name12", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name12", columnDefinition = "varchar(30) default ''")
 	private String pbwname12;
-	@Column(name = "pb_w_name13", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name13", columnDefinition = "varchar(30) default ''")
 	private String pbwname13;
-	@Column(name = "pb_w_name14", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name14", columnDefinition = "varchar(30) default ''")
 	private String pbwname14;
-	@Column(name = "pb_w_name15", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name15", columnDefinition = "varchar(30) default ''")
 	private String pbwname15;
-	@Column(name = "pb_w_name16", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name16", columnDefinition = "varchar(30) default ''")
 	private String pbwname16;
-	@Column(name = "pb_w_name17", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name17", columnDefinition = "varchar(30) default ''")
 	private String pbwname17;
-	@Column(name = "pb_w_name18", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name18", columnDefinition = "varchar(30) default ''")
 	private String pbwname18;
-	@Column(name = "pb_w_name19", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name19", columnDefinition = "varchar(30) default ''")
 	private String pbwname19;
-	@Column(name = "pb_w_name20", columnDefinition = "varchar(30)")
+	@Column(name = "pb_w_name20", columnDefinition = "varchar(30) default ''")
 	private String pbwname20;
 
 	@Column(name = "pb_w_p_date01", columnDefinition = "TIMESTAMP ")
@@ -206,105 +282,105 @@ public class ProductionBody implements Serializable {
 	@Column(name = "pb_w_p_date20", columnDefinition = "TIMESTAMP ")
 	private Date pbwpdate20;
 
-	@Column(name = "pb_value01", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value01", columnDefinition = "varchar(50) default ''")
 	private String pbvalue01;
-	@Column(name = "pb_value02", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value02", columnDefinition = "varchar(50) default ''")
 	private String pbvalue02;
-	@Column(name = "pb_value03", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value03", columnDefinition = "varchar(50) default ''")
 	private String pbvalue03;
-	@Column(name = "pb_value04", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value04", columnDefinition = "varchar(50) default ''")
 	private String pbvalue04;
-	@Column(name = "pb_value05", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value05", columnDefinition = "varchar(50) default ''")
 	private String pbvalue05;
-	@Column(name = "pb_value06", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value06", columnDefinition = "varchar(50) default ''")
 	private String pbvalue06;
-	@Column(name = "pb_value07", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value07", columnDefinition = "varchar(50) default ''")
 	private String pbvalue07;
-	@Column(name = "pb_value08", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value08", columnDefinition = "varchar(50) default ''")
 	private String pbvalue08;
-	@Column(name = "pb_value09", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value09", columnDefinition = "varchar(50) default ''")
 	private String pbvalue09;
-	@Column(name = "pb_value10", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value10", columnDefinition = "varchar(50) default ''")
 	private String pbvalue10;
-	@Column(name = "pb_value11", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value11", columnDefinition = "varchar(50) default ''")
 	private String pbvalue11;
-	@Column(name = "pb_value12", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value12", columnDefinition = "varchar(50) default ''")
 	private String pbvalue12;
-	@Column(name = "pb_value13", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value13", columnDefinition = "varchar(50) default ''")
 	private String pbvalue13;
-	@Column(name = "pb_value14", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value14", columnDefinition = "varchar(50) default ''")
 	private String pbvalue14;
-	@Column(name = "pb_value15", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value15", columnDefinition = "varchar(50) default ''")
 	private String pbvalue15;
-	@Column(name = "pb_value16", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value16", columnDefinition = "varchar(50) default ''")
 	private String pbvalue16;
-	@Column(name = "pb_value17", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value17", columnDefinition = "varchar(50) default ''")
 	private String pbvalue17;
-	@Column(name = "pb_value18", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value18", columnDefinition = "varchar(50) default ''")
 	private String pbvalue18;
-	@Column(name = "pb_value19", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value19", columnDefinition = "varchar(50) default ''")
 	private String pbvalue19;
-	@Column(name = "pb_value20", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value20", columnDefinition = "varchar(50) default ''")
 	private String pbvalue20;
-	@Column(name = "pb_value21", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value21", columnDefinition = "varchar(50) default ''")
 	private String pbvalue21;
-	@Column(name = "pb_value22", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value22", columnDefinition = "varchar(50) default ''")
 	private String pbvalue22;
-	@Column(name = "pb_value23", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value23", columnDefinition = "varchar(50) default ''")
 	private String pbvalue23;
-	@Column(name = "pb_value24", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value24", columnDefinition = "varchar(50) default ''")
 	private String pbvalue24;
-	@Column(name = "pb_value25", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value25", columnDefinition = "varchar(50) default ''")
 	private String pbvalue25;
-	@Column(name = "pb_value26", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value26", columnDefinition = "varchar(50) default ''")
 	private String pbvalue26;
-	@Column(name = "pb_value27", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value27", columnDefinition = "varchar(50) default ''")
 	private String pbvalue27;
-	@Column(name = "pb_value28", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value28", columnDefinition = "varchar(50) default ''")
 	private String pbvalue28;
-	@Column(name = "pb_value29", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value29", columnDefinition = "varchar(50) default ''")
 	private String pbvalue29;
-	@Column(name = "pb_value30", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value30", columnDefinition = "varchar(50) default ''")
 	private String pbvalue30;
-	@Column(name = "pb_value31", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value31", columnDefinition = "varchar(50) default ''")
 	private String pbvalue31;
-	@Column(name = "pb_value32", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value32", columnDefinition = "varchar(50) default ''")
 	private String pbvalue32;
-	@Column(name = "pb_value33", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value33", columnDefinition = "varchar(50) default ''")
 	private String pbvalue33;
-	@Column(name = "pb_value34", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value34", columnDefinition = "varchar(50) default ''")
 	private String pbvalue34;
-	@Column(name = "pb_value35", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value35", columnDefinition = "varchar(50) default ''")
 	private String pbvalue35;
-	@Column(name = "pb_value36", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value36", columnDefinition = "varchar(50) default ''")
 	private String pbvalue36;
-	@Column(name = "pb_value37", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value37", columnDefinition = "varchar(50) default ''")
 	private String pbvalue37;
-	@Column(name = "pb_value38", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value38", columnDefinition = "varchar(50) default ''")
 	private String pbvalue38;
-	@Column(name = "pb_value39", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value39", columnDefinition = "varchar(50) default ''")
 	private String pbvalue39;
-	@Column(name = "pb_value40", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value40", columnDefinition = "varchar(50) default ''")
 	private String pbvalue40;
-	@Column(name = "pb_value41", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value41", columnDefinition = "varchar(50) default ''")
 	private String pbvalue41;
-	@Column(name = "pb_value42", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value42", columnDefinition = "varchar(50) default ''")
 	private String pbvalue42;
-	@Column(name = "pb_value43", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value43", columnDefinition = "varchar(50) default ''")
 	private String pbvalue43;
-	@Column(name = "pb_value44", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value44", columnDefinition = "varchar(50) default ''")
 	private String pbvalue44;
-	@Column(name = "pb_value45", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value45", columnDefinition = "varchar(50) default ''")
 	private String pbvalue45;
-	@Column(name = "pb_value46", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value46", columnDefinition = "varchar(50) default ''")
 	private String pbvalue46;
-	@Column(name = "pb_value47", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value47", columnDefinition = "varchar(50) default ''")
 	private String pbvalue47;
-	@Column(name = "pb_value48", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value48", columnDefinition = "varchar(50) default ''")
 	private String pbvalue48;
-	@Column(name = "pb_value49", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value49", columnDefinition = "varchar(50) default ''")
 	private String pbvalue49;
-	@Column(name = "pb_value50", columnDefinition = "varchar(50)")
+	@Column(name = "pb_value50", columnDefinition = "varchar(50) default ''")
 	private String pbvalue50;
 
 	@Column(name = "pb_l_text", columnDefinition = "text default ''")

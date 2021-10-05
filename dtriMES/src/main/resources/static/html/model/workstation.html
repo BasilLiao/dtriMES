@@ -459,6 +459,10 @@
 											<div class="p-0">[製令單]_檢核(結束) :</div>
 											<input class="mt-1 ml-1 p-1 rounded big-checkbox" disabled="disabled" id="check_end" name="" value="true" type="checkbox" style="max-width: 30px;">
 										</div>
+										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
+											<div class="p-0">[產品/燒錄 序號]_輸入後(儲存):</div>
+											<input class="mt-1 ml-1 p-1 rounded big-checkbox"  id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -1322,6 +1326,10 @@
 					$("#w_focus_"+workstation.nb).removeClass("border-0");
    				}
 				workstation.clearOrder();
+				//如果輸入有勾選自動存檔
+   				if($('#after_sn_save').is(":checked") && id=='w_focus_5' && workstation.barcode_check){
+   					$("#BC004" ).trigger( "click" );
+   				}
    			  }, 200);
    			
    			

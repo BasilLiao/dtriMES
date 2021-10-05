@@ -354,11 +354,13 @@ public class ProductionHeaderService {
 
 			pr_s_item = body.getJSONObject("search").getString("pr_s_item");
 			pr_s_item = (pr_s_item.equals("")) ? null : pr_s_item;
-
-			ph_s_s_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_s_date"));
+			if(!body.getJSONObject("search").getString("ph_s_s_date").equals("")) {
+				ph_s_s_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_s_date"));				
+			}
 			// ph_s_s_date = ph_s_s_date==null ? null : ph_s_s_date;
-
-			ph_s_e_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_e_date"));
+			if(!body.getJSONObject("search").getString("ph_s_e_date").equals("")) {
+				ph_s_e_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_e_date"));
+			}
 			// ph_s_e_date = (ph_s_e_date.equals("")) ? null : ph_s_e_date;
 		}
 		// 產品型號+製令單號
