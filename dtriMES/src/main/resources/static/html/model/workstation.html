@@ -385,7 +385,9 @@
 					<tr class="font-weight-bold">
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded h2">
-								<div class="col-3 p-1 m-0 b_code_w font-weight-bold">輸入:</div>
+								<div class="col-3 p-1 m-0 b_code_w ">
+									<div class="font-weight-bold">輸入:</div>
+								</div>
 								<div class="col-9 p-0">
 									<input autocomplete="off" class="col p-1 rounded" id="m_order" type="text" required autofocus>
 								</div>
@@ -400,6 +402,16 @@
 								<i class="bi bi-shield-exclamation text-warning p-0 h3 d-none"></i>
 							</div>
 						</td>
+					</tr>
+					<tr id="title_sn" class="d-none">
+						<td colspan="2" class="p-0 m-0">
+							<div class=" row p-1 m-0 border border-light rounded h2">
+								<div class="h6 col-3 p-0 m-0 pl-2 font-weight-bold b_code_w" style="font-size: 14px;">指定[列印]勾選</div>
+								<div class="h6 col-9 p-0 m-0 pl-2 font-weight-bold" style="font-size: 14px;">登記[序號]料件</div>
+							</div>
+						</td>
+						<td>
+						<td class="p-1">
 					</tr>
 					<tr id="sn_example" class="font-weight-bold">
 						<td colspan="3" class="pr-0 pl-0">
@@ -461,7 +473,7 @@
 										</div>
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="p-0">[產品/燒錄 序號]_輸入後(儲存):</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox"  id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
+											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
 										</div>
 									</div>
 								</div>
@@ -900,7 +912,7 @@
    		fix_barcode_init(fix_info){
    			this.fix_type = {};
    			this.fix_type =fix_info;
-   			console.log(this.fix_type);
+   			//console.log(this.fix_type);
    			//vvv測試格式vvv
    			//for(var a = 0;a<=10;a++){
    			//	//item
@@ -1606,6 +1618,12 @@
    					}
    				}
    			}
+   			 //顯示標題
+   			 if(Object.keys(sn_list).length>1){
+   				 $("#title_sn").removeClass('d-none');
+   			 }else{
+   				 $("#title_sn").addClass('d-none');
+   			 }
    			 
    			 //Step4.更新工作站
    			 $("#workstation_name").text( main.allData.body.workdatation_name);

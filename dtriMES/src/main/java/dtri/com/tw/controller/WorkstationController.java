@@ -185,11 +185,13 @@ public class WorkstationController {
 		check = workstationService.deleteData(req.getBody());
 		// Step3.進行判定
 		if (check) {
-			// Step4.包裝回傳
+			// Step4.包裝回傳(成功)
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
-			// Step4.包裝回傳
-			resp.autoMsssage("100");
+			// Step4.包裝回傳(失敗)
+			resp = new PackageBean();
+			resp.autoMsssage("WP001");
+			req.setCall_bk_vals(new JSONObject().put("search", false));
 			resp = packageService.setObjResp(resp, req, "");
 		}
 		// 回傳-資料

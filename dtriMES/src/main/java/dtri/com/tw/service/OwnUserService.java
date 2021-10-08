@@ -88,7 +88,7 @@ public class OwnUserService {
 		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_account", systemUsers.getSuaccount());
 
 		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_password", "");
-		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_sgid", groupDao.findBySgidOrderBySgidAscSyssortAsc(systemUsers.getSusggid()).get(0).getSgname());
+		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_sgid", groupDao.findBySggidOrderBySggid(systemUsers.getSusggid()).get(0).getSgname());
 		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_email", systemUsers.getSuemail());
 		object_bodys.put(object_body);
 

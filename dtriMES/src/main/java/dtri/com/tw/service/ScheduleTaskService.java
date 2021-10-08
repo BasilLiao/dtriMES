@@ -117,7 +117,8 @@ public class ScheduleTaskService {
 			f_Bean.setInput(input);
 			f_Bean.setFtpPath(ftp_remote_path);
 			f_Bean.setFileName(db_file_name + "_" + backupDay + ".sql");
-			FtpService.uploadFile(f_Bean);
+			FtpService fts = new FtpService();
+			fts.uploadFile(f_Bean);
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();

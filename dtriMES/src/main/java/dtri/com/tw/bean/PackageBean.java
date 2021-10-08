@@ -22,7 +22,9 @@ public class PackageBean {
 	public static final String info_warning3_SQLNotRight = "[103] SQL not Right [Warning]!!";
 	public static final String info_warning3 = "[103] The command was executed [Warning]!!";
 	public static final String info_warning4 = "[104] The command was executed [Warning]!!";
-	
+
+	public static final String info_work_p_warning1 = "[WP001] 此工作站被使用中 , 請檢查(工作站-流程管理)! [Warning]!!";
+
 	public static final String info_work_warning0 = "[WK000] 無此 (工作站 在此 作業程序) , 請檢查(工作站)! [Warning]!!";
 	public static final String info_work_warning1 = "[WK001] 無此 (工作站) , 請檢查(工作站)! [Warning]!!";
 	public static final String info_work_warning2 = "[WK002] 無此 (製令單號) , 請檢查(製令單號)! [Warning]!!";
@@ -34,7 +36,8 @@ public class PackageBean {
 	public static final String info_work_warning8 = "[WK008] 無此 ([舊]產品/燒錄 序號) , 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning9 = "[WK009] 無此 ([舊]產品/燒錄 序號) 已被使用, 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning10 = "[WK010] 特定(SN序號) 只能輸入在 (產品/燒錄 序號) 內使用 請檢查! [Warning]!!";
-	
+	public static final String info_work_warning11 = "[WK011] 特定(SN序號) 重複 請檢查";
+
 	public static final String info_danger = "[502] The command was executed [ERROR]!!";
 	public static final String info_administrator = " Please contact the system administrator #321";
 
@@ -61,12 +64,14 @@ public class PackageBean {
 	private JSONArray cell_refresh;// 修改欄位更新
 
 	private JSONArray cell_g_modify;// 修改群組欄位
+	private String error_ms;// 特定錯誤訊息
 
 	public PackageBean() {
 		this.info = info_success;
 		this.info_color = info_color_success;
 		this.body_type = new JSONObject("{'type':'general','createOnly':'all'}");//
 		this.date = new Date();
+		this.error_ms = "";
 	}
 
 	/**
@@ -89,6 +94,9 @@ public class PackageBean {
 			break;
 		case "103":// SQL查詢格式異常
 			this.info = info_warning3_SQLNotRight;
+			break;
+		case "WP001":// [WP001] 此工作站被使用中 , 請檢查(工作站-流程管理)! [Warning]!!"
+			this.info = info_work_p_warning1;
 			break;
 		case "WK001":// 無此[工作站],請檢查[工作站]! [Warning]!!"
 			this.info = info_work_warning1;
@@ -119,6 +127,9 @@ public class PackageBean {
 			break;
 		case "WK010":// "[WK010] 無此(此序號SN) 只能輸入在 (SN燒錄序號) 內使用 請檢查! [Warning]!!
 			this.info = info_work_warning10;
+			break;
+		case "WK011":// [WK011] 特定(SN序號) 重複 請檢查!
+			this.info = info_work_warning11 + error_ms + " [Warning]!!";
 			break;
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"
 			this.info = info_work_warning0;
@@ -297,6 +308,14 @@ public class PackageBean {
 
 	public void setAnalysis(JSONObject analysis) {
 		this.analysis = analysis;
+	}
+
+	public String getError_ms() {
+		return error_ms;
+	}
+
+	public void setError_ms(String error_ms) {
+		this.error_ms = error_ms;
 	}
 
 }

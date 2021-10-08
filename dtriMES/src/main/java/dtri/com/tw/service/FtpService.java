@@ -37,8 +37,7 @@ public class FtpService {
 	 */
 	Logger logger = LoggerFactory.getLogger(FTPClient.class);
 
-	private static FTPClient getFTPClient(String ftpHost, String ftpUserName, String ftpPassword, int ftpPort) {
-		FTPClient ftpClient = new FTPClient();
+	private static FTPClient getFTPClient(FTPClient ftpClient, String ftpHost, String ftpUserName, String ftpPassword, int ftpPort) {
 		try {
 			ftpClient = new FTPClient();
 			ftpClient.connect(ftpHost, ftpPort);// 連線FTP伺服器
@@ -70,12 +69,12 @@ public class FtpService {
 	 * @param localPath   下載到本地的位置 格式：H:/download
 	 * @param fileName    檔名稱
 	 */
-	public static void downloadFtpFile(FtpUtilBean ftp) {
+	public void downloadFtpFile(FtpUtilBean ftp) {
 
-		FTPClient ftpClient = null;
+		FTPClient ftpClient = new FTPClient();
 
 		try {
-			ftpClient = getFTPClient(ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
+			ftpClient = getFTPClient(ftpClient, ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
 			ftpClient.setControlEncoding("UTF-8"); // 中文支援
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.enterLocalPassiveMode();
@@ -113,12 +112,12 @@ public class FtpService {
 	 * @param input       檔案流
 	 * @return 成功返回true，否則返回false
 	 */
-	public static boolean uploadFile(FtpUtilBean ftp) {
+	public boolean uploadFile(FtpUtilBean ftp) {
 		boolean success = false;
-		FTPClient ftpClient = null;
+		FTPClient ftpClient = new FTPClient();
 		try {
 			int reply;
-			ftpClient = getFTPClient(ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
+			ftpClient = getFTPClient(ftpClient, ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
 			reply = ftpClient.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(reply)) {
 				ftpClient.disconnect();
@@ -152,13 +151,12 @@ public class FtpService {
 	 * PLT 檢查+回傳資料
 	 *
 	 ***/
-	public JSONArray getLogPLT(FtpUtilBean ftp, String work_use, String searchName[], boolean plt_file_classify) {
+	public JSONObject getLogPLT(FTPClient ftpClient, FtpUtilBean ftp, String work_use, String searchName[], boolean plt_file_classify) {
 		System.out.println(new Date());
-		JSONArray list = new JSONArray();
-		FTPClient ftpClient = null;
+		JSONObject content = new JSONObject();
 		try {
 			// 登入 如果採用預設埠，可以使用ftp.connect(url)的方式直接連線FTP伺服器
-			ftpClient = getFTPClient(ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
+			ftpClient = getFTPClient(ftpClient, ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
 			// 設定檔案傳輸型別為二進位制+UTF-8 傳輸
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.setControlEncoding("UTF-8");
@@ -174,101 +172,109 @@ public class FtpService {
 			ftpClient.changeWorkingDirectory(new String(ftp.getRemotePath().getBytes("UTF-8"), "iso-8859-1"));
 
 			// 獲取檔案列表(查詢)
+			JSONArray archives = new JSONArray();
 			JSONObject one = new JSONObject();
 			FTPFile[] fs = ftpClient.listFiles();
-			ByteArrayOutputStream is = new ByteArrayOutputStream();
-			String line = "", line_all = "";
 
 			for (FTPFile ff : fs) {
 				String[] f_n = ff.getName().split("_");
-				// 比對_查詢條件
-				// 符合條件
+
+				// ========比對_查詢條件/符合條件========
 				if ((searchName[0].equals("") || f_n[0].indexOf(searchName[0]) != -1) && (searchName[1].equals("") || f_n[1].indexOf(searchName[1]) != -1)
 						&& (searchName[2].equals("") || f_n[2].indexOf(searchName[2]) != -1)) {
-					// 建立輩分資料夾
+
+					// ======== 建立輩分資料夾========
 					makeDirectories(ftpClient, ftp.getRemotePathBackup() + searchName[0]);
-					// 製令單 如果有OQC 排除
+
+					// ========製令單 如果有OQC 排除========
 					if (ff.getName().indexOf("OQC") != -1) {
+						Date updateDate = ff.getTimestamp().getTime();
 						String file_name_OQC = ff.getName();
 						String dirPath = ftp.getRemotePathBackup() + searchName[0];
 						String re_path = ftp.getRemotePath() + "/" + file_name_OQC;
-						String new_path = dirPath + "/" + file_name_OQC + "_" + work_use;
-						ftpClient.rename(re_path, new_path);
+						String new_path = dirPath + "/" + file_name_OQC + "_" + updateDate.getTime() + "_" + work_use;
+						archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
+						// ftpClient.rename(re_path, new_path);
 						continue;
 					}
+					ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+					byteArray.reset();
+					ftpClient.retrieveFile(ff.getName(), byteArray);
+					BufferedReader bufferedReader = new BufferedReader(new StringReader(byteArray.toString("UTF-8")));
 
-					is.reset();
-					ftpClient.retrieveFile(ff.getName(), is);
-					BufferedReader bufferedReader = new BufferedReader(new StringReader(is.toString("UTF-8")));
-					// 第一行抓取+檢驗 (檔頭BOM)去除 是否為正確
+					// ========第一行抓取+檢驗 (檔頭BOM)去除 是否為正確========
+					String line = new String(), line_all = new String();
 					line = bufferedReader.readLine();
 					line_all = bufferedReader.readLine();
 					if (line != null && line.charAt(0) != '{') {
 						line = line.substring(1);
 					}
-					// 取得所有內容
+
+					// ========取得所有內容========
 					StringBuilder everything = new StringBuilder();
 					while ((line_all = bufferedReader.readLine()) != null) {
 						everything.append(line_all);
 						everything.append(System.lineSeparator());
 					}
-					// 字串 轉 JSON
-					// 如果異常為空
+
+					// 字串 轉 JSON 如果異常為空
 					try {
 						new JSONObject(line);
 					} catch (Exception ex) {
-						// (如果格式不對)轉移檔案
-						list = new JSONArray();
-						one = new JSONObject(line);
-						String dirPath = ftp.getRemotePathBackup() + searchName[0];
-						String re_path = ftp.getRemotePath() + "/" + ff.getName();
-						String new_path = dirPath + "/" + ff.getName() + "_" + work_use;
+						// ========(如果格式不對)轉移檔案========
 						if (plt_file_classify) {
-							if (ftpClient.rename(re_path, new_path)) {
-								logger.error("to Backup OK!!");
-							}
+							Date updateDate = ff.getTimestamp().getTime();
+							String dirPath = ftp.getRemotePathBackup() + searchName[0];
+							String re_path = ftp.getRemotePath() + "/" + ff.getName();
+							String new_path = dirPath + "/" + //
+									ff.getName().replace(".log", "").replace(".txt", "") + "_" + //
+									updateDate.getTime() + "_" + work_use + "_bad.log";
+							archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
 						}
 						continue;
 					}
-					// 轉移檔案
-					String dirPath = ftp.getRemotePathBackup() + searchName[0];
-					String re_path = ftp.getRemotePath() + "/" + ff.getName();
-					String new_path = dirPath + "/" + ff.getName() + "_" + work_use;
-					one = new JSONObject(line);
-					if (plt_file_classify) {
-						if (ftpClient.rename(re_path, new_path)) {
-							logger.error("to Backup OK!!");
-						}
-					}
-					Date updateDate = ff.getTimestamp().getTime();
-					// 補型號/補主機板號/轉16進制
-					long file_size = ff.getSize();
 
+					// ========轉移檔案登記========
+					Date updateDate = ff.getTimestamp().getTime();
+					String new_path = "";
+					if (plt_file_classify) {
+						String dirPath = ftp.getRemotePathBackup() + searchName[0];
+						String re_path = ftp.getRemotePath() + "/" + ff.getName();
+						new_path = dirPath + "/" + //
+								ff.getName().replace(".log", "").replace(".txt", "") + "_" + //
+								updateDate.getTime() + "_" + work_use + ".log";
+						archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
+					}
+
+					// ========補型號/補主機板號/轉16進制========
+					long file_size = ff.getSize();
+					one = new JSONObject(line);
 					one.put("ph_pr_id", one.has("WorkOrder") ? one.getString("WorkOrder") : "");
 					if (one.has("UUID")) {
 						String mbSn[] = (one.getString("UUID").split("-"));
 						one.put("MB(UUID)", mbSn[mbSn.length - 1]);
 					} else {
-						one.put("MB(UUID)", " ");
+						one.put("MB(UUID)", "");
 					}
 					one.put("ph_model", "");
-					one.put("pb_sn", one.has("SN") ? one.getString("SN") : " ");
+					one.put("pb_sn", one.has("SN") ? one.getString("SN") : "");
 					one.put("pb_l_size", file_size);
 					one.put("pb_l_text", everything.toString());
 					one.put("pb_l_path", new_path);
 					one.put("check", true);
 					one.put("pb_l_dt", Fm_Time.to_yMd_Hms(updateDate));
-					list.put(one);
-
-					// 關閉串流
+					content = one;
+					// ========關閉串流========
 					bufferedReader.close();
+					byteArray.close();
+					byteArray = null;
 				}
 			}
-			is.close();
+			content.put("pb_l_files", archives);
 			ftpClient.logout();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new JSONArray();
+			return null;
 		} finally {
 			if (ftpClient.isConnected()) {
 				try {
@@ -278,7 +284,46 @@ public class FtpService {
 			}
 		}
 		System.out.println(new Date());
-		return list;
+		return content;
+	}
+
+	// 歸檔
+	public boolean logPLT_Archive(FTPClient ftpClient, FtpUtilBean ftp, JSONArray archive_files) {
+		System.out.println(new Date());
+		try {
+			// 登入 如果採用預設埠，可以使用ftp.connect(url)的方式直接連線FTP伺服器
+			ftpClient = getFTPClient(ftpClient, ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
+			// 設定檔案傳輸型別為二進位制+UTF-8 傳輸
+			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+			ftpClient.setControlEncoding("UTF-8");
+			// 獲取ftp登入應答程式碼
+			int reply = ftpClient.getReplyCode();
+			// 驗證是否登陸成功
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftpClient.disconnect();
+				System.err.println("FTP server refused connection.");
+				return false;
+			}
+			// 轉移到FTP伺服器目錄至指定的目錄下
+			ftpClient.changeWorkingDirectory(new String(ftp.getRemotePath().getBytes("UTF-8"), "iso-8859-1"));
+
+			for (Object one_file : archive_files) {
+				JSONObject json = (JSONObject) one_file;
+				String re_path = json.getString("re_path");
+				String new_path = json.getString("new_path");
+
+				if (!ftpClient.rename(re_path, new_path)) {
+					logger.error("to Backup OK!!");
+				}
+
+			}
+
+			System.out.println(new Date());
+			return true;
+		} catch (Exception e) {
+			System.out.println(e);
+			return false;
+		}
 	}
 
 	/**

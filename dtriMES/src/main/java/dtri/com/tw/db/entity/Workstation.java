@@ -122,6 +122,9 @@ public class Workstation {
 	@Column(name = "w_option", columnDefinition = "int default 0")
 	private Integer woption;
 
+	@Column(name = "w_only", columnDefinition = "int default 0")
+	private Integer wonly;
+
 	public Date getSyscdate() {
 		return syscdate;
 	}
@@ -272,6 +275,14 @@ public class Workstation {
 
 	public void setWoption(Integer woption) {
 		this.woption = woption;
+	}
+
+	public Integer getWonly() {
+		return wonly;
+	}
+
+	public void setWonly(Integer wonly) {
+		this.wonly = wonly;
 	}
 
 }

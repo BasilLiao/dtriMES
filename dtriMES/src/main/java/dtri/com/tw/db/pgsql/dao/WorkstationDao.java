@@ -41,8 +41,16 @@ public interface WorkstationDao extends JpaRepository<Workstation, Long> {
 			+ "( c.sysstatus = :sysstatus ) and "//
 			+ "( c.wid != 0 )  "//
 			+ "order by c.wgid asc,c.sysheader desc,c.syssort asc")
-	ArrayList<Workstation> findAllByWorkstation(@Param("wsgname") String w_sg_name, @Param("wpbname") String w_pb_name,
-			@Param("sysstatus") Integer sysstatus, Pageable pageable);
+	ArrayList<Workstation> findAllByWorkstation(@Param("wsgname") String w_sg_name, @Param("wpbname") String w_pb_name, @Param("sysstatus") Integer sysstatus,
+			Pageable pageable);
+
+	// 查詢一部分 關聯 工作站 與 工作項目
+	@Query("SELECT wn FROM Workstation wn join wn.workstationItem wi " + //
+			"where " + //
+			"wn.sysheader = false and " + //
+			"wn.wcname = :wcname and " + //
+			"wi.wipbcell = :wipbcell ")
+	ArrayList<Workstation> findAllByWorkstation_item(@Param("wcname") String wcname, @Param("wipbcell") String wipbcell);
 
 	// 取得最新G_ID
 	@Query(value = "SELECT NEXTVAL('workstation_g_seq')", nativeQuery = true)

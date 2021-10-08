@@ -132,6 +132,8 @@ public class ProductionBody implements Serializable {
 		this.pblsize = "";
 		this.pblpath = "";
 		this.pbltext = "";
+		this.pbfvalue ="";
+		this.pbfnote="";
 
 	}
 

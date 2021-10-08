@@ -120,7 +120,7 @@ body {
 			ajaxSend(s_url,s_type,s_data) {
 				//排除{!=}/{複製上Tab}
 				var s_data = JSON.stringify(s_data).replaceAll("!", "").replaceAll("=", "").replaceAll("\\t","");
-				console.log("ajax to send:"+s_data);
+				//console.log("ajax to send:"+s_data);
 				//Ajax 傳輸模組
 				var ajax = {
 						url :  "ajax/"+s_url,
@@ -232,7 +232,7 @@ body {
 							//沒有網頁時 不移動
 						
 						}else if (event.status == 403) {
-							t_alert.alertshow("warning", "[403] The command has been rejected [Warning]!!");
+							t_alert.alertshow("warning", "[403] The command has been rejected (您可能沒有權限!!) [Warning]!!");
 							//沒有權限時 不移動
 						
 						}else {
