@@ -41,7 +41,7 @@ public class WorkstationConfigController {
 		System.out.println("---controller -access " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
@@ -77,7 +77,7 @@ public class WorkstationConfigController {
 		System.out.println("---controller -search " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
@@ -99,7 +99,7 @@ public class WorkstationConfigController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -139,7 +139,7 @@ public class WorkstationConfigController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -176,13 +176,20 @@ public class WorkstationConfigController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
-		System.out.println(json_object);
 
+		System.out.println(json_object);
+		// 取得-當前用戶資料
+		SystemUser user = new SystemUser();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			// Step1.查詢資料
+			user = userDetails.getSystemUser();
+		}
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = configService.deleteData(req.getBody());
+		check = configService.deleteData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

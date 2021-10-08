@@ -39,18 +39,18 @@ public class WorkstationConfigService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_cell", FFS.h_t("系統欄位", "150px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_value", FFS.h_t("工作站欄位名稱", "150px",FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_cell", FFS.h_t("系統欄位", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_value", FFS.h_t("工作站欄位名稱", "150px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "150px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t("修改時間", "150px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t("修改人", "100px",FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t("修改時間", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t("修改人", "100px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t("備註", "100px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("排序", "100px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t("版本", "100px",FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t("狀態", "100px",FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t("備註", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("排序", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t("版本", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t("狀態", "100px", FFM.Wri.W_Y));
 			bean.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
@@ -84,13 +84,13 @@ public class WorkstationConfigService {
 					e.printStackTrace();
 				}
 			}
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.SEL, FFM.Type.TEXT, "", "",FFM.Wri.W_N, "col-md-2", false, a_val_body, "pb_cell", "系統欄位"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_value", "工作站欄位名稱"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, a_val_body, "pb_cell", "系統欄位"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_value", "工作站欄位名稱"));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_date", "建立時間"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_user", "建立人"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", "修改時間"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", "修改人"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_date", "建立時間"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_user", "建立人"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", "修改時間"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", "修改人"));
 //
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFS.TTA, FFM.Type.TEXT, "", "",FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", "備註"));
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFS.NUMB, "0", "0",FFM.Wri.W_Y, "col-md-2", true, n_val, "sys_sort", "排序"));
@@ -238,15 +238,33 @@ public class WorkstationConfigService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
+	public boolean deleteData(JSONObject body, SystemUser user) {
 
 		boolean check = false;
 		try {
-//			JSONArray list = body.getJSONArray("delete");
-//			for (Object one : list) {
-//				// 物件轉換
-//				check = true;
-//			}
+			JSONArray list = body.getJSONArray("delete");
+			for (Object one : list) {
+				// 物件轉換
+				ProductionBody p_body = bodyDao.findAllByPbid(0l).get(0);
+				JSONObject data = (JSONObject) one;
+				// SN類別
+
+				// 欄位名稱/值
+				String pb_cell = data.getString("pb_cell");
+				String pb_value = "";
+				// 欄位有值
+				if (pb_cell != null && !pb_cell.equals("")) {
+					String in_name = "setPbwname" + pb_cell.substring(pb_cell.length() - 2);
+					Method in_method = p_body.getClass().getMethod(in_name, String.class);
+					in_method.invoke(p_body, pb_value);
+
+					p_body.setSysmuser(user.getSuaccount());
+					p_body.setSysmdate(new Date());
+
+					bodyDao.save(p_body);
+				}
+				check = true;
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
