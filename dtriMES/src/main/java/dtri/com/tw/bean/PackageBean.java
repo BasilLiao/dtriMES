@@ -32,7 +32,7 @@ public class PackageBean {
 	public static final String info_work_warning4 = "[WK004] 無此 (產品/燒錄 序號) 與 (製令單號) 關聯資料 , 請檢查 (產品/燒錄 序號) 與 (製令單號)! [Warning]!!";
 	public static final String info_work_warning5 = "[WK005] 前站 (產品/燒錄 序號) 未過站 , 請遞交給 (前站人員)! [Warning]!!";
 	public static final String info_work_warning6 = "[WK006] 無此 (標籤機 代號) , 請檢查(標籤機 代號)! [Warning]!!";
-	public static final String info_work_warning7 = "[WK007] 無此 (PLT檔案) , 請檢查 (是否上傳正確)! [Warning]!!";
+	public static final String info_work_warning7 = "[WK007] 無此 (PLT檔案/格式/大小) , 請檢查 (是否上傳 內容)! [Warning]!!";
 	public static final String info_work_warning8 = "[WK008] 無此 ([舊]產品/燒錄 序號) , 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning9 = "[WK009] 無此 ([舊]產品/燒錄 序號) 已被使用, 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning10 = "[WK010] 特定(SN序號) 只能輸入在 (產品/燒錄 序號) 內使用 請檢查! [Warning]!!";

@@ -583,14 +583,14 @@ public class WorkstationWorkService {
 						FTPClient ftpClient = new FTPClient();
 						list_log = ftpService.getLogPLT(ftpClient, ftp, user.getSuaccount(), searchName, plt_file_classify);
 						// PLT檢查
-						if (list_log.length() < 1) {
+						if (list_log.length() < 1 || !list_log.has("pb_l_size") || list_log.getInt("pb_l_size") < 10) {
 							bean.autoMsssage("WK007");
 							return bean;
 						}
 
 						// ======== Step6. 需要Log 更新資料?? ========
 						// (檢查是否有LOG+內容是否正確)
-						if (list_log != null && list_log.length() > 0) {
+						if (list_log != null && list_log.length() > 0 && list_log.has("pb_l_size")) {
 
 							// 檢查所有可能對應的欄位
 							Iterator<String> keys = list_log.keys();

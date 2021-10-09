@@ -188,11 +188,11 @@ public class FtpService {
 
 					// ========製令單 如果有OQC 排除========
 					if (ff.getName().indexOf("OQC") != -1) {
-						Date updateDate = ff.getTimestamp().getTime();
+						//Date updateDate = ff.getTimestamp().getTime();
 						String file_name_OQC = ff.getName();
 						String dirPath = ftp.getRemotePathBackup() + searchName[0];
 						String re_path = ftp.getRemotePath() + "/" + file_name_OQC;
-						String new_path = dirPath + "/" + file_name_OQC + "_" + updateDate.getTime() + "_" + work_use;
+						String new_path = dirPath + "/" + file_name_OQC + "_" + new Date().getTime() + "_" + work_use;
 						archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
 						// ftpClient.rename(re_path, new_path);
 						continue;
@@ -223,12 +223,12 @@ public class FtpService {
 					} catch (Exception ex) {
 						// ========(如果格式不對)轉移檔案========
 						if (plt_file_classify) {
-							Date updateDate = ff.getTimestamp().getTime();
+							//Date updateDate = ff.getTimestamp().getTime();
 							String dirPath = ftp.getRemotePathBackup() + searchName[0];
 							String re_path = ftp.getRemotePath() + "/" + ff.getName();
 							String new_path = dirPath + "/" + //
 									ff.getName().replace(".log", "").replace(".txt", "") + "_" + //
-									updateDate.getTime() + "_" + work_use + "_bad.log";
+									new Date().getTime() + "_" + work_use + "_bad.log";
 							archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
 						}
 						continue;
@@ -242,7 +242,7 @@ public class FtpService {
 						String re_path = ftp.getRemotePath() + "/" + ff.getName();
 						new_path = dirPath + "/" + //
 								ff.getName().replace(".log", "").replace(".txt", "") + "_" + //
-								updateDate.getTime() + "_" + work_use + ".log";
+								new Date().getTime() + "_" + work_use + ".log";
 						archives.put(new JSONObject().put("re_path", re_path).put("new_path", new_path));
 					}
 
