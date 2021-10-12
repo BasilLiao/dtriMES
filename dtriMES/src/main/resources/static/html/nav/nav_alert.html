@@ -56,6 +56,10 @@
 				  case 'success':
 					//success
 					$("#alert").addClass("alert-success");
+					$("#warning_1").get(0).pause();
+			   		$("#warning_1").get(0).currentTime = 0;
+			   		$("#success_0").get(0).pause();
+			   		$("#success_0").get(0).currentTime = 0;
 					//$('#success_0').get(0).play(); 
 				  break;
 				  case 'close':

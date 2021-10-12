@@ -130,7 +130,7 @@
 				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0"
 					style="min-height: 450px; max-height: 600px;">
 					<thead id="report_excel_header" class="thead bg-dark table-dark">
-						<tr style="position: sticky; top: 0px; background-color: #343a40;z-index: 5;">
+						<tr style="position: sticky; top: 0px; background-color: #343a40; z-index: 5;">
 							<th id="report_excel_th" class="text-center" style="min-width: 150px;" nowrap="nowrap">計數</th>
 						</tr>
 					</thead>
@@ -168,39 +168,26 @@
 				title = main.orderedSort(title);
 				var ii = 0;//有效欄位
 				var left_ii = 1;//有效靠左
-			    for (var i = 0; i < Object.keys(title).length - 1; i++) {
+			   for (var i = 0; i < Object.keys(title).length - 1; i++) {
 			    	var key_id =  (Object.keys(title)[i]).split("_h__")[1];
-					var value_name = title[Object.keys(title)[i]].name;
-					var value_size = title[Object.keys(title)[i]].size;
-					var value_write = title[Object.keys(title)[i]].write;
+					var value_name = title[Object.keys(title)[i]].name, value_size = title[Object.keys(title)[i]].size, value_write = title[Object.keys(title)[i]].write;
 					if(value_write!="disabled" ){
-						if( analysis[key_id]!="W_N"){
+						if(analysis[key_id]!="W_N"){
 							//Columns
 							var one_item = $("#columns_sample").clone(); //複製樣本
-							one_item[0].id="columns_"+key_id;
-							one_item.insertBefore("#columns_sample");
-							
-							$("#"+one_item[0].id).removeClass("d-none");
-							$("#"+one_item[0].id+" .column_name").val(key_id);
-							$("#"+one_item[0].id+" .column_exp").val(value_name);
-							$("#"+one_item[0].id+" button").attr("id","btn_"+one_item[0].id);						
-							//console.log(one_item[0].id);
+							one_item[0].id="columns_"+key_id;one_item.insertBefore("#columns_sample");
+							$("#"+one_item[0].id).removeClass("d-none");$("#"+one_item[0].id+" .column_name").val(key_id);
+							$("#"+one_item[0].id+" .column_exp").val(value_name);$("#"+one_item[0].id+" button").attr("id","btn_"+one_item[0].id);						
 						}
-						
 						//Report
 						var report_item = $("#report_excel_th").clone(); //複製樣本
 						report_item[0].id="report_"+key_id;
 						report_item.insertBefore("#report_excel_th");
-						$("#"+report_item[0].id).text(value_name);
-						$("#"+report_item[0].id).css('max-width',value_size);
-						$("#"+report_item[0].id).css('min-width',value_size);
+						$("#"+report_item[0].id).text(value_name).css('max-width',value_size).css('min-width',value_size);
 						//固定
 						if(ii<2){
-							$("#"+report_item[0].id).addClass('fixed_cell');	
-							$("#"+report_item[0].id).addClass('bg-dark');
-							$("#"+report_item[0].id).css('left',left_ii);
-							ii+=1;
-							left_ii+=parseInt(value_size);
+							$("#"+report_item[0].id).addClass('fixed_cell').addClass('bg-dark').css('left',left_ii);
+							ii+=1;left_ii+=parseInt(value_size);
 						}
 					}
 			    }
@@ -396,6 +383,7 @@
 		            var list = main.allData.body.search;
 		            $(".report_excel_list").remove();
 		            var fixed_cell_color = false;
+						console.log(new Date());
 		            for(var j = 0 ; list.length>j ;j++){
 			            var report_item = $("#report_excel_tbody_tr").clone(); //複製樣本
 						report_item[0].id="report_excel_tbody_tr_"+j;
@@ -408,7 +396,7 @@
 						var left_ii = 1;//有效靠左
 						//資料內容
 						for (var i = 0; i < Object.keys(list[j]).length; i++) {
-							 var report_item_one = $("#report_excel_tbody_tr_"+j+" .report_excel_td").clone(); //複製樣本
+							 var report_item_one = $("#report_excel_tbody_tr_"+j+" .report_excel_td").clone(); /*複製樣本*/
 							 var key_id = Object.keys(list[j])[i];
 		                     var value_name = list[j][Object.keys(list[j])[i]];
 							 report_item_one[0].className = "report_"+key_id;
@@ -416,7 +404,7 @@
 							 report_item_one.insertBefore("#report_excel_tbody_tr_"+j+" .report_excel_td");
 							 $("#report_excel_tbody_tr_"+j+" .report_excel_td").text(j+1);
 						
-							//固定
+							/*固定*/
 							if(ii<2){ 
 								var min_width = $("#report_"+key_id.split("_b__")[1]).css('min-width');
 								$(".report_"+key_id).addClass('fixed_cell');
@@ -427,8 +415,8 @@
 								}
 								$(".report_"+key_id).css('left',left_ii);
 								$(".report_"+key_id).css('min-width',min_width);
-								ii+=1;
 								left_ii+=parseInt(min_width);
+								ii+=1;
 							}
 						}
 					   	if(fixed_cell_color){
@@ -437,6 +425,7 @@
 	     			    	fixed_cell_color = true;
 	     			    }
 		            }
+					console.log(new Date());
 	           }
 	            main.loading(false);
 			},

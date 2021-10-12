@@ -395,7 +395,7 @@ public class ProductionBodyService {
 
 		nativeQuery += " (:ph_model='' or p.pr_p_model LIKE :ph_model) and ";
 		nativeQuery += " (:ph_pr_id='' or h.ph_pr_id LIKE :ph_pr_id) and ";
-		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0) group by b.pb_id order by b.pb_id";
+		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0) group by b.pb_id order by b.pb_id desc ";
 		nativeQuery += " LIMIT :limit OFFSET :offset ";
 		Query query = em.createNativeQuery(nativeQuery);
 		if (!pb_sn_value.equals("")) {

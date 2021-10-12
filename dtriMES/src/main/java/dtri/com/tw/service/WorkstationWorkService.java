@@ -415,14 +415,20 @@ public class WorkstationWorkService {
 								}
 							}
 						}
+						ProductionBody title_body = new ProductionBody();
+						title_body = pbDao.findAllByPbid(0l).get(0);
 						// 可能的SN範圍
 						for (int k = 0; k < 50; k++) {
 							// 有欄位?
 							if (list.has("pb_value" + String.format("%02d", k + 1))) {
 								String body_value = list.getString("pb_value" + String.format("%02d", k + 1));
-								String in_name = "setPbvalue" + String.format("%02d", k + 1);
+								String set_name = "setPbvalue" + String.format("%02d", k + 1);
+								String get_name = "getPbvalue" + String.format("%02d", k + 1);
 								String cell_name = "pb_value" + String.format("%02d", k + 1);
-								Method in_method = body_one.getClass().getMethod(in_name, String.class);
+
+								Method get_method = title_body.getClass().getMethod(get_name);
+								String title_value = (String) get_method.invoke(title_body);
+								Method in_method = body_one.getClass().getMethod(set_name, String.class);
 								// 欄位有值
 								if (body_value != null && !body_value.equals("")) {
 									// 檢查 避免小卡 輸入主SN序號
@@ -438,6 +444,7 @@ public class WorkstationWorkService {
 										String nativeQuery = "SELECT b.pb_b_sn FROM production_body b ";
 										nativeQuery += "where ";
 										nativeQuery += "b." + cell_name + " = :pb_value ";
+										nativeQuery += " and b." + cell_name + " != '' ";
 										nativeQuery += " and b.pb_b_sn not like '%old%'"; // 排除已經被替代的
 										if (!list.getString("pb_sn").equals("")) {// 排除自己 新的SN
 											nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
@@ -456,7 +463,8 @@ public class WorkstationWorkService {
 										}
 										List<String> pbid_obj = query.getResultList();
 										if (pbid_obj.size() > 0) {// 有重複
-											bean.setError_ms("此[SN]: " + body_value + " 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
+											bean.setError_ms("此[" + title_value + " SN]: " + body_value + " , "//
+													+ "已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
 											bean.autoMsssage("WK011");
 											return bean;
 										}
@@ -594,8 +602,8 @@ public class WorkstationWorkService {
 
 							// 檢查所有可能對應的欄位
 							Iterator<String> keys = list_log.keys();
-							ProductionBody body_title = new ProductionBody();
-							body_title = pbDao.findAllByPbid(0l).get(0);
+							ProductionBody title_body = new ProductionBody();
+							title_body = pbDao.findAllByPbid(0l).get(0);
 							// 是否存檔
 							if (plt_save) {
 								while (keys.hasNext()) {
@@ -609,10 +617,10 @@ public class WorkstationWorkService {
 										try {
 											// 取出欄位名稱 ->存入body_title資料
 											Method set_method = body_one.getClass().getMethod(set_name, String.class);
-											Method get_method = body_title.getClass().getMethod(get_name);
-											String value = (String) get_method.invoke(body_title);
+											Method get_method = title_body.getClass().getMethod(get_name);
+											String title_value = (String) get_method.invoke(title_body);
 
-											if (value != null && value.equals(cell_key)) {
+											if (title_value != null && title_value.equals(cell_key)) {
 												String body_value = list_log.getString(cell_key);
 												// 檢查 避免小卡 輸入主SN序號
 												for (ProductionBody one_sn : check_sn) {
@@ -627,6 +635,7 @@ public class WorkstationWorkService {
 													String nativeQuery = "SELECT b.pb_b_sn FROM production_body b ";
 													nativeQuery += "where ";
 													nativeQuery += "b." + cell_name + " = :pb_value ";
+													nativeQuery += " and b." + cell_name + " != '' ";
 													nativeQuery += " and b.pb_b_sn not like '%old%'"; // 排除已經被替代的
 													if (!list.getString("pb_sn").equals("")) {// 排除自己 新的SN
 														nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
@@ -645,7 +654,8 @@ public class WorkstationWorkService {
 													}
 													List<String> pbid_obj = query.getResultList();
 													if (pbid_obj.size() > 0) {// 有重複
-														bean.setError_ms("此[SN]: " + body_value + " 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
+														bean.setError_ms("此 PLT_LOG [" + title_value + " SN]: " + body_value + " , "//
+																+ "已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
 														bean.autoMsssage("WK011");
 														return bean;
 													}
@@ -653,7 +663,7 @@ public class WorkstationWorkService {
 
 												set_method.invoke(body_one, body_value);
 												break;
-											} else if (value == null) {
+											} else if (title_value == null) {
 												break;
 											}
 
