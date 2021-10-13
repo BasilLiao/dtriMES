@@ -855,7 +855,7 @@ public class ProductionBodyService {
 			JSONArray list = body.getJSONArray("modify");
 			for (Object one : list) {
 				JSONObject data = (JSONObject) one;
-				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
+				List<ProductionBody> p_Bodys = bodyDao.findAllByPbid(data.getLong("pb_id"));
 				ProductionRecords search = new ProductionRecords();
 				search.setPrid(data.getString("ph_pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
@@ -928,7 +928,7 @@ public class ProductionBodyService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				bodyDao.deleteByPbbid(data.getLong("pb_b_id"));
+				bodyDao.deleteByPbid(data.getLong("pb_id"));
 				check = true;
 			}
 		} catch (Exception e) {

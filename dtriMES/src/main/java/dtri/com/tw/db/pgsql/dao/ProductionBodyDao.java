@@ -67,7 +67,7 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			Pageable pageable);
 
 	// 移除單一SN
-	Long deleteByPbbid(Long id);
+	Long deleteByPbid(Long id);
 
 	// 移除 群組
 	Long deleteByPbgid(Long id);

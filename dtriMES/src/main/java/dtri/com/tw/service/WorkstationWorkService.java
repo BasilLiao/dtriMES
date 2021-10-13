@@ -76,7 +76,7 @@ public class WorkstationWorkService {
 		}
 		String w_c_name = null;
 		String ph_pr_id = null;
-		String pb_sn = null;
+		String pb_b_sn = null;
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -167,8 +167,8 @@ public class WorkstationWorkService {
 			w_c_name = w_c_name.equals("") ? null : w_c_name;
 			ph_pr_id = body.getJSONObject("search").getString("ph_pr_id");
 			ph_pr_id = ph_pr_id.equals("") ? null : ph_pr_id;
-			pb_sn = body.getJSONObject("search").getString("pb_sn");
-			pb_sn = pb_sn.equals("") ? null : pb_sn;
+			pb_b_sn = body.getJSONObject("search").getString("pb_b_sn");
+			pb_b_sn = pb_b_sn.equals("") ? null : pb_b_sn;
 
 			// 工作站
 			ArrayList<Workstation> w_one = wkDao.findAllByWcname(w_c_name, PageRequest.of(0, 1));
@@ -176,7 +176,7 @@ public class WorkstationWorkService {
 			List<ProductionHeader> ph_all = new ArrayList<ProductionHeader>();
 			List<ProductionBody> pb_all = new ArrayList<ProductionBody>();
 
-			pb_all = pbDao.findAllByPbbsn(pb_sn);
+			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
 			// 檢查資料是否存在
 			if (pb_all.size() != 1) {
 				bean.setBody(new JSONObject());
@@ -202,7 +202,7 @@ public class WorkstationWorkService {
 					if (wp_all.size() == 1) {
 						String wpcname = w_one.get(0).getWcname();
 						// 比對-檢查 燒錄 SN關聯
-						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_sn, ph_all.get(0).getPhpbgid());
+						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
 						if (pb_all.size() == 1) {
 
 							// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
@@ -371,9 +371,9 @@ public class WorkstationWorkService {
 			System.out.println(list);
 
 			// Step0.查詢SN關聯
-			if (!list.get("pb_sn").equals("")) {
+			if (!list.get("pb_b_sn").equals("")) {
 				List<ProductionBody> body_s = new ArrayList<ProductionBody>();
-				body_s = pbDao.findAllByPbbsn(list.getString("pb_sn"));
+				body_s = pbDao.findAllByPbbsn(list.getString("pb_b_sn"));
 
 				// 更新[ProductionBody]
 				if (body_s.size() == 1) {
@@ -439,15 +439,21 @@ public class WorkstationWorkService {
 											return bean;
 										}
 									}
-									// 檢查是否有需要 檢查重複
+									
 									ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+									//唯讀-不存檔
+									if(check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
+										System.out.println(title_value+" / "+body_value +" pass");
+										continue;
+									}
+									// 檢查是否有需要 檢查重複
 									if (check_only != null && check_only.size() > 0 && check_only.get(0).getWonly() == 1) {
 										String nativeQuery = "SELECT b.pb_b_sn FROM production_body b ";
 										nativeQuery += "where ";
 										nativeQuery += "b." + cell_name + " = :pb_value ";
 										nativeQuery += " and b." + cell_name + " != '' ";
 										nativeQuery += " and b.pb_b_sn not like '%old%'"; // 排除已經被替代的
-										if (!list.getString("pb_sn").equals("")) {// 排除自己 新的SN
+										if (!list.getString("pb_b_sn").equals("")) {// 排除自己 新的SN
 											nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
 										}
 										if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
@@ -456,8 +462,8 @@ public class WorkstationWorkService {
 										Query query = em.createNativeQuery(nativeQuery);
 										// 條件
 										query.setParameter("pb_value", body_value);
-										if (!list.getString("pb_sn").equals("")) {
-											query.setParameter("pb_b_sn", list.getString("pb_sn"));
+										if (!list.getString("pb_b_sn").equals("")) {
+											query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
 										}
 										if (!list.getString("pb_old_sn").equals("")) {
 											query.setParameter("pb_old_sn", list.getString("pb_old_sn"));
@@ -470,10 +476,7 @@ public class WorkstationWorkService {
 											return bean;
 										}
 									}
-									//唯讀-不存檔
-									if(check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
-										continue;
-									}
+								
 									in_method.invoke(body_one, body_value);
 								}
 							}
@@ -587,7 +590,7 @@ public class WorkstationWorkService {
 								remotePathBackup = c_json.getString("PATH_BACKUP"), //
 								localPath = "";//
 						int ftpPort = c_json.getInt("PORT");
-						String[] searchName = { list.getString("ph_pr_id"), "", list.getString("pb_sn") };
+						String[] searchName = { list.getString("ph_pr_id"), "", list.getString("pb_b_sn") };
 						FtpUtilBean ftp = new FtpUtilBean(ftpHost, ftpUserName, ftpPassword, ftpPort);
 						ftp.setRemotePath(remotePath);
 						ftp.setRemotePathBackup(remotePathBackup);
@@ -641,7 +644,7 @@ public class WorkstationWorkService {
 													nativeQuery += "b." + cell_name + " = :pb_value ";
 													nativeQuery += " and b." + cell_name + " != '' ";
 													nativeQuery += " and b.pb_b_sn not like '%old%'"; // 排除已經被替代的
-													if (!list.getString("pb_sn").equals("")) {// 排除自己 新的SN
+													if (!list.getString("pb_b_sn").equals("")) {// 排除自己 新的SN
 														nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
 													}
 													if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
@@ -650,8 +653,8 @@ public class WorkstationWorkService {
 													Query query = em.createNativeQuery(nativeQuery);
 													// 條件
 													query.setParameter("pb_value", body_value);
-													if (!list.getString("pb_sn").equals("")) {
-														query.setParameter("pb_b_sn", list.getString("pb_sn"));
+													if (!list.getString("pb_b_sn").equals("")) {
+														query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
 													}
 													if (!list.getString("pb_old_sn").equals("")) {
 														query.setParameter("pb_old_sn", list.getString("pb_old_sn"));

@@ -338,7 +338,7 @@
 							<div class=" row p-1 m-0 border border-light rounded">
 								<div class="col-3 p-1 m-0 b_code_w">*產品/燒錄 序號:</div>
 								<div class="col-9 p-0">
-									<input title="pb_sn" id="w_focus_5" disabled="disabled" class="w_sn_value col p-1 border-0 border-primary rounded" type="text" required>
+									<input title="pb_b_sn" id="w_focus_5" disabled="disabled" class="w_sn_value col p-1 border-0 border-primary rounded" type="text" required>
 								</div>
 							</div>
 						</td>
@@ -1074,7 +1074,9 @@
    					break;
    				case "BC005":
    					//清除
-   					$('#'+id).val("");
+   					if(!$('#'+id).hasClass('sn_only')){
+	   					$('#'+id).val("");
+   					}
    					workstation.clearOrder();
    					return false;
    					break;
@@ -1507,7 +1509,7 @@
    			search['w_hours'] = $('#w_focus_0').val();
             search['w_c_name'] = $('#w_focus_1').val();
             search['ph_pr_id'] = $('#w_focus_2').val();
-            search['pb_sn'] = $('#w_focus_5').val();
+            search['pb_b_sn'] = $('#w_focus_5').val();
 
             
             //包裝
