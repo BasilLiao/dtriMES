@@ -928,7 +928,7 @@ public class ProductionBodyService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				bodyDao.deleteByPbid(data.getLong("pb_id"));
+				bodyDao.deleteByPbbid(data.getLong("pb_b_id"));
 				check = true;
 			}
 		} catch (Exception e) {
