@@ -103,15 +103,15 @@ public class WorkstationService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", true, a_vals1, "w_i_id", "[料件SN]綁定[工作站]"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "w_i_name", "[料件SN]名稱"));
 
-			a_val.put((new JSONObject()).put("value", "顯示").put("key", 0));
-			a_val.put((new JSONObject()).put("value", "不顯示").put("key", 1));
-			a_val.put((new JSONObject()).put("value", "唯讀").put("key", 2));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-1", false, a_val, "w_option", "[料件SN]設定"));
+			a_val.put((new JSONObject()).put("value", "顯示(可手動-存檔)").put("key", 0));
+			a_val.put((new JSONObject()).put("value", "不顯示(資訊欄-隱藏)").put("key", 1));
+			a_val.put((new JSONObject()).put("value", "唯讀(不可手動-存檔)").put("key", 2));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_option", "[料件SN]設定"));
 
 			a_val = new JSONArray();
-			a_val.put((new JSONObject()).put("value", "無限制").put("key", 0));
-			a_val.put((new JSONObject()).put("value", "唯一值").put("key", 1));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-1", false, a_val, "w_only", "[料件SN]唯一"));
+			a_val.put((new JSONObject()).put("value", "無限制(可重複)").put("key", 0));
+			a_val.put((new JSONObject()).put("value", "唯一值(不可重複)").put("key", 1));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_only", "[料件SN]唯一值"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "五碼[AA000]", "", FFM.Wri.W_N, "col-md-2", true, n_val, "w_c_name", "工作站碼"));
 

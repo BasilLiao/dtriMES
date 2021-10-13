@@ -455,13 +455,15 @@
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="p-0 pl-1">[PLT]_檢查 :</div>
 											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_check" name="" value="true" type="checkbox" style="max-width: 30px;">
-											<div class="p-0 pl-1">/[PLT]_儲存 :</div>
+											<div class="p-0 pl-1">/_儲存 :</div>
 											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_save" name="" value="true" type="checkbox" style="max-width: 30px;">
-											<div class="p-0 pl-1">/[PLT]_歸檔 :</div>
+											<div class="p-0 pl-1">/_歸檔 :</div>
 											<input class="mt-1 ml-1 p-1  rounded big-checkbox" id="plt_file_classify" name="" value="true" type="checkbox" style="max-width: 30px;">
 										</div>
-										<!-- <div class="row pl-1 m-0 font-weight-bold border rounded border-secondary pb-1"></div> -->
-
+										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
+											<div class="p-0 pl-1">[保留]_唯讀SN :</div>
+											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
+										</div>
 									</div>
 									<div class="col-sm-4 mt-1">
 										<button id="send_command_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit">Send Command</button>
@@ -1609,6 +1611,9 @@
    				//唯讀
    				if(one_sn[key]['woption']==2){
    					$(".w_i_"+(nb+i)+" .w_sn_value").addClass('sn_only');
+   				}else{
+   					//其他
+   					$(".w_i_"+(nb+i)+" .w_sn_value").addClass('sn_normal');
    				}
    				//還原已鎖定
    				for (var s = 0; s < save_check.length; s++) {
@@ -1835,7 +1840,12 @@
    				$('#w_focus_4').val("");
    				$('#w_focus_5').val("");
    				$('#w_focus_6').val("");
-   				$(".sn_list .w_sn_value").val("");
+   				//勾選清除?
+   				if ($('#only_check').is(":checked")){
+	   				$(".sn_list .sn_normal").val("");   					
+   				}else{
+   					$(".sn_list .w_sn_value").val(""); 		
+   				}
    				
    				//Step7-3.更換Class
    				var id =$(".border-1").attr("id");

@@ -372,7 +372,8 @@ public class WorkstationWorkService {
 
 			// Step0.查詢SN關聯
 			if (!list.get("pb_sn").equals("")) {
-				List<ProductionBody> body_s = pbDao.findAllByPbbsn(list.getString("pb_sn"));
+				List<ProductionBody> body_s = new ArrayList<ProductionBody>();
+				body_s = pbDao.findAllByPbbsn(list.getString("pb_sn"));
 
 				// 更新[ProductionBody]
 				if (body_s.size() == 1) {
@@ -469,7 +470,10 @@ public class WorkstationWorkService {
 											return bean;
 										}
 									}
-
+									//唯讀-不存檔
+									if(check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
+										continue;
+									}
 									in_method.invoke(body_one, body_value);
 								}
 							}

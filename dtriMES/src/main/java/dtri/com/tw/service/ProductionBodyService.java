@@ -720,7 +720,7 @@ public class ProductionBodyService {
 				ProductionRecords search = new ProductionRecords();
 				search.setPrid(data.getString("ph_pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
-				List<ProductionBody> p_Bodys = bodyDao.findAllByPbsn(data.getString("pb_sn"));
+				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
 				// 有資料
 				if (p_Headers.size() < 1) {
 					return check;
@@ -792,7 +792,7 @@ public class ProductionBodyService {
 				ProductionRecords search = new ProductionRecords();
 				search.setPrid(data.getString("ph_pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
-				List<ProductionBody> p_Bodys = bodyDao.findAllByPbsn(data.getString("pb_sn"));
+				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
 				// 有資料
 				if (p_Headers.size() < 1) {
 					return check;
@@ -855,7 +855,7 @@ public class ProductionBodyService {
 			JSONArray list = body.getJSONArray("modify");
 			for (Object one : list) {
 				JSONObject data = (JSONObject) one;
-				List<ProductionBody> p_Bodys = bodyDao.findAllByPbsn(data.getString("pb_sn"));
+				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
 				ProductionRecords search = new ProductionRecords();
 				search.setPrid(data.getString("ph_pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
@@ -864,7 +864,7 @@ public class ProductionBodyService {
 					return check;
 				}
 				// 重複? 不包含自己
-				if (p_Bodys.size() > 0 && (!p_Bodys.get(0).getPbsn().equals(data.getString("pb_sn")))) {
+				if (p_Bodys.size() > 0 && (!p_Bodys.get(0).getPbbsn().equals(data.getString("pb_b_sn")))) {
 					return check;
 				}
 				// 物件轉換
