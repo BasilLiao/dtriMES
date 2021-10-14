@@ -1107,6 +1107,7 @@ public class ProductionHeaderService {
 						one_header.setProductionRecords(one_pecords);
 						// hearder
 						one_header.setSysstatus(data.getInt("sys_status"));
+						one_header.setPhtype(data.getString("ph_type"));
 						one_header.setPhpname(data.getString("ph_p_name"));
 						one_header.setPhpnumber(data.getString("ph_p_number"));
 						one_header.setSysnote(data.getString("sys_note"));

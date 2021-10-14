@@ -247,7 +247,8 @@ public class WorkstationWorkService {
 							object_body_all.put("search", object_doc);
 
 							// SN_list
-							ArrayList<Workstation> w_for_sn = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(w_one.get(0).getWgid(), false);
+							ArrayList<Workstation> w_for_sn = new ArrayList<Workstation>();
+							w_for_sn = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(w_one.get(0).getWgid(), false);
 							w_for_sn.forEach(w -> {
 								// 是否顯示
 								if (w.getWoption() == 0 || w.getWoption() == 2) {
@@ -284,6 +285,7 @@ public class WorkstationWorkService {
 							object_body_all.put("pb_fvalue", pb_all.get(0).getPbfvalue());
 							object_body_all.put("sn_list", object_sn);
 							object_body_all.put("workdatation_program_name", wp_all.get(0).getWpname());
+							object_body_all.put("workdatation_sort", wp_all.get(0).getSyssort());
 							object_body_all.put("workdatation_name", w_one.get(0).getWpbname());
 							bean.setBody(object_body_all);
 

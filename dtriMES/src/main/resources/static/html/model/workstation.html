@@ -20,7 +20,8 @@
 </style>
 <div id="workstation" class="text-left shadow">
 	<div class=" bg-white rounded-top m-0 pl-1 h5">
-		<i class="bi bi-joystick mr-1"></i>Workstation-><b class="h6" id="workdatation_program_name">Loading...</b>/<b class="h6" id="workstation_name">Loading...</b>
+		<i class="bi bi-joystick mr-1"></i>Workstation-> <b class="h6" id="workdatation_program_name">Loading...</b> / <b class="h6" id="workdatation_sort">Loading...</b>
+		/ <b class="h6" id="workstation_name">Loading...</b>
 	</div>
 	<div class="p-2">
 		<form onsubmit="return workstation.send_command();">
@@ -474,9 +475,16 @@
 											<input class="mt-1 ml-1 p-1 rounded big-checkbox" disabled="disabled" id="check_end" name="" value="true" type="checkbox" style="max-width: 30px;">
 										</div>
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="p-0">[產品/燒錄 序號]_輸入後(儲存):</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
+											<div class="col-12 p-0">[產品/燒錄 序號]輸入後 :</div>
+											<div class="col-12 row p-0 m-0">
+												<div class="p-0">(儲存):</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
+												<div class="p-0">/(檢查):</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_check" checked="checked" name="" value="true" type="checkbox"
+													style="max-width: 30px;">
+											</div>
 										</div>
+
 									</div>
 								</div>
 							</div>
@@ -1345,7 +1353,14 @@
 				//如果輸入有勾選自動存檔
    				if($('#after_sn_save').is(":checked") && id=='w_focus_5' && workstation.barcode_check){
    					$("#BC004" ).trigger( "click" );
+   					return false;
    				}
+   				//如果輸入有勾選自動檢查
+   				if($('#after_sn_check').is(":checked") && id=='w_focus_5' ){
+   					$("#BC003" ).trigger( "click" );
+   					return false;
+   				}
+   				
    			  }, 200);
    			
    			
@@ -1579,8 +1594,8 @@
    					save_name.push($('#'+$('.sn_list')[i].id+" .w_sn_name").text());
    				}
    			}
-   			//指定重工工單 新建立的SN 才需要
-   			if($('#m__ph_type .doc_c_value').val()=='A521_has_sn' || $('#m__ph_type .doc_c_value').val()=='A521_no_and_has_sn' ){
+   			//指定重工工單 && 第一站 新建立的SN 才需要 
+   			if(main.allData.body.workdatation_sort==1 && ($('#m__ph_type .doc_c_value').val()=='A521_has_sn' || $('#m__ph_type .doc_c_value').val()=='A521_no_and_has_sn' )){
    				$('.w_i_6').removeClass('d-none');
    			}else{
 				$('#w_focus_6').val("");
@@ -1634,8 +1649,9 @@
    			 
    			 //Step4.更新工作站
    			 $("#workstation_name").text( main.allData.body.workdatation_name);
+   			 $("#workdatation_sort").text('第'+main.allData.body.workdatation_sort+'站台');
    			 $("#workdatation_program_name").text( main.allData.body.workdatation_program_name);
-   			 
+
    			 //Step5.自動位移
    			 var id =$(".border-1").attr("id");
    			 workstation.nb=5;
