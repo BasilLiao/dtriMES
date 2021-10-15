@@ -15,8 +15,14 @@ public class PackageBean {
 	public static final String info_color_success = "success";
 	public static final String info_color_warning = "warning";
 	public static final String info_color_danger = "danger";
-	public static final String info_success = "[000] The command was executed [Successfully]!!";
-	public static final String info_warning = "[100] The command was executed [Warning]!!";
+	public static final String info_success = "[000] The command was executed [Successfully/成功/Thành công]!!";
+	public static final String info_success_save = "[001] The command was executed (Save/存檔/Lưu trữ) [Successfully/成功/Thành công]!!";
+	public static final String info_success_check = "[002] The command was executed (Check/檢查/kiểm tra) [Successfully/成功/Thành công]!!";
+
+	public static final String info_warning = "[100] The command was executed [Warning/警告/Cảnh cáo]!!";
+	public static final String info_warning_save = "[105] The command was executed (Save/存檔/Lưu trữ) [Warning/警告/Cảnh cáo]!!";
+	public static final String info_warning_check = "[106] The command was executed (Check/檢查/kiểm tra) [Warning/警告/Cảnh cáo]!!";
+
 	public static final String info_warning1_NotFindUser = "[101] Unable to get user information [Warning]!!";
 	public static final String info_warning2_NotFind = "[102] Did not find any results [Warning]!!";
 	public static final String info_warning3_SQLNotRight = "[103] SQL not Right [Warning]!!";
@@ -37,6 +43,8 @@ public class PackageBean {
 	public static final String info_work_warning9 = "[WK009] 無此 ([舊]產品/燒錄 序號) 已被使用, 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning10 = "[WK010] 特定(SN序號) 只能輸入在 (產品/燒錄 序號) 內使用 請檢查! [Warning]!!";
 	public static final String info_work_warning11 = "[WK011] 特定(SN序號) 重複 請檢查";
+
+	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
 
 	public static final String info_danger = "[502] The command was executed [ERROR]!!";
 	public static final String info_administrator = " Please contact the system administrator #321";
@@ -83,6 +91,14 @@ public class PackageBean {
 	public void autoMsssage(String type) {
 		this.info_color = info_color_warning;
 		switch (type) {
+		case "001":// 一般指令 存檔
+			this.info_color = info_color_success;
+			this.info = info_success_save;
+			break;
+		case "002":// 一般指令 檢查
+			this.info_color = info_color_success;
+			this.info = info_success_check;
+			break;
 		case "100":// 一般指令錯誤
 			this.info = info_warning;
 			break;
@@ -133,6 +149,9 @@ public class PackageBean {
 			break;
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"
 			this.info = info_work_warning0;
+			break;
+		case "SH000":// [SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!
+			this.info = info_search_warning0;
 			break;
 		default:// 不明錯誤
 			this.info = info_danger + info_administrator;

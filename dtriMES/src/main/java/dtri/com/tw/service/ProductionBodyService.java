@@ -590,6 +590,10 @@ public class ProductionBodyService {
 				bean.autoMsssage("100");
 				return bean;
 			}
+			if (pbid.size() >= 5000) {
+				bean.autoMsssage("SH000");
+				return bean;
+			}
 		} catch (Exception e) {
 			bean.autoMsssage("103");
 			return bean;

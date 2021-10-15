@@ -14,6 +14,9 @@ public interface WorkstationProgramDao extends JpaRepository<WorkstationProgram,
 	// 查詢全部
 	ArrayList<WorkstationProgram> findAll();
 
+	// 查詢全部 流程組 + 流程內的工作站
+	ArrayList<WorkstationProgram> findAllByWpgidAndWpwgid(Long Wpgid, Long Wpwgid);
+
 	// 查詢全部 wp_name or wp_c_name
 	ArrayList<WorkstationProgram> findAllByWpcnameOrWpname(String wp_c_name, String wp_name);
 
@@ -42,8 +45,8 @@ public interface WorkstationProgramDao extends JpaRepository<WorkstationProgram,
 	@Query("SELECT c FROM WorkstationProgram c "
 			+ "WHERE (:wpname is null or c.wpname LIKE %:wpname% ) and (:wpcname is null or c.wpcname LIKE %:wpcname% ) and ( c.sysstatus = :sysstatus )  "
 			+ "order by c.wpgid asc,c.sysheader desc,c.syssort asc")
-	ArrayList<WorkstationProgram> findAllByProgram(@Param("wpname") String wp_name, @Param("wpcname") String wp_c_name,
-			@Param("sysstatus") Integer sysstatus, Pageable pageable);
+	ArrayList<WorkstationProgram> findAllByProgram(@Param("wpname") String wp_name, @Param("wpcname") String wp_c_name, @Param("sysstatus") Integer sysstatus,
+			Pageable pageable);
 
 	// 取得G_ID WORKSTATION_PROGRAM_G_SEQ
 	@Query(value = "SELECT NEXTVAL('workstation_program_g_seq')", nativeQuery = true)

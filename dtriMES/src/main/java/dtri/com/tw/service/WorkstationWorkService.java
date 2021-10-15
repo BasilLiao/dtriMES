@@ -311,7 +311,7 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK002");
 				return bean;
 			}
-
+			bean.autoMsssage("002");
 		}
 		return bean;
 	}
@@ -441,11 +441,11 @@ public class WorkstationWorkService {
 											return bean;
 										}
 									}
-									
+
 									ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
-									//唯讀-不存檔
-									if(check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
-										System.out.println(title_value+" / "+body_value +" pass");
+									// 唯讀-不存檔
+									if (check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
+										System.out.println(title_value + " / " + body_value + " pass");
 										continue;
 									}
 									// 檢查是否有需要 檢查重複
@@ -478,7 +478,7 @@ public class WorkstationWorkService {
 											return bean;
 										}
 									}
-								
+
 									in_method.invoke(body_one, body_value);
 								}
 							}
@@ -743,6 +743,7 @@ public class WorkstationWorkService {
 			bean.autoMsssage("1111");
 			return bean;
 		}
+		bean.autoMsssage("001");
 		return bean;
 	}
 

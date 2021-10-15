@@ -162,7 +162,7 @@
 				if(s_url!=""){
 					main.loading(true);
 					var s_data = {};
-					req.user = "";
+					req.user = $('#name').text();
 					req.date = new Date();
 					req.action = "AR";
 					req.body = {};

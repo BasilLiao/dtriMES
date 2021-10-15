@@ -106,7 +106,7 @@
 							<button id="list_search_btn" class="col m-1 p-1 btn btn-primary btn-sm" type="submit">Search</button>
 							<button id="list_cancel_btn" class="col m-1 p-1 btn btn-warning btn-sm" type="button">Cancel</button>
 						</div>
-						<div class="col-12 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 50,000 Data</div>
+						<div class="col-12 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 5,000 Data</div>
 
 					</div>
 				</div>
@@ -351,7 +351,7 @@
 				var s_type = "POST";
 				var s_data = {};
 				var req = {};
-				req.user = "";
+				req.user = ""+$('#name').text();
 				req.date = new Date();
 				req.action = "RT";
 				req.body = {};
