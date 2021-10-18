@@ -2,7 +2,6 @@ package dtri.com.tw.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +13,6 @@ import javax.persistence.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -375,7 +373,7 @@ public class ProductionBodyService {
 		}
 
 		// 查詢SN欄位+產品型號+製令單號
-		String nativeQuery = "SELECT b.pb_id FROM production_body b " + //
+		String nativeQuery = "SELECT b.* FROM production_body b " + //
 				"join production_header h on b.pb_g_id = h.ph_pb_g_id " + //
 				"join production_records p on h.ph_pr_id = p.pr_id WHERE ";
 		if (!pb_sn_value.equals("")) {
@@ -383,6 +381,9 @@ public class ProductionBodyService {
 		}
 		if (!pb_w_value.equals("")) {
 			nativeQuery += " (:pb_w_value='' or " + pb_w_name + " LIKE :pb_w_value) and ";
+		}
+		if (pb_sn_check != null) {
+			nativeQuery += " (b.pb_check = :pb_check) and ";
 		}
 		if (!pb_sn_date_s.equals("") && !pb_sn_date_e.equals("")) {
 			nativeQuery += " (b.sys_m_date BETWEEN '" + pb_sn_date_s + "'  and '" + pb_sn_date_e + "' ) and ";
@@ -395,9 +396,9 @@ public class ProductionBodyService {
 
 		nativeQuery += " (:ph_model='' or p.pr_p_model LIKE :ph_model) and ";
 		nativeQuery += " (:ph_pr_id='' or h.ph_pr_id LIKE :ph_pr_id) and ";
-		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0) group by b.pb_id order by b.pb_id desc ";
+		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0)  order by b.pb_id desc ";
 		nativeQuery += " LIMIT :limit OFFSET :offset ";
-		Query query = em.createNativeQuery(nativeQuery);
+		Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
 		if (!pb_sn_value.equals("")) {
 			query.setParameter("pb_sn_value", "%" + pb_sn_value + "%");
 		}
@@ -411,17 +412,16 @@ public class ProductionBodyService {
 		query.setParameter("pb_sn", "%" + pb_sn + "%");
 		query.setParameter("ph_model", "%" + phmodel + "%");
 		query.setParameter("ph_pr_id", "%" + phprid + "%");
+		if (pb_sn_check != null) {
+			query.setParameter("pb_check", Boolean.parseBoolean(pb_sn_check));
+		}
 
 		query.setParameter("limit", p_size);
 		query.setParameter("offset", page * p_size);
 
 		// 轉換LONG
-		List<BigInteger> pbid_obj = query.getResultList();
-		for (BigInteger obj : pbid_obj) {
-			String one = obj.toString();
-			pbid.add(Long.parseLong(one));
-		}
-		if (pbid.size() == 0) {
+		productionBodies = query.getResultList();
+		if (productionBodies.size() == 0) {
 			bean.autoMsssage("102");
 			return bean;
 		}
@@ -429,13 +429,13 @@ public class ProductionBodyService {
 		em.clear();
 		em.close();
 
-		// 如果有 查詢 完成與否
-		if (pb_sn_check == null) {
-			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, PageRequest.of(0, 100));
-		} else {
-			// 查詢有特定pb_id
-			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, Boolean.parseBoolean(pb_sn_check), PageRequest.of(0, 100));
-		}
+//		// 如果有 查詢 完成與否
+//		if (pb_sn_check == null) {
+//			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, PageRequest.of(0, 100));
+//		} else {
+//			// 查詢有特定pb_id
+//			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, Boolean.parseBoolean(pb_sn_check), PageRequest.of(0, 100));
+//		}
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
@@ -572,25 +572,24 @@ public class ProductionBodyService {
 		str = str.replace("sys_", "b.sys_");
 
 		// Step2.=======Analysis report 查詢SN欄位+產品型號+製令單號 =======
-		String nativeQuery = "SELECT b.pb_id FROM production_body b " + //
+		String nativeQuery = "SELECT b.* FROM production_body b " + //
 				"join production_header h on b.pb_g_id = h.ph_pb_g_id " + //
 				"join production_records p on h.ph_pr_id = p.pr_id WHERE ";
 		nativeQuery += str;
+		nativeQuery += " order by b.pb_b_sn desc ";
+		nativeQuery += " LIMIT 5000 OFFSET 0 ";
 		System.out.println(nativeQuery);
 
 		List<Long> pbid = new ArrayList<Long>();
 		try {
-			Query query = em.createNativeQuery(nativeQuery);
-			List<BigInteger> pbid_obj = query.getResultList();
-			for (BigInteger obj : pbid_obj) {
-				String one = obj.toString();
-				pbid.add(Long.parseLong(one));
-			}
-			if (pbid.size() <= 0) {
-				bean.autoMsssage("100");
+			Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
+			// List<BigInteger> pbid_obj = query.getResultList();
+			productionBodies = query.getResultList();
+			if (productionBodies.size() <= 0) {
+				bean.autoMsssage("102");
 				return bean;
 			}
-			if (pbid.size() >= 5000) {
+			if (productionBodies.size() >= 5000) {
 				bean.autoMsssage("SH000");
 				return bean;
 			}
@@ -599,7 +598,8 @@ public class ProductionBodyService {
 			return bean;
 		}
 		// PageRequest pageable = PageRequest.of(0, 50000, Sort.by("pbid").ascending());
-		productionBodies = bodyDao.findAllByProductionBody(0, pbid, PageRequest.of(0, 5000));
+		// productionBodies = bodyDao.findAllByProductionBody(0, pbid, PageRequest.of(0,
+		// 5000));
 		// Step3.======= 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱] =======
 		JSONArray object_bodys = new JSONArray();
 		productionBodies.forEach(one -> {
@@ -630,8 +630,8 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_useful_sn", one.getPbusefulsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_path", one.getPblpath() == null ? "" : one.getPblpath());
 
-			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_text",
-			// one.getPbltext() == null ? "" : one.getPbltext());
+			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_text",one.getPbltext()
+			// == null ? "" : one.getPbltext());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_size", one.getPblsize() == null ? "" : one.getPblsize());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_dt", one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbldt()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_schedule", /* one.getPbschedule() == null ? "" : one.getPbschedule() */" ");

@@ -21,6 +21,9 @@ public interface WorkstationDao extends JpaRepository<Workstation, Long> {
 
 	// 查詢工作站代表
 	ArrayList<Workstation> findAllBySysheader(Boolean sysheader, Pageable pageable);
+	
+	// 查詢工作站代表
+	ArrayList<Workstation> findAllBySysheaderAndWidNot(Boolean sysheader,Long wid, Pageable pageable);
 
 	// 查詢工作站碼
 	ArrayList<Workstation> findAllByWcname(String wcname, Pageable pageable);

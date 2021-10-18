@@ -52,12 +52,12 @@
 			<div class="col-6 m-0 p-0">
 				<div class="row m-1 p-0 border border-secondary rounded-top shadow bg-white">
 					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step2. where ?</div>
-					<button id="select_0" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Like" [Text]</button>
-					<button id="select_1" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＝" [Text/Number]</button>
-					<button id="select_2" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"!＝" [Text/Number]</button>
-					<button id="select_3" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＜" [Number/Date Time]</button>
-					<button id="select_4" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＞" [Number/Date Time]</button>
-					<button id="select_5" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Between" [Number/Date Time]</button>
+					<button id="select_0" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Like" [Text](比對類似於 [限:文字/數字])</button>
+					<button id="select_1" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＝" [Text/Number](完全相同 [限:文字/數字])</button>
+					<button id="select_2" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"!＝" [Text/Number](不相同 [限:文字/數字])</button>
+					<button id="select_3" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＜" [Number/Date Time](大於區間 [限:數字/時間])</button>
+					<button id="select_4" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＞" [Number/Date Time](小於區間 [限:數字/時間])</button>
+					<button id="select_5" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Between" [Number/Date Time](指定特定區間 [限:數字/時間])</button>
 				</div>
 				<div class="row m-1 mt-2 p-0 border border-secondary rounded-top shadow bg-white">
 					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step3. value ?</div>
@@ -67,9 +67,9 @@
 					<!--  -->
 					<div class="col-md-12 row p-1 m-0">
 						<select id="fm_type" class="col-md-3 p-1 m-0">
-							<option value="fm_word" selected>Text[type]</option>
-							<option value="fm_nb">Number[type]</option>
-							<option value="fm_time">Date Time[type]</option>
+							<option value="fm_word" selected>Text[type](文字)</option>
+							<option value="fm_nb">Number[type](數字)</option>
+							<option value="fm_time">Date Time[type](時間)</option>
 						</select>
 						<div class="h3 col-md-1 p-0 m-0 text-center">:</div>
 						<!-- 文字 -->

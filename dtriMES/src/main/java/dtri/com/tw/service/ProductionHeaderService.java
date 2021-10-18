@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -110,11 +109,8 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_schedule", FFS.h_t("進度(X／X)", "130px", FFM.Wri.W_Y));
 
 			// 工作站
-			ArrayList<Workstation> w_s = workDao.findAllBySysheader(true, PageRequest.of(0, 100));
+			ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
 			for (Workstation w_one : w_s) {
-				if (w_one.getWid() == 0) {// 排除開頭
-					continue;
-				}
 				object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_schedule", FFS.h_t(w_one.getWpbname() + "(完成數)", "180px", FFM.Wri.W_Y));
 			}
 			// 規格
@@ -405,6 +401,8 @@ public class ProductionHeaderService {
 		JSONArray object_bodys = new JSONArray();
 		JSONObject object_bodys_all = new JSONObject();
 
+		// 工作站
+		ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
 		productionHeaders.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			// header
@@ -420,22 +418,15 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_s_date", one.getPhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhsdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_date", one.getPhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhedate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_schedule", one.getPhschedule());
-
-			// 工作站
-			ArrayList<Workstation> w_s = workDao.findAllBySysheader(true, PageRequest.of(0, 100));
 			for (Workstation w_one : w_s) {
 				// 工作程序
 				ArrayList<WorkstationProgram> pros = programDao.findAllByWpgidAndWpwgid(one.getPhwpid(), w_one.getWgid());
-				if (w_one.getWid() == 0) {// 排除開頭
-					continue;
-				}
 				if (pros.size() != 1) {
 					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), "無");
 				} else {
-					String wpcname = w_one.getWcname();
 					// 計算 此工作站完成數
 					List<ProductionBody> wk_schedules = productionBodyDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(one.getPhpbgid(),
-							"%" + wpcname + "_Y%");
+							"%" + w_one.getWcname() + "_Y%");
 					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), wk_schedules.size());
 				}
 			}

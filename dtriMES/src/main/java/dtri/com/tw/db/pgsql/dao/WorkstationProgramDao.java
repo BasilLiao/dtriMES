@@ -14,7 +14,7 @@ public interface WorkstationProgramDao extends JpaRepository<WorkstationProgram,
 	// 查詢全部
 	ArrayList<WorkstationProgram> findAll();
 
-	// 查詢全部 流程組 + 流程內的工作站
+	// 查詢全部 流程組+ 流程內的工作站
 	ArrayList<WorkstationProgram> findAllByWpgidAndWpwgid(Long Wpgid, Long Wpwgid);
 
 	// 查詢全部 wp_name or wp_c_name
