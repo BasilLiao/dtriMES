@@ -43,6 +43,9 @@ public class PackageBean {
 	public static final String info_work_warning9 = "[WK009] 無此 ([舊]產品/燒錄 序號) 已被使用, 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning10 = "[WK010] 特定(SN序號) 只能輸入在 (產品/燒錄 序號) 內使用 請檢查! [Warning]!!";
 	public static final String info_work_warning11 = "[WK011] 特定(SN序號) 重複 請檢查";
+	public static final String info_work_warning12 = "[WK012] 無法(LOG File) 無法備份資料 至 /PMS_LOG_BACKUP 下,請通知 [檔案管理員]!!";
+	public static final String info_work_warning13 = "[WK013] FTP(LOG File) 無法 正確連線 or 帳密錯誤 ,請通知 [檔案管理員]!!";
+	
 
 	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
 
@@ -146,6 +149,12 @@ public class PackageBean {
 			break;
 		case "WK011":// [WK011] 特定(SN序號) 重複 請檢查!
 			this.info = info_work_warning11 + error_ms + " [Warning]!!";
+			break;
+		case "WK012":// [WK012] FTP(LOG File) 無法備份資料 至 /PMS_LOG_BACKUP 下,請通知 [檔案管理員]!!
+			this.info = info_work_warning12;
+			break;
+		case "WK013":// [WK013] FTP(LOG File) 無法 正確連線 ,請通知 [檔案管理員]!!
+			this.info = info_work_warning13;
 			break;
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"
 			this.info = info_work_warning0;

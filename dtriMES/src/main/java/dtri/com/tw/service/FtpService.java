@@ -313,11 +313,11 @@ public class FtpService {
 				String new_path = json.getString("new_path");
 
 				if (!ftpClient.rename(re_path, new_path)) {
-					logger.error("to Backup OK!!");
+					logger.error("Can't move File to Backup !!");
+					return false;
 				}
 
 			}
-
 			System.out.println(new Date());
 			return true;
 		} catch (Exception e) {

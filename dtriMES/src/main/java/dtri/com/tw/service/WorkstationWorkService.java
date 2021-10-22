@@ -698,7 +698,13 @@ public class WorkstationWorkService {
 						}
 
 						// ======== Step7. 檔案歸檔?========
-						ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
+						if (list_log.getJSONArray("pb_l_files").length() > 0) {
+							Boolean check_move = ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
+							if (!check_move) {
+								bean.autoMsssage("WK012");
+								return bean;
+							}
+						}
 					}
 
 					pbDao.save(body_one);
@@ -738,7 +744,13 @@ public class WorkstationWorkService {
 					return bean;
 				}
 			}
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
+			System.out.println(e);
+			bean.autoMsssage("WK013");
+			return bean;
+		}
+
+		catch (Exception e) {
 			System.out.println(e);
 			bean.autoMsssage("1111");
 			return bean;

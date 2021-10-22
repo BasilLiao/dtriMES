@@ -1131,6 +1131,13 @@ public class ProductionHeaderService {
 						one_header.setPhpname(data.getString("ph_p_name"));
 						one_header.setPhpnumber(data.getString("ph_p_number"));
 						one_header.setSysnote(data.getString("sys_note"));
+						// 已經結束
+						if (data.getInt("sys_status") == 2) {
+							one_header.setPhedate(new Date());
+						} else if (data.getInt("sys_status") == 1) {
+							one_header.setPhedate(null);
+
+						}
 						productionHeaderDao.save(one_header);
 						return true;
 					}
