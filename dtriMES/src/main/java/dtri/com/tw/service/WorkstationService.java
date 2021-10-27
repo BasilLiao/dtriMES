@@ -66,6 +66,9 @@ public class WorkstationService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_i_name", FFS.h_t("[料件SN]名稱", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_option", FFS.h_t("[料件SN]設定", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_only", FFS.h_t("[料件SN]唯一", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_length", FFS.h_t("[料件SN]長度", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_format", FFS.h_t("[料件SN]格式", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_must", FFS.h_t("[料件SN]必填", "100px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_c_name", FFS.h_t("工作站[條碼]", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_pb_name", FFS.h_t("工作站[名稱]", "150px", FFM.Wri.W_Y));
@@ -111,7 +114,21 @@ public class WorkstationService {
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "無限制(可重複)").put("key", 0));
 			a_val.put((new JSONObject()).put("value", "唯一值(不可重複)").put("key", 1));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_only", "[料件SN]唯一值"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_only", "[SN]唯一值"));
+
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "不限制請留空", "0", FFM.Wri.W_Y, "col-md-1", false, a_val, "w_length", "[SN]長度"));
+
+			a_val = new JSONArray();
+			a_val.put((new JSONObject()).put("value", "無限制").put("key", 0));
+			a_val.put((new JSONObject()).put("value", "必須有(A-Z,0-9)").put("key", 1));
+			a_val.put((new JSONObject()).put("value", "必須有(A-Z)").put("key", 2));
+			a_val.put((new JSONObject()).put("value", "必須有(0-9)").put("key", 3));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_format", "[SN]格式"));
+
+			a_val = new JSONArray();
+			a_val.put((new JSONObject()).put("value", "無限制").put("key", 0));
+			a_val.put((new JSONObject()).put("value", "必須填").put("key", 1));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-1", false, a_val, "w_must", "[SN]必填"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "五碼[AA000]", "", FFM.Wri.W_N, "col-md-2", true, n_val, "w_c_name", "工作站碼"));
 
@@ -163,6 +180,9 @@ public class WorkstationService {
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "w_c_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_option", "0"));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_only", "0"));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_length", "0"));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_format", "0"));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_must", "0"));
 
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "w_pb_cell", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "w_i_id", ""));
@@ -207,6 +227,10 @@ public class WorkstationService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_name", one.getWorkstationItem().getWipbvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_option", one.getWoption());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly());
+
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
@@ -313,6 +337,9 @@ public class WorkstationService {
 					sys_t = new Workstation();
 					sys_t.setWoption(data.has("w_option") ? data.getInt("w_option") : 0);
 					sys_t.setWonly(data.has("w_only") ? data.getInt("w_only") : 0);
+					sys_t.setWlength(data.has("w_length") ? data.getInt("w_length") : 0);
+					sys_t.setWformat(data.has("w_format") ? data.getInt("w_format") : 0);
+					sys_t.setWmust(data.has("w_must") ? data.getInt("w_must") : 0);
 					sys_t.setWgid(sys_t_f.getWgid());
 					sys_t.setWcname(sys_t_f.getWcname());
 					sys_t.setSysheader(false);
@@ -414,6 +441,9 @@ public class WorkstationService {
 					sys_t = new Workstation();
 					sys_t.setWoption(data.has("w_option") ? data.getInt("w_option") : 0);
 					sys_t.setWonly(data.has("w_only") ? data.getInt("w_only") : 0);
+					sys_t.setWlength(data.has("w_length") ? data.getInt("w_length") : 0);
+					sys_t.setWformat(data.has("w_format") ? data.getInt("w_format") : 0);
+					sys_t.setWmust(data.has("w_must") ? data.getInt("w_must") : 0);
 					sys_t.setWgid(sys_t_f.getWgid());
 					sys_t.setWcname(sys_t_f.getWcname());
 					sys_t.setSysheader(false);
@@ -529,6 +559,9 @@ public class WorkstationService {
 					sys_t.setWcname(wc_name);
 					sys_t.setWoption(data.has("w_option") ? data.getInt("w_option") : 0);
 					sys_t.setWonly(data.has("w_only") ? data.getInt("w_only") : 0);
+					sys_t.setWlength(data.has("w_length") ? data.getInt("w_length") : 0);
+					sys_t.setWformat(data.has("w_format") ? data.getInt("w_format") : 0);
+					sys_t.setWmust(data.has("w_must") ? data.getInt("w_must") : 0);
 					sys_t.setWorkstationItem(sys_ti);
 					sys_t.setSysheader(false);
 					sys_t.setWpbname(w_pb_value);

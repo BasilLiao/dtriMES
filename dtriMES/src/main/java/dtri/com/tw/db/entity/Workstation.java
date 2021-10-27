@@ -37,7 +37,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      w_pb_cell : 工作站名稱(來自於pb 欄位名稱)<br>
  *      w_sg_id : 可使用此工作站群組[ID]<br>
  *      w_sg_name : 可使用此工作站群組[名稱]<br>
- *      w_replace : 是否可重複刷入資料
+ *      w_replace : 是否可重複刷入資料<br>
+ *      w_option :顯示選項<br>
+ *      w_only : 唯一值<br>
+ *      w_length : 長度<br>
+ *      w_format : 格式<br>
+ *      w_must : 必填<br>
  * 
  * 
  * 
@@ -124,6 +129,15 @@ public class Workstation {
 
 	@Column(name = "w_only", columnDefinition = "int default 0")
 	private Integer wonly;
+
+	@Column(name = "w_length", columnDefinition = "int default 0")
+	private Integer wlength;
+
+	@Column(name = "w_format", columnDefinition = "int default 0")
+	private Integer wformat;
+
+	@Column(name = "w_must", columnDefinition = "int default 0")
+	private Integer wmust;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -283,6 +297,30 @@ public class Workstation {
 
 	public void setWonly(Integer wonly) {
 		this.wonly = wonly;
+	}
+
+	public Integer getWmust() {
+		return wmust;
+	}
+
+	public void setWmust(Integer wmust) {
+		this.wmust = wmust;
+	}
+
+	public Integer getWformat() {
+		return wformat;
+	}
+
+	public void setWformat(Integer wformat) {
+		this.wformat = wformat;
+	}
+
+	public Integer getWlength() {
+		return wlength;
+	}
+
+	public void setWlength(Integer wlength) {
+		this.wlength = wlength;
 	}
 
 }

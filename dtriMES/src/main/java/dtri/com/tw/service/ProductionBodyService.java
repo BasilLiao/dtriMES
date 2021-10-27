@@ -61,7 +61,7 @@ public class ProductionBodyService {
 		String pb_sn_check = null;
 		String pb_sn_date_s = "";
 		String pb_sn_date_e = "";
-		List<Long> pbid = new ArrayList<Long>();
+		// List<Long> pbid = new ArrayList<Long>();
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 
@@ -563,9 +563,21 @@ public class ProductionBodyService {
 			}
 			if (first) {
 				first = false;
-				str += new String(bytes, StandardCharsets.UTF_8);
+				String one = new String(bytes, StandardCharsets.UTF_8);
+				if (one.indexOf("!= ''") > 0) {
+					one = "(" + one + " AND " + one.replace("!= ''", "is not null ") + ")";
+				} else if (one.indexOf("= ''") > 0) {
+					one = "(" + one + " OR " + one.replace("= ''", " is null") + ")";
+				}
+				str += one;
 			} else {
-				str += " AND " + new String(bytes, StandardCharsets.UTF_8);
+				String one = new String(bytes, StandardCharsets.UTF_8);
+				if (one.indexOf("!= ''") > 0) {
+					one = "(" + one + " AND " + one.replace("!= ''", "is not null ") + ")";
+				} else if (one.indexOf("= ''") > 0) {
+					one = "(" + one + " OR " + one.replace("= ''", " is null") + ")";
+				}
+				str += " AND " + one;
 			}
 		}
 		// 取代共用參數
@@ -579,8 +591,6 @@ public class ProductionBodyService {
 		nativeQuery += " order by b.pb_b_sn desc ";
 		nativeQuery += " LIMIT 5000 OFFSET 0 ";
 		System.out.println(nativeQuery);
-
-		List<Long> pbid = new ArrayList<Long>();
 		try {
 			Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
 			// List<BigInteger> pbid_obj = query.getResultList();
