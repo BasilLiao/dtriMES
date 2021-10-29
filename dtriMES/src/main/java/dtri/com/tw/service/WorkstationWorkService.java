@@ -432,8 +432,22 @@ public class WorkstationWorkService {
 								Method get_method = title_body.getClass().getMethod(get_name);
 								String title_value = (String) get_method.invoke(title_body);
 								Method in_method = body_one.getClass().getMethod(set_name, String.class);
+								ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+
 								// 欄位有值
 								if (body_value != null) {
+									// 檢查 是否有要檢查 必填
+									if (check_only != null && check_only.size() > 0 && check_only.get(0).getWmust() == 1 && body_value.equals("")) {
+										bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[必填欄位] ");
+										bean.autoMsssage("WK014");
+										return bean;
+									}
+
+									// 檢查 避免空
+									if (body_value.equals("")) {
+										continue;
+									}
+
 									// 檢查 避免小卡 輸入主SN序號
 									for (ProductionBody one_sn : check_sn) {
 										if (one_sn.getPbbsn().equals(body_value)) {
@@ -442,7 +456,6 @@ public class WorkstationWorkService {
 										}
 									}
 
-									ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
 									// 唯讀-不存檔
 									if (check_only.size() > 0 && check_only.get(0).getWoption() == 2) {
 										System.out.println(title_value + " / " + body_value + " pass");
@@ -480,42 +493,38 @@ public class WorkstationWorkService {
 									}
 
 									// 是否有要檢查 長度
-									if (check_only.get(0).getWlength() > 0 && body_value.length() != check_only.get(0).getWlength()) {
+									if (check_only != null && check_only.size() > 0 && check_only.get(0).getWlength() > 0
+											&& body_value.length() != check_only.get(0).getWlength()) {
 										bean.setError_ms("此[" + title_value + "]SN: " + body_value + " 長度不正確,指定:[" + check_only.get(0).getWlength() + "] 位數");
 										bean.autoMsssage("WK014");
 										return bean;
 									}
 									// 是否有要檢查 格式
-									if (check_only.get(0).getWformat() > 0) {
+									if (check_only != null && check_only.size() > 0 && check_only.get(0).getWformat() > 0) {
 										String error = "";
 										boolean check = false;
 										switch (check_only.get(0).getWformat()) {
 										case 1:
-											check = body_value.matches("[A-Z]+\\d+");
-											error = "格式錯誤[A-Z,0-9]";
+											check = body_value.matches("^[A-Z0-9]*$");
+											error = "只能輸入[A-Z,0-9]";
 											break;
 										case 2:
-											check = body_value.matches("[A-Z]+");
-											error = "格式錯誤[A-Z]";
+											check = body_value.matches("^[A-Z]*$");
+											error = "只能輸入[A-Z]";
 											break;
 										case 3:
-											check = body_value.matches("\\d+");
-											error = "格式錯誤[0-9]";
+											check = body_value.matches("^[0-9]*$");
+											error = "只能輸入[0-9]";
 											break;
 
 										}
 										if (!check) {
-											bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[" + error + "] ");
+											bean.setError_ms("此[" + title_value + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 											bean.autoMsssage("WK014");
 											return bean;
 										}
 									}
-									// 是否有要檢查 必填
-									if (check_only.get(0).getWmust() == 1 && body_value.equals("")) {
-										bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[必填欄位] ");
-										bean.autoMsssage("WK014");
-										return bean;
-									}
+
 									in_method.invoke(body_one, body_value);
 								}
 							}
@@ -668,6 +677,20 @@ public class WorkstationWorkService {
 
 											if (title_value != null && title_value.equals(cell_key)) {
 												String body_value = list_log.getString(cell_key);
+												ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+
+												// 檢查 是否有要檢查 必填
+												if (check_only != null && check_only.size() > 0 && check_only.get(0).getWmust() == 1 && body_value.equals("")) {
+													bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[必填欄位] ");
+													bean.autoMsssage("WK014");
+													return bean;
+												}
+
+												// 檢查 避免空
+												if (body_value.equals("")) {
+													continue;
+												}
+
 												// 檢查 避免小卡 輸入主SN序號
 												for (ProductionBody one_sn : check_sn) {
 													if (one_sn.getPbbsn().equals(body_value)) {
@@ -676,7 +699,7 @@ public class WorkstationWorkService {
 													}
 												}
 												// 檢查是否有需要 檢查重複
-												ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+
 												if (check_only != null && check_only.size() > 0 && check_only.get(0).getWonly() == 1) {
 													String nativeQuery = "SELECT b.pb_b_sn FROM production_body b ";
 													nativeQuery += "where ";
@@ -707,42 +730,37 @@ public class WorkstationWorkService {
 													}
 												}
 												// 是否有要檢查 長度
-												if (check_only.get(0).getWlength() > 0 && body_value.length() != check_only.get(0).getWlength()) {
-													bean.setError_ms("此[" + title_value + "]SN: " + body_value + " 長度不正確,指定:[" + check_only.get(0).getWlength()
-															+ "] 位數");
+												if (check_only != null && check_only.size() > 0 && check_only.get(0).getWlength() > 0
+														&& body_value.length() != check_only.get(0).getWlength()) {
+													bean.setError_ms("此 PLT_LOG [" + title_value + "]SN: " + body_value + " 長度不正確,指定:["
+															+ check_only.get(0).getWlength() + "] 位數");
 													bean.autoMsssage("WK014");
 													return bean;
 												}
 												// 是否有要檢查 格式
-												if (check_only.get(0).getWformat() > 0) {
+												if (check_only != null && check_only.size() > 0 && check_only.get(0).getWformat() > 0) {
 													String error = "";
 													boolean check = false;
 													switch (check_only.get(0).getWformat()) {
 													case 1:
-														check = body_value.matches("[A-Z]+\\d+");
-														error = "格式錯誤[A-Z,0-9]";
+														check = body_value.matches("^[A-Z0-9]*$");
+														error = "只能輸入[A-Z,0-9]";
 														break;
 													case 2:
-														check = body_value.matches("[A-Z]+");
-														error = "格式錯誤[A-Z]";
+														check = body_value.matches("^[A-Z]*$");
+														error = "只能輸入[A-Z]";
 														break;
 													case 3:
-														check = body_value.matches("\\d+");
-														error = "格式錯誤[0-9]";
+														check = body_value.matches("^[0-9]*$");
+														error = "只能輸入[0-9]";
 														break;
 
 													}
 													if (!check) {
-														bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[" + error + "] ");
+														bean.setError_ms("此 PLT_LOG [" + title_value + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 														bean.autoMsssage("WK014");
 														return bean;
 													}
-												}
-												// 是否有要檢查 必填
-												if (check_only.get(0).getWmust() == 1 && body_value.equals("")) {
-													bean.setError_ms("此[" + title_value + "] SN: " + body_value + " 為[必填欄位] ");
-													bean.autoMsssage("WK014");
-													return bean;
 												}
 												set_method.invoke(body_one, body_value);
 												break;

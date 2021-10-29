@@ -120,9 +120,9 @@ public class WorkstationService {
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "無限制").put("key", 0));
-			a_val.put((new JSONObject()).put("value", "必須有(A-Z,0-9)").put("key", 1));
-			a_val.put((new JSONObject()).put("value", "必須有(A-Z)").put("key", 2));
-			a_val.put((new JSONObject()).put("value", "必須有(0-9)").put("key", 3));
+			a_val.put((new JSONObject()).put("value", "只能輸入(A-Z,0-9)").put("key", 1));
+			a_val.put((new JSONObject()).put("value", "只能輸入(A-Z)").put("key", 2));
+			a_val.put((new JSONObject()).put("value", "只能輸入(0-9)").put("key", 3));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", false, a_val, "w_format", "[SN]格式"));
 
 			a_val = new JSONArray();
