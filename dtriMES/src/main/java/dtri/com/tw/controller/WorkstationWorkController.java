@@ -108,6 +108,8 @@ public class WorkstationWorkController {
 			resp = packageService.setObjResp(resp, req, one.getSppermission());
 		} else {
 			// Step4.包裝回傳(有錯)
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}

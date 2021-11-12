@@ -120,6 +120,8 @@ public class WorkstationDisassembleController {
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}
@@ -157,6 +159,8 @@ public class WorkstationDisassembleController {
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}

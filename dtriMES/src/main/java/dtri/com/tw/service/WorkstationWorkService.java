@@ -307,6 +307,14 @@ public class WorkstationWorkService {
 				}
 
 			} else {
+				ph_all = phDao.findAllByProductionRecordsAndSysstatusIn(records, sysstatus);
+				if (ph_all.size() == 1) {
+					// 有此公單 但已結案/暫停/終止
+					bean.setBody(new JSONObject());
+					bean.autoMsssage("WK016");
+					return bean;
+				}
+				// 查無公單
 				bean.setBody(new JSONObject());
 				bean.autoMsssage("WK002");
 				return bean;
@@ -781,7 +789,12 @@ public class WorkstationWorkService {
 										}
 									}
 								}
-
+								// PLT 亂碼檢核
+								System.out.print(list_log.getString("pb_l_text").indexOf('\u0000'));
+								if (list_log.getString("pb_l_text").indexOf('\u0000') != -1) {
+									bean.autoMsssage("WK015");
+									return bean;
+								}
 								body_one.setPbltext(list_log.getString("pb_l_text"));
 								body_one.setPblpath(list_log.getString("pb_l_path"));
 								body_one.setPbldt(Fm_Time.toDateTime(list_log.getString("pb_l_dt")));

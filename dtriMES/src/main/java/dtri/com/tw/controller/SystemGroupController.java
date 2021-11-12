@@ -44,7 +44,7 @@ public class SystemGroupController {
 		}
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
@@ -73,7 +73,7 @@ public class SystemGroupController {
 		}
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
@@ -95,7 +95,7 @@ public class SystemGroupController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -118,6 +118,8 @@ public class SystemGroupController {
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}
@@ -135,7 +137,7 @@ public class SystemGroupController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -155,6 +157,8 @@ public class SystemGroupController {
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}
@@ -172,7 +176,7 @@ public class SystemGroupController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -185,13 +189,15 @@ public class SystemGroupController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = groupService.deleteData(req.getBody(),user);
+		check = groupService.deleteData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
 			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}

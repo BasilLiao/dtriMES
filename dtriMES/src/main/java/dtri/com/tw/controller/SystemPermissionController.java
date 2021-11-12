@@ -44,14 +44,14 @@ public class SystemPermissionController {
 		}
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
 		resp = permissionService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user.getSuaccount());
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req,"");
+		resp = packageService.setObjResp(resp, req, "");
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -73,14 +73,14 @@ public class SystemPermissionController {
 		}
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		 
+
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
 		resp = permissionService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user.getSuaccount());
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req,"");
+		resp = packageService.setObjResp(resp, req, "");
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -95,7 +95,7 @@ public class SystemPermissionController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -115,9 +115,11 @@ public class SystemPermissionController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req,"");
+			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}
@@ -135,7 +137,7 @@ public class SystemPermissionController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
@@ -152,9 +154,11 @@ public class SystemPermissionController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req,"");
+			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}
@@ -172,7 +176,7 @@ public class SystemPermissionController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
-		 
+
 		System.out.println(json_object);
 
 		// Step1.包裝解析
@@ -182,9 +186,11 @@ public class SystemPermissionController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req,"");
+			resp = packageService.setObjResp(resp, req, "");
 		} else {
 			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
 			resp.autoMsssage("100");
 			resp = packageService.setObjResp(resp, req, "");
 		}

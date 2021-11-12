@@ -7,10 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -84,8 +89,8 @@ public class ScheduleTaskService {
 		 * "UTF8" "dtrimes"
 		 */
 
-		ProcessBuilder pb = new ProcessBuilder("" + db_pg_dump, "--dbname=" + db_name, "--port=" + db_port, "--no-password", "--verbose",
-				"--format=c", "--blobs", "--encoding=UTF8", "--file=" + apache_path + db_folder_name + db_file_name + "_" + backupDay + ".sql");
+		ProcessBuilder pb = new ProcessBuilder("" + db_pg_dump, "--dbname=" + db_name, "--port=" + db_port, "--no-password", "--verbose", "--format=c",
+				"--blobs", "--encoding=UTF8", "--file=" + apache_path + db_folder_name + db_file_name + "_" + backupDay + ".sql");
 		try {
 			// Step3-1.查資料夾
 			File directory = new File(apache_path + db_folder_name);
@@ -123,5 +128,66 @@ public class ScheduleTaskService {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	@Async
+	@Scheduled(cron = "0 59 23 * * ? ")
+	public void removeFTPFile() {
+		System.out.println("每隔1天 晚上23點30 執行一次：" + new Date());
+		// Step1. 備份位置
+		ArrayList<SystemConfig> ftp_config = sysDao.findAllByConfig(null, "FTP_DATA_BKUP", 0, PageRequest.of(0, 99));
+		JSONObject c_json = new JSONObject();
+		ftp_config.forEach(c -> {
+			c_json.put(c.getScname(), c.getScvalue());
+		});
+		Integer year = Year.now().getValue();
+		String ftpHost = c_json.getString("IP"), //
+				ftpUserName = c_json.getString("ACCOUNT"), //
+				ftpPassword = c_json.getString("PASSWORD"), //
+				ftpPath = c_json.getString("PATH") + year;//
+		int ftpPort = c_json.getInt("FTP_PORT");
+
+		FTPClient ftpClient = new FTPClient();
+		// 登入 如果採用預設埠，可以使用ftp.connect(url)的方式直接連線FTP伺服器
+		try {
+			ftpClient = new FTPClient();
+			ftpClient.connect(ftpHost, ftpPort);// 連線FTP伺服器
+			ftpClient.login(ftpUserName, ftpPassword);// 登陸FTP伺服器
+			if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+				System.out.println("未連線到FTP，使用者名稱或密碼錯誤。");
+				ftpClient.disconnect();
+			} else {
+				System.out.println("FTP連線成功。");
+				// 轉移到FTP伺服器目錄至指定的目錄下
+				ftpClient.changeWorkingDirectory(new String(ftpPath.getBytes("UTF-8"), "iso-8859-1"));
+				ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+				ftpClient.setControlEncoding("UTF-8");
+				// 獲取ftp登入應答程式碼
+				int reply = ftpClient.getReplyCode();
+				// 驗證是否登陸成功
+				if (!FTPReply.isPositiveCompletion(reply)) {
+					ftpClient.disconnect();
+					System.err.println("FTP server refused connection.");
+				}
+				// 獲取檔案列表(查詢)
+				FTPFile[] fs = ftpClient.listFiles();
+				for (FTPFile ff : fs) {
+					// 排除TEST類型資料(其餘移除)
+					if (ff.getName().indexOf("TEST") == -1) {
+						String file_remove_name = ff.getName();
+						String re_path = ftpPath + "/" + file_remove_name;
+						ftpClient.deleteFile(re_path);
+					}
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+			System.out.println("FTP的IP地址可能錯誤，請正確配置。");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("FTP的埠錯誤,請正確配置。");
+		}
+		// 設定檔案傳輸型別為二進位制+UTF-8 傳輸
+
 	}
 }

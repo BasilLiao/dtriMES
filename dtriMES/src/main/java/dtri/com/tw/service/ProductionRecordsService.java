@@ -111,8 +111,8 @@ public class ProductionRecordsService {
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_c_name", "客戶名稱", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_id", "製令工單號", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_c_name", "客戶名稱", n_val));
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
