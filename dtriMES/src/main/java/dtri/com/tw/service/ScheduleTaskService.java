@@ -40,7 +40,7 @@ public class ScheduleTaskService {
 	// log 訊息
 	private static Logger logger = LogManager.getLogger();
 
-	// 每日18:00分執行一次
+	// 每日12/18:00分執行一次
 	// 系統 備份(pgsql+ftp)
 	@Async
 	@Scheduled(cron = "0 30 12,18 * * ? ")
@@ -131,11 +131,11 @@ public class ScheduleTaskService {
 	}
 
 	@Async
-	@Scheduled(cron = "0 59 23 * * ? ")
+	@Scheduled(cron = "0 00 23 * * ? ")
 	public void removeFTPFile() {
-		System.out.println("每隔1天 晚上23點30 執行一次：" + new Date());
-		// Step1. 備份位置
-		ArrayList<SystemConfig> ftp_config = sysDao.findAllByConfig(null, "FTP_DATA_BKUP", 0, PageRequest.of(0, 99));
+		System.out.println("每隔1天 晚上23點00 執行一次：" + new Date());
+		// Step1. 備份位置 -> 需移除LOG資料
+		ArrayList<SystemConfig> ftp_config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
 		JSONObject c_json = new JSONObject();
 		ftp_config.forEach(c -> {
 			c_json.put(c.getScname(), c.getScvalue());
@@ -144,8 +144,10 @@ public class ScheduleTaskService {
 		String ftpHost = c_json.getString("IP"), //
 				ftpUserName = c_json.getString("ACCOUNT"), //
 				ftpPassword = c_json.getString("PASSWORD"), //
-				ftpPath = c_json.getString("PATH") + year;//
-		int ftpPort = c_json.getInt("FTP_PORT");
+				remotePath = c_json.getString("PATH") + year; //
+				//remotePathBackup = c_json.getString("PATH_BACKUP"), //
+				//localPath = "";//
+		int ftpPort = c_json.getInt("PORT");
 
 		FTPClient ftpClient = new FTPClient();
 		// 登入 如果採用預設埠，可以使用ftp.connect(url)的方式直接連線FTP伺服器
@@ -159,7 +161,7 @@ public class ScheduleTaskService {
 			} else {
 				System.out.println("FTP連線成功。");
 				// 轉移到FTP伺服器目錄至指定的目錄下
-				ftpClient.changeWorkingDirectory(new String(ftpPath.getBytes("UTF-8"), "iso-8859-1"));
+				ftpClient.changeWorkingDirectory(new String(remotePath.getBytes("UTF-8"), "iso-8859-1"));
 				ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 				ftpClient.setControlEncoding("UTF-8");
 				// 獲取ftp登入應答程式碼
@@ -175,7 +177,7 @@ public class ScheduleTaskService {
 					// 排除TEST類型資料(其餘移除)
 					if (ff.getName().indexOf("TEST") == -1) {
 						String file_remove_name = ff.getName();
-						String re_path = ftpPath + "/" + file_remove_name;
+						String re_path = remotePath + "/" + file_remove_name;
 						ftpClient.deleteFile(re_path);
 					}
 				}
