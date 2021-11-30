@@ -37,7 +37,7 @@ public class FtpService {
 	 */
 	Logger logger = LoggerFactory.getLogger(FTPClient.class);
 
-	private static FTPClient getFTPClient(FTPClient ftpClient, String ftpHost, String ftpUserName, String ftpPassword, int ftpPort) {
+	public static FTPClient getFTPClient(FTPClient ftpClient, String ftpHost, String ftpUserName, String ftpPassword, int ftpPort) {
 		try {
 			ftpClient = new FTPClient();
 			ftpClient.connect(ftpHost, ftpPort);// 連線FTP伺服器
@@ -46,6 +46,17 @@ public class FtpService {
 				System.out.println("未連線到FTP，使用者名稱或密碼錯誤。");
 				ftpClient.disconnect();
 			} else {
+				// 設定檔案傳輸型別為二進位制+UTF-8 傳輸
+				ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+				ftpClient.setControlEncoding("UTF-8");
+				// 獲取ftp登入應答程式碼
+				int reply = ftpClient.getReplyCode();
+				// 驗證是否登陸成功
+				if (!FTPReply.isPositiveCompletion(reply)) {
+					ftpClient.disconnect();
+					System.err.println("FTP server refused connection.");
+					return null;
+				}
 				System.out.println("FTP連線成功。");
 			}
 		} catch (SocketException e) {
@@ -157,17 +168,6 @@ public class FtpService {
 		try {
 			// 登入 如果採用預設埠，可以使用ftp.connect(url)的方式直接連線FTP伺服器
 			ftpClient = getFTPClient(ftpClient, ftp.getFtpHost(), ftp.getFtpUserName(), ftp.getFtpPassword(), ftp.getFtpPort());
-			// 設定檔案傳輸型別為二進位制+UTF-8 傳輸
-			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-			ftpClient.setControlEncoding("UTF-8");
-			// 獲取ftp登入應答程式碼
-			int reply = ftpClient.getReplyCode();
-			// 驗證是否登陸成功
-			if (!FTPReply.isPositiveCompletion(reply)) {
-				ftpClient.disconnect();
-				System.err.println("FTP server refused connection.");
-				return null;
-			}
 			// 轉移到FTP伺服器目錄至指定的目錄下
 			ftpClient.changeWorkingDirectory(new String(ftp.getRemotePath().getBytes("UTF-8"), "iso-8859-1"));
 
@@ -188,7 +188,7 @@ public class FtpService {
 
 					// ========製令單 如果有OQC 排除========
 					if (ff.getName().indexOf("OQC") != -1) {
-						//Date updateDate = ff.getTimestamp().getTime();
+						// Date updateDate = ff.getTimestamp().getTime();
 						String file_name_OQC = ff.getName();
 						String dirPath = ftp.getRemotePathBackup() + searchName[0];
 						String re_path = ftp.getRemotePath() + "/" + file_name_OQC;
@@ -223,7 +223,7 @@ public class FtpService {
 					} catch (Exception ex) {
 						// ========(如果格式不對)轉移檔案========
 						if (plt_file_classify) {
-							//Date updateDate = ff.getTimestamp().getTime();
+							// Date updateDate = ff.getTimestamp().getTime();
 							String dirPath = ftp.getRemotePathBackup() + searchName[0];
 							String re_path = ftp.getRemotePath() + "/" + ff.getName();
 							String new_path = dirPath + "/" + //
@@ -305,23 +305,35 @@ public class FtpService {
 				return false;
 			}
 			// 轉移到FTP伺服器目錄至指定的目錄下
-			ftpClient.changeWorkingDirectory(new String(ftp.getRemotePath().getBytes("UTF-8"), "iso-8859-1"));
-
 			for (Object one_file : archive_files) {
 				JSONObject json = (JSONObject) one_file;
 				String re_path = json.getString("re_path");
 				String new_path = json.getString("new_path");
 
+				// 快速移動檔案方式
 				if (!ftpClient.rename(re_path, new_path)) {
 					logger.error("Can't move File to Backup !!");
 					return false;
 				}
+				/*
+				 * 先暫時PASS 尚未能夠更動使用者
+				 * 
+				 * FTPFile current = ftpClient.listFiles(new_path)[0];
+				 * current.setPermission(FTPFile.USER_ACCESS, FTPFile.WRITE_PERMISSION, true);
+				 * ftpClient.sto System.out.println(ftpClient.getReplyCode());
+				 */
 
 			}
+			ftpClient.logout();
 			System.out.println(new Date());
 			return true;
 		} catch (Exception e) {
 			System.out.println(e);
+			try {
+				ftpClient.logout();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			return false;
 		}
 	}

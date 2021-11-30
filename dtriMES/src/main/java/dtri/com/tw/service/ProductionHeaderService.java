@@ -90,6 +90,8 @@ public class ProductionHeaderService {
 		Date ph_s_s_date = null;
 		Date ph_s_e_date = null;
 		List<Long> pbid = new ArrayList<Long>();
+		// 工作站
+		ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
@@ -109,7 +111,6 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_schedule", FFS.h_t("進度(X／X)", "130px", FFM.Wri.W_Y));
 
 			// 工作站
-			ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
 			for (Workstation w_one : w_s) {
 				object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_schedule", FFS.h_t(w_one.getWpbname() + "(完成數)", "180px", FFM.Wri.W_Y));
 			}
@@ -401,8 +402,6 @@ public class ProductionHeaderService {
 		JSONArray object_bodys = new JSONArray();
 		JSONObject object_bodys_all = new JSONObject();
 
-		// 工作站
-		ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
 		productionHeaders.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			// header
@@ -418,16 +417,17 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_s_date", one.getPhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhsdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_date", one.getPhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhedate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_schedule", one.getPhschedule());
+
+			// 工作程序
+			JSONObject ph_pb_s = new JSONObject();
+			if (one.getPhpbschedule() != null && one.getPhpbschedule() != "") {
+				ph_pb_s = new JSONObject(one.getPhpbschedule());
+			}
 			for (Workstation w_one : w_s) {
-				// 工作程序
-				ArrayList<WorkstationProgram> pros = programDao.findAllByWpgidAndWpwgid(one.getPhwpid(), w_one.getWgid());
-				if (pros.size() != 1) {
-					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), "無");
+				if (ph_pb_s.has(w_one.getWcname())) {
+					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), ph_pb_s.getInt(w_one.getWcname()));
 				} else {
-					// 計算 此工作站完成數
-					List<ProductionBody> wk_schedules = productionBodyDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(one.getPhpbgid(),
-							"%" + w_one.getWcname() + "_Y%");
-					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), wk_schedules.size());
+					object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_" + w_one.getWcname(), "無");
 				}
 			}
 
@@ -561,6 +561,7 @@ public class ProductionHeaderService {
 					Long id_b_g2 = 1l;
 					// 工作站資訊
 					JSONObject json_work = new JSONObject();
+					JSONObject json_ph_pb_schedule = new JSONObject();
 					ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
 					for (WorkstationProgram p_one : programs) {
 						ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
@@ -571,6 +572,7 @@ public class ProductionHeaderService {
 						json_one.put("w_pb_cell", works.get(0).getWpbcell());
 						json_one.put("sort", p_one.getSyssort());
 						json_work.put(works.get(0).getWcname(), json_one);
+						json_ph_pb_schedule.put(works.get(0).getWcname(), 0);
 					}
 					// 無SN不需要指定新建
 					JSONArray pbsn_list = new JSONArray();
@@ -733,6 +735,7 @@ public class ProductionHeaderService {
 					pro_h.setPhpnumber(data.getString("ph_p_number"));
 					pro_h.setPhpname(data.getString("ph_p_name"));
 					pro_h.setPhschedule(0 + "／" + data.getInt("pr_p_quantity"));
+					pro_h.setPhpbschedule(json_ph_pb_schedule.toString());
 					pro_h.setSysheader(true);
 					pro_h.setSysnote(data.has("sys_note") ? data.getString("sys_note") : "");
 					pro_h.setSyssort(data.getInt("sys_sort"));

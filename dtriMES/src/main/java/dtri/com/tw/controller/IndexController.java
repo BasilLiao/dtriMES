@@ -101,7 +101,7 @@ public class IndexController {
 			}
 		});
 		// Step2.包裝回傳
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 
 		// 回傳-模板
 		return new ModelAndView("./html/main.html", "initMain", packageService.objToJson(resp));
@@ -133,7 +133,7 @@ public class IndexController {
 			resp.setInfo_color(PackageBean.info_color_warning);
 		}
 		// Step2.包裝回傳
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 
 		// 回傳-模板
 		return packageService.objToJson(resp);

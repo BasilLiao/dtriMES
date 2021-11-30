@@ -55,7 +55,7 @@ public class WorkstationWorkController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+					one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
@@ -64,7 +64,7 @@ public class WorkstationWorkController {
 		resp = workService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), null);
 
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, one.getSppermission());
+		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -95,7 +95,7 @@ public class WorkstationWorkController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+					one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
@@ -105,13 +105,13 @@ public class WorkstationWorkController {
 
 		if (resp != null && resp.getBody() != null) {
 			// Step3.包裝回傳
-			resp = packageService.setObjResp(resp, req, one.getSppermission());
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳(有錯)
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -147,11 +147,11 @@ public class WorkstationWorkController {
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
 //			// Step4.包裝回傳
 //			resp.autoMsssage("100");
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
@@ -166,7 +166,7 @@ public class WorkstationWorkController {
 		System.out.println("---controller - -modify " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-	//	boolean check = false;
+		// boolean check = false;
 
 		System.out.println(json_object);
 		// 取得-當前用戶資料
@@ -182,7 +182,7 @@ public class WorkstationWorkController {
 		// Step2.進行新增
 		resp = workService.updateData(req.getBody(), user);
 		// Step3.進行判定
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -207,11 +207,11 @@ public class WorkstationWorkController {
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
 //			// Step4.包裝回傳
 //			resp.autoMsssage("100");
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
@@ -242,7 +242,7 @@ public class WorkstationWorkController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+					one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
@@ -253,11 +253,11 @@ public class WorkstationWorkController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			resp.autoMsssage("WK006");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);

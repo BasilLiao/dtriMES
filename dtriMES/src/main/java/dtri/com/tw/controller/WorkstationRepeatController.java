@@ -55,7 +55,7 @@ public class WorkstationRepeatController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+					one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
@@ -63,7 +63,7 @@ public class WorkstationRepeatController {
 		// Step2.進行查詢
 		//resp = configService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, one.getSppermission());
+		resp = packageService.setObjResp(resp, req,  resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -84,7 +84,7 @@ public class WorkstationRepeatController {
 		// Step2.進行查詢
 		resp = repeatService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -116,13 +116,13 @@ public class WorkstationRepeatController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -155,13 +155,13 @@ public class WorkstationRepeatController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -187,10 +187,10 @@ public class WorkstationRepeatController {
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 		// 回傳-資料
 		return packageService.objToJson(resp);

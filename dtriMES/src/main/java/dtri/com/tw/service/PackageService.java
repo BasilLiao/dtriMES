@@ -84,7 +84,7 @@ public class PackageService {
 	 * @param info        訊息
 	 * @param info_color  顏色
 	 **/
-	public PackageBean setObjResp(PackageBean resp_object, PackageBean req_object, /*String info, String info_color,*/String html_permission) {
+	public PackageBean setObjResp(PackageBean resp_object, PackageBean req_object, /*String info, String info_color,*/JSONObject html_permission) {
 		resp_object.setAction(req_object.getaction() == null ? "AR" : req_object.getaction());
 		resp_object.setCall_bk_fn(req_object.getCall_bk_fn() == null ? "" : req_object.getCall_bk_fn());
 		resp_object.setCall_bk_vals(

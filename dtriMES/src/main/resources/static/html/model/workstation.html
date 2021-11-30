@@ -20,8 +20,8 @@
 </style>
 <div id="workstation" class="text-left shadow">
 	<div class=" bg-white rounded-top m-0 pl-1 h5">
-		<i class="bi bi-joystick mr-1"></i>Workstation-> <b class="h6" id="workdatation_program_name">Loading...</b> / <b class="h6" id="workdatation_sort">Loading...</b>
-		/ <b class="h6" id="workstation_name">Loading...</b>
+		<i class="bi bi-joystick mr-1"></i>Workstation-> <b class="h6" id="workdatation_program_name">Loading...</b> / <b class="h6" id="workdatation_sort">Loading...</b> / <b class="h6"
+			id="workstation_name">Loading...</b>
 	</div>
 	<div class="p-2">
 		<form onsubmit="return workstation.send_command();">
@@ -125,7 +125,7 @@
 									<div id="barcode_BC015"></div>
 									<div id="BC015" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
 										<div class="small font-weight-bold">
-											製令單結束(檢核)<br>[BC015]
+											save(結束製令單)<br>[BC015]
 										</div>
 									</div>
 								</div>
@@ -209,8 +209,7 @@
 											<div id="doc_example" class="col-6 p-0 d-none">
 												<div class="m-0 p-1">
 													<div class="row m-0">
-														<input class="col-2 mt-1 p-1 border border-dark rounded big-checkbox doc_c_check" id="" name="" value="true" type="checkbox"
-															style="max-width: 30px;">
+														<input class="col-2 mt-1 p-1 border border-dark rounded big-checkbox doc_c_check" id="" name="" value="true" type="checkbox" style="max-width: 30px;">
 														<div class="col-10 doc_c_name p-0 over_hid" id="" contenteditable="true">Loading...</div>
 													</div>
 													<input disabled="disabled" class="col-12  p-0 border border-light rounded doc_c_value" id="" type="text" required>
@@ -470,18 +469,14 @@
 										<button id="send_command_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit">Send Command</button>
 									</div>
 									<div class="col-sm-4 p-0">
-										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="p-0">[製令單]_檢核(結束) :</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox" disabled="disabled" id="check_end" name="" value="true" type="checkbox" style="max-width: 30px;">
-										</div>
+
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="col-12 p-0">[產品/燒錄 序號]輸入後 :</div>
 											<div class="col-12 row p-0 m-0">
 												<div class="p-0">(儲存):</div>
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
 												<div class="p-0">/(檢查):</div>
-												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_check" checked="checked" name="" value="true" type="checkbox"
-													style="max-width: 30px;">
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_check" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
 
@@ -816,6 +811,8 @@
    		//裝箱數量結算
    		sn_box_number:0,
    		sn_box_list:[],
+   		//結單
+   		check_end:false,
    	},
    	//初始化
    	created() {
@@ -1071,9 +1068,9 @@
    					return false;
    					break;
    				case "BC004":
+   					workstation.check_end = false;
    					//存檔+避免w_focus_5 (SN)
    					if( $("#w_focus_5").val()!="" && workstation.barcode_check){
-   
    						//Step3.存檔
    						workstation.sendSave();		
    					}
@@ -1245,13 +1242,12 @@
    					return false;
    					break;	
    				case "BC015":
-   					//勾選檢核
-   					if($('#check_end').is(":checked")){
-   						$('#check_end').prop('checked', false);
-   					}else{
-	   					$('#check_end').prop('checked', true);   						
+   					//結單
+   					workstation.check_end = true;
+   					if( $("#w_focus_5").val()!="" && workstation.barcode_check){  
+   						//Step3.存檔
+   						workstation.sendSave();		
    					}
-   					workstation.clearOrder();
    					return false;
    					break;
    				default:
@@ -1476,12 +1472,6 @@
             if ($('#plt_check').is(":checked")){
             	modify_one['plt_check'] = true;
 			}
-            
-   			//檢核
-   			var check_end =false;
-   			if($('#check_end').is(":checked")){
-   				check_end = true;	
-   			}
    			
    			//包裝(action = AR_AC/AR_AU/AR_AD)
    			action = "AU";
@@ -1490,12 +1480,14 @@
    			req.action=action;
    			req.body={};
    			req.body['modify'] = modify_one;
-   			req.body['check_end'] = check_end;
+   			req.body['check_end'] = workstation.check_end;
    			req.call_bk_vals={};
    			main.ajaxSend(s_url, s_type, s_data);
    		},
    		//嘗試存檔後
    		saveReturn(){
+   			//結單關閉
+			workstation.check_end = false;
 			//Step4-0.過站完成 再檢查一次
 			if(main.allData.info_color=="success"){
 				workstation.barcode_save = true;

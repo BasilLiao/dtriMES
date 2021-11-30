@@ -74,14 +74,14 @@
 			});
 			//查詢-模板
 			$("#index #search_tab").load("./html/model/search.html", function() {
-				search.setDataTitle(main.allData.header);
+				search.setDataTitle(main.allData.header,main.allData.html_permission);
 				search.setDataList(main.allData.body.search,main.allData.body_type);
 				search.setSearch(main.allData.cell_searchs);
 				search.selectAllInit();
 			});
 			//編輯-模板
 			$("#index #modify_tab").load("./html/model/modify.html", function() {
-				modify.setDataTitle(main.allData.cell_modify);
+				modify.setDataTitle(main.allData.cell_modify,main.allData.html_permission);
 				modify.setDataTitleDelete(main.allData.header);
 				modify.setDataGroupTitle(main.allData.cell_g_modify);
 				modify.selectAllInit();

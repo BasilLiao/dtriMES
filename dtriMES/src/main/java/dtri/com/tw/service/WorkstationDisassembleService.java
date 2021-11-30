@@ -183,14 +183,14 @@ public class WorkstationDisassembleService {
 				}
 
 				// Step3. 進行-特定查詢(重工工單)-> 指定的SN
-				List<ProductionBody> bodies = bodyDao.findAllByPbsnAndPbgid(m_now_sn, prArrayList.get(0).getPhpbgid());
+				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
 				if (bodies.size() >= 1) {
 					return false;
 				}
 
 				// Step4. 進行-特定查詢(曾經工單)-> 指定的SN
-				List<ProductionBody> bodies_old = bodyDao.findAllByPbsnAndPbgid(m_now_sn, prArrayList_old.get(0).getPhpbgid());
+				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList_old.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效資料)
 				if (bodies_old.size() != 1) {
 					return false;
@@ -353,6 +353,10 @@ public class WorkstationDisassembleService {
 								bodyDao.delete(p_now);
 								check = true;
 							}
+						} else {
+							// 移除新資料
+							bodyDao.delete(p_now);
+							check = true;
 						}
 					}
 				}

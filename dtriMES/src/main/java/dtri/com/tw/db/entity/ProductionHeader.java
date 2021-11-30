@@ -24,12 +24,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      ph_pr_type : 類型-製令工單<br>
  *      ph_pb_id : 關聯-SN清單<br>
  *      ph_pb_g_id :關聯群組-SN清單<br>
- *      ph_p_name:(客戶)產品名稱/產品批次驗證序號(product name/part name)
- *      ph_wpro_id : 工作站<br>
+ *      ph_p_name:(客戶)產品名稱/產品批次驗證序號(product name/part name) ph_wpro_id : 工作站<br>
  *      ph_s_date : 開始製成 <br>
  *      ph_e_date : 結束製成 <br>
  *      ph_schedule : 進度{A站:{A1項目:Y,A2項目:N},{B站:{...},...}}<br>
- * 
+ * 		ph_pb_schedule :進度{A站:50,B站:20,...}}<br>
  */
 @Entity
 @Table(name = "production_header")
@@ -93,10 +92,10 @@ public class ProductionHeader {
 
 	@Column(name = "ph_type", columnDefinition = "varchar(50)")
 	private String phtype;
-	
+
 	@Column(name = "ph_p_number", columnDefinition = "varchar(50)")
 	private String phpnumber;
-	
+
 	@Column(name = "ph_p_name", columnDefinition = "varchar(50)")
 	private String phpname;
 
@@ -111,6 +110,9 @@ public class ProductionHeader {
 
 	@Column(name = "ph_schedule", columnDefinition = "varchar(50)")
 	private String phschedule;
+
+	@Column(name = "ph_pb_schedule", columnDefinition = "varchar(200)")
+	private String phpbschedule;
 
 	public String getPhpnumber() {
 		return phpnumber;
@@ -215,7 +217,6 @@ public class ProductionHeader {
 	public void setPhid(Long phid) {
 		this.phid = phid;
 	}
-	
 
 	public ProductionRecords getProductionRecords() {
 		return productionRecords;
@@ -263,6 +264,14 @@ public class ProductionHeader {
 
 	public void setPhpname(String phpname) {
 		this.phpname = phpname;
+	}
+
+	public String getPhpbschedule() {
+		return phpbschedule;
+	}
+
+	public void setPhpbschedule(String phpbschedule) {
+		this.phpbschedule = phpbschedule;
 	}
 
 }

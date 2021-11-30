@@ -392,7 +392,7 @@
 				}
 			},
 			
-			setDataTitle(title){
+			setDataTitle(title,html_permission){
 				//標題注入資訊(Detail / Create / Modify)
 				for(var d =0;d<title.length;d++){
 					//console.log(title[d]);
@@ -769,6 +769,10 @@
 				$("#delete_example_tr").remove();
 				
 				
+			 //權限設置
+               if(html_permission!=null){
+	               if(html_permission['cr']!=1){$("#m_create_all").addClass(" d-none")}
+               }
 			},
 			setData(obj_all){
 				//帶入資料區

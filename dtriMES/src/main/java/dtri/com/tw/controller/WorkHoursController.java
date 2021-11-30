@@ -51,7 +51,7 @@ public class WorkHoursController {
 		// Step2.進行查詢
 		resp = workHoursService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -80,7 +80,7 @@ public class WorkHoursController {
 		// Step2.進行查詢
 		resp = workHoursService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, "");
+		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -115,13 +115,13 @@ public class WorkHoursController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -154,13 +154,13 @@ public class WorkHoursController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
@@ -193,13 +193,13 @@ public class WorkHoursController {
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		} else {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
 			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, "");
+			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
 		return packageService.objToJson(resp);

@@ -837,8 +837,32 @@ public class WorkstationWorkService {
 					p_header.setSysstatus(1);
 					p_header.setPhschedule(p_records.getPrpokquantity() + "／" + p_records.getPrpquantity());
 					p_header.setProductionRecords(p_records);
-					// 此製令已完成
-					if (check_end && p_records.getPrpokquantity() == p_records.getPrpquantity()) {
+					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
+					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
+					List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(p_header.getPhpbgid(),
+							"%" + list.getString("w_c_name") + "_Y%");
+
+					if (p_header.getPhpbschedule() != null && !p_header.getPhpbschedule().equals("")) {
+						JSONObject phpbs = new JSONObject(p_header.getPhpbschedule());
+						phpbs.put(list.getString("w_c_name"), wk_schedules.size());
+						p_header.setPhpbschedule(phpbs.toString());
+					} else {
+						// 補充建立
+						JSONObject json_ph_pb_schedule = new JSONObject();
+						// 建立結構
+						for (WorkstationProgram p_one : programs) {
+							ArrayList<Workstation> works = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
+							// 計算 此工作站完成數
+							wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(p_header.getPhpbgid(), "%" + works.get(0).getWcname() + "_Y%");
+							json_ph_pb_schedule.put(works.get(0).getWcname(), wk_schedules.size());
+						}
+						p_header.setPhpbschedule(json_ph_pb_schedule.toString());
+					}
+
+					// 此製令已完成(完成數/目標數)量
+					int f_nb = p_records.getPrpokquantity();
+					int e_nb = p_records.getPrpquantity();
+					if (check_end && (f_nb == e_nb)) {
 						p_header.setSysstatus(2);
 						p_header.setPhedate(new Date());
 					}
