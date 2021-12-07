@@ -11,7 +11,7 @@
 						<div class="row p-0 m-0 pb-2 text-center mt-3">
 							<div class="col-md-3 p-1 m-0 h4 text-center">[新]重工-製令單(登記)</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded">
+								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<div class="row p-0 m-0">
@@ -24,7 +24,7 @@
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4">[舊]原先-製令單(登記)</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
+								<input disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3"></div>
 						</div>
@@ -32,7 +32,7 @@
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4">[舊]產品-SN身分(登記)</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_now_sn" type="text" required="required" class="col-12 p-1 rounded">
+								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">登記SN至[重工 製令單]</button>
@@ -70,11 +70,11 @@
 										<hr class="mt-2 mb-1">
 										<b>Step1.</b>輸入 [新]重工-製令單(登記)
 										<!--  -->
-										<br> <b>Step2.</b>按下 <b>Check</b> 檢查
+										<br> <b>Step2.</b>輸入 [舊]產品-SN身分(登記)
 										<!--  -->
-										<br> <b>Step3.</b>顯示 登記數/總數(台) ?/?
+										<br> <b>Step3.</b>按下 <b>Check</b> 檢查
 										<!--  -->
-										<br> <b>Step4.</b>輸入 [舊]原先-製令單(登記) 以及 [舊]產品-SN身分(登記)
+										<br> <b>Step4.</b>顯示 登記數/總數(台) ?/?
 										<!--  -->
 										<br> <b>Step5.</b>按下 <b>登記SN至[重工 製令單]</b>
 										<!--  -->
@@ -106,7 +106,7 @@
 		el : "#customized",
 		//資料區
 		data : {
-			check_order_btn:false,//檢查
+			check_order_btn : false,//檢查
 		},
 		//初始化
 		created() {
@@ -139,6 +139,32 @@
 		   		    console.log("return_order_btn");
 		   			customized.sendCheck("return_order_btn");
 		   		});
+		   		//快速移動 監聽確認
+               $(document).on("keypress", ".m_input", function (event) {
+            	   if (event.which == 13) {
+            		   //位移
+            		   if($('#m_now_order').val()==""){
+            			   $("#m_now_order").focus();
+            			   return null;
+            		   }
+            		   if($('#m_old_sn').val()==""){
+            			   $("#m_old_sn").focus();
+            			   return null;
+            		   }
+            		   
+            		   //進行存檔
+            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!="" && customized.check_order_btn){
+            			   $('#order_btn').trigger('click');
+            			   return null;
+            		   }
+            		   
+            		   //進行檢查
+            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!=""){
+            			   $('#check_order_btn').trigger('click');
+            			   return null;
+            		   } 
+            	    }
+               });
 			},
 	   		//檢查
 	   		sendCheck(action) {
@@ -154,26 +180,27 @@
 		            	if($('#m_now_order').val()!=""){
 		            		obj['action'] = "check_order_btn";
 		            		obj['m_now_order'] = $('#m_now_order').val();
+		            		obj['m_old_sn'] = $('#m_old_sn').val();
 	            			s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
 		            	}
 	            	break;
 	            	case"order_btn":
 	            		//登記 重工-工單
-	            		if(this.check_order_btn  && $('#m_now_sn').val()!=""){
+	            		if(this.check_order_btn  && $('#m_old_sn').val()!=""){
 		            		if( $('#check_create_data').is(":checked")){
 		            			//自動新建
 		            			s_url = (t_body.html_body + ".AC").replace("html", "basil").replace("body_", "");
 		            			obj['action'] = "order_btn_create_sn";
 		            			obj['m_now_order'] = $('#m_now_order').val();
-		            			obj['m_now_sn'] = $('#m_now_sn').val();
-		    	            }else if($('#m_old_order').val()!=""){
+		            			obj['m_old_sn'] = $('#m_old_sn').val();
+		    	            }else if($('#m_old_sn').val()!=""){
 		    	            	//轉移
 		    	            	s_type = "PUT";
 		    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
 		    	            	obj['action'] = "order_btn";
 		    	            	obj['m_now_order'] = $('#m_now_order').val();
 		    	            	obj['m_old_order'] = $('#m_old_order').val();
-		    	            	obj['m_now_sn'] = $('#m_now_sn').val();
+		    	            	obj['m_old_sn'] = $('#m_old_sn').val();
 		    	            }
 		            		req.call_bk_fn = "customized_save";
 	            		}
@@ -181,8 +208,8 @@
 	            	case"return_order_btn":
 	            		//歸還/消除 工單
 	            		if($('#m_return_sn').val()!=""){
-	            			s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
-	            			s_type = "PUT";
+	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
+	            			s_type = "DELETE";
 	            			obj['action'] = "return_order_btn";
 	            			obj['m_now_order'] = $('#m_now_order').val();
 	            			obj['m_return_sn'] = $('#m_return_sn').val();
@@ -223,19 +250,24 @@
 	   			if(main.allData.info_color=="success"){
 	   				customized.sendCheck("check_order_btn");
 	   			}
+	   			$("#m_old_sn").focus();
+	   			$("#m_old_sn").select();
 			},
 			//嘗試檢查後
 	   		checkReturn(){
 				main.loading(false);
-				if(main.allData.body.search==null){
+				if(main.allData.body==null){
 					//如果沒資料
 					$('#order_nb').text("?/?");
+					$("#m_now_order").focus();
 					return null;
 				}else{
 					//有資料
 			   		this.check_order_btn = true;
-		   			$('#m_now_order').attr("disabled","disabled");	
-		   			$('#order_nb').text(main.allData.body.search['phpnumber_register']+'/'+main.allData.body.search['phpnumber_total']);	   			
+		   			$('#m_now_order').attr("disabled","disabled");
+		   			$('#m_old_order').val(main.allData.body.search['m_old_order']);
+		   			$('#order_nb').text(main.allData.body.search['phpnumber_register']+'/'+main.allData.body.search['phpnumber_total']);
+		   			$("#m_old_sn").focus();
 				}
 			},
 		},
@@ -246,6 +278,7 @@
 			$(document).off("click", "#locked_order_btn");
 			$(document).off("click", "#order_btn");
 			$(document).off("click", "#return_order_btn");
+			 $(document).off("keypress", ".m_input");
 		}
 	});
 </script>

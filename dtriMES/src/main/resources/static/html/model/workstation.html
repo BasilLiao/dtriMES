@@ -163,6 +163,15 @@
 										</div>
 									</div>
 								</div>
+								<div class="p-2" id="cancel">
+									<div id="barcode_BC006"></div>
+									<div id="BC006" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
+										<div class="small font-weight-bold">
+											wait...(暫停使用)<br>[BC016]
+										</div>
+									</div>
+								</div>
+								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="p-2" id="logout">
 									<div id="barcode_BC007"></div>
@@ -382,7 +391,7 @@
 						</td>
 					</tr>
 					<!--(固定)目前條碼 -->
-					<tr class="font-weight-bold">
+					<tr class="font-weight-bold" >
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded h2">
 								<div class="col-3 p-1 m-0 b_code_w ">
@@ -1356,6 +1365,11 @@
    					$("#BC003" ).trigger( "click" );
    					return false;
    				}
+   				//如果輸入有勾選自動檢查
+   				if($('#after_sn_check').is(":checked") && id=='w_focus_6' ){
+   					$("#BC003" ).trigger( "click" );
+   					return false;
+   				}
    				
    			  }, 200);
    			
@@ -1517,6 +1531,7 @@
             search['w_c_name'] = $('#w_focus_1').val();
             search['ph_pr_id'] = $('#w_focus_2').val();
             search['pb_b_sn'] = $('#w_focus_5').val();
+            search['pb_b_sn_old'] = $('#w_focus_6').val();
 
             
             //包裝
@@ -1654,6 +1669,11 @@
 	   				workstation.nb=6;
    				}
    			 }
+   			 //Step6. 自動位移 A511 _new sn
+   			if($(".sn_list").length>0 && $("#w_focus_6").val()!=""){
+				workstation.nb=7;
+			}
+
 			//更換Class
 			$("#"+id).removeClass("border-1");
 			$("#"+id).addClass("border-0");

@@ -1,5 +1,8 @@
 package dtri.com.tw.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import dtri.com.tw.bean.PackageBean;
+import dtri.com.tw.db.entity.SystemGroup;
+import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.login.LoginUserDetails;
 import dtri.com.tw.service.PackageService;
@@ -36,22 +41,32 @@ public class SystemGroupController {
 		System.out.println("---controller -access " + SYS_F + " Check");
 		// 取得-當前用戶資料
 		SystemUser user = new SystemUser();
+		PackageBean req = new PackageBean();
+		PackageBean resp = new PackageBean();
+		// 取得-當前用戶資料
+		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			// Step1.查詢資料權限
+			systemGroup = userDetails.getSystemGroup();
 			// Step1.查詢資料
 			user = userDetails.getSystemUser();
 		}
-		PackageBean req = new PackageBean();
-		PackageBean resp = new PackageBean();
-
+		// UI限制功能
+		SystemPermission one = new SystemPermission();
+		systemGroup.forEach(p -> {
+			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
+				one.setSppermission(p.getSgpermission());
+			}
+		});
 		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
 		resp = groupService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, null);
+		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}

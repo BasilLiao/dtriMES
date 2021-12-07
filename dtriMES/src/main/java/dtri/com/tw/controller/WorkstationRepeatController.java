@@ -55,15 +55,16 @@ public class WorkstationRepeatController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-					one.setSppermission(p.getSgpermission());
+				one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		//resp = configService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
+		// resp = configService.getData(req.getBody(), req.getPage_batch(),
+		// req.getPage_total());
 		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req,  resp.permissionToJson(one.getSppermission().split("")));
+		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -150,7 +151,7 @@ public class WorkstationRepeatController {
 		}
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
+		// Step2.進行更新
 		check = repeatService.updateData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
@@ -174,24 +175,34 @@ public class WorkstationRepeatController {
 	@RequestMapping(value = { "/ajax/workstation_repeat.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		System.out.println("---controller -delete " + SYS_F + " Check");
-//		PackageBean req = new PackageBean();
+		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-//		boolean check = false;
+		boolean check = false;
 
 		System.out.println(json_object);
-
+		// 取得-當前用戶資料
+		SystemUser user = new SystemUser();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			// Step1.查詢資料
+			user = userDetails.getSystemUser();
+		}
 		// Step1.包裝解析
-//		req = packageService.jsonToObj(new JSONObject(json_object));
-//		// Step2.進行新增
-//		check = repeatService.deleteData(req.getBody());
-//		// Step3.進行判定
-//		if (check) {
-//			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, null);
-//		} else {
-//			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, null);
-//		}
+		req = packageService.jsonToObj(new JSONObject(json_object));
+		// Step2.進行移除
+		check = repeatService.deleteData(req.getBody(), user);
+		// Step3.進行判定
+		if (check) {
+			// Step4.包裝回傳
+			resp = packageService.setObjResp(resp, req, null);
+		} else {
+			// Step4.包裝回傳
+			req.setCall_bk_vals(new JSONObject().put("search", false));
+			req.setAction("");
+			resp.autoMsssage("100");
+			resp = packageService.setObjResp(resp, req, null);
+		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}

@@ -768,11 +768,13 @@
 				$("#modify_example_tr").remove();
 				$("#delete_example_tr").remove();
 				
-				
-			 //權限設置
-               if(html_permission!=null){
-	               if(html_permission['cr']!=1){$("#m_create_all").addClass(" d-none")}
-               }
+			 	//權限設置
+				if(html_permission!=null){
+					if(html_permission['cr']!=1){
+						//$(".detail_example_add").addClass(" d-none");
+						$("#m_create_all").addClass(" d-none");
+					}
+				}
 			},
 			setData(obj_all){
 				//帶入資料區

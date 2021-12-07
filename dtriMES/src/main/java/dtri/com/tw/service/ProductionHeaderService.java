@@ -1227,6 +1227,11 @@ public class ProductionHeaderService {
 				// 確認致令
 				if (phs.size() != 0) {
 					ProductionHeader pheader = phs.get(0);
+					// 檢查 移除製令單 不能包含old 被繼承 or 繼承別張製令單
+					if (productionBodyDao.findAllByPbgidAndPbbsnLikeOrPboldsnLike(data.getLong("ph_pb_g_id"), "old", "old").size() > 0) {
+						return check;
+					}
+					// 移除
 					hoursDao.deleteByproductionRecords(pheader.getProductionRecords());
 					productionHeaderDao.deleteByPhidAndSysheader(data.getLong("ph_id"), true);
 					if (data.getLong("ph_pb_g_id") != 1L) {// 不能移除 NO SN

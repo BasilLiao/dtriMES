@@ -77,6 +77,7 @@ public class WorkstationWorkService {
 		String w_c_name = null;
 		String ph_pr_id = null;
 		String pb_b_sn = null;
+		String pb_b_sn_old = null;
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -169,6 +170,8 @@ public class WorkstationWorkService {
 			ph_pr_id = ph_pr_id.equals("") ? null : ph_pr_id;
 			pb_b_sn = body.getJSONObject("search").getString("pb_b_sn");
 			pb_b_sn = pb_b_sn.equals("") ? null : pb_b_sn;
+			pb_b_sn_old = body.getJSONObject("search").getString("pb_b_sn_old");
+			pb_b_sn_old = pb_b_sn_old.equals("") ? null : pb_b_sn_old;
 
 			// 工作站
 			ArrayList<Workstation> w_one = wkDao.findAllByWcname(w_c_name, PageRequest.of(0, 1));
@@ -204,6 +207,20 @@ public class WorkstationWorkService {
 						// 比對-檢查 燒錄 SN關聯
 						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
 						if (pb_all.size() == 1) {
+							// 計算 此工作站完成數
+							List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(pb_all.get(0).getPbgid(),
+									"%" + wpcname + "_Y%");
+							int all_nb = wk_schedules.size();
+							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
+							// 如果是A521 有舊的SN (要排除已經繼承)
+							if (pb_b_sn_old != null && pb_old_sn.indexOf(pb_b_sn_old) < 0) {
+								pb_all = pbDao.findAllByPbbsnAndPbbsnNotLike(pb_b_sn_old, "_old");
+								if (pb_all.size() != 1) {
+									bean.setBody(new JSONObject());
+									bean.autoMsssage("WK004_1");
+									return bean;
+								}
+							}
 
 							// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 							// doc
@@ -211,6 +228,7 @@ public class WorkstationWorkService {
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
 							JSONObject object_body_all = new JSONObject();
+
 							ph_all.forEach(one -> {
 								JSONObject object_body = new JSONObject();
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_s_date",
@@ -227,11 +245,6 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_c_name", one.getProductionRecords().getPrcname());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_quantity",
 										one.getProductionRecords().getPrpquantity() + "/" + one.getProductionRecords().getPrpokquantity());
-
-								// 計算 此工作站完成數
-								List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(pb_one.getPbgid(),
-										"%" + wpcname + "_Y%");
-								int all_nb = wk_schedules.size();
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb);
 
@@ -383,11 +396,39 @@ public class WorkstationWorkService {
 			// Step0.查詢SN關聯
 			if (!list.get("pb_b_sn").equals("")) {
 				List<ProductionBody> body_s = new ArrayList<ProductionBody>();
+				List<ProductionBody> body_s_old = new ArrayList<ProductionBody>();
 				body_s = pbDao.findAllByPbbsn(list.getString("pb_b_sn"));
+				body_s_old = pbDao.findAllByPbbsn(list.getString("pb_old_sn"));
 
 				// 更新[ProductionBody]
 				if (body_s.size() == 1) {
 					ProductionBody body_one = body_s.get(0);
+					ProductionBody body_one_old = body_s_old.get(0);
+					// A521 新舊(SN)繼承?
+					if (list.getString("pb_old_sn") != null && !list.getString("pb_old_sn").equals("")) {
+
+						body_one.setPblpath(body_one_old.getPblpath());
+						body_one.setPblsize(body_one_old.getPblsize());
+						body_one.setPbltext(body_one_old.getPbltext());
+						body_one.setPbldt(body_one_old.getPbldt());
+						try {
+							// 可能的SN範圍
+							for (int k = 0; k < 50; k++) {
+								String set_name = "setPbvalue" + String.format("%02d", k + 1);
+								String get_name = "getPbvalue" + String.format("%02d", k + 1);
+								// 取出欄位名稱 ->存入body_title資料
+								Method get_method = body_one_old.getClass().getMethod(get_name);
+								Method set_method = body_one.getClass().getMethod(set_name, String.class);
+								String body_value = (String) get_method.invoke(body_one_old);
+								set_method.invoke(body_one, body_value);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							bean.autoMsssage("1111");
+							return bean;
+						}
+					}
+
 					List<ProductionBody> check_sn = pbDao.findAllByPbgidOrderByPbsnAsc(body_one.getPbgid());
 					if (check_sn.size() == 0) {
 						// 製令單有問題
@@ -644,7 +685,7 @@ public class WorkstationWorkService {
 								ftpPassword = c_json.getString("PASSWORD"), //
 								remotePath = c_json.getString("PATH") + year, //
 								remotePathBackup = c_json.getString("PATH_BACKUP"), //
-								localPath = "";//
+								localPath = c_json.getString("LOCAL_PATH");//
 						int ftpPort = c_json.getInt("PORT");
 						String[] searchName = { list.getString("ph_pr_id"), "", list.getString("pb_b_sn") };
 						FtpUtilBean ftp = new FtpUtilBean(ftpHost, ftpUserName, ftpPassword, ftpPort);

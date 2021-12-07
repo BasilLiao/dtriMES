@@ -54,7 +54,7 @@ public class MaintainCodeController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-					one.setSppermission(p.getSgpermission());
+				one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析

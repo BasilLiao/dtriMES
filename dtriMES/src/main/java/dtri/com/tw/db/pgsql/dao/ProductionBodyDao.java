@@ -30,9 +30,16 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 
 	// 查詢燒錄 SN重複
 	List<ProductionBody> findAllByPbbsn(String pbbsn);
-	
-	// 查詢燒錄_Like+不是舊的SN 
-	List<ProductionBody> findAllByPbbsnAndPbbsnNotLike(String pbbsn,String not_old_sn);
+
+	// 查詢燒錄_Like+不是舊的SN
+	List<ProductionBody> findAllByPbbsnAndPbbsnNotLike(String pbbsn, String not_old_sn);
+
+	// 查詢該群組_Like+不是舊的SN
+	@Query(value = "SELECT b FROM ProductionBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbbsn LIKE %:pbbsn% or b.pboldsn LIKE %:pboldsn% ) "// coalesce 回傳非NULL值
+			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
+	List<ProductionBody> findAllByPbgidAndPbbsnLikeOrPboldsnLike(Long pbgid, String pbbsn, String pboldsn);
 
 	// 查詢SN重複+群組
 	List<ProductionBody> findAllByPbsnAndPbgid(String pbsn, Long pbgid);
@@ -55,7 +62,7 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			+ "(coalesce(:pbid, null) is null or b.pbid IN :pbid ) and "// coalesce 回傳非NULL值
 			+ "(b.pbid!=0 or b.pbid!=1) and (b.sysheader!=true) "//
 			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
-	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id ,Pageable pageable);
+	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id, Pageable pageable);
 
 	// 查詢一部分_Body By Check
 	@Query(value = "SELECT b FROM ProductionBody b WHERE "//

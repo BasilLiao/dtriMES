@@ -2,10 +2,7 @@ package dtri.com.tw.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
@@ -40,10 +37,10 @@ public class ScheduleTaskService {
 	// log 訊息
 	private static Logger logger = LogManager.getLogger();
 
-	// 每日12/18:00分執行一次
+	// 每日(30)12/22:00分執行一次
 	// 系統 備份(pgsql+ftp)
 	@Async
-	@Scheduled(cron = "0 30 12,18 * * ? ")
+	@Scheduled(cron = "0 30 12,22 * * ? ")
 	public void backupDataBase() {
 		System.out.println("每隔1天 早上12點30分/晚上18點30 執行一次：" + new Date());
 		logger.info("Database backup night 18.30  執行一次：" + new Date());
@@ -116,15 +113,17 @@ public class ScheduleTaskService {
 		}
 		// Step4. 上傳-FTP
 		try {
-			File initialFile = new File(apache_path + db_folder_name + db_file_name + "_" + backupDay + ".sql");
-			InputStream input = new FileInputStream(initialFile);
+			// File initialFile = new File(apache_path + db_folder_name + db_file_name + "_"
+			// + backupDay + ".sql");
+			// InputStream input = new FileInputStream(initialFile);
 			FtpUtilBean f_Bean = new FtpUtilBean(ftp_host, ftp_user_name, ftp_password, ftp_port);
-			f_Bean.setInput(input);
-			f_Bean.setFtpPath(ftp_remote_path);
+			f_Bean.setLocalPath(apache_path + db_folder_name + db_file_name + "_" + backupDay + ".sql");
+			// f_Bean.setInput(input);
+			f_Bean.setRemotePathBackup(ftp_remote_path + db_file_name + "_" + backupDay + ".sql");
 			f_Bean.setFileName(db_file_name + "_" + backupDay + ".sql");
 			FtpService fts = new FtpService();
 			fts.uploadFile(f_Bean);
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
@@ -145,8 +144,8 @@ public class ScheduleTaskService {
 				ftpUserName = c_json.getString("ACCOUNT"), //
 				ftpPassword = c_json.getString("PASSWORD"), //
 				remotePath = c_json.getString("PATH") + year; //
-				//remotePathBackup = c_json.getString("PATH_BACKUP"), //
-				//localPath = "";//
+		// remotePathBackup = c_json.getString("PATH_BACKUP"), //
+		// localPath = "";//
 		int ftpPort = c_json.getInt("PORT");
 
 		FTPClient ftpClient = new FTPClient();

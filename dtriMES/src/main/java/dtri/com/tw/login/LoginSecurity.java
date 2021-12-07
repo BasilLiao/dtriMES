@@ -156,7 +156,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, workstation_repeat + ".AR").hasAuthority(actionRole(workstation_repeat, "AR"))// (查詢[檢查])
 				.antMatchers(HttpMethod.POST, workstation_repeat + ".AC").hasAuthority(actionRole(workstation_repeat, "AC"))// (新增[登記重工])
 				.antMatchers(HttpMethod.PUT, workstation_repeat + ".AU").hasAuthority(actionRole(workstation_repeat, "AU"))// (修改[交換])
-				//.antMatchers(HttpMethod.DELETE, workstation_repeat + ".AD").hasAuthority(actionRole(workstation_repeat, "AD"))// (移除)
+				.antMatchers(HttpMethod.DELETE, workstation_repeat + ".AD").hasAuthority(actionRole(workstation_repeat, "AD"))// (移除)
 				
 				// ----請求-workstation_disassemble-(訪問) ----
 				.antMatchers(HttpMethod.POST, workstation_disassemble).hasAuthority(actionRole(workstation_disassemble, ""))//

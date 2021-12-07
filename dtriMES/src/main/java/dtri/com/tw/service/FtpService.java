@@ -1,8 +1,10 @@
 package dtri.com.tw.service;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import dtri.com.tw.bean.FtpUtilBean;
@@ -36,6 +39,8 @@ public class FtpService {
 	 * @return
 	 */
 	Logger logger = LoggerFactory.getLogger(FTPClient.class);
+	@Value("${catalina.home}")
+	private String apache_path;
 
 	public static FTPClient getFTPClient(FTPClient ftpClient, String ftpHost, String ftpUserName, String ftpPassword, int ftpPort) {
 		try {
@@ -80,8 +85,8 @@ public class FtpService {
 	 * @param localPath   下載到本地的位置 格式：H:/download
 	 * @param fileName    檔名稱
 	 */
-	public void downloadFtpFile(FtpUtilBean ftp) {
-
+	public boolean downloadFtpFile(FtpUtilBean ftp) {
+		boolean success = false;
 		FTPClient ftpClient = new FTPClient();
 
 		try {
@@ -90,25 +95,35 @@ public class FtpService {
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.changeWorkingDirectory(ftp.getFtpPath());
-
-			File localFile = new File(ftp.getLocalPath() + File.separatorChar + ftp.getFileName());
+			// Step3-1.查資料夾
+			File directory = new File(apache_path + ftp.getLocalPath());
+			if (!directory.exists()) {
+				directory.mkdir();
+			}
+			// Step3-2.建立檔案
+			File localFile = new File(apache_path + ftp.getLocalPath() + File.separatorChar + ftp.getFileName());
 			OutputStream os = new FileOutputStream(localFile);
-			ftpClient.retrieveFile(ftp.getFileName(), os);
+			// System.out.println(ftp.getRemotePath()+"/"+ftp.getFileName());
+			ftpClient.retrieveFile(ftp.getRemotePath() + "/" + ftp.getFileName(), os);
+			// System.out.println(ftpClient.getReplyCode());
 			os.close();
 			ftpClient.logout();
-
+			success = true;
 		} catch (FileNotFoundException e) {
 			System.out.println("沒有找到" + ftp.getFtpPath() + "檔案");
 			e.printStackTrace();
+			return success;
 		} catch (SocketException e) {
 			System.out.println("連線FTP失敗.");
 			e.printStackTrace();
+			return success;
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("檔案讀取錯誤。");
 			e.printStackTrace();
+			return success;
 		}
-
+		return success;
 	}
 
 	/**
@@ -138,14 +153,17 @@ public class FtpService {
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.changeWorkingDirectory(ftp.getFtpPath());
-
-			ftpClient.storeFile(ftp.getFileName(), ftp.getInput());
-
-			ftp.getInput().close();
+			//上傳資料位置
+			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(ftp.getLocalPath()));
+			System.out.println(ftp.getRemotePathBackup());
+			ftpClient.storeFile(ftp.getRemotePathBackup(), inputStream);
+			inputStream.close();
+			// ftp.getInput().close();
 			ftpClient.logout();
 			success = true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return success;
 		} finally {
 			if (ftpClient.isConnected()) {
 				try {
@@ -309,20 +327,31 @@ public class FtpService {
 				JSONObject json = (JSONObject) one_file;
 				String re_path = json.getString("re_path");
 				String new_path = json.getString("new_path");
-
-				// 快速移動檔案方式
-				if (!ftpClient.rename(re_path, new_path)) {
-					logger.error("Can't move File to Backup !!");
+				// 本地端檔案位置
+				String local = apache_path + ftp.getLocalPath() + re_path.split("/")[3];
+				// 下載
+				ftp.setFileName(re_path.split("/")[3]);
+				if (!downloadFtpFile(ftp)) {
 					return false;
 				}
-				/*
-				 * 先暫時PASS 尚未能夠更動使用者
-				 * 
-				 * FTPFile current = ftpClient.listFiles(new_path)[0];
-				 * current.setPermission(FTPFile.USER_ACCESS, FTPFile.WRITE_PERMISSION, true);
-				 * ftpClient.sto System.out.println(ftpClient.getReplyCode());
-				 */
-
+				// 上傳
+				ftp.setFileName(new_path.split("/")[3]);
+				ftp.setLocalPath(local);
+				ftp.setRemotePathBackup(new_path);
+				if (!uploadFile(ftp)) {
+					return false;
+				}
+				// 移除
+				ftpClient.deleteFile(re_path);
+				File file = new File(local);
+				if (file.exists()) {
+					file.delete();
+				}
+				// 快速移動檔案方式
+//				if (!ftpClient.rename(re_path, new_path)) {
+//					logger.error("Can't move File to Backup !!");
+//					return false;
+//				}
 			}
 			ftpClient.logout();
 			System.out.println(new Date());

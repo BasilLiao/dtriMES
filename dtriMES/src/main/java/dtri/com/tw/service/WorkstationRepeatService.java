@@ -42,9 +42,11 @@ public class WorkstationRepeatService {
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
-
+		List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
 		// 進行-特定查詢(重工工單)
 		String now_order = body.getJSONObject("search").getString("m_now_order");
+		String m_old_sn = body.getJSONObject("search").getString("m_old_sn");
+
 		ProductionRecords phprid = new ProductionRecords();
 		phprid.setPrid(now_order);
 		prArrayList = headerDao.findAllByProductionRecordsAndPhtype(phprid, "A521_old_sn");
@@ -54,9 +56,19 @@ public class WorkstationRepeatService {
 			// 查詢多少台
 			Long phpbgid = prArrayList.get(0).getPhpbgid();
 			List<ProductionBody> bodies = bodyDao.findAllByPbgidAndPbbsnNotOrderByPbsnAsc(phpbgid, "no_sn");
+			List<ProductionBody> bodies_old = bodyDao.findAllByPbbsn(m_old_sn);
+
+			// 如果有-> 回傳原先製令單
+			String m_old_order = "";
+			if (bodies_old.size() == 1) {
+				prArrayList_old = headerDao.findAllByPhpbgid(bodies_old.get(0).getPbgid());
+				m_old_order = prArrayList_old.size() > 0 ? prArrayList_old.get(0).getProductionRecords().getPrid() : "";
+			}
+
 			bean.setBody(new JSONObject().put("search", new JSONObject().//
 					put("phpnumber_total", prArrayList.get(0).getProductionRecords().getPrpquantity()).//
 					put("phpnumber_register", bodies.size()).//
+					put("m_old_order", m_old_order).//
 					put("check", true)));//
 		} else {
 			bean.autoMsssage("102");
@@ -72,24 +84,24 @@ public class WorkstationRepeatService {
 			// 新建的資料
 			List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
 			String now_order = body.getJSONObject("create").getString("m_now_order");
-			String m_now_sn = body.getJSONObject("create").getString("m_now_sn");
+			String m_old_sn = body.getJSONObject("create").getString("m_old_sn");
 			ProductionRecords phprid = new ProductionRecords();
 
 			// 進行-特定查詢(重工工單)
 			phprid.setPrid(now_order);
 			prArrayList = headerDao.findAllByProductionRecordsAndPhtype(phprid, "A521_old_sn");
+
 			// 檢查 u 製令單資料
 			if (prArrayList.size() == 1) {
 				ProductionHeader pro_h = prArrayList.get(0);
-				Long phpbgid = prArrayList.get(0).getPhpbgid();
-				List<ProductionBody> bodies = bodyDao.findAllByPbsnAndPbgid(m_now_sn, phpbgid);
+				List<ProductionBody> bodies = bodyDao.findAllByPbbsn(m_old_sn);
 				// 檢查 此工單+SN 是否重複
 				if (bodies.size() > 0) {
 					return false;
 				}
 				// 查詢 指定的SN
 				bodies = new ArrayList<ProductionBody>();
-				bodies = bodyDao.findAllByPbsn(m_now_sn);
+				bodies = bodyDao.findAllByPbsn(m_old_sn);
 				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
 				if (bodies.size() >= 1) {
 					return false;
@@ -122,8 +134,8 @@ public class WorkstationRepeatService {
 					pro_b.setSysver(0);
 					pro_b.setPbgid(id_b_g);
 					pro_b.setSysheader(false);
-					pro_b.setPbsn(m_now_sn);
-					pro_b.setPbbsn(m_now_sn);
+					pro_b.setPbsn(m_old_sn);
+					pro_b.setPbbsn(m_old_sn);
 
 					pro_b.setPbcheck(false);
 					pro_b.setPbusefulsn(0);
@@ -160,10 +172,21 @@ public class WorkstationRepeatService {
 
 			// 取舊的-> 新建的資料
 			if (action.equals("order_btn")) {
-				String now_order = body.getJSONObject("modify").getString("m_now_order");
-				String m_now_sn = body.getJSONObject("modify").getString("m_now_sn");
-				String m_old_order = body.getJSONObject("modify").getString("m_old_order");
 				ProductionRecords phprid = new ProductionRecords();
+				String m_old_sn = body.getJSONObject("modify").getString("m_old_sn");
+				String m_old_order = body.getJSONObject("modify").getString("m_old_order");
+				String now_order = body.getJSONObject("modify").getString("m_now_order");
+
+				// Step0.檢查該燒錄SN/ 製令單 是否有存在 排除old
+				List<ProductionBody> bodiess = bodyDao.findAllByPbbsnAndPbbsnNotLike(m_old_sn, "_old");
+				if (bodiess.size() != 1) {
+					return false;
+				}
+				List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodiess.get(0).getPbgid());
+				if (!(headers.size() >= 1)) {
+					return false;
+				}
+				m_old_order = headers.get(0).getProductionRecords().getPrid();
 
 				// Step1. 進行-特定查詢(重工工單)
 				phprid.setPrid(now_order);
@@ -183,14 +206,14 @@ public class WorkstationRepeatService {
 				}
 
 				// Step3. 進行-特定查詢(重工工單)-> 指定的SN
-				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList.get(0).getPhpbgid());
+				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
 				if (bodies.size() >= 1) {
 					return false;
 				}
 
 				// Step4. 進行-特定查詢(曾經工單)-> 指定的SN
-				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList_old.get(0).getPhpbgid());
+				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList_old.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效資料)
 				if (bodies_old.size() != 1) {
 					return false;
@@ -326,33 +349,74 @@ public class WorkstationRepeatService {
 				bodyDao.save(pro_b_one);
 
 				check = true;
-			} else if (action.equals("return_order_btn")) {
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			return false;
+		}
+		return check;
+	}
+
+	// 還原 資料清單
+	@Transactional
+	public boolean deleteData(JSONObject body, SystemUser user) {
+		boolean check = false;
+		// 預備資料
+		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
+		// List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
+		String action = body.getJSONObject("modify").getString("action");
+		try {
+			if (action.equals("return_order_btn")) {
 				// 歸還資料
 				String return_sn = body.getJSONObject("modify").getString("m_return_sn");
 				List<ProductionBody> now_sns = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
 
-				// 確定有歸還 對象
+				// Step0. 確定有歸還 對象
 				if (now_sns.size() == 1) {
 					ProductionBody p_now = now_sns.get(0);
-					// 檢查製令單
+					ProductionBody p_now_clear = new ProductionBody();
+					// Step1. 檢查製令單
 					prArrayList = headerDao.findAllByPhpbgid(p_now.getPbgid());
 					if (prArrayList.size() == 1 //
 							&& (prArrayList.get(0).getPhtype().equals("A521_no_and_has_sn")//
 									|| prArrayList.get(0).getPhtype().equals("A521_has_sn") //
 									|| prArrayList.get(0).getPhtype().equals("A521_old_sn"))) {
-						// 是否有舊紀錄
+						// Step2. 是否有舊紀錄
 						if (p_now.getPboldsn() != null && !p_now.getPboldsn().equals("")) {
 							JSONArray re_old_sn = new JSONArray(p_now.getPboldsn());
 							String old_sn = re_old_sn.getString(re_old_sn.length() - 1);
 							// 核對
 							List<ProductionBody> old_sns = bodyDao.findAllByPbbsn(old_sn);
 							if (old_sns.size() == 1) {
-								// 還原舊資料
+								// Step3. 還原舊資料
 								ProductionBody p_old = old_sns.get(0);
 								p_old.setPbbsn(old_sn.split("_")[0]);
 								bodyDao.save(p_old);
-								// 移除新資料
-								bodyDao.delete(p_now);
+
+								// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
+								if (prArrayList.get(0).getPhtype().equals("A521_no_and_has_sn")//
+										|| prArrayList.get(0).getPhtype().equals("A521_has_sn")) {
+									p_now_clear.setPbid(p_now.getPbid());
+									p_now_clear.setSysver(0);
+									p_now_clear.setPbgid(p_now.getPbgid());
+									p_now_clear.setSysheader(false);
+									p_now_clear.setPbsn(p_now.getPbsn());
+									p_now_clear.setPbbsn(p_now.getPbbsn());
+									p_now_clear.setPbcheck(false);
+									p_now_clear.setPbusefulsn(0);
+									p_now_clear.setPbwyears(p_now.getPbwyears());
+									p_now_clear.setSysstatus(0);
+									p_now_clear.setSyssort(p_now.getSyssort());
+									p_now_clear.setPblpath("");
+									p_now_clear.setPblsize("");
+									p_now_clear.setPbltext("");
+									p_now_clear.setPbschedule(p_now.getPbschedule());
+									p_now_clear.setSysmuser(user.getSuaccount());
+									p_now_clear.setSyscuser(user.getSuaccount());
+									bodyDao.save(p_now_clear);
+								} else {
+									bodyDao.delete(p_now);
+								}
 								check = true;
 							}
 						} else {
