@@ -43,6 +43,7 @@ public interface ProductionHeaderDao extends JpaRepository<ProductionHeader, Lon
 			+ "(:prbitem is null or r.prbitem LIKE %:prbitem% ) and "//
 			+ "(:prsitem is null or r.prsitem LIKE %:prsitem% ) and "//
 			+ "(:sysstatus = -1 or  h.sysstatus = :sysstatus ) and "//
+			+ "(cast(:sysmdate as date) is null or h.sysmdate >= :sysmdate ) and "//
 			+ "(cast(:phssdate as date) is null or h.phsdate >= :phssdate ) and "//
 			+ "(cast(:phsedate as date) is null or h.phsdate <= :phsedate ) and "//
 			+ "(coalesce(:phpbgid, null) is null or h.phpbgid IN :phpbgid ) and "// coalesce 回傳非NULL值
@@ -53,7 +54,7 @@ public interface ProductionHeaderDao extends JpaRepository<ProductionHeader, Lon
 			@Param("sysstatus") Integer sysstatus, @Param("phpbgid") List<Long> phpbgid, //
 			@Param("prorderid") String pr_order_id, @Param("prcname") String pr_c_name, //
 			@Param("prbomid") String pr_bom_id, @Param("prbitem") String pr_b_item, @Param("prsitem") String pr_s_item, //
-			@Param("phssdate") Date phssdate, @Param("phsedate") Date phsedate, Pageable pageable);
+			@Param("phssdate") Date phssdate, @Param("phsedate") Date phsedate, @Param("sysmdate") Date sys_m_date, Pageable pageable);
 
 	// 取得當筆ID
 	@Query(value = "SELECT CURRVAL('production_header_seq')", nativeQuery = true)

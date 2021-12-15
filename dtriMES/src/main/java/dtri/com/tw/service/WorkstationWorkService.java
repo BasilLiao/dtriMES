@@ -735,10 +735,10 @@ public class WorkstationWorkService {
 													return bean;
 												}
 
-												// 檢查 避免空
-												if (body_value.equals("")) {
-													continue;
-												}
+												// 檢查 避免空(Johnny 討論說不必要檢測空值)
+//												if (body_value.equals("")) {
+//													continue;
+//												}
 
 												// 檢查 避免小卡 輸入主SN序號
 												for (ProductionBody one_sn : check_sn) {
@@ -878,6 +878,7 @@ public class WorkstationWorkService {
 					p_header.setSysstatus(1);
 					p_header.setPhschedule(p_records.getPrpokquantity() + "／" + p_records.getPrpquantity());
 					p_header.setProductionRecords(p_records);
+					p_header.setSysmdate(new Date());
 					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
 					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
 					List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(p_header.getPhpbgid(),

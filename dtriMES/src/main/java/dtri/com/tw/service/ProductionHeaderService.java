@@ -89,6 +89,10 @@ public class ProductionHeaderService {
 		String pr_s_item = "";
 		Date ph_s_s_date = null;
 		Date ph_s_e_date = null;
+		// 特定查詢_查詢今日有異動工單 & 已經開始
+		// 特定查詢_查詢今日有異動工單 & 已經結束
+		// 特定查詢_查詢今日有異動工單 & 尚未開始 & 尚未結束
+		Date sys_m_date = null;
 		List<Long> pbid = new ArrayList<Long>();
 		// 工作站
 		ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
@@ -322,6 +326,12 @@ public class ProductionHeaderService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "0", "col-md-2", "pb_sn_value", "SN_料件序號", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pb_sn", "SN_產品序號", n_val));
 
+			a_val = new JSONArray();
+			a_val.put((new JSONObject()).put("value", "未開工").put("key", "not_yet_started"));
+			a_val.put((new JSONObject()).put("value", "已開工").put("key", "started"));
+			a_val.put((new JSONObject()).put("value", "已完成").put("key", "end"));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "ph_schedule_today", "製令單-今日異動", a_val));
+
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
@@ -364,31 +374,45 @@ public class ProductionHeaderService {
 			if (!body.getJSONObject("search").getString("ph_s_s_date").equals("")) {
 				ph_s_s_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_s_date"));
 			}
-			// ph_s_s_date = ph_s_s_date==null ? null : ph_s_s_date;
+
 			if (!body.getJSONObject("search").getString("ph_s_e_date").equals("")) {
 				ph_s_e_date = Fm_Time.toDateTime(body.getJSONObject("search").getString("ph_s_e_date"));
 			}
-			// ph_s_e_date = (ph_s_e_date.equals("")) ? null : ph_s_e_date;
+			// 當前進度
+			if (!body.getJSONObject("search").getString("ph_schedule_today").equals("")) {
+				String today_ch = body.getJSONObject("search").getString("ph_schedule_today");
+				sys_m_date = Fm_Time.toDate(Fm_Time.to_y_M_d(new Date()));
+				if (today_ch.equals("started")) {
+					sysstatus = "1";
+				} else if (today_ch.equals("not_yet_started")) {
+					sysstatus = "0";
+				} else if (today_ch.equals("end")) {
+					sysstatus = "2";
+				}
+			}
 		}
-		// 產品型號+製令單號
-		String nativeQuery = "SELECT b.pb_g_id FROM production_body b join production_header h on b.pb_g_id = h.ph_pb_g_id  WHERE ";
+		// 查詢特定SN
 		if (!pb_sn_value.equals("")) {
+			String nativeQuery = "SELECT b.pb_g_id FROM production_body b join production_header h on b.pb_g_id = h.ph_pb_g_id  WHERE ";
 			nativeQuery += " (:pb_sn_value='' or " + pb_sn_name + " LIKE :pb_sn_value) and ";
-		}
-		nativeQuery += " (:pb_sn='' or b.pb_sn LIKE :pb_sn) and ";
-		nativeQuery += " (b.pb_g_id != 0) group by b.pb_g_id ";
-		// nativeQuery += " order by b.pb_g_id limit " + p_size + " offset " + page + "
-		// ";
-		Query query = em.createNativeQuery(nativeQuery);
-		if (!pb_sn_value.equals("")) {
+
+			nativeQuery += " (:pb_sn='' or b.pb_sn LIKE :pb_sn) and ";
+			nativeQuery += " (b.pb_g_id != 0) group by b.pb_g_id ";
+			// nativeQuery += " order by b.pb_g_id limit " + p_size + " offset " + page + "
+			// ";
+			Query query = em.createNativeQuery(nativeQuery);
+
 			query.setParameter("pb_sn_value", "%" + pb_sn_value + "%");
-		}
-		query.setParameter("pb_sn", "%" + pb_sn + "%");
-		// 轉換LONG
-		List<BigInteger> pbid_obj = query.getResultList();
-		for (BigInteger obj : pbid_obj) {
-			String one = obj.toString();
-			pbid.add(Long.parseLong(one));
+
+			query.setParameter("pb_sn", "%" + pb_sn + "%");
+			// 轉換LONG
+			List<BigInteger> pbid_obj = query.getResultList();
+			for (BigInteger obj : pbid_obj) {
+				String one = obj.toString();
+				pbid.add(Long.parseLong(one));
+			}
+		} else {
+			pbid = null;
 		}
 		// 如果有查SN 則要有值/沒查則pass
 		if ((!pb_sn_value.equals("") && pbid.size() > 0) || pb_sn_value.equals("")) {
@@ -396,7 +420,7 @@ public class ProductionHeaderService {
 					Integer.parseInt(sysstatus), pbid, //
 					pr_order_id, pr_c_name, //
 					pr_bom_id, pr_b_item, //
-					pr_s_item, ph_s_s_date, ph_s_e_date, page_r);
+					pr_s_item, ph_s_s_date, ph_s_e_date, sys_m_date, page_r);
 		}
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
