@@ -1,7 +1,5 @@
 package dtri.com.tw.service;
 
-import java.util.ArrayList;
-
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -13,8 +11,6 @@ import javax.print.SimpleDoc;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.JsonArray;
 
 @Service
 public class ForPrinterLabelService {

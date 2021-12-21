@@ -42,7 +42,6 @@ public class WorkstationController {
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 
-		System.out.println(json_object);
 		// 取得-當前用戶資料
 		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -55,9 +54,10 @@ public class WorkstationController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+				one.setSppermission(p.getSgpermission());
 			}
 		});
+		System.out.println(json_object);
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢

@@ -602,17 +602,19 @@ public class WorkstationWorkService {
 						for (int k = 0; k < 20; k++) {
 							// 有欄位?
 							if (w_pb_cell.equals("pb_w_name" + String.format("%02d", k + 1))) {
-
+								String in_date = "setPbwpdate" + String.format("%02d", k + 1);
+								Method in_method_date = body_one.getClass().getMethod(in_date, Date.class);
 								String in_name = "setPbwname" + String.format("%02d", k + 1);
 								Method in_method = body_one.getClass().getMethod(in_name, String.class);
 
 								// 有維修代碼
 								if (f_code_check) {
 									in_method.invoke(body_one, user_acc);
+									in_method_date.invoke(body_one, new Date());
 								} else {
 									in_method.invoke(body_one, "");
+									in_method_date.invoke(body_one, new Object[]{ null });
 								}
-
 							}
 						}
 					} catch (NoSuchMethodException e) {
@@ -736,9 +738,9 @@ public class WorkstationWorkService {
 												}
 
 												// 檢查 避免空(Johnny 討論說不必要檢測空值)
-//												if (body_value.equals("")) {
-//													continue;
-//												}
+												if (body_value.equals("")) {
+													continue;
+												}
 
 												// 檢查 避免小卡 輸入主SN序號
 												for (ProductionBody one_sn : check_sn) {

@@ -26,7 +26,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pb_pr_old_id:舊製令單號<br>
  *      pb_f_value : SN(需維修項目) (JSON 包裝)<br>
  *      pb_f_note : 損壞說明<br>
- *      pb_w_name : 工作站完成人<br>
+ *      pb_w_name : 工作站完成人1-20<br>
+ *      pb_w_p_date : 工作站完成時間1-20<br>
  *      pb_value : pb_value1-50 SN(材料序號) <br>
  *      pb_l_size : PLT_Log 大小 <br>
  *      pb_l_dt : PLT_Log 時間 <br>

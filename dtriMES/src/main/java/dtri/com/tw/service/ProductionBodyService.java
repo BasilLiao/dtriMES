@@ -55,12 +55,15 @@ public class ProductionBodyService {
 		String pb_sn_name = "";
 		String pb_w_value = "";
 		String pb_w_name = "";
+		String pb_w_p_date = "";
 		String pb_sn = "";
 		String pb_b_sn = "";
 		String pb_old_sn = "";
 		String pb_sn_check = null;
 		String pb_sn_date_s = "";
 		String pb_sn_date_e = "";
+		String pb_w_p_date_s = "";
+		String pb_w_p_date_e = "";
 		// List<Long> pbid = new ArrayList<Long>();
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -97,6 +100,7 @@ public class ProductionBodyService {
 			// sn關聯表
 			int j = 0;
 			Method method;
+			Method method_date;
 			for (j = 0; j < 50; j++) {
 				String m_name = "getPbvalue" + String.format("%02d", j + 1);
 				try {
@@ -121,12 +125,18 @@ public class ProductionBodyService {
 			// 過站簽名
 			for (j = 0; j < 20; j++) {
 				String m_name = "getPbwname" + String.format("%02d", j + 1);
+				String m_date_name = "getPbwpdate" + String.format("%02d", j + 1);
 				try {
 					method = body_one.getClass().getMethod(m_name);
 					String value = (String) method.invoke(body_one);
 					String name = "pb_w_name" + String.format("%02d", j + 1);
+
+					method_date = body_one.getClass().getMethod(m_date_name);
+					String value_date = (String) method.invoke(body_one);
+					String name_date = "pb_w_p_date" + String.format("%02d", j + 1);
 					if (value != null && !value.equals("")) {
 						object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + name, FFS.h_t("過站簽名[" + value + "]", "270px", FFM.Wri.W_Y));
+						object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + name_date, FFS.h_t("過站時間[" + value_date + "]", "270px", FFM.Wri.W_Y));
 					}
 				} catch (NoSuchMethodException e) {
 					e.printStackTrace();
@@ -295,12 +305,13 @@ public class ProductionBodyService {
 
 			// object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2",
 			// "pb_sn", "SN_(系統/產品)序號", n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()), "col-md-2", "pb_sn_date_s", "修改時間(始)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_sn_date_s", "修改時間(始)", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_sn_date_e", "修改時間(終)", n_val));
 
 			a_val = new JSONArray();
 			for (j = 0; j < 20; j++) {
 				String m_name = "getPbwname" + String.format("%02d", j + 1);
+
 				try {
 					method = body_one.getClass().getMethod(m_name);
 					String value = (String) method.invoke(body_one);
@@ -320,8 +331,11 @@ public class ProductionBodyService {
 					e.printStackTrace();
 				}
 			}
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "pb_w_name", "過站_類型", a_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "0", "col-md-2", "pb_w_value", "過站_人(代號)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "pb_w_name", "過站_類型", a_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "0", "col-md-1", "pb_w_value", "過站_人(代號)", n_val));
+
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_w_p_date_s", "過站時間(始)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_w_p_date_e", "過站時間(終)", n_val));
 
 			bean.setCell_searchs(object_searchs);
 		} else {
@@ -349,10 +363,13 @@ public class ProductionBodyService {
 
 			pb_sn_value = body.getJSONObject("search").getString("pb_sn_value");
 			pb_sn_value = pb_sn_value == null ? "" : pb_sn_value;
-
+			// 過站資訊
 			pb_w_name = body.getJSONObject("search").getString("pb_w_name");
 			pb_w_name = pb_w_name == null ? "" : pb_w_name;
-
+			if (!pb_w_name.equals("")) {
+				pb_w_p_date = "pb_w_p_date" + pb_w_name.substring(Math.max(pb_w_name.length() - 2, 0));
+			}
+			// 過站人
 			pb_w_value = body.getJSONObject("search").getString("pb_w_value");
 			pb_w_value = pb_w_value == null ? "" : pb_w_value;
 
@@ -363,10 +380,16 @@ public class ProductionBodyService {
 			if (pb_w_name.equals("") || pb_w_value.equals("")) {
 				pb_w_name = "";
 				pb_w_value = "";
+				pb_w_p_date = "";
+				pb_w_p_date_s = "";
+				pb_w_p_date_e = "";
 			}
 
 			pb_sn_date_s = body.getJSONObject("search").getString("pb_sn_date_s");
 			pb_sn_date_e = body.getJSONObject("search").getString("pb_sn_date_e");
+
+			pb_w_p_date_s = body.getJSONObject("search").getString("pb_w_p_date_s");
+			pb_w_p_date_e = body.getJSONObject("search").getString("pb_w_p_date_e");
 
 			pb_sn_check = body.getJSONObject("search").getString("pb_sn_check");
 			pb_sn_check = (pb_sn_check.equals("")) ? null : pb_sn_check;
@@ -381,6 +404,11 @@ public class ProductionBodyService {
 		}
 		if (!pb_w_value.equals("")) {
 			nativeQuery += " (:pb_w_value='' or " + pb_w_name + " LIKE :pb_w_value) and ";
+			// 如果有過站時間
+			if (!pb_w_p_date_e.equals("") && !pb_w_p_date_e.equals("") && //
+					!pb_w_p_date_s.equals("") && !pb_w_p_date_s.equals("")) {
+				nativeQuery += " (" + pb_w_p_date + " BETWEEN  :pb_w_p_date_s  and :pb_w_p_date_e ) and ";
+			}
 		}
 		if (pb_sn_check != null) {
 			nativeQuery += " (b.pb_check = :pb_check) and ";
@@ -404,6 +432,11 @@ public class ProductionBodyService {
 		}
 		if (!pb_w_value.equals("")) {
 			query.setParameter("pb_w_value", "%" + pb_w_value + "%");
+		}
+		if (!pb_w_p_date_e.equals("") && !pb_w_p_date_e.equals("") && //
+				!pb_w_p_date_s.equals("") && !pb_w_p_date_s.equals("")) {
+			query.setParameter("pb_w_p_date_s", Fm_Time.toDateTime(pb_w_p_date_s));
+			query.setParameter("pb_w_p_date_e", Fm_Time.toDateTime(pb_w_p_date_e));
 		}
 
 		query.setParameter("pb_b_sn", "%" + pb_b_sn + "%");
@@ -503,16 +536,27 @@ public class ProductionBodyService {
 				// 有效設定的欄位
 				for (int k = 0; k < 20; k++) {
 					String in_name = "getPbwname" + String.format("%02d", k + 1);
-					Method in_method = body_one.getClass().getMethod(in_name);
-					String value = (String) in_method.invoke(body_one);
+					Method in_name_method = body_one.getClass().getMethod(in_name);
+					String in_name_value = (String) in_name_method.invoke(body_one);
+
 					// 欄位有定義的顯示
-					if (value != null && !value.equals("")) {
-						// sn關聯表
+					if (in_name_value != null && !in_name_value.equals("")) {
+						// sn關聯表(過站人)
 						String name_b = "getPbwname" + String.format("%02d", k + 1);
-						Method method_b = one.getClass().getMethod(name_b);
-						String value_b = (String) method_b.invoke(one);
-						String key_b = "pb_w_name" + String.format("%02d", k + 1);
-						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + key_b, (value_b == null ? "" : value_b));
+						Method name_method_b = one.getClass().getMethod(name_b);
+						String name_value_b = (String) name_method_b.invoke(one);
+						String name_key_b = "pb_w_name" + String.format("%02d", k + 1);
+						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + name_key_b, (name_value_b == null ? "" : name_value_b));
+						// sn關聯表(過站時間)
+						String date_b = "getPbwpdate" + String.format("%02d", k + 1);
+						Method date_method_b = one.getClass().getMethod(date_b);
+						String date_value_b = "";
+						if ((Date) date_method_b.invoke(one) != null) {
+							date_value_b = Fm_Time.to_yMd_Hms((Date) date_method_b.invoke(one));
+						}
+						String date_key_b = "pb_w_p_date" + String.format("%02d", k + 1);
+						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + date_key_b, (date_value_b == null ? "" : date_value_b));
+
 					}
 				}
 
@@ -687,6 +731,15 @@ public class ProductionBodyService {
 						String value_b = (String) method_b.invoke(one);
 						String key_b = "pb_w_name" + String.format("%02d", k + 1);
 						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + key_b, (value_b == null ? "" : value_b));
+						// sn關聯表(過站時間)
+						String date_b = "getPbwpdate" + String.format("%02d", k + 1);
+						Method date_method_b = one.getClass().getMethod(date_b);
+						String date_value_b = "";
+						if ((Date) date_method_b.invoke(one) != null) {
+							date_value_b = Fm_Time.to_yMd_Hms((Date) date_method_b.invoke(one));
+						}
+						String date_key_b = "pb_w_p_date" + String.format("%02d", k + 1);
+						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + date_key_b, (date_value_b == null ? "" : date_value_b));
 					}
 				}
 
