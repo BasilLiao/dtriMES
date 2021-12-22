@@ -367,13 +367,16 @@
                            var search_input = $(".search_example_input").clone(); //複製樣本
                            search_input[0].className = search[i].col + " p-2 search_true";
                            search_input[0].id = "search_" + search[i].id;        
-                      
                            search_input.appendTo(".search_example_finds");
                            $("#" + search_input[0].id + " .s_name").text(search[i].name);
                            //$("#" + search_input[0].id + " .s_value").val(search[i].value);
                            //時間類型
                            if(search[i].type=='date'){
                            	$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
+                           }
+                           //預設
+                           if(search[i].value!=""){
+                        	   $("#"+search_input[0].id+" .s_value").attr("placeholder",search[i].value);       	   
                            }
                            break;
                        case "select":

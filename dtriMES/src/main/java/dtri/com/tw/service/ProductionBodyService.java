@@ -100,7 +100,6 @@ public class ProductionBodyService {
 			// sn關聯表
 			int j = 0;
 			Method method;
-			Method method_date;
 			for (j = 0; j < 50; j++) {
 				String m_name = "getPbvalue" + String.format("%02d", j + 1);
 				try {
@@ -125,13 +124,12 @@ public class ProductionBodyService {
 			// 過站簽名
 			for (j = 0; j < 20; j++) {
 				String m_name = "getPbwname" + String.format("%02d", j + 1);
-				String m_date_name = "getPbwpdate" + String.format("%02d", j + 1);
+
 				try {
 					method = body_one.getClass().getMethod(m_name);
 					String value = (String) method.invoke(body_one);
 					String name = "pb_w_name" + String.format("%02d", j + 1);
 
-					method_date = body_one.getClass().getMethod(m_date_name);
 					String value_date = (String) method.invoke(body_one);
 					String name_date = "pb_w_p_date" + String.format("%02d", j + 1);
 					if (value != null && !value.equals("")) {
@@ -299,8 +297,8 @@ public class ProductionBodyService {
 					e.printStackTrace();
 				}
 			}
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "pb_sn_name", "SN_類型", a_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "0", "col-md-2", "pb_sn_value", "SN_值", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "pb_sn_name", "SN_類型", a_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pb_sn_value", "SN_值", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ph_model", "產品型號", n_val));
 
 			// object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2",
@@ -331,11 +329,11 @@ public class ProductionBodyService {
 					e.printStackTrace();
 				}
 			}
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "pb_w_name", "過站_類型", a_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "0", "col-md-1", "pb_w_value", "過站_人(代號)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "pb_w_name", "工作站類型", a_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "過站人員", "col-md-1", "pb_w_value", "過站人", n_val));
 
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_w_p_date_s", "過站時間(始)", n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "pb_w_p_date_e", "過站時間(終)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "過站簽名 或 過站時間(選其一)", "col-md-2", "pb_w_p_date_s", "過站時間(始)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "時間區間 (始)與(終) 都要填入", "col-md-2", "pb_w_p_date_e", "過站時間(終)", n_val));
 
 			bean.setCell_searchs(object_searchs);
 		} else {
@@ -363,33 +361,38 @@ public class ProductionBodyService {
 
 			pb_sn_value = body.getJSONObject("search").getString("pb_sn_value");
 			pb_sn_value = pb_sn_value == null ? "" : pb_sn_value;
-			// 過站資訊
+			// 過站類型
 			pb_w_name = body.getJSONObject("search").getString("pb_w_name");
 			pb_w_name = pb_w_name == null ? "" : pb_w_name;
-			if (!pb_w_name.equals("")) {
-				pb_w_p_date = "pb_w_p_date" + pb_w_name.substring(Math.max(pb_w_name.length() - 2, 0));
-			}
+
 			// 過站人
 			pb_w_value = body.getJSONObject("search").getString("pb_w_value");
 			pb_w_value = pb_w_value == null ? "" : pb_w_value;
-
-			if (pb_sn_name.equals("") || pb_sn_value.equals("")) {
-				pb_sn_value = "";
-				pb_sn_name = "";
-			}
-			if (pb_w_name.equals("") || pb_w_value.equals("")) {
-				pb_w_name = "";
-				pb_w_value = "";
-				pb_w_p_date = "";
-				pb_w_p_date_s = "";
-				pb_w_p_date_e = "";
-			}
-
+			// 過站時間
 			pb_sn_date_s = body.getJSONObject("search").getString("pb_sn_date_s");
 			pb_sn_date_e = body.getJSONObject("search").getString("pb_sn_date_e");
 
 			pb_w_p_date_s = body.getJSONObject("search").getString("pb_w_p_date_s");
 			pb_w_p_date_e = body.getJSONObject("search").getString("pb_w_p_date_e");
+
+			if (!pb_w_name.equals("")) {
+				pb_w_p_date = "pb_w_p_date" + pb_w_name.substring(Math.max(pb_w_name.length() - 2, 0));
+			}
+
+			if (pb_sn_name.equals("") || pb_sn_value.equals("")) {
+				pb_sn_value = "";
+				pb_sn_name = "";
+			}
+			// 工作站類型+人
+			if (pb_w_name.equals("") || pb_w_value.equals("")) {
+				pb_w_value = "";
+			}
+			// 工作站類型+時間
+			if (pb_w_name.equals("") || pb_w_p_date_s.equals("") || pb_w_p_date_e.equals("")) {
+				pb_w_p_date = "";
+				pb_w_p_date_s = "";
+				pb_w_p_date_e = "";
+			}
 
 			pb_sn_check = body.getJSONObject("search").getString("pb_sn_check");
 			pb_sn_check = (pb_sn_check.equals("")) ? null : pb_sn_check;
@@ -402,13 +405,14 @@ public class ProductionBodyService {
 		if (!pb_sn_value.equals("")) {
 			nativeQuery += " (:pb_sn_value='' or " + pb_sn_name + " LIKE :pb_sn_value) and ";
 		}
+		// 過站類型+過站人
 		if (!pb_w_value.equals("")) {
 			nativeQuery += " (:pb_w_value='' or " + pb_w_name + " LIKE :pb_w_value) and ";
-			// 如果有過站時間
-			if (!pb_w_p_date_e.equals("") && !pb_w_p_date_e.equals("") && //
-					!pb_w_p_date_s.equals("") && !pb_w_p_date_s.equals("")) {
-				nativeQuery += " (" + pb_w_p_date + " BETWEEN  :pb_w_p_date_s  and :pb_w_p_date_e ) and ";
-			}
+		}
+		// 過站類型+過站時間
+		if (!pb_w_p_date_e.equals("") && !pb_w_p_date_e.equals("") && //
+				!pb_w_p_date_s.equals("") && !pb_w_p_date_s.equals("")) {
+			nativeQuery += " (" + pb_w_p_date + " BETWEEN  :pb_w_p_date_s  and :pb_w_p_date_e ) and ";
 		}
 		if (pb_sn_check != null) {
 			nativeQuery += " (b.pb_check = :pb_check) and ";
