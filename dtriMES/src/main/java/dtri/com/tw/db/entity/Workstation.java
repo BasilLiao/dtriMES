@@ -43,6 +43,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      w_length : 長度<br>
  *      w_format : 格式<br>
  *      w_must : 必填<br>
+ *      w_pi_check: 產品規格檢查的 設定<br>
+ *      w_pi_name: 產品規格的 名稱<br>
  * 
  * 
  * 
@@ -62,6 +64,9 @@ public class Workstation {
 		this.syssort = 0;
 		this.sysstatus = 0;
 		this.sysheader = false;
+		this.wpicheck = 0;
+		this.wpiname = "";
+
 	}
 
 	// 共用型
@@ -138,6 +143,28 @@ public class Workstation {
 
 	@Column(name = "w_must", columnDefinition = "int default 0")
 	private Integer wmust;
+
+	@Column(name = "w_pi_check", columnDefinition = "int default 0")
+	private Integer wpicheck;
+
+	@Column(name = "w_pi_name", columnDefinition = "varchar(50) default ''")
+	private String wpiname;
+
+	public Integer getWpicheck() {
+		return wpicheck;
+	}
+
+	public void setWpicheck(Integer wpicheck) {
+		this.wpicheck = wpicheck;
+	}
+
+	public String getWpiname() {
+		return wpiname;
+	}
+
+	public void setWpiname(String wpiname) {
+		this.wpiname = wpiname;
+	}
 
 	public Date getSyscdate() {
 		return syscdate;

@@ -809,13 +809,18 @@
 					//資料欄位
                     for (var i = 0; i < Object.keys(obj_one).length; i++) {
                     	 var key_id = Object.keys(obj_one)[i];
-                         var key_value = obj_one[Object.keys(obj_one)[i]];                	
+                         var key_value = obj_one[Object.keys(obj_one)[i]];
+                         //測試JSON
+                         if(key_value.search('},')){
+                        	 key_value = key_value.replaceAll('},', '},\n ');
+                         }
 						 $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").val(key_value);
 						 //僅限於checkbox
 						 if ($("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
 							 $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").prop("checked", key_value);
 						 }
                     }
+
 					//群組類型-因為全部都反白
                     if($("#detail_really_tr_"+this.detail_nb+" .m__sys_header input").val()=="true"){
 						//群組不可顯示+號(因為後端無法檢核新的群組資料還是 舊的子類別)                    	
