@@ -811,8 +811,8 @@
                     	 var key_id = Object.keys(obj_one)[i];
                          var key_value = obj_one[Object.keys(obj_one)[i]];
                          //測試JSON
-                         if(key_value.search('},')){
-                        	 key_value = key_value.replaceAll('},', '},\n ');
+                         if(key_value!=null && key_value.search('},')!=-1){
+                        	 key_value = key_value.replaceAll('},', '},\n');
                          }
 						 $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").val(key_value);
 						 //僅限於checkbox
@@ -853,7 +853,11 @@
 					//資料欄位
                     for (var i = 0; i < Object.keys(obj_one).length; i++) {
                     	 var key_id = Object.keys(obj_one)[i];
-                         var key_value = obj_one[Object.keys(obj_one)[i]];                	
+                         var key_value = obj_one[Object.keys(obj_one)[i]];       
+                         //測試JSON
+                         if(key_value!=null && key_value.search('},')!=-1){
+                        	 key_value = key_value.replaceAll('},', '},\n');
+                         }
 						 $("#save_as_really_tr_"+this.save_as_nb+" .m__"+key_id+" .save_value").val(key_value);
 						 //僅限於checkbox
 						 if ($("#save_as_really_tr_"+this.save_as_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
@@ -898,6 +902,10 @@
                     for (var i = 0; i < Object.keys(obj_one).length; i++) {
                     	 var key_id = Object.keys(obj_one)[i];
                          var key_value = obj_one[Object.keys(obj_one)[i]];                	
+						 //測試JSON
+                         if(key_value!=null && key_value.search('},')!=-1){
+                        	 key_value = key_value.replaceAll('},', '},\n');
+                         }
 						 $("#modify_really_tr_"+this.modify_nb+" .m__"+key_id+" .save_value").val(key_value);
 						 //僅限於checkbox
 						 if ($("#modify_really_tr_"+this.modify_nb+" .m__"+key_id+" .save_value").attr("type")=="checkbox" && key_value=="true"){
@@ -1026,6 +1034,10 @@
 					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
 						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
 						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						 //測試JSON
+                        if(value!=null && value.search('},')!=-1){
+                        	value = value.replaceAll('\n', '');
+                        }
 						create_one[key] = value;
 						console.log(key+" "+value);
 					}
@@ -1039,6 +1051,10 @@
 					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
 						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
 						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						 //測試JSON
+                        if(value!=null&&value.search('},')!=-1){
+                        	value = value.replaceAll('\n', '');
+                        }
 						save_as_one[key] = value;
 						console.log(key+" "+value);
 					}
@@ -1052,6 +1068,10 @@
 					for(var c_i =0 ;c_i <$("#"+id+" .save_key").length;c_i++){
 						var key = ($("#"+id+" .save_key")[c_i].className).split(" ")[3].replace('m__','');
 						var value = $("#"+id+" .m__"+key+" .save_value").val();
+						 //測試JSON
+                        if(value!=null && value.search('},')!=-1){
+                        	value = value.replaceAll('\n', '');
+                        }
 						modify_one[key] = value;
 						console.log(key+" "+value);
 					}

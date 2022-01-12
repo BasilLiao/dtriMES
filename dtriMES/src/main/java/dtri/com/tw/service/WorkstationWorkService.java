@@ -37,6 +37,7 @@ import dtri.com.tw.db.entity.WorkstationProgram;
 import dtri.com.tw.db.pgsql.dao.MaintainCodeDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
+import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
 import dtri.com.tw.db.pgsql.dao.SystemConfigDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
@@ -46,6 +47,8 @@ import dtri.com.tw.tools.Fm_Time;
 public class WorkstationWorkService {
 	@Autowired
 	private ProductionHeaderDao phDao;
+	@Autowired
+	private ProductionRecordsDao prDao;
 	@Autowired
 	private ProductionBodyDao pbDao;
 	@Autowired
@@ -410,6 +413,10 @@ public class WorkstationWorkService {
 					JSONObject pbschedule = new JSONObject(body_s.get(0).getPbschedule());// 目前工作程序
 					Map<String, JSONObject> body_one_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					List<ProductionBody> check_sn = pbDao.findAllByPbgidOrderByPbsnAsc(body_one.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
+					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 10));// 產品規格內容(檢驗用)
+					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
+					Map<String, JSONObject> wpi_pr_map_auto = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數
+					Map<String, JSONObject> wpi_pr_map_def = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數(預設值)
 					// Method set_method = null;
 					Method get_method = null;
 					boolean check_fn = true;// 是否完成此 品製成
@@ -505,118 +512,6 @@ public class WorkstationWorkService {
 						}
 					}
 
-					try {
-						// Step2-4.[檢核階段-初步] 有對應欄位?
-						for (String cell_name : JSONObject.getNames(list)) {
-							// 自訂義SN
-							if (cell_name.indexOf("pb_value") != -1) {
-								String body_value = list.getString(cell_name);
-								String set_name = cell_name.replace("pb_value", "setPbvalue");
-								String get_name = cell_name.replace("pb_value", "getPbvalue");
-								get_method = title_body.getClass().getMethod(get_name);
-								// set_method = body_one.getClass().getMethod(set_name, String.class);
-								// 取得方法名稱->取出自定義 欄位名稱
-								String title_name = (String) get_method.invoke(title_body);
-
-								// Step2-5.[檢核階段-初步] 檢查 避免小卡 輸入主SN序號
-								for (ProductionBody one_sn : check_sn) {
-									if (one_sn.getPbbsn().equals(body_value)) {
-										bean.autoMsssage("WK010");
-										return bean;
-									}
-								}
-
-								// 取得對應欄位[檢核條件]資料設定
-								ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
-								if (check_only != null && check_only.size() > 0) {
-									Workstation wk = check_only.get(0);
-									// Step2-6.[檢核階段-進階] 唯讀-不存檔?
-									if (wk.getWoption() == 2) {
-										// System.out.println(title_name + " / " + body_value + " pass");
-										continue;
-									}
-									// Step2-7.[檢核階段-進階] 必填欄位?
-									if (wk.getWmust() == 1 && body_value.equals("")) {
-										bean.setError_ms("此[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
-										bean.autoMsssage("WK014");
-										return bean;
-									}
-									// Step2-8.[檢核階段-進階] 是否有要檢查 長度
-									if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
-										bean.setError_ms("此[" + title_name + "]SN: " + body_value + " 長度不正確,指定:[" + wk.getWlength() + "] 位數");
-										bean.autoMsssage("WK014");
-										return bean;
-									}
-									// Step2-9.[檢核階段-進階] 是否有要檢查 格式
-									if (wk.getWformat() > 0) {
-										String error = "";
-										boolean check = false;
-										switch (check_only.get(0).getWformat()) {
-										case 1:
-											check = body_value.matches("^[A-Z0-9]*$");
-											error = "只能輸入[A-Z,0-9]";
-											break;
-										case 2:
-											check = body_value.matches("^[A-Z]*$");
-											error = "只能輸入[A-Z]";
-											break;
-										case 3:
-											check = body_value.matches("^[0-9]*$");
-											error = "只能輸入[0-9]";
-											break;
-
-										}
-										if (!check) {
-											bean.setError_ms("此[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
-											bean.autoMsssage("WK014");
-											return bean;
-										}
-									}
-									// Step2-10.[檢核階段-進階] 檢查是否有需要 檢查重複
-									if (wk.getWonly() == 1) {
-										// 排除已經被替代的 + 排除自己 新的SN
-										String nativeQuery = "SELECT b.pb_b_sn FROM production_body b where ";
-										nativeQuery += "b." + cell_name + " = :pb_value and ";
-										nativeQuery += "b." + cell_name + " != '' and ";
-										nativeQuery += "b.pb_b_sn not like '%old%'";
-
-										if (!list.getString("pb_b_sn").equals("")) {// 排除 自己
-											nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
-										}
-
-										if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
-											nativeQuery += "and (b.pb_b_sn != :pb_old_sn) ";
-										}
-										Query query = em.createNativeQuery(nativeQuery);
-										// 條件
-										query.setParameter("pb_value", body_value);
-										if (!list.getString("pb_b_sn").equals("")) {
-											query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
-										}
-										if (!list.getString("pb_old_sn").equals("")) {
-											query.setParameter("pb_old_sn", list.getString("pb_old_sn"));
-										}
-
-										@SuppressWarnings("unchecked")
-										List<String> pbid_obj = query.getResultList();
-										if (pbid_obj.size() > 0) {// 有重複
-											bean.setError_ms("此[" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
-											bean.autoMsssage("WK011");
-											return bean;
-										}
-									}
-								}
-								body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
-								// set_method.invoke(body_one, body_value);
-							}
-						}
-
-					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-						bean.autoMsssage("1111");
-						return bean;
-					}
-
 					// ========Step3.錯誤代碼 ->有則不通過 但可存檔========
 					if (!list.has("pb_f_value") || list.getString("pb_f_value").equals("")) {
 						w_c_name = list.getString("w_c_name") + "_Y";
@@ -627,11 +522,11 @@ public class WorkstationWorkService {
 					}
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
-					body_one_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", JSONObject.class));
+					body_one_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
 					body_one_now.put("setPbfvalue", new JSONObject().put("value", f_code).put("type", String.class));
 					body_one_now.put("setPbcheck", new JSONObject().put("value", check_fn).put("type", Boolean.class));
 
-					// ========Step4.過站簽名 ->有維修代碼 則不存人========
+					// ========Step3-1.過站簽名 ->有維修代碼 則不存人========
 					String w_pb_cell = pbschedule.getJSONObject(list.getString("w_c_name")).getString("w_pb_cell");
 					String user_acc = user.getSuaccount();
 
@@ -645,182 +540,394 @@ public class WorkstationWorkService {
 						body_one_now.put(setPbwpdate, new JSONObject().put("value", new Date()).put("type", Date.class));
 					} else {
 						body_one_now.put(setPbwname, new JSONObject().put("value", "").put("type", String.class));
-						body_one_now.put(setPbwpdate, new JSONObject().put("value", new Object[] { null }).put("type", Date.class));
+						body_one_now.put(setPbwpdate, new JSONObject().put("value", "isNull").put("type", Date.class));
 					}
 
-					// ======== Step5. FTP檢查[] ========
-					JSONObject list_log = new JSONObject();
-					if (plt_check) {
-						ArrayList<SystemConfig> config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
-						JSONObject c_json = new JSONObject();
-						config.forEach(c -> {
-							c_json.put(c.getScname(), c.getScvalue());
-						});
-						Integer year = Year.now().getValue();
-						String ftpHost = c_json.getString("IP"), //
-								ftpUserName = c_json.getString("ACCOUNT"), //
-								ftpPassword = c_json.getString("PASSWORD"), //
-								remotePath = c_json.getString("PATH") + year, //
-								remotePathBackup = c_json.getString("PATH_BACKUP"), //
-								localPath = c_json.getString("LOCAL_PATH");//
-						int ftpPort = c_json.getInt("PORT");
-						String[] searchName = { list.getString("ph_pr_id"), "", list.getString("pb_b_sn") };
-						FtpUtilBean ftp = new FtpUtilBean(ftpHost, ftpUserName, ftpPassword, ftpPort);
-						ftp.setRemotePath(remotePath);
-						ftp.setRemotePathBackup(remotePathBackup);
-						ftp.setLocalPath(localPath);
-						FTPClient ftpClient = new FTPClient();
-						list_log = ftpService.getLogPLT(ftpClient, ftp, user.getSuaccount(), searchName, plt_file_classify);
-						// PLT檢查
-						if (list_log.length() < 1 || !list_log.has("pb_l_size") || list_log.getInt("pb_l_size") < 10) {
-							bean.autoMsssage("WK007");
+					// 有維修代碼則不進行其他行為
+					// ========Step4.[檢核階段-進階]========
+					if (f_code_check) {
+						try {
+							// Step4-1.[檢核階段-進階] 規格轉換
+							if (wpicheck_pr.size() == 1) {
+								JSONObject wpic_pr = new JSONObject(wpicheck_pr.get(0).getPrbitem().replaceAll(" ", ""));
+								Iterator<String> keys = wpic_pr.keys();
+								while (keys.hasNext()) {
+									String key = keys.next();
+									if (wpic_pr.get(key) instanceof JSONObject) {
+										// 格式 {數量:XX,是否需要檢查,true/false}
+										wpi_pr_map.put(key, new JSONObject().put("Qty", wpic_pr.getJSONObject(key).getInt("Qty")).put("Check", false));
+										wpi_pr_map_auto.put(key, new JSONObject().put("Qty", wpic_pr.getJSONObject(key).getInt("Qty")).put("Check", false));
+										wpi_pr_map_def.put(key, new JSONObject().put("Qty", wpic_pr.getJSONObject(key).getInt("Qty")).put("Check", false));
+									}
+								}
+							}
+
+							// Step4-2.[檢核階段-初步] 有對應欄位?
+							for (String cell_name : JSONObject.getNames(list)) {
+								// 自訂義SN
+								if (cell_name.indexOf("pb_value") != -1) {
+									String body_value = list.getString(cell_name);
+									String set_name = cell_name.replace("pb_value", "setPbvalue");
+									String get_name = cell_name.replace("pb_value", "getPbvalue");
+									get_method = title_body.getClass().getMethod(get_name);
+									// set_method = body_one.getClass().getMethod(set_name, String.class);
+									// 取得方法名稱->取出自定義 欄位名稱
+									String title_name = (String) get_method.invoke(title_body);
+
+									// Step4-3.[檢核階段-進階] 檢查 避免小卡 輸入主SN序號
+									for (ProductionBody one_sn : check_sn) {
+										if (one_sn.getPbbsn().equals(body_value)) {
+											bean.autoMsssage("WK010");
+											return bean;
+										}
+									}
+									// 取得對應欄位[檢核條件]資料設定
+									ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+									if (check_only != null && check_only.size() > 0) {
+										Workstation wk = check_only.get(0);
+
+										// Step4-4.[檢核階段-進階] 唯讀-不存檔?
+										if (wk.getWoption() == 2) {
+											// System.out.println(title_name + " / " + body_value + " pass");
+											continue;
+										}
+
+										// Step4-5.[檢核階段-進階] 需要檢查規格?
+										if (wk.getWpicheck() == 1 || wk.getWpicheck() == 3) {
+											// 需要檢查的數量
+											if (wpi_pr_map.containsKey(wk.getWpiname())) {
+												// 如果有值:則計算+標記 / 沒值:則標記
+												int nb = wpi_pr_map.get(wk.getWpiname()).getInt("Qty");
+												if (!body_value.equals("")) {
+													nb = nb - 1;
+												}
+												wpi_pr_map.put(wk.getWpiname(), new JSONObject().put("Qty", nb).put("Check", true));
+											}
+										}
+
+										// Step4-6.[檢核階段-進階] 必填欄位?
+										if (wk.getWmust() == 1 && body_value.equals("")) {
+											bean.setError_ms("此[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
+											bean.autoMsssage("WK014");
+											return bean;
+										}
+
+										// Step4-7.[檢核階段-進階] 不必要檢核空值
+										if (!body_value.equals("")) {
+
+											// Step4-8.[檢核階段-進階] 是否有要檢查 長度
+											if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
+												bean.setError_ms("此[" + title_name + "]SN: " + body_value + " 長度不正確,指定:[" + wk.getWlength() + "] 位數");
+												bean.autoMsssage("WK014");
+												return bean;
+											}
+											// Step4-9.[檢核階段-進階] 是否有要檢查 格式
+											if (wk.getWformat() > 0) {
+												String error = "";
+												boolean check = false;
+												switch (check_only.get(0).getWformat()) {
+												case 1:
+													check = body_value.matches("^[A-Z0-9]*$");
+													error = "只能輸入[A-Z,0-9]";
+													break;
+												case 2:
+													check = body_value.matches("^[A-Z]*$");
+													error = "只能輸入[A-Z]";
+													break;
+												case 3:
+													check = body_value.matches("^[0-9]*$");
+													error = "只能輸入[0-9]";
+													break;
+
+												}
+												if (!check) {
+													bean.setError_ms("此[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
+													bean.autoMsssage("WK014");
+													return bean;
+												}
+											}
+											// Step4-10.[檢核階段-進階] 檢查是否有需要 檢查重複
+											if (wk.getWonly() == 1) {
+												// 排除已經被替代的 + 排除自己 新的SN
+												String nativeQuery = "SELECT b.pb_b_sn FROM production_body b where ";
+												nativeQuery += "b." + cell_name + " = :pb_value and ";
+												nativeQuery += "b." + cell_name + " != '' and ";
+												nativeQuery += "b.pb_b_sn not like '%old%'";
+
+												if (!list.getString("pb_b_sn").equals("")) {// 排除 自己
+													nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
+												}
+
+												if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
+													nativeQuery += "and (b.pb_b_sn != :pb_old_sn) ";
+												}
+												Query query = em.createNativeQuery(nativeQuery);
+												// 條件
+												query.setParameter("pb_value", body_value);
+												if (!list.getString("pb_b_sn").equals("")) {
+													query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
+												}
+												if (!list.getString("pb_old_sn").equals("")) {
+													query.setParameter("pb_old_sn", list.getString("pb_old_sn"));
+												}
+
+												@SuppressWarnings("unchecked")
+												List<String> pbid_obj = query.getResultList();
+												if (pbid_obj.size() > 0) {// 有重複
+													bean.setError_ms(
+															"此[" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
+													bean.autoMsssage("WK011");
+													return bean;
+												}
+											}
+										}
+									}
+									body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
+									// set_method.invoke(body_one, body_value);
+								}
+							}
+
+							// Step4-11.[檢核階段-進階] 檢查規格結果
+							System.out.println(wpi_pr_map);
+							boolean wpi_check_fail = false;
+							for (Entry<String, JSONObject> entry : wpi_pr_map.entrySet()) {
+								if (entry.getValue().getBoolean("Check") && entry.getValue().getInt("Qty") != 0) {
+									// 相差值
+									if (entry.getValue().getInt("Qty") > 0) {
+										bean.setError_ms("此規格[" + entry.getKey() + "]數量少登記: " + Math.abs(entry.getValue().getInt("Qty")) + " 請檢查!");
+									} else {
+										bean.setError_ms("此規格[" + entry.getKey() + "]數量多登記: " + Math.abs(entry.getValue().getInt("Qty")) + " 請檢查!");
+									}
+									wpi_check_fail = true;
+									break;
+								}
+							}
+							if (wpi_check_fail) {
+								bean.autoMsssage("WK017");
+								return bean;
+							}
+
+						} catch (NoSuchMethodException e) {
+							e.printStackTrace();
+							bean.autoMsssage("1111");
 							return bean;
 						}
 
-						// ======== Step6. 需要Log 更新資料?? ========
-						// (檢查是否有LOG+內容是否正確)
-						if (list_log != null && list_log.length() > 0 && list_log.has("pb_l_size")) {
+						// ======== Step5. FTP檢查[] ========
+						JSONObject list_log = new JSONObject();
+						if (plt_check) {
+							ArrayList<SystemConfig> config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
+							JSONObject c_json = new JSONObject();
+							config.forEach(c -> {
+								c_json.put(c.getScname(), c.getScvalue());
+							});
+							Integer year = Year.now().getValue();
+							String ftpHost = c_json.getString("IP"), //
+									ftpUserName = c_json.getString("ACCOUNT"), //
+									ftpPassword = c_json.getString("PASSWORD"), //
+									remotePath = c_json.getString("PATH") + year, //
+									remotePathBackup = c_json.getString("PATH_BACKUP"), //
+									localPath = c_json.getString("LOCAL_PATH");//
+							int ftpPort = c_json.getInt("PORT");
+							String[] searchName = { list.getString("ph_pr_id"), "", list.getString("pb_b_sn") };
+							FtpUtilBean ftp = new FtpUtilBean(ftpHost, ftpUserName, ftpPassword, ftpPort);
+							ftp.setRemotePath(remotePath);
+							ftp.setRemotePathBackup(remotePathBackup);
+							ftp.setLocalPath(localPath);
+							FTPClient ftpClient = new FTPClient();
+							list_log = ftpService.getLogPLT(ftpClient, ftp, user.getSuaccount(), searchName, plt_file_classify);
+							// Step5-1. FTP檢查[] SIZE
+							if (list_log.length() < 1 || !list_log.has("pb_l_size") || list_log.getInt("pb_l_size") < 10) {
+								bean.autoMsssage("WK007");
+								return bean;
+							}
 
-							// 是否存檔
-							if (plt_save) {
-								// 檢查所有可能對應的欄位
-								Iterator<String> keys_log = list_log.keys();
-								while (keys_log.hasNext()) {
-									String cell_key = keys_log.next();
-									// sn關聯表
-									int j = 0;
-									for (j = 0; j < 50; j++) {
-										String get_name = "getPbvalue" + String.format("%02d", j + 1);
-										String set_name = "setPbvalue" + String.format("%02d", j + 1);
-										String cell_name = "pb_value" + String.format("%02d", j + 1);
-										try {
-											// Step6-1. 取得方法名稱->取出自定義 欄位名稱
-											// set_method = body_one.getClass().getMethod(set_name, String.class);
-											get_method = title_body.getClass().getMethod(get_name);
-											String title_name = (String) get_method.invoke(title_body);
+							// ======== Step6. 需要Log 更新資料?? ========
+							// (檢查是否有LOG+內容是否正確)
+							if (list_log != null && list_log.length() > 0 && list_log.has("pb_l_size")) {
+								try {
+									// 是否存檔
+									if (plt_save) {
+										// 檢查所有可能對應的欄位
+										Iterator<String> keys_log = list_log.keys();
+										while (keys_log.hasNext()) {
+											String cell_key = keys_log.next();
+											// sn關聯表
+											int j = 0;
+											for (j = 0; j < 50; j++) {
+												String get_name = "getPbvalue" + String.format("%02d", j + 1);
+												String set_name = "setPbvalue" + String.format("%02d", j + 1);
+												String cell_name = "pb_value" + String.format("%02d", j + 1);
+												// Step6-1. 取得方法名稱->取出自定義 欄位名稱
+												// set_method = body_one.getClass().getMethod(set_name, String.class);
+												get_method = title_body.getClass().getMethod(get_name);
+												String title_name = (String) get_method.invoke(title_body);
 
-											// Step6-2. [PLT欄位名稱] 對應 [MES自定義SN欄位名稱]
-											if (title_name != null && title_name.equals(cell_key)) {
-												String body_value = list_log.getString(cell_key);
+												// Step6-2. [PLT欄位名稱] 對應 [MES自定義SN欄位名稱]
+												if (title_name != null && title_name.equals(cell_key)) {
+													String body_value = list_log.getString(cell_key);
 
-												// 檢查 避免空(Johnny 討論說不必要檢測空值)
-												if (body_value.equals("")) {
-
-													// [檢核階段-進階] 自定義檢核
 													ArrayList<Workstation> check_only = wkDao.findAllByWorkstation_item(list.getString("w_c_name"), cell_name);
+													// Step6-3. [檢核階段-進階] 自定義檢核 是否需要檢核
 													if (check_only != null && check_only.size() > 0) {
 														Workstation wk = check_only.get(0);
-														// Step6-3.[檢核階段-進階] 必填欄位?
+
+														// Step6-4.[檢核階段-進階] 需要檢查產品?
+														if (wk.getWpicheck() == 2 || wk.getWpicheck() == 3) {
+															// 需要檢查的數量
+															if (wpi_pr_map_auto.containsKey(wk.getWpiname())) {
+																// 如果有值:則計算+標記 / 沒值:則標記
+																int nb = wpi_pr_map_auto.get(wk.getWpiname()).getInt("Qty");
+																if (!body_value.equals("")) {
+																	nb = nb - 1;
+																}
+																wpi_pr_map_auto.put(wk.getWpiname(), new JSONObject().put("Qty", nb).put("Check", true));
+															}
+														}
+
+														// Step6-5.[檢核階段-進階] 必填欄位?
 														if (wk.getWmust() == 1 && body_value.equals("")) {
 															bean.setError_ms("此 PLT_LOG[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
 															bean.autoMsssage("WK014");
 															return bean;
 														}
-														// Step6-4.[檢核階段-進階] 是否有要檢查 長度
-														if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
-															bean.setError_ms("此 PLT_LOG[" + title_name + "]SN: " + body_value + " 長度不正確,指定:[" + wk.getWlength()
-																	+ "] 位數");
-															bean.autoMsssage("WK014");
-															return bean;
-														}
-														// Step6-5.[檢核階段-進階] 是否有要檢查 格式
-														if (wk.getWformat() > 0) {
-															String error = "";
-															boolean check = false;
-															switch (check_only.get(0).getWformat()) {
-															case 1:
-																check = body_value.matches("^[A-Z0-9]*$");
-																error = "只能輸入[A-Z,0-9]";
-																break;
-															case 2:
-																check = body_value.matches("^[A-Z]*$");
-																error = "只能輸入[A-Z]";
-																break;
-															case 3:
-																check = body_value.matches("^[0-9]*$");
-																error = "只能輸入[0-9]";
-																break;
-															}
-															if (!check) {
-																bean.setError_ms("此 PLT_LOG[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
+
+														// Step6-6.[檢核階段-進階] 不必要檢核空值
+														if (!body_value.equals("")) {
+
+															// Step6-7.[檢核階段-進階] 是否有要檢查 長度
+															if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
+																bean.setError_ms("此 PLT_LOG[" + title_name + "]SN: " + body_value + " 長度不正確,指定:["
+																		+ wk.getWlength() + "] 位數");
 																bean.autoMsssage("WK014");
 																return bean;
 															}
+															// Step6-8.[檢核階段-進階] 是否有要檢查 格式
+															if (wk.getWformat() > 0) {
+																String error = "";
+																boolean check = false;
+																switch (check_only.get(0).getWformat()) {
+																case 1:
+																	check = body_value.matches("^[A-Z0-9]*$");
+																	error = "只能輸入[A-Z,0-9]";
+																	break;
+																case 2:
+																	check = body_value.matches("^[A-Z]*$");
+																	error = "只能輸入[A-Z]";
+																	break;
+																case 3:
+																	check = body_value.matches("^[0-9]*$");
+																	error = "只能輸入[0-9]";
+																	break;
+																}
+																if (!check) {
+																	bean.setError_ms(
+																			"此 PLT_LOG[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
+																	bean.autoMsssage("WK014");
+																	return bean;
+																}
+															}
+															// Step6-9.[檢核階段-進階] 檢查是否有需要 檢查重複
+															if (wk.getWonly() == 1) {
+																// 排除已經被替代的 + 排除自己 新的SN
+																String nativeQuery = "SELECT b.pb_b_sn FROM production_body b where ";
+																nativeQuery += "b." + cell_name + " = :pb_value and ";
+																nativeQuery += "b." + cell_name + " != '' and ";
+																nativeQuery += "b.pb_b_sn not like '%old%'";
+
+																if (!list.getString("pb_b_sn").equals("")) {// 排除 自己
+																	nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
+																}
+
+																if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
+																	nativeQuery += "and (b.pb_b_sn != :pb_old_sn) ";
+																}
+																Query query = em.createNativeQuery(nativeQuery);
+																// 條件
+																query.setParameter("pb_value", body_value);
+																if (!list.getString("pb_b_sn").equals("")) {
+																	query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
+																}
+																if (!list.getString("pb_old_sn").equals("")) {
+																	query.setParameter("pb_old_sn", list.getString("pb_old_sn"));
+																}
+
+																@SuppressWarnings("unchecked")
+																List<String> pbid_obj = query.getResultList();
+																if (pbid_obj.size() > 0) {// 有重複
+																	bean.setError_ms("此 PLT_LOG [" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: "
+																			+ pbid_obj.get(0) + " 使用中 ");
+																	bean.autoMsssage("WK011");
+																	return bean;
+																}
+															}
 														}
-														// Step6-6.[檢核階段-進階] 檢查是否有需要 檢查重複
-														if (wk.getWonly() == 1) {
-															// 排除已經被替代的 + 排除自己 新的SN
-															String nativeQuery = "SELECT b.pb_b_sn FROM production_body b where ";
-															nativeQuery += "b." + cell_name + " = :pb_value and ";
-															nativeQuery += "b." + cell_name + " != '' and ";
-															nativeQuery += "b.pb_b_sn not like '%old%'";
 
-															if (!list.getString("pb_b_sn").equals("")) {// 排除 自己
-																nativeQuery += " and (b.pb_b_sn != :pb_b_sn) ";
-															}
-
-															if (!list.getString("pb_old_sn").equals("")) {// 排除 舊的SN
-																nativeQuery += "and (b.pb_b_sn != :pb_old_sn) ";
-															}
-															Query query = em.createNativeQuery(nativeQuery);
-															// 條件
-															query.setParameter("pb_value", body_value);
-															if (!list.getString("pb_b_sn").equals("")) {
-																query.setParameter("pb_b_sn", list.getString("pb_b_sn"));
-															}
-															if (!list.getString("pb_old_sn").equals("")) {
-																query.setParameter("pb_old_sn", list.getString("pb_old_sn"));
-															}
-
-															@SuppressWarnings("unchecked")
-															List<String> pbid_obj = query.getResultList();
-															if (pbid_obj.size() > 0) {// 有重複
-																bean.setError_ms("此 PLT_LOG [" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: "
-																		+ pbid_obj.get(0) + " 使用中 ");
-																bean.autoMsssage("WK011");
-																return bean;
-															}
-														}
 													}
+
+													// set_method.invoke(body_one, body_value);
+													body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 												}
-												// set_method.invoke(body_one, body_value);
-												body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 											}
-										} catch (NoSuchMethodException e) {
-											e.printStackTrace();
-											bean.autoMsssage("1111");
+										}
+
+										// Step6-11.[檢核階段-進階] 檢查規格結果
+										// System.out.println(wpi_pr_map);
+										boolean wpi_check_fail = false;
+										for (Entry<String, JSONObject> entry : wpi_pr_map_auto.entrySet()) {
+											if (entry.getValue().getBoolean("Check") && entry.getValue().getInt("Qty") != 0) {
+												// 相差值
+												if (entry.getValue().getInt("Qty") > 0) {
+													bean.setError_ms("此規格[" + entry.getKey() + "]數量少登記: " + Math.abs(entry.getValue().getInt("Qty")) + " 請檢查!");
+												} else {
+													bean.setError_ms("此規格[" + entry.getKey() + "]數量多登記: " + Math.abs(entry.getValue().getInt("Qty")) + " 請檢查!");
+												}
+												wpi_check_fail = true;
+												break;
+											}
+										}
+										if (wpi_check_fail) {
+											bean.autoMsssage("WK018");
 											return bean;
 										}
-									}
-								}
-								// PLT 亂碼檢核
-								System.out.print(list_log.getString("pb_l_text").indexOf('\u0000'));
-								if (list_log.getString("pb_l_text").indexOf('\u0000') != -1) {
-									bean.autoMsssage("WK015");
-									return bean;
-								}
-								body_one_now.put("setPblpath", new JSONObject().put("value", list_log.getString("pb_l_path")).put("type", String.class));
-								body_one_now.put("setPblsize", new JSONObject().put("value", list_log.getInt("pb_l_size") + "").put("type", String.class));
-								body_one_now.put("setPbltext", new JSONObject().put("value", list_log.getString("pb_l_text")).put("type", String.class));
-								body_one_now.put("setPbldt",
-										new JSONObject().put("value", Fm_Time.toDateTime(list_log.getString("pb_l_dt"))).put("type", Date.class));
+										// Step6-12.[檢核階段-進階] PLT 亂碼檢核
+										// System.out.print(list_log.getString("pb_l_text").indexOf('\u0000'));
+										if (list_log.getString("pb_l_text").indexOf('\u0000') != -1) {
+											bean.autoMsssage("WK015");
+											return bean;
+										}
+										body_one_now.put("setPblpath",
+												new JSONObject().put("value", list_log.getString("pb_l_path")).put("type", String.class));
+										body_one_now.put("setPblsize",
+												new JSONObject().put("value", list_log.getInt("pb_l_size") + "").put("type", String.class));
+										body_one_now.put("setPbltext",
+												new JSONObject().put("value", list_log.getString("pb_l_text")).put("type", String.class));
+										body_one_now.put("setPbldt",
+												new JSONObject().put("value", Fm_Time.toDateTime(list_log.getString("pb_l_dt"))).put("type", Date.class));
 
 //								body_one.setPbltext(list_log.getString("pb_l_text"));
 //								body_one.setPblpath(list_log.getString("pb_l_path"));
 //								body_one.setPbldt(Fm_Time.toDateTime(list_log.getString("pb_l_dt")));
 //								body_one.setPblsize(list_log.getInt("pb_l_size") + "");
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+									bean.autoMsssage("1111");
+									return bean;
+								}
 							}
-						}
 
-						// ======== Step7. 檔案歸檔?========
-						if (list_log.getJSONArray("pb_l_files").length() > 0) {
-							Boolean check_move = ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
-							if (!check_move) {
-								bean.autoMsssage("WK012");
-								return bean;
+							// ======== Step7. 檔案歸檔?========
+							if (list_log.getJSONArray("pb_l_files").length() > 0) {
+								Boolean check_move = ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
+								if (!check_move) {
+									bean.autoMsssage("WK012");
+									return bean;
+								}
 							}
 						}
 					}
+
 					// ======== Step8.其他參數紀錄 ========
 					body_one_now.put("setSysmdate", new JSONObject().put("value", new Date()).put("type", Date.class));
 					body_one_now.put("setSysmuser", new JSONObject().put("value", user.getSuaccount()).put("type", String.class));
@@ -833,9 +940,15 @@ public class WorkstationWorkService {
 
 						try {
 							Method set_method = body_one.getClass().getMethod(entry.getKey(), (Class<?>) json_v.get("type"));
-							set_method.invoke(body_one, json_v.has("value") ? json_v.get("value") : new Object[] { null });
+							// 如果有Null
+							if (json_v.get("value") instanceof String && json_v.getString("value").equals("isNull")) {
+								System.out.println("value:" + entry.getValue());
+								set_method.invoke(body_one, new Object[] { null });
+							} else {
+								set_method.invoke(body_one, json_v.get("value"));
+							}
+
 						} catch (Exception e) {
-							e.printStackTrace();
 							e.printStackTrace();
 							bean.autoMsssage("1111");
 							return bean;

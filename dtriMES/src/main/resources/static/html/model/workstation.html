@@ -391,7 +391,7 @@
 						</td>
 					</tr>
 					<!--(固定)目前條碼 -->
-					<tr class="font-weight-bold" >
+					<tr class="font-weight-bold">
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded h2">
 								<div class="col-3 p-1 m-0 b_code_w ">
@@ -891,7 +891,8 @@
    		    console.log("barcode_action");
    		    console.log(event.currentTarget.id);
    		    $("#m_order").val(event.currentTarget.id);
-   			$("#send_command_btn" ).trigger( "click" );
+   			$("#send_command_btn" ).trigger( "click" );   		    	
+   		    
    		});
    		$(document).on("keyup", function (event) {
    		    //上移
@@ -1011,6 +1012,11 @@
    		},
    		//執行動作
    		send_command(){
+   		  	//上階段已執行完畢
+   		    if(!$("#nav_loading").hasClass("d-none")){
+   		    	return false;
+   		    }
+   			
    			setTimeout(function(){
    				console.log("send_command :"+$('#m_order').val() );
    				var code = $('#m_order').val().replace('barcode_','').toUpperCase();//排除多餘字
@@ -1505,6 +1511,7 @@
 			//Step4-0.過站完成 再檢查一次
 			if(main.allData.info_color=="success"){
 				workstation.barcode_save = true;
+				main.loading(false);
 				//取消檢查
 				$('#check_end').prop('checked', false);  
 				$("#BC003" ).trigger( "click" );	
@@ -1585,7 +1592,11 @@
             var doc_list =  main.allData.body.search[0];
    			for (var i = 0; i < Object.keys(doc_list).length; i++) {
    				var key = Object.keys(doc_list)[i];
-   				var value = doc_list[key];						
+   				var value = doc_list[key];
+   			 	//測試JSON
+                if(""+value!=null && (""+value).search('},')!=-1){
+               	 value = value.replaceAll('},', '},\n');
+                }
    				$('#'+key+' .doc_c_value').val(value);
    			}
    			//Step3-2.更新SN_List
