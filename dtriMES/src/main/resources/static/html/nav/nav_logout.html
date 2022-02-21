@@ -29,12 +29,18 @@
 				t_logout.countDownSecond -= 1;
 				//console.log("倒數:"+t_logout.countDownSecond);
 				$('#timeout').text("Logout...."+t_logout.countDownSecond);
+				$('#show_timeout').text("T.O.:"+t_logout.countDownSecond+"/s");
+				
 				if (t_logout.countDownSecond == 30) {
 					$("#nav_logout").removeClass("d-none");
+				}
+				if(t_logout.countDownSecond <= 30){
+					$('title').text("DTR_MES(製程系統) T.O.:"+t_logout.countDownSecond+"/s");
 				}
 				if (t_logout.countDownSecond < 0) {
 					clearInterval(t_logout.countDownId);
 					$("#nav_logout").addClass("d-none");
+					$('title').text("DTR_MES(製程系統)");
 					$(location).attr('href', './login.basil');
 				}
 			},

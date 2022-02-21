@@ -18,6 +18,7 @@ import javax.print.PrintService;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.net.ftp.FTPClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -396,7 +397,7 @@ public class WorkstationWorkService {
 			boolean plt_file_classify = body.getJSONObject("modify").has("plt_file_classify")//
 					? body.getJSONObject("modify").getBoolean("plt_file_classify")//
 					: false;
-			System.out.println(list);
+			//System.out.println(list);
 
 			// [檢核階段-初步] SN 燒錄必須要
 			if (!list.get("pb_b_sn").equals("")) {
@@ -407,12 +408,13 @@ public class WorkstationWorkService {
 
 				// 更新 [ProductionBody] 開始
 				if (body_s.size() == 1) {
-					ProductionBody body_one = body_s.get(0);// 目前產品資料
+					ProductionBody body_one_now = body_s.get(0);// 目前產品資料
 					ProductionBody body_one_old = body_s_old.size() > 0 ? body_s_old.get(0) : null;// 舊產品資料
 					ProductionBody title_body = pbDao.findAllByPbid(0l).get(0);// 目前產品 自訂義SN欄位
 					JSONObject pbschedule = new JSONObject(body_s.get(0).getPbschedule());// 目前工作程序
-					Map<String, JSONObject> body_one_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
-					List<ProductionBody> check_sn = pbDao.findAllByPbgidOrderByPbsnAsc(body_one.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
+					Map<String, JSONObject> body_map_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
+					Map<String, JSONObject> body_map_old = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
+					List<ProductionBody> check_sn = pbDao.findAllByPbgidOrderByPbsnAsc(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
 					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 10));// 產品規格內容(檢驗用)
 					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
 					Map<String, JSONObject> wpi_pr_map_auto = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數
@@ -436,11 +438,13 @@ public class WorkstationWorkService {
 								if (body_one_old.getPboldsn() != null && !body_one_old.getPboldsn().equals("")) {
 									old_sn = new JSONArray(body_one_old.getPboldsn());
 								} else {
-									body_one_old.setPbbsn(list.getString("pb_old_sn") + "_old_" + old_sn.length());
-									body_one_old.setPbsn(list.getString("pb_old_sn") + "_old_" + old_sn.length());
+									body_map_old.put("setPbbsn",
+											new JSONObject().put("value", list.getString("pb_old_sn") + "_old_" + old_sn.length()).put("type", String.class));
+									body_map_old.put("setPbsn",
+											new JSONObject().put("value", list.getString("pb_old_sn") + "_old_" + old_sn.length()).put("type", String.class));
 								}
 								old_sn.put(list.getString("pb_old_sn") + "_old_" + old_sn.length());
-								body_one_now.put("setPboldsn", new JSONObject().put("value", old_sn.toString()).put("type", String.class));
+								body_map_now.put("setPboldsn", new JSONObject().put("value", old_sn.toString()).put("type", String.class));
 							} else {
 								bean.autoMsssage("WK009");
 								return bean;
@@ -454,14 +458,18 @@ public class WorkstationWorkService {
 									// 取出欄位名稱 ->存入body_title資料
 									get_method = body_one_old.getClass().getMethod(get_name);
 									String body_value = (String) get_method.invoke(body_one_old);
+									if(body_value == null) {
+										body_value = "";
+									}
 									// set_method = body_one.getClass().getMethod(set_name, String.class);
 									// set_method.invoke(body_one, body_value);
-									body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
+									body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 								}
-								body_one_now.put("setPblpath", new JSONObject().put("value", body_one_old.getPblpath()).put("type", String.class));
-								body_one_now.put("setPblsize", new JSONObject().put("value", body_one_old.getPblsize()).put("type", String.class));
-								body_one_now.put("setPbltext", new JSONObject().put("value", body_one_old.getPbltext()).put("type", String.class));
-								body_one_now.put("setPbldt", new JSONObject().put("value", body_one_old.getPbldt()).put("type", Date.class));
+								body_map_now.put("setPblpath", new JSONObject().put("value", body_one_old.getPblpath()).put("type", String.class));
+								body_map_now.put("setPblsize", new JSONObject().put("value", body_one_old.getPblsize()).put("type", String.class));
+								body_map_now.put("setPbltext", new JSONObject().put("value", body_one_old.getPbltext()).put("type", String.class));
+								body_map_now.put("setPbldt", new JSONObject().put(//
+										"value", body_one_old.getPbldt() == null ? "isNull" : body_one_old.getPbldt()).put("type", Date.class));
 
 								// body_one.setPblpath(body_one_old.getPblpath());
 								// body_one.setPblsize(body_one_old.getPblsize());
@@ -522,9 +530,9 @@ public class WorkstationWorkService {
 					}
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
-					body_one_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
-					body_one_now.put("setPbfvalue", new JSONObject().put("value", f_code).put("type", String.class));
-					body_one_now.put("setPbcheck", new JSONObject().put("value", check_fn).put("type", Boolean.class));
+					body_map_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
+					body_map_now.put("setPbfvalue", new JSONObject().put("value", f_code).put("type", String.class));
+					body_map_now.put("setPbcheck", new JSONObject().put("value", check_fn).put("type", Boolean.class));
 
 					// ========Step3-1.過站簽名 ->有維修代碼 則不存人========
 					String w_pb_cell = pbschedule.getJSONObject(list.getString("w_c_name")).getString("w_pb_cell");
@@ -536,11 +544,11 @@ public class WorkstationWorkService {
 
 					// 有維修代碼? [true = 正常過站]/[false = 不過站 & 只存入部分資訊]
 					if (f_code_check) {
-						body_one_now.put(setPbwname, new JSONObject().put("value", user_acc).put("type", String.class));
-						body_one_now.put(setPbwpdate, new JSONObject().put("value", new Date()).put("type", Date.class));
+						body_map_now.put(setPbwname, new JSONObject().put("value", user_acc).put("type", String.class));
+						body_map_now.put(setPbwpdate, new JSONObject().put("value", new Date()).put("type", Date.class));
 					} else {
-						body_one_now.put(setPbwname, new JSONObject().put("value", "").put("type", String.class));
-						body_one_now.put(setPbwpdate, new JSONObject().put("value", "isNull").put("type", Date.class));
+						body_map_now.put(setPbwname, new JSONObject().put("value", "").put("type", String.class));
+						body_map_now.put(setPbwpdate, new JSONObject().put("value", "isNull").put("type", Date.class));
 					}
 
 					// 有維修代碼則不進行其他行為
@@ -549,7 +557,18 @@ public class WorkstationWorkService {
 						try {
 							// Step4-1.[檢核階段-進階] 規格轉換
 							if (wpicheck_pr.size() == 1) {
-								JSONObject wpic_pr = new JSONObject(wpicheck_pr.get(0).getPrbitem().replaceAll(" ", ""));
+								String prbitem = wpicheck_pr.get(0).getPrbitem();
+								// [檢核階段-進階] 避免規格異常
+								if (prbitem != null && !prbitem.equals("")) {
+									try {
+										new JSONObject(prbitem);
+									} catch (JSONException ex) {
+										prbitem = new JSONObject().toString();
+									}
+								} else {
+									prbitem = new JSONObject().toString();
+								}
+								JSONObject wpic_pr = new JSONObject(prbitem.replaceAll(" ", ""));
 								Iterator<String> keys = wpic_pr.keys();
 								while (keys.hasNext()) {
 									String key = keys.next();
@@ -682,8 +701,10 @@ public class WorkstationWorkService {
 											}
 										}
 									}
-									body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
+									body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 									// set_method.invoke(body_one, body_value);
+								}else {
+									
 								}
 							}
 
@@ -862,11 +883,10 @@ public class WorkstationWorkService {
 																}
 															}
 														}
-
 													}
 
 													// set_method.invoke(body_one, body_value);
-													body_one_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
+													body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 												}
 											}
 										}
@@ -896,13 +916,13 @@ public class WorkstationWorkService {
 											bean.autoMsssage("WK015");
 											return bean;
 										}
-										body_one_now.put("setPblpath",
+										body_map_now.put("setPblpath",
 												new JSONObject().put("value", list_log.getString("pb_l_path")).put("type", String.class));
-										body_one_now.put("setPblsize",
+										body_map_now.put("setPblsize",
 												new JSONObject().put("value", list_log.getInt("pb_l_size") + "").put("type", String.class));
-										body_one_now.put("setPbltext",
+										body_map_now.put("setPbltext",
 												new JSONObject().put("value", list_log.getString("pb_l_text")).put("type", String.class));
-										body_one_now.put("setPbldt",
+										body_map_now.put("setPbldt",
 												new JSONObject().put("value", Fm_Time.toDateTime(list_log.getString("pb_l_dt"))).put("type", Date.class));
 
 //								body_one.setPbltext(list_log.getString("pb_l_text"));
@@ -929,23 +949,46 @@ public class WorkstationWorkService {
 					}
 
 					// ======== Step8.其他參數紀錄 ========
-					body_one_now.put("setSysmdate", new JSONObject().put("value", new Date()).put("type", Date.class));
-					body_one_now.put("setSysmuser", new JSONObject().put("value", user.getSuaccount()).put("type", String.class));
-					body_one_now.put("setPbposition", new JSONObject().put("value", list.getString("pb_position")).put("type", String.class));
-					// 更新 [ProductionBody] 結束-> 登記入 body_one forEach
-					for (Entry<String, JSONObject> entry : body_one_now.entrySet()) {
+					body_map_now.put("setSysmdate", new JSONObject().put("value", new Date()).put("type", Date.class));
+					body_map_now.put("setSysmuser", new JSONObject().put("value", user.getSuaccount()).put("type", String.class));
+					body_map_now.put("setPbposition", new JSONObject().put("value", list.getString("pb_position")).put("type", String.class));
+
+					// 更新 [ProductionBody_old] 結束-> 登記入 body_one forEach
+					for (Entry<String, JSONObject> entry : body_map_old.entrySet()) {
+						System.out.println("key:" + entry.getKey());
+						System.out.println("value:" + entry.getValue());
+						JSONObject json_v = entry.getValue();
+						try {
+							Method set_method = body_one_old.getClass().getMethod(entry.getKey(), (Class<?>) json_v.get("type"));
+							// 如果有Null
+							if (json_v.get("value") instanceof String && json_v.getString("value").equals("isNull")) {
+								System.out.println("value:" + entry.getValue());
+								set_method.invoke(body_one_old, new Object[] { null });
+							} else {
+								set_method.invoke(body_one_old, json_v.get("value"));
+							}
+
+						} catch (Exception e) {
+							e.printStackTrace();
+							bean.autoMsssage("1111");
+							return bean;
+						}
+					}
+
+					// 更新 [ProductionBody_now] 結束-> 登記入 body_one forEach
+					for (Entry<String, JSONObject> entry : body_map_now.entrySet()) {
 						System.out.println("key:" + entry.getKey());
 						System.out.println("value:" + entry.getValue());
 						JSONObject json_v = entry.getValue();
 
 						try {
-							Method set_method = body_one.getClass().getMethod(entry.getKey(), (Class<?>) json_v.get("type"));
+							Method set_method = body_one_now.getClass().getMethod(entry.getKey(), (Class<?>) json_v.get("type"));
 							// 如果有Null
 							if (json_v.get("value") instanceof String && json_v.getString("value").equals("isNull")) {
 								System.out.println("value:" + entry.getValue());
-								set_method.invoke(body_one, new Object[] { null });
+								set_method.invoke(body_one_now, new Object[] { null });
 							} else {
-								set_method.invoke(body_one, json_v.get("value"));
+								set_method.invoke(body_one_now, json_v.get("value"));
 							}
 
 						} catch (Exception e) {
@@ -1009,7 +1052,7 @@ public class WorkstationWorkService {
 						p_header.setPhedate(new Date());
 					}
 					phDao.save(p_header);
-					pbDao.save(body_one);
+					pbDao.save(body_one_now);
 					pbDao.save(body_one_old);
 				} else {
 					bean.autoMsssage("WK003");

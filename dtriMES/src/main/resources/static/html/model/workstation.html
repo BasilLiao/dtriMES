@@ -163,14 +163,6 @@
 										</div>
 									</div>
 								</div>
-								<div class="p-2" id="cancel">
-									<div id="barcode_BC006"></div>
-									<div id="BC006" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
-										<div class="small font-weight-bold">
-											wait...(暫停使用)<br>[BC016]
-										</div>
-									</div>
-								</div>
 								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="p-2" id="logout">
@@ -185,23 +177,61 @@
 						</td>
 						<td colspan="3" class="p-0 border-dark border">
 							<!-- 維修條碼_類型(浮動) -->
-							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none;">
-								<div class="col-12 m-0 p-0 h4">故障類別</div>
+							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 132px; overflow: auto;">
+								<!-- 浮動上下 -->
+								<div class="bg-white fixed-top shadow border border-primary rounded " style="top: 18%; left: auto; right: 30px; width: 170px;">
+									<div class="col-12 p-1">
+										<div class="row m-0 p-1 bg-light">
+											<div id="barcode_BC016" class="m-0 col-lg-12"></div>
+											<div id="BC016" class="barcode_action btn btn-light p-0 border-0 pt-1">[BC016]類別_U8</div>
+										</div>
+									</div>
+									<div class="col-12 p-1">
+										<div class="row m-0 p-1 bg-light">
+											<div id="barcode_BC017" class="m-0 col-lg-12"></div>
+											<div id="BC017" class="barcode_action btn btn-light p-0 border-0 pt-1">[BC017]類別_D8</div>
+										</div>
+									</div>
+									<div class="dropdown-divider p-0 mt-2"></div>
+									<div class="col-12 p-1">
+										<div class="row m-0 p-1 bg-light">
+											<div id="barcode_BC018" class="m-0 col-lg-12"></div>
+											<div id="BC018" class="barcode_action btn btn-light p-0 border-0 pt-1">[BC018]項目_U8</div>
+										</div>
+									</div>
+									<div class="col-12 p-1">
+										<div class="row m-0 p-1 bg-light">
+											<div id="barcode_BC019" class="m-0 col-lg-12"></div>
+											<div id="BC019" class="barcode_action btn btn-light p-0 border-0 pt-1">[BC019]項目_D8</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row col-12 p-0 m-0">
+									<div class="col-3 p-1"></div>
+									<div class="col-6 m-0 p-1 h2" style="height: 66px;">故障類別</div>
+									<div class="col-3 p-1"></div>
+								</div>
 								<div id="fix_t_example" class="p-1 col-3">
 									<div class="row m-0 p-1 bg-light">
-										<div id="barcode_BC013" class="m-1 col-lg-12"></div>
-										<div id="BC013" class="barcode_action btn btn-light p-0 border-0 pt-1">XXX[BC013]</div>
+										<div id="barcode_BC013" class="m-0 col-lg-12"></div>
+										<div id="BC013" class="barcode_action btn btn-light p-0 border-0 pt-1" style="white-space: nowrap; overflow: hidden;">XXX[BC013]</div>
 									</div>
 								</div>
 							</div> <!-- 維修條碼_項目(浮動) -->
-							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none;">
-								<div class="col-12 m-0 p-0 h4">
-									故障代碼:<i id="fix-item"></i>
+							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 132px; overflow: auto;">
+								<div class="col-12 row m-0 p-0">
+									<div class="col-3 p-1"></div>
+									<div class="col-6 m-0 p-1 h2" style="height: 66px;">
+										故障代碼:<i id="fix-item"></i>
+									</div>
+									<div class="col-3 p-1"></div>
 								</div>
+
 								<div id="fix_i_example" class="p-1 col-3">
 									<div class="row m-0 p-1 bg-light">
-										<div id="barcode_BC014" class="m-1 col-lg-12"></div>
-										<div id="BC014" class="barcode_action btn btn-light p-0 border-0 pt-1">XXX[BC014]</div>
+										<div id="barcode_BC014" class="m-0 col-lg-12"></div>
+										<div id="BC014" class="barcode_action btn btn-light p-0 border-0 pt-1" style="white-space: nowrap; overflow: hidden;">XXX[BC014]</div>
 									</div>
 								</div>
 							</div>
@@ -397,8 +427,11 @@
 								<div class="col-3 p-1 m-0 b_code_w ">
 									<div class="font-weight-bold">輸入:</div>
 								</div>
-								<div class="col-9 p-0">
+								<div class="col-6 p-0">
 									<input autocomplete="off" class="col p-1 rounded" id="m_order" type="text" required autofocus>
+								</div>
+								<div class="col-3 mt-1">
+									<button id="send_command_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit">Send Command</button>
 								</div>
 							</div>
 						</td>
@@ -474,9 +507,7 @@
 											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
 										</div>
 									</div>
-									<div class="col-sm-4 mt-1">
-										<button id="send_command_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit">Send Command</button>
-									</div>
+
 									<div class="col-sm-4 p-0">
 
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
@@ -822,6 +853,9 @@
    		sn_box_list:[],
    		//結單
    		check_end:false,
+   		//項目 / 標題
+   		fix_i_open:0,
+   		fix_t_open:0,
    	},
    	//初始化
    	created() {
@@ -836,6 +870,12 @@
    		this.create_barcode("barcode_BC006","BC006","code39",22);
    		this.create_barcode("barcode_BC007","BC007","code39",22);
    		this.create_barcode("barcode_BC015","BC015","code39",22);
+   		
+   		//上下滑動
+   		this.create_barcode("barcode_BC016","BC016","code39",22);
+   		this.create_barcode("barcode_BC017","BC017","code39",22);
+   		this.create_barcode("barcode_BC018","BC018","code39",22);
+   		this.create_barcode("barcode_BC019","BC019","code39",22);
    		
    		
    		//標籤開關
@@ -1014,6 +1054,7 @@
    		send_command(){
    		  	//上階段已執行完畢
    		    if(!$("#nav_loading").hasClass("d-none")){
+   		 		$('#m_order').val("");
    		    	return false;
    		    }
    			
@@ -1204,7 +1245,7 @@
 	   						newWin.document.open();
 	   						newWin.document.write(print_all);
 	   						newWin.document.close();
-	   						setTimeout(function(){newWin.close();},600);
+	   						setTimeout(function(){newWin.close();},700);
 	   						workstation.barcode_save = false;
    							
    						}
@@ -1236,7 +1277,7 @@
    						'<body class="row justify-content-center" style="font-family: Microsoft JhengHei;font-size: 12px;line-height: 12px;" onload="print()">'+
    						'<div>'+divToPrint+'</div></body></html>');
    						newWin.document.close();
-   						setTimeout(function(){newWin.close();},600);
+   						setTimeout(function(){newWin.close();},700);
    						workstation.barcode_save = false;
    									
    						//Step2.印出->清除
@@ -1263,6 +1304,34 @@
    						//Step3.存檔
    						workstation.sendSave();		
    					}
+   					return false;
+   					break;
+   				case "BC016":
+   					if(workstation.fix_t_open>0){
+	   					workstation.fix_t_open -=132;    						
+   					}
+   				 	$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
+   				 	workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC017":
+   					workstation.fix_t_open +=132; 
+   					$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
+   					workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC018":
+   					if(workstation.fix_i_open>0){
+	   					workstation.fix_i_open -=132;    						
+   					}
+   				 	$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
+   				 	workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC019":
+   					workstation.fix_i_open +=132; 
+   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
+   					workstation.clearOrder();
    					return false;
    					break;
    				default:
@@ -1377,7 +1446,7 @@
    					return false;
    				}
    				
-   			  }, 200);
+   			  }, 300);
    			
    			
    			return false; //防止真傳送
@@ -1387,6 +1456,7 @@
 				//清除
 				$('#m_order').val('');
 				$('#m_order').focus();
+				$("html, body").animate({ scrollTop: 100 }, 'fast');
    			//},200);
    		},
    		//指令列印
