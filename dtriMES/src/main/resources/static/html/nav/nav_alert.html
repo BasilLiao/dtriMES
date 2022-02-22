@@ -6,8 +6,14 @@
 		<span aria-hidden="true">&times;</span>
 	</button>
 </div>
-<audio id="success_0" src="./img/yisell_sound_success.mp3" preload="auto" ></audio>
-<audio id="warning_1" src="./img/yisell_sound_warning.mp3" preload="auto" ></audio>
+<!-- 成功聲音 -->
+<audio id="success_pass_workstation" src="./img/yisell_sound_success.mp3" preload="auto"></audio>
+<!-- 過站重複聲音 -->
+<audio id="success_replace_workstation" src="./img/yisell_sound_replace.mp3" preload="auto"></audio>
+<!-- 工單已關閉 -->
+<audio id="warning_sound_end" src="./img/yisell_sound_end.mp3" preload="auto"></audio>
+<!-- 錯誤聲音 -->
+<audio id="warning_all" src="./img/yisell_sound_warning.mp3" preload="auto"></audio>
 <script type="text/javascript">
 	//控制端
 	t_alert = new Vue({
@@ -23,11 +29,7 @@
 			console.log("alert.html(created)");
 			//動態監聽顯示Table 物件 查看開關
 			$(document).on("click", "#alert button", function(event) {
-				$("#alert").addClass("d-none");
-		   		$("#success_0").get(0).pause();
-		   		$("#success_0").get(0).currentTime = 0;
-				$("#warning_1").get(0).pause();
-		   		$("#warning_1").get(0).currentTime = 0;
+		   		t_alert.alertSoundClose();
 			});
 		},
 		//可呼叫方法
@@ -43,27 +45,36 @@
 					//danger
 					$("#alert").addClass("alert-danger");
 					if(this.sound_warning){
-						$('#warning_1').get(0).play(); 	
+						$('#warning_all').get(0).play(); 	
 					}
 				  break;
 				  case 'warning':
 					//warning
 					$("#alert").addClass("alert-warning");
-					if(this.sound_warning){
-						$('#warning_1').get(0).play(); 	
+					//t_alert.alertSoundClose();
+					
+					//工單 已關閉?
+					if(info.search("WK016")>0){
+						$('#warning_sound_end').get(0).play(); 	
+					}else if(this.sound_warning){
+						$('#warning_all').get(0).play(); 	
 					}
 				  break;
 				  case 'success':
 					//success
 					$("#alert").addClass("alert-success");
-					$("#warning_1").get(0).pause();
-			   		$("#warning_1").get(0).currentTime = 0;
-			   		$("#success_0").get(0).pause();
-			   		$("#success_0").get(0).currentTime = 0;
-					//$('#success_0').get(0).play(); 
+					//t_alert.alertSoundClose();
+					//過站成功[音效]?
+					if(info.search("WK020")>0 && $('#set_success').is(":checked")){
+						$('#success_pass_workstation').get(0).play(); 
+					}
+					if(info.search("WK021")>0 && $('#set_replace').is(":checked")){
+						$('#success_replace_workstation').get(0).play(); 
+					}
 				  break;
 				  case 'close':
 					//close
+					//t_alert.alertSoundClose();
 					$("#alert").addClass("d-none");
 					$("#alert_message").text("");
 					
@@ -71,19 +82,30 @@
 				break;
 				  default:
 				}
+				
 				//關閉以外
 				if(color!='close'){
 					$("#alert_message").text("INFO : " + info);
 					$("#alert").removeClass("d-none");
 					t_alert.show_alert = setTimeout(function() {
-						$("#alert").addClass("d-none");
-						$("#alert_message").text("");
-						$("#warning_1").get(0).pause();
-				   		$("#warning_1").get(0).currentTime = 0;
-				   		$("#success_0").get(0).pause();
-				   		$("#success_0").get(0).currentTime = 0;
-					}, 10000);
+						t_alert.alertSoundClose();
+					}, 6000);
 				}
+			},
+			alertSoundClose(){
+				$("#alert").addClass("d-none");
+				$("#alert_message").text("");
+				$("#warning_all").get(0).pause();
+		   		$("#warning_all").get(0).currentTime = 0;
+		   		
+		   		$("#warning_sound_end").get(0).pause();
+		   		$("#warning_sound_end").get(0).currentTime = 0;
+		   		
+		   		$("#success_pass_workstation").get(0).pause();
+		   		$("#success_pass_workstation").get(0).currentTime = 0;
+		   		
+		   		$("#success_replace_workstation").get(0).pause();
+		   		$("#success_replace_workstation").get(0).currentTime = 0;
 			}
 		},
 		//移除監聽事件

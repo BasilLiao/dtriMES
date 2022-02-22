@@ -17,6 +17,13 @@
 .b_code_w {
 	max-width: 180px;
 }
+
+.fix_t_css, .fix_i_css {
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 14px;
+	line-height: 14px;
+}
 </style>
 <div id="workstation" class="text-left shadow">
 	<div class=" bg-white rounded-top m-0 pl-1 h5">
@@ -38,7 +45,7 @@
 								<div style="min-width: 80px;">Barcode</div>
 							</div>
 						</th>
-						<th style="min-width: 300px; width: 100%;">Info</th>
+						<th style="min-width: 300px; width: 100%;">Info:</th>
 						<th class="">
 							<div>
 								<i id="fix_open" class="bi bi-tools btn btn-outline-primary p-0 pl-1 pr-1"></i>
@@ -177,7 +184,7 @@
 						</td>
 						<td colspan="3" class="p-0 border-dark border">
 							<!-- 維修條碼_類型(浮動) -->
-							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 132px; overflow: auto;">
+							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 112px; overflow: auto;">
 								<!-- 浮動上下 -->
 								<div class="bg-white fixed-top shadow border border-primary rounded " style="top: 18%; left: auto; right: 30px; width: 170px;">
 									<div class="col-12 p-1">
@@ -209,20 +216,20 @@
 
 								<div class="row col-12 p-0 m-0">
 									<div class="col-3 p-1"></div>
-									<div class="col-6 m-0 p-1 h2" style="height: 66px;">故障類別</div>
+									<div class="col-6 m-0 p-1 h2" style="height: 56px;">故障類別</div>
 									<div class="col-3 p-1"></div>
 								</div>
 								<div id="fix_t_example" class="p-1 col-3">
 									<div class="row m-0 p-1 bg-light">
 										<div id="barcode_BC013" class="m-0 col-lg-12"></div>
-										<div id="BC013" class="barcode_action btn btn-light p-0 border-0 pt-1" style="white-space: nowrap; overflow: hidden;">XXX[BC013]</div>
+										<div id="BC013" class="fix_t_css barcode_action btn btn-light p-0 border-0 pt-1">XXX[BC013]</div>
 									</div>
 								</div>
 							</div> <!-- 維修條碼_項目(浮動) -->
-							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 132px; overflow: auto;">
+							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 112px; overflow: auto;">
 								<div class="col-12 row m-0 p-0">
 									<div class="col-3 p-1"></div>
-									<div class="col-6 m-0 p-1 h2" style="height: 66px;">
+									<div class="col-6 m-0 p-1 h2" style="height: 56px;">
 										故障代碼:<i id="fix-item"></i>
 									</div>
 									<div class="col-3 p-1"></div>
@@ -231,7 +238,7 @@
 								<div id="fix_i_example" class="p-1 col-3">
 									<div class="row m-0 p-1 bg-light">
 										<div id="barcode_BC014" class="m-0 col-lg-12"></div>
-										<div id="BC014" class="barcode_action btn btn-light p-0 border-0 pt-1" style="white-space: nowrap; overflow: hidden;">XXX[BC014]</div>
+										<div id="BC014" class="barcode_action fix_i_css btn btn-light p-0 border-0 pt-1">XXX[BC014]</div>
 									</div>
 								</div>
 							</div>
@@ -252,7 +259,7 @@
 														<div class="col-10 doc_c_name p-0 over_hid" id="" contenteditable="true">Loading...</div>
 													</div>
 													<input disabled="disabled" class="col-12  p-0 border border-light rounded doc_c_value" id="" type="text" required>
-													<textarea disabled="disabled" class="col-12  p-0 border border-light rounded doc_c_value d-none" id="" rows="5" required></textarea>
+													<textarea disabled="disabled" class="col-12  p-0 border border-light rounded doc_c_value d-none" id="" rows="5" required style="word-break: break-all;"></textarea>
 												</div>
 											</div>
 										</div>
@@ -430,7 +437,7 @@
 								<div class="col-6 p-0">
 									<input autocomplete="off" class="col p-1 rounded" id="m_order" type="text" required autofocus>
 								</div>
-								<div class="col-3 mt-1">
+								<div class="col-3">
 									<button id="send_command_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit">Send Command</button>
 								</div>
 							</div>
@@ -493,33 +500,49 @@
 									<i class="bi bi-file-earmark-check mr-1"></i> Action/Options
 								</div>
 								<div class="col-12 p-2 m-0 row justify-content-center">
-									<div class="col-sm-4 p-0">
+									<div class="col-sm-4 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="p-0 pl-1">[PLT]_檢查 :</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_check" name="" value="true" type="checkbox" style="max-width: 30px;">
-											<div class="p-0 pl-1">/_儲存 :</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_save" name="" value="true" type="checkbox" style="max-width: 30px;">
-											<div class="p-0 pl-1">/_歸檔 :</div>
-											<input class="mt-1 ml-1 p-1  rounded big-checkbox" id="plt_file_classify" name="" value="true" type="checkbox" style="max-width: 30px;">
+											<div class="p-0 pl-1">[PLT]設定</div>
+											<div class="col-12 row p-0 m-0">
+												<div class="p-0 pl-1">檢查 :</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_check" name="" value="true" type="checkbox" style="max-width: 30px;">
+												<div class="p-0 pl-1">｜儲存 :</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_save" name="" value="true" type="checkbox" style="max-width: 30px;">
+												<div class="p-0 pl-1">｜歸檔 :</div>
+												<input class="mt-1 ml-1 p-1  rounded big-checkbox" id="plt_file_classify" name="" value="true" type="checkbox" style="max-width: 30px;">
+											</div>
 										</div>
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="p-0 pl-1">[保留]_唯讀SN :</div>
-											<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
+											<div class="p-0 pl-1">[保留]設定</div>
+											<div class="col-12 row p-0 m-0">
+												<div class="p-0">唯讀SN :</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
+											</div>
 										</div>
 									</div>
 
-									<div class="col-sm-4 p-0">
-
+									<div class="col-sm-4 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="col-12 p-0">[產品/燒錄 序號]輸入後 :</div>
+											<div class="col-12 p-0">[產品/燒錄 序號]輸入後Auto</div>
 											<div class="col-12 row p-0 m-0">
-												<div class="p-0">(儲存):</div>
+												<div class="p-0">儲存 :</div>
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
-												<div class="p-0">/(檢查):</div>
+												<div class="p-0">｜檢查 :</div>
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_check" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
+									</div>
 
+									<div class="col-sm-4 p-1">
+										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
+											<div class="col-12 p-0">[聲效]特效</div>
+											<div class="col-12 row p-0 m-0">
+												<div class="p-0">提醒過站:</div>
+												<input id="set_success" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
+												<div class="p-0">｜重複過站:</div>
+												<input id="set_replace" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -1308,28 +1331,28 @@
    					break;
    				case "BC016":
    					if(workstation.fix_t_open>0){
-	   					workstation.fix_t_open -=132;    						
+	   					workstation.fix_t_open -=112;    						
    					}
    				 	$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
    				 	workstation.clearOrder();
    					return false;
    					break;
    				case "BC017":
-   					workstation.fix_t_open +=132; 
+   					workstation.fix_t_open +=112; 
    					$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
    					workstation.clearOrder();
    					return false;
    					break;
    				case "BC018":
    					if(workstation.fix_i_open>0){
-	   					workstation.fix_i_open -=132;    						
+	   					workstation.fix_i_open -=112;    						
    					}
    				 	$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
    				 	workstation.clearOrder();
    					return false;
    					break;
    				case "BC019":
-   					workstation.fix_i_open +=132; 
+   					workstation.fix_i_open +=112; 
    					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
    					workstation.clearOrder();
    					return false;

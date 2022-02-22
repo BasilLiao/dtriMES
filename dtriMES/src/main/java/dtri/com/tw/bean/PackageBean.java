@@ -50,7 +50,10 @@ public class PackageBean {
 	public static final String info_work_warning15 = "[WK015] FTP(LOG File) 檔案內容 資訊含有 亂碼 ,請通知 [檔案管理員]!!";
 	public static final String info_work_warning16 = "[WK016] 此 (製令單號) 已結單/終止/暫停! [Warning]!!";
 	public static final String info_work_warning17 = "[WK017] 特定([SN序號]與[產品規格]) 不相合! ";
-	public static final String info_work_warning18 = "[WK018] 特定(PLT [SN序號]與[產品規格]) 不相合! ";	
+	public static final String info_work_warning18 = "[WK018] 特定(PLT [SN序號]與[產品規格]) 不相合! ";
+	public static final String info_work_warning19 = "[WK019] 請先清除 [故障代碼] 後進行過站! [Warning]!!";
+	public static final String info_work_success20 = "[WK020] The command was executed [Successfully/成功/Thành công]!!";
+	public static final String info_work_success21 = "[WK021] 此(產品/燒錄 序號) 已 重複過站!!";
 
 	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
 
@@ -174,11 +177,23 @@ public class PackageBean {
 			this.info = info_work_warning16;
 			break;
 		case "WK017":// [WK017] 特定(SN序號) 與規格數量不相合!
-			this.info = info_work_warning17+ error_ms + " [Warning]!!";
+			this.info = info_work_warning17 + error_ms + " [Warning]!!";
 			break;
 		case "WK018":// [WK018] FTP(LOG File) 與規格數量不相合!
-			this.info = info_work_warning18+ error_ms + " [Warning]!!";
+			this.info = info_work_warning18 + error_ms + " [Warning]!!";
 			break;
+		case "WK019":// [WK019] 請先清除 [故障代碼] 後進行過站! [Warning]!!
+			this.info = info_work_warning19;
+			break;
+		case "WK020":// [WK020] The command was executed [Successfully/成功/Thành công]!!
+			this.info = info_work_success20;
+			this.info_color = info_color_success;
+			break;
+		case "WK021":// [WK021] 此(產品/燒錄 序號) 已 重複過站!!
+			this.info = info_work_success21;
+			this.info_color = info_color_success;
+			break;
+
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"
 			this.info = info_work_warning0;
 			break;

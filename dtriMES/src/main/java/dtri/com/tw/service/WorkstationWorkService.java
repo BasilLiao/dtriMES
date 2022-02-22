@@ -147,7 +147,7 @@ public class WorkstationWorkService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "sys_status", "狀態"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_size", "PLT_Log_Size"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_path", "PLT_Log位置"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_path", "PLT_Log位置"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_text", "PLT_Log內容"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pr_b_item", "規格定義"));
@@ -397,7 +397,7 @@ public class WorkstationWorkService {
 			boolean plt_file_classify = body.getJSONObject("modify").has("plt_file_classify")//
 					? body.getJSONObject("modify").getBoolean("plt_file_classify")//
 					: false;
-			//System.out.println(list);
+			// System.out.println(list);
 
 			// [檢核階段-初步] SN 燒錄必須要
 			if (!list.get("pb_b_sn").equals("")) {
@@ -425,8 +425,15 @@ public class WorkstationWorkService {
 					boolean f_code_check = true;// 是否需要 維修
 					String f_code = "";// 維修代號
 					String w_c_name = "";// 過站人
+					Boolean set_replace = true;// 重複過站?true=重複過站/ false = 沒重複過站
 
-					// ========Step Step1.A521 是否新舊(SN)繼承? ========
+					// ========Step0. 是否原先有故障代碼 ========
+					if (!list.getString("pb_f_value").equals("") && body_one_now.getPbfvalue() != null && !body_one_now.getPbfvalue().equals("")) {
+						bean.autoMsssage("WK019");
+						return bean;
+					}
+
+					// ========Step1.A521 是否新舊(SN)繼承? ========
 					if (list.getString("pb_old_sn") != null && !list.getString("pb_old_sn").equals("")) {
 						// Step1-1.[檢核階段-初階] 是否需要登記舊的SN(不能找已經登記過的)
 						if (body_s_old.size() == 1) {
@@ -458,7 +465,7 @@ public class WorkstationWorkService {
 									// 取出欄位名稱 ->存入body_title資料
 									get_method = body_one_old.getClass().getMethod(get_name);
 									String body_value = (String) get_method.invoke(body_one_old);
-									if(body_value == null) {
+									if (body_value == null) {
 										body_value = "";
 									}
 									// set_method = body_one.getClass().getMethod(set_name, String.class);
@@ -525,9 +532,18 @@ public class WorkstationWorkService {
 						w_c_name = list.getString("w_c_name") + "_Y";
 					} else {
 						w_c_name = list.getString("w_c_name") + "_N";
-						f_code = w_c_name + "_" + user.getSuaccount() + "_" + list.getString("pb_f_value");
+						f_code = new JSONObject().//
+								put("workstation", w_c_name).//
+								put("user", user.getSuaccount()).//
+								put("fix_code", list.getString("pb_f_value")).toString();
+
 						f_code_check = false;
 					}
+					// 重複過站[標記]
+					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {
+						set_replace = false;
+					}
+
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
 					body_map_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
@@ -703,8 +719,8 @@ public class WorkstationWorkService {
 									}
 									body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 									// set_method.invoke(body_one, body_value);
-								}else {
-									
+								} else {
+
 								}
 							}
 
@@ -1054,6 +1070,12 @@ public class WorkstationWorkService {
 					phDao.save(p_header);
 					pbDao.save(body_one_now);
 					pbDao.save(body_one_old);
+					//true = 一般過站/false = 重複過站 = ?
+					if (set_replace) {
+						bean.autoMsssage("WK020");
+					} else {
+						bean.autoMsssage("WK021");
+					}
 				} else {
 					bean.autoMsssage("WK003");
 					return bean;
@@ -1063,14 +1085,14 @@ public class WorkstationWorkService {
 			System.out.println(e);
 			bean.autoMsssage("WK013");
 			return bean;
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			bean.autoMsssage("1111");
 			return bean;
 		}
-		bean.autoMsssage("001");
+
+		// ========Step0. 是否有過站更新成功 ========
+
 		return bean;
 	}
 
