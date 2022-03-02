@@ -27,6 +27,7 @@ public class ProductionSnService {
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
 		ArrayList<ProductionSN> productinoSns = new ArrayList<ProductionSN>();
+		ArrayList<ProductionSN> productinoSns_son = new ArrayList<ProductionSN>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -42,7 +43,8 @@ public class ProductionSnService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表?", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表?", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ui_group_id", FFS.h_t("UI_Group_ID", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ps_id", FFS.h_t("ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ps_g_id", FFS.h_t("群組ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ps_g_name", FFS.h_t("群組名稱", "200px", FFM.Wri.W_Y));
@@ -76,7 +78,7 @@ public class ProductionSnService {
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", "修改時間"));
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", "修改人"));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_N,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-10", false, n_val, "sys_note", "備註"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-10", false, n_val, "sys_note", "備註"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-2", true, n_val, "sys_sort", "排序"));
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFS.NUMB, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_ver", "版本"));
 
@@ -89,11 +91,11 @@ public class ProductionSnService {
 
 			// 放入群主指定 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_g_m = new JSONArray();
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "ps_name",""));
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "ps_value",""));
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "ps_g_name",""));
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-10", "sys_note",""));
-			
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "ps_name", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "ps_value", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "ps_g_name", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-10", "sys_note", ""));
+
 			bean.setCell_g_modify(obj_g_m);
 
 			// 放入包裝(search)
@@ -116,14 +118,21 @@ public class ProductionSnService {
 			status = body.getJSONObject("search").getString("sys_status");
 			status = status.equals("") ? "0" : status;
 		}
-		productinoSns = snDao.findAllByProductionSN(ps_name, ps_g_name, Integer.parseInt(status), page_r);
+		productinoSns = snDao.findAllByProductionSN(ps_name, ps_g_name, Integer.parseInt(status), true, page_r);
+		List<Long> psgid = new ArrayList<Long>();
+		for (ProductionSN group_1 : productinoSns) {
+			psgid.add(group_1.getPsgid());
+		}
+		productinoSns_son = snDao.findAllByProductionSN(ps_name, psgid, ps_g_name, Integer.parseInt(status), false, null);// 因為不會超過100筆所以直接使用
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
+		JSONObject object_bodys_son = new JSONObject();
 		productinoSns.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getPsgid());// 群組專用-必須放前面
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_id", one.getPsid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_g_id", one.getPsgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_g_name", one.getPsgname());
@@ -138,10 +147,35 @@ public class ProductionSnService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+			// 準備子類別容器
+			object_bodys_son.put(one.getPsgid() + "", new JSONArray());
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		// bean.setBody_type("fatherSon");
+		// 子類別
+
+		productinoSns_son.forEach(one -> {
+			JSONObject object_son = new JSONObject();
+			object_son.put("sys_header", one.getSysheader() + "");
+			object_son.put("ui_group_id", one.getPsgid() + "");// 群組專用-必須放前面
+			object_son.put("ps_id", one.getPsid() + "");
+			object_son.put("ps_g_id", one.getPsgid() + "");
+			object_son.put("ps_g_name", one.getPsgname() + "");
+			object_son.put("ps_name", one.getPsname());
+			object_son.put("ps_value", one.getPsvalue() + "");
+
+			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
+			object_son.put("sys_c_user", one.getSyscuser());
+			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
+			object_son.put("sys_m_user", one.getSysmuser() + "");
+			object_son.put("sys_note", one.getSysnote() + "");
+			object_son.put("sys_sort", one.getSyssort() + "");
+			object_son.put("sys_ver", one.getSysver() + "");
+			object_son.put("sys_status", one.getSysstatus() + "");
+			object_bodys_son.getJSONArray(one.getPsgid() + "").put(object_son);
+		});
+		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
+
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
 

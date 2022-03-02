@@ -31,6 +31,7 @@ public class SystemGroupService {
 	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
 		PackageBean bean = new PackageBean();
 		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
+		List<SystemGroup> systemGroup_son = new ArrayList<SystemGroup>();
 		ArrayList<SystemPermission> permissions = new ArrayList<SystemPermission>();
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -47,7 +48,8 @@ public class SystemGroupService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ui_group_id", FFS.h_t("UI_Group_ID", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sg_id", FFS.h_t("ID", "50px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sg_g_id", FFS.h_t("群組ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sg_name", FFS.h_t("群組名稱", "150px", FFM.Wri.W_Y));
@@ -109,8 +111,7 @@ public class SystemGroupService {
 						st_val.put((new JSONObject()).put("value", s.getSpname()).put("key", s.getSpid()));
 					} else {
 						old_p_g_name = s.getSpgname();
-						st_val.put((new JSONObject()).put("value", "====" + old_p_g_name + "====").put("key", "dis" + old_p_g_id).put("dis",
-								"disabled"));
+						st_val.put((new JSONObject()).put("value", "====" + old_p_g_name + "====").put("key", "dis" + old_p_g_id).put("dis", "disabled"));
 						st_val.put((new JSONObject()).put("value", s.getSpname()).put("key", s.getSpid()));
 					}
 				}
@@ -172,25 +173,30 @@ public class SystemGroupService {
 		// 全查
 		page_r = PageRequest.of(page, 999, Sort.by("sggid").descending());
 		List<Long> sggid = new ArrayList<Long>();
-		// 是否=為系統使用者?
+		// 是否=為系統使用者?(父類別)
 		if (user.getSuid() == 1) {
-			groupDao.findAllBySysheader(true, page_r).forEach(s -> {
-				sggid.add(s.getSggid());
-			});
+			systemGroup = groupDao.findAllBySystemGroup(sg_name, null, 0l, Integer.parseInt(status), true, page_r);
+			for (SystemGroup group_1 : systemGroup) {
+				sggid.add(group_1.getSggid());
+			}
+			systemGroup_son = groupDao.findAllBySystemGroup(sg_name, sggid, 0l, Integer.parseInt(status), false, null);
 		} else {
-			groupDao.findAllBySysheaderAndSgidNot(true, 1l, page_r).forEach(s -> {
-				sggid.add(s.getSggid());
-			});
+			systemGroup = groupDao.findAllBySystemGroup(sg_name, null, 1l, Integer.parseInt(status), true, page_r);
+			for (SystemGroup group_1 : systemGroup) {
+				sggid.add(group_1.getSggid());
+			}
+			systemGroup_son = groupDao.findAllBySystemGroup(sg_name, sggid, 1l, Integer.parseInt(status), false, null);
 		}
-
-		systemGroup = groupDao.findAllBySystemGroup(sg_name, Integer.parseInt(status), sggid);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
+		JSONObject object_bodys_son = new JSONObject();
+		// 父類別物件
 		systemGroup.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());// 群組專用-必須放前面
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getSggid());// 群組專用-必須放前面
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_id", one.getSgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_g_id", one.getSggid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_name", one.getSgname());
@@ -209,14 +215,10 @@ public class SystemGroupService {
 					Character.toString(one.getSgpermission().charAt(4)).equals("0") ? false : true);
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_16",
 					Character.toString(one.getSgpermission().charAt(5)).equals("0") ? false : true);
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_8",
-					Character.toString(one.getSgpermission().charAt(6)).equals("0") ? false : true);
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_4",
-					Character.toString(one.getSgpermission().charAt(7)).equals("0") ? false : true);
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_2",
-					Character.toString(one.getSgpermission().charAt(8)).equals("0") ? false : true);
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_1",
-					Character.toString(one.getSgpermission().charAt(9)).equals("0") ? false : true);
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_8", Character.toString(one.getSgpermission().charAt(6)).equals("0") ? false : true);
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_4", Character.toString(one.getSgpermission().charAt(7)).equals("0") ? false : true);
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_2", Character.toString(one.getSgpermission().charAt(8)).equals("0") ? false : true);
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_1", Character.toString(one.getSgpermission().charAt(9)).equals("0") ? false : true);
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -226,9 +228,48 @@ public class SystemGroupService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+
 			object_bodys.put(object_body);
+			// 準備子類別容器
+			object_bodys_son.put(one.getSggid() + "", new JSONArray());
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
+
+		// 子類別物件
+		systemGroup_son.forEach(one -> {
+			JSONObject object_son = new JSONObject();
+			object_son.put("sys_header", one.getSysheader()+ "");// 群組專用-必須放前面
+			object_son.put("ui_group_id", one.getSggid()+ "");// 群組專用-必須放前面
+			object_son.put("sg_id", one.getSgid()+ "");
+			object_son.put("sg_g_id", one.getSggid()+ "");
+			object_son.put("sg_name", one.getSgname()+ "");
+			object_son.put("sg_sp_name", one.getSystemPermission().getSpname()+ "");
+			object_son.put("sg_sp_id", one.getSystemPermission().getSpid()+ "");
+
+			object_son.put("sg_permission_512", Character.toString(one.getSgpermission().charAt(0)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_256", Character.toString(one.getSgpermission().charAt(1)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_128", Character.toString(one.getSgpermission().charAt(2)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_64", Character.toString(one.getSgpermission().charAt(3)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_32", Character.toString(one.getSgpermission().charAt(4)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_16", Character.toString(one.getSgpermission().charAt(5)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_8", Character.toString(one.getSgpermission().charAt(6)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_4", Character.toString(one.getSgpermission().charAt(7)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_2", Character.toString(one.getSgpermission().charAt(8)).equals("0") ? false+ "" : true+ "");
+			object_son.put("sg_permission_1", Character.toString(one.getSgpermission().charAt(9)).equals("0") ? false+ "" : true+ "");
+
+			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate())+ "");
+			object_son.put("sys_c_user", one.getSyscuser()+ "");
+			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate())+ "");
+			object_son.put("sys_m_user", one.getSysmuser()+ "");
+			object_son.put("sys_sort", one.getSyssort()+ "");
+			object_son.put("sys_ver", one.getSysver()+ "");
+			object_son.put("sys_status", one.getSysstatus()+ "");
+			object_son.put("sys_note", one.getSysnote()+ "");
+			object_bodys_son.getJSONArray(one.getSggid() + "").put(object_son);
+		});
+		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
+
+		
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
 		return bean;

@@ -14,6 +14,9 @@
 <audio id="warning_sound_end" src="./img/yisell_sound_end.mp3" preload="auto"></audio>
 <!-- 錯誤聲音 -->
 <audio id="warning_all" src="./img/yisell_sound_warning.mp3" preload="auto"></audio>
+<!-- 重複檢查聲音 -->
+<audio id="success_re_check_workstation" src="./img/yisell_sound_re_check.mp3" preload="auto"></audio>
+
 <script type="text/javascript">
 	//控制端
 	t_alert = new Vue({
@@ -71,6 +74,10 @@
 					if(info.search("WK021")>0 && $('#set_replace').is(":checked")){
 						$('#success_replace_workstation').get(0).play(); 
 					}
+					if(info.search("WK021")>0 && $('#set_check_replace').is(":checked")){
+						$('#success_re_check_workstation').get(0).play(); 
+					}
+					
 				  break;
 				  case 'close':
 					//close

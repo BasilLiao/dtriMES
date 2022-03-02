@@ -1,6 +1,7 @@
 package dtri.com.tw.db.pgsql.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,11 +43,31 @@ public interface WorkstationProgramDao extends JpaRepository<WorkstationProgram,
 	ArrayList<WorkstationProgram> findAllByWpwgid(Long Wpwgid);
 
 	// 查詢一部分
-	@Query("SELECT c FROM WorkstationProgram c "
-			+ "WHERE (:wpname is null or c.wpname LIKE %:wpname% ) and (:wpcname is null or c.wpcname LIKE %:wpcname% ) and ( c.sysstatus = :sysstatus )  "
+	@Query("SELECT c FROM WorkstationProgram c "//
+			+ "WHERE (:wpname is null or c.wpname LIKE %:wpname% ) and "//
+			+ "(:wpcname is null or c.wpcname LIKE %:wpcname% ) and "//
+			+ "( c.sysstatus = :sysstatus ) and "//
+			+ "( c.sysheader = :sysheader ) "//
 			+ "order by c.wpgid asc,c.sysheader desc,c.syssort asc")
-	ArrayList<WorkstationProgram> findAllByProgram(@Param("wpname") String wp_name, @Param("wpcname") String wp_c_name, @Param("sysstatus") Integer sysstatus,
+	ArrayList<WorkstationProgram> findAllByProgram( //
+			@Param("wpname") String wp_name, //
+			@Param("wpcname") String wp_c_name, //
+			@Param("sysstatus") Integer sysstatus, //
+			@Param("sysheader") boolean sysheader, //
 			Pageable pageable);
+
+	// 查詢一部分-son
+	@Query("SELECT c FROM WorkstationProgram c "//
+			+ "WHERE (:wpname is null or c.wpname LIKE %:wpname% ) and "//
+			+ "(coalesce(:wpgid, null) is null or c.wpgid IN :wpgid ) and "// coalesce 回傳非NULL值
+			+ "(:wpcname is null or c.wpcname LIKE %:wpcname% ) and "//
+			+ "( c.sysheader = :sysheader ) "//
+			+ "order by c.wpgid asc,c.sysheader desc,c.syssort asc")
+	ArrayList<WorkstationProgram> findAllByProgram( //
+			@Param("wpname") String wp_name, //
+			@Param("wpcname") String wp_c_name, //
+			@Param("wpgid") List<Long> w_pg_id, //
+			@Param("sysheader") boolean sysheader);
 
 	// 取得G_ID WORKSTATION_PROGRAM_G_SEQ
 	@Query(value = "SELECT NEXTVAL('workstation_program_g_seq')", nativeQuery = true)

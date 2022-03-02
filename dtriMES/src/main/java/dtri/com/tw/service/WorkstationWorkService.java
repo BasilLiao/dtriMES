@@ -84,14 +84,13 @@ public class WorkstationWorkService {
 		String ph_pr_id = null;
 		String pb_b_sn = null;
 		String pb_b_sn_old = null;
-
+		Boolean set_replace = true;
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject(new LinkedHashMap<>());
 			// 維修代碼fix
-			List<Long> mc_g_id = new ArrayList<Long>();
-			ArrayList<MaintainCode> codes = codeDao.findAllByMaintainCode(null, null, mc_g_id, 0);
+			ArrayList<MaintainCode> codes = codeDao.findAllByOrderByMcgidAscSysheaderDescMcvalueAsc();
 			JSONObject fix_obj = new JSONObject();
 			JSONObject fix_type = new JSONObject();
 			// JSONObject fix_item = new JSONObject();
@@ -144,8 +143,10 @@ public class WorkstationWorkService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_c_name", "訂購客戶"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "全部/完成(整體數量)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "本工作站(通過數量)"));
-
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "sys_status", "狀態"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_workstation", "工作站(狀態)"));
+			
+			
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_dt", "PLT_Log上傳時間"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_size", "PLT_Log_Size"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_path", "PLT_Log位置"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_text", "PLT_Log內容"));
@@ -184,7 +185,8 @@ public class WorkstationWorkService {
 			ArrayList<WorkstationProgram> wp_all = new ArrayList<WorkstationProgram>();
 			List<ProductionHeader> ph_all = new ArrayList<ProductionHeader>();
 			List<ProductionBody> pb_all = new ArrayList<ProductionBody>();
-
+			
+			
 			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
 			// 檢查資料是否存在
 			if (pb_all.size() != 1) {
@@ -234,7 +236,14 @@ public class WorkstationWorkService {
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
 							JSONObject object_body_all = new JSONObject();
-
+							//過站狀態
+							JSONObject pb_workstation = new JSONObject(pb_one.getPbschedule()).getJSONObject(""+wpcname);
+							String pb_w_pass = "<<尚未過站>>";
+							if(pb_workstation.get("type").equals(wpcname+"_Y")) {
+								pb_w_pass = ">>已經過站<<";
+								set_replace = false;
+							}
+							String pb_w = pb_w_pass;
 							ph_all.forEach(one -> {
 								JSONObject object_body = new JSONObject();
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_s_date",
@@ -253,8 +262,10 @@ public class WorkstationWorkService {
 										one.getProductionRecords().getPrpquantity() + "/" + one.getProductionRecords().getPrpokquantity());
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb);
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
 
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "sys_status", one.getSysstatus());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt",
+										pb_one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(pb_one.getPbldt()));
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_size", pb_one.getPblsize());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_path", pb_one.getPblpath());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text", pb_one.getPbltext());
@@ -338,7 +349,12 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK002");
 				return bean;
 			}
-			bean.autoMsssage("002");
+			
+			if (set_replace) {
+				bean.autoMsssage("WK020");
+			} else {
+				bean.autoMsssage("WK021");
+			}
 		}
 		return bean;
 	}
@@ -445,11 +461,16 @@ public class WorkstationWorkService {
 								if (body_one_old.getPboldsn() != null && !body_one_old.getPboldsn().equals("")) {
 									old_sn = new JSONArray(body_one_old.getPboldsn());
 								} else {
-									body_map_old.put("setPbbsn",
-											new JSONObject().put("value", list.getString("pb_old_sn") + "_old_" + old_sn.length()).put("type", String.class));
-									body_map_old.put("setPbsn",
-											new JSONObject().put("value", list.getString("pb_old_sn") + "_old_" + old_sn.length()).put("type", String.class));
+									// 沒有自己建立(body_map_now)
+									JSONArray body_map_old_sn = new JSONArray().put(list.getString("pb_old_sn") + "_old_beginning");
+									body_map_old.put("setPboldsn", new JSONObject().put("value", body_map_old_sn.toString()).put("type", String.class));
+
 								}
+								// SN繼承修改 被繼承SN值
+								JSONObject old_sn_list = new JSONObject().put("value", list.getString("pb_old_sn") + "_old_" + old_sn.length());
+								body_map_old.put("setPbbsn", old_sn_list.put("type", String.class));
+								body_map_old.put("setPbsn", old_sn_list.put("type", String.class));
+
 								old_sn.put(list.getString("pb_old_sn") + "_old_" + old_sn.length());
 								body_map_now.put("setPboldsn", new JSONObject().put("value", old_sn.toString()).put("type", String.class));
 							} else {
@@ -1070,7 +1091,7 @@ public class WorkstationWorkService {
 					phDao.save(p_header);
 					pbDao.save(body_one_now);
 					pbDao.save(body_one_old);
-					//true = 一般過站/false = 重複過站 = ?
+					// true = 一般過站/false = 重複過站 = ?
 					if (set_replace) {
 						bean.autoMsssage("WK020");
 					} else {

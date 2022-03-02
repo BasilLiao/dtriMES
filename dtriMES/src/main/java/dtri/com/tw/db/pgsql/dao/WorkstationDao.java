@@ -1,6 +1,7 @@
 package dtri.com.tw.db.pgsql.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,9 +22,9 @@ public interface WorkstationDao extends JpaRepository<Workstation, Long> {
 
 	// 查詢工作站代表
 	ArrayList<Workstation> findAllBySysheader(Boolean sysheader, Pageable pageable);
-	
+
 	// 查詢工作站代表
-	ArrayList<Workstation> findAllBySysheaderAndWidNot(Boolean sysheader,Long wid, Pageable pageable);
+	ArrayList<Workstation> findAllBySysheaderAndWidNot(Boolean sysheader, Long wid, Pageable pageable);
 
 	// 查詢工作站碼
 	ArrayList<Workstation> findAllByWcname(String wcname, Pageable pageable);
@@ -41,11 +42,14 @@ public interface WorkstationDao extends JpaRepository<Workstation, Long> {
 	@Query("SELECT c FROM Workstation c "//
 			+ "WHERE (:wsgname is null or c.wsgname LIKE %:wsgname% ) and "//
 			+ "(:wpbname is null or c.wpbname LIKE %:wpbname% ) and "//
+			+ "(coalesce(:wgid, null) is null or c.wgid IN :wgid ) and "// coalesce 回傳非NULL值
 			+ "( c.sysstatus = :sysstatus ) and "//
+			+ "( c.sysheader = :sysheader ) and " //
 			+ "( c.wid != 0 )  "//
 			+ "order by c.wgid asc,c.sysheader desc,c.syssort asc")
-	ArrayList<Workstation> findAllByWorkstation(@Param("wsgname") String w_sg_name, @Param("wpbname") String w_pb_name, @Param("sysstatus") Integer sysstatus,
-			Pageable pageable);
+	ArrayList<Workstation> findAllByWorkstation(@Param("wsgname") String w_sg_name, //
+			@Param("wpbname") String w_pb_name, @Param("sysstatus") Integer sysstatus, @Param("sysheader") Boolean sysheader, //
+			@Param("wgid") List<Long> w_g_id, Pageable pageable);
 
 	// 查詢一部分 關聯 工作站 與 工作項目
 	@Query("SELECT wn FROM Workstation wn join wn.workstationItem wi " + //

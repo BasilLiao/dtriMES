@@ -210,7 +210,7 @@
 	            		if($('#m_return_sn').val()!=""){
 	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
 	            			s_type = "DELETE";
-	            			obj['action'] = "return_order_btn";
+	            			obj['action'] = "return_order_btn"; 
 	            			obj['m_now_order'] = $('#m_now_order').val();
 	            			obj['m_return_sn'] = $('#m_return_sn').val();
 	            			req.call_bk_fn = "customized_save";
@@ -278,7 +278,7 @@
 			$(document).off("click", "#locked_order_btn");
 			$(document).off("click", "#order_btn");
 			$(document).off("click", "#return_order_btn");
-			 $(document).off("keypress", ".m_input");
+			$(document).off("keypress", ".m_input");
 		}
 	});
 </script>

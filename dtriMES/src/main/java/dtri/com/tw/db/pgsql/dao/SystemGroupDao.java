@@ -13,8 +13,8 @@ import dtri.com.tw.db.entity.SystemGroup;
 public interface SystemGroupDao extends JpaRepository<SystemGroup, Long> {
 
 	// 查詢群組
-	@Query("SELECT c FROM SystemGroup c "
-			+ "WHERE  (c.sggid = :sggid) "
+	@Query("SELECT c FROM SystemGroup c "//
+			+ "WHERE  (c.sggid = :sggid) "//
 			+ "order by c.sggid asc, c.systemPermission.syssort asc")
 	List<SystemGroup> findBySggidOrderBySggid(Long sggid);
 
@@ -22,16 +22,20 @@ public interface SystemGroupDao extends JpaRepository<SystemGroup, Long> {
 	List<SystemGroup> findBySgidOrderBySgidAscSyssortAsc(Long sgid);
 
 	// 查詢群組名稱
-	@Query("SELECT c FROM SystemGroup c "
-			+ "WHERE  (:sgname is null or c.sgname LIKE %:sgname%) and ( c.sysstatus = :sysstatus ) and ((:sggid) is null or c.sggid in (:sggid)) "
+	@Query("SELECT c FROM SystemGroup c "//
+			+ "WHERE  (:sgname is null or c.sgname LIKE %:sgname%) and "//
+			+ "((:sggid) is null or c.sggid in (:sggid)) and"//
+			+ "( c.sgid != :sgid) and"//
+			+ "( c.sysstatus = :sysstatus ) and "//
+			+ "( c.sysheader = :sysheader )  "//
 			+ "order by c.sggid asc, c.sgid asc")
-	List<SystemGroup> findAllBySystemGroup(String sgname, Integer sysstatus, List<Long> sggid);
+	List<SystemGroup> findAllBySystemGroup(String sgname, List<Long> sggid, Long sgid, Integer sysstatus, boolean sysheader, Pageable p);
 
 	// 查詢群組[頭]數量
 	List<SystemGroup> findAllBySysheader(boolean sysheader, Pageable p);
-	
+
 	// 查詢群組[頭]數量不包含 Admin群組
-		List<SystemGroup> findAllBySysheaderAndSgidNot(boolean sysheader,Long sgid, Pageable p);
+	List<SystemGroup> findAllBySysheaderAndSgidNot(boolean sysheader, Long sgid, Pageable p);
 
 	// 查詢群組分頁
 	List<SystemGroup> findAllByOrderBySggidAscSgidAsc(Pageable p);
@@ -40,7 +44,7 @@ public interface SystemGroupDao extends JpaRepository<SystemGroup, Long> {
 	ArrayList<SystemGroup> findAll();
 
 	// 查詢是否重複 群組
-	@Query("SELECT c FROM SystemGroup c " + "WHERE  (c.sgname = :sgname) " + "order by c.sgid desc")
+	@Query("SELECT c FROM SystemGroup c WHERE  (c.sgname = :sgname) order by c.sgid desc")
 	ArrayList<SystemGroup> findAllByGroupTop1(@Param("sgname") String spgname, Pageable pageable);
 
 	// 取得G_ID

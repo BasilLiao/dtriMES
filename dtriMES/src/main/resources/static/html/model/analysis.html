@@ -77,8 +77,7 @@
 						<!-- 數字 -->
 						<input id="fm_nb_value" value="" name="" class="fm_value col-md-8 p-1 m-0 d-none" type="number" placeholder="Value[Number]=${data1,2}">
 						<!-- 時間 -->
-						<input id="fm_time_value" value="" name="" class="fm_value col-md-8 p-1 m-0 d-none datetimepicker_date" type="text"
-							placeholder="Value[Date Time]=${data1,2}">
+						<input id="fm_time_value" value="" name="" class="fm_value col-md-8 p-1 m-0 d-none datetimepicker_date" type="text" placeholder="Value[Date Time]=${data1,2}">
 					</div>
 					<div class="col-12 row m-0 p-0 mt-2">
 						<div class="col"></div>
@@ -127,8 +126,7 @@
 				</div>
 			</div>
 			<div class="col-md-12 m-0 p-2">
-				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0"
-					style="min-height: 450px; max-height: 600px;">
+				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 600px;">
 					<thead id="report_excel_header" class="thead bg-dark table-dark">
 						<tr style="position: sticky; top: 0px; background-color: #343a40; z-index: 5;">
 							<th id="report_excel_th" class="text-center" style="min-width: 150px;" nowrap="nowrap">計數</th>
@@ -146,316 +144,322 @@
 	</div>
 </div>
 <script type="text/javascript">
-	//控制端
-	analysis = new Vue({
-		el : "#analysis",
-		//資料區
-		data : {
-			test : 300,
-			list_id : 0,
-			reportDate : "",
+//控制端
+analysis = new Vue({
+	el: "#analysis",
+	//資料區
+	data: {
+		test: 300,
+		list_id: 0,
+		reportDate: "",
+	},
+	//初始化
+	created() {
+		console.log("analysis.html(created)");
+	},
+	//可呼叫方法
+	methods: {
+		setDataTitle(title, analysis) {
+			console.log(title);
+			//console.log(analysis);
+
+			title = main.orderedSort(title);
+			var ii = 0; //有效欄位
+			var left_ii = 1; //有效靠左
+			for (var i = 0; i < Object.keys(title).length - 1; i++) {
+				var key_id = (Object.keys(title)[i]).split("_h__")[1];
+				var value_name = title[Object.keys(title)[i]].name,
+					value_size = title[Object.keys(title)[i]].size,
+					value_write = title[Object.keys(title)[i]].write;
+				if (value_write != "disabled") {
+					if (analysis[key_id] != "W_N") {
+						//Columns
+						var one_item = $("#columns_sample").clone(); //複製樣本
+						one_item[0].id = "columns_" + key_id;
+						one_item.insertBefore("#columns_sample");
+						$("#" + one_item[0].id).removeClass("d-none");
+						$("#" + one_item[0].id + " .column_name").val(key_id);
+						$("#" + one_item[0].id + " .column_exp").val(value_name);
+						$("#" + one_item[0].id + " button").attr("id", "btn_" + one_item[0].id);
+					}
+					//Report
+					var report_item = $("#report_excel_th").clone(); //複製樣本
+					report_item[0].id = "report_" + key_id;
+					report_item.insertBefore("#report_excel_th");
+					$("#" + report_item[0].id).text(value_name).css('max-width', value_size).css('min-width', value_size);
+					//固定
+					if (ii < 2) {
+						$("#" + report_item[0].id).addClass('fixed_cell').addClass('bg-dark').css('left', left_ii);
+						ii += 1;
+						left_ii += parseInt(value_size);
+					}
+				}
+			}
 		},
-		//初始化
-		created() {
-			console.log("analysis.html(created)");
-		},
-		//可呼叫方法
-		methods : {
-			setDataTitle(title,analysis) {
-				console.log(title);
-				console.log(analysis);
-				
-				title = main.orderedSort(title);
-				var ii = 0;//有效欄位
-				var left_ii = 1;//有效靠左
-			   for (var i = 0; i < Object.keys(title).length - 1; i++) {
-			    	var key_id =  (Object.keys(title)[i]).split("_h__")[1];
-					var value_name = title[Object.keys(title)[i]].name, value_size = title[Object.keys(title)[i]].size, value_write = title[Object.keys(title)[i]].write;
-					if(value_write!="disabled" ){
-						if(analysis[key_id]!="W_N"){
-							//Columns
-							var one_item = $("#columns_sample").clone(); //複製樣本
-							one_item[0].id="columns_"+key_id;one_item.insertBefore("#columns_sample");
-							$("#"+one_item[0].id).removeClass("d-none");$("#"+one_item[0].id+" .column_name").val(key_id);
-							$("#"+one_item[0].id+" .column_exp").val(value_name);$("#"+one_item[0].id+" button").attr("id","btn_"+one_item[0].id);						
-						}
-						//Report
-						var report_item = $("#report_excel_th").clone(); //複製樣本
-						report_item[0].id="report_"+key_id;
-						report_item.insertBefore("#report_excel_th");
-						$("#"+report_item[0].id).text(value_name).css('max-width',value_size).css('min-width',value_size);
-						//固定
-						if(ii<2){
-							$("#"+report_item[0].id).addClass('fixed_cell').addClass('bg-dark').css('left',left_ii);
-							ii+=1;left_ii+=parseInt(value_size);
-						}
+		setAllInit() {
+			//時間格式
+			$('#analysis .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				// hoursDisabled: [00, 1, 2, 3, 4, 5, 6],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});
+			$(".select_btn").attr("disabled", "disabled");
+			$("#where_value_add").attr("disabled", "disabled");
+			$("#list_search_btn").attr("disabled", "disabled");
+
+			//========choose========
+			$(document).on("click", ".column_add", function(event) {
+				var id = event.target.id.replace('btn_columns_', '');
+				$("#where_value").val($("#columns_" + id + " .column_name").val());
+				$(".select_btn").removeAttr("disabled");
+				$(".column_add").attr("disabled", "disabled");
+			});
+
+			//========Where======== 
+			$(document).on("click", ".select_btn", function(event) {
+				switch (event.target.id) {
+					case "select_0":
+						$("#where_value").val($("#where_value").val() + " Like '%${data2}%' ");
+						break;
+					case "select_1":
+						$("#where_value").val($("#where_value").val() + " = ${data2} ");
+						break;
+					case "select_2":
+						$("#where_value").val($("#where_value").val() + " != ${data2} ");
+						break;
+					case "select_3":
+						$("#where_value").val($("#where_value").val() + " < ${data2} ");
+						break;
+					case "select_4":
+						$("#where_value").val($("#where_value").val() + " > ${data2} ");
+						break;
+					case "select_5":
+						$("#where_value").val($("#where_value").val() + " betweet ${data1} and ${data2}");
+						break;
+				}
+				$(".column_add").attr("disabled", "disabled");
+				$(".select_btn").attr("disabled", "disabled");
+				$("#where_value_add").removeAttr("disabled");
+			});
+			//========value========
+			$(document).on("click", "#where_value_add", function(event) {
+				//添加條件式
+				var where_value = $("#fm_word_value").val();
+				if (where_value == "") {
+					where_value = $("#fm_nb_value").val();
+					if (where_value == "") {
+						where_value = $("#fm_time_value").val();
+						where_value = "'" + where_value + "'";
 					}
-			    }
-			},
-			setAllInit() {
-				//時間格式
-				$('#analysis .datetimepicker_date').datetimepicker({
-					format: 'yyyy-mm-dd hh:ii:00',
-					pickerPosition:'bottom-right',
-					//minView:1,
-					// hoursDisabled: [00, 1, 2, 3, 4, 5, 6],
-					minuteStep: 30,
-					autoclose:true,
-					endDate: '+1d',
-					datesDisabled: '+1d',
-					todayBtn:true,
-					//......可以同上項目代碼自定義設置
-				});
-				$(".select_btn").attr("disabled","disabled");
-				$("#where_value_add").attr("disabled","disabled");
-				$("#list_search_btn").attr("disabled","disabled");
-				
-				//========choose========
-				$(document).on("click", ".column_add", function (event) {
-					var id = event.target.id.replace('btn_columns_','');
-					$("#where_value").val($("#columns_"+id +" .column_name").val());
-					$(".select_btn").removeAttr("disabled");
-					$(".column_add").attr("disabled","disabled");
-				});
-				
-				//========Where======== 
-				$(document).on("click", ".select_btn", function (event) {
-					switch(event.target.id){
-						case "select_0":
-							$("#where_value").val($("#where_value").val()+" Like '%${data2}%' " );
-							break;
-						case "select_1":
-							$("#where_value").val($("#where_value").val()+" = ${data2} " );				
-							break;
-						case "select_2":
-							$("#where_value").val($("#where_value").val()+" != ${data2} " );				
-							break;
-						case "select_3":
-							$("#where_value").val($("#where_value").val()+" < ${data2} " );
-							break;
-						case "select_4":
-							$("#where_value").val($("#where_value").val()+" > ${data2} " );
-							break;
-						case "select_5":
-							$("#where_value").val($("#where_value").val()+" betweet ${data1} and ${data2}" );
-							break;
-					}
-					$(".column_add").attr("disabled","disabled");
-					$(".select_btn").attr("disabled","disabled");
-					$("#where_value_add").removeAttr("disabled");
-				});
-				//========value========
-				$(document).on("click", "#where_value_add", function (event) {
-					//添加條件式
-					var where_value = $("#fm_word_value").val();
-					if(where_value==""){
-						where_value = $("#fm_nb_value").val();
-						if(where_value==""){
-							where_value = $("#fm_time_value").val();
-							where_value = "'"+where_value+"'";
-						}
-					}else{
-						where_value = "'"+where_value+"'";
-					}
-					//排除
-					if($("#where_value").val().indexOf("Like")>0){
-						where_value = where_value.replaceAll("'","");
-					}
-					
-					if($("#where_value").val()!="" && where_value!=""){
-						if($("#where_value").val().indexOf("betweet")>0 && $("#where_value").val().indexOf("${data1}")>0){
-							$("#where_value").val($("#where_value").val().replace('${data1}',where_value));
-							$("#fm_nb_value").val("");
-							$("#fm_word_value").val("");
-							$("#fm_time_value").val("");
-							return false;
-						}
-						//按鈕鎖定
-						$(".column_add").removeAttr("disabled");
-						$(".select_btn").attr("disabled","disabled");
-						$("#where_value_add").attr("disabled","disabled");
-						$("#list_search_btn").removeAttr("disabled");
-						//添加清單
-						var one_item = $("#list_i").clone(); //複製樣本
-						one_item[0].id = "list_"+(analysis.list_id+=1);
-						one_item.insertBefore("#list_i");
-						$("#"+one_item[0].id+" .list_where_value").val($("#where_value").val().replace('${data2}',where_value));
-						$("#"+one_item[0].id+" #list_where_i").attr("id","list_where_"+analysis.list_id);
-						$("#"+one_item[0].id).removeClass("d-none");	
-						$("#"+one_item[0].id).addClass("list_where");	
-						
-						//清空
-						$("#where_value").val("");
+				} else {
+					where_value = "'" + where_value + "'";
+				}
+				//排除
+				if ($("#where_value").val().indexOf("Like") > 0) {
+					where_value = where_value.replaceAll("'", "");
+				}
+
+				if ($("#where_value").val() != "" && where_value != "") {
+					if ($("#where_value").val().indexOf("betweet") > 0 && $("#where_value").val().indexOf("${data1}") > 0) {
+						$("#where_value").val($("#where_value").val().replace('${data1}', where_value));
 						$("#fm_nb_value").val("");
 						$("#fm_word_value").val("");
 						$("#fm_time_value").val("");
+						return false;
 					}
-				});
-				$("#fm_type").change(function () {
-				    $(".fm_value").val("");
-				    $(".fm_value").addClass("d-none");
-				    $("#"+$("#fm_type option:selected").val()+"_value").removeClass("d-none");
-				}).change();
-				
-				$(document).on("click", "#where_value_clear", function (event) {
+					//按鈕鎖定
+					$(".column_add").removeAttr("disabled");
+					$(".select_btn").attr("disabled", "disabled");
+					$("#where_value_add").attr("disabled", "disabled");
+					$("#list_search_btn").removeAttr("disabled");
+					//添加清單
+					var one_item = $("#list_i").clone(); //複製樣本
+					one_item[0].id = "list_" + (analysis.list_id += 1);
+					one_item.insertBefore("#list_i");
+					$("#" + one_item[0].id + " .list_where_value").val($("#where_value").val().replace('${data2}', where_value));
+					$("#" + one_item[0].id + " #list_where_i").attr("id", "list_where_" + analysis.list_id);
+					$("#" + one_item[0].id).removeClass("d-none");
+					$("#" + one_item[0].id).addClass("list_where");
+
 					//清空
 					$("#where_value").val("");
 					$("#fm_nb_value").val("");
 					$("#fm_word_value").val("");
 					$("#fm_time_value").val("");
-					
-					$(".column_add").removeAttr("disabled");
-					$(".select_btn").attr("disabled","disabled");
-					$("#where_value_add").attr("disabled","disabled");
-				});
-				//========list========
-				$(document).on("click", ".list_remove", function (event) {
-					$("#list"+event.target.id.replace('list_where','')).remove();
-				});
-				$(document).on("click", "#list_cancel_btn", function (event) {
-					$(".list_where").remove();
-					$(".report_excel_list").remove();
-				});
-				$(document).on("click", "#list_search_btn", function (event) {
-					analysis.reportSend();
-				});
-				
-				//========report========
-				
-				$(document).on("click", "#export_excel_report", function (event) {
-					$("#report_excel_example").table2excel({
+				}
+			});
+			$("#fm_type").change(function() {
+				$(".fm_value").val("");
+				$(".fm_value").addClass("d-none");
+				$("#" + $("#fm_type option:selected").val() + "_value").removeClass("d-none");
+			}).change();
+
+			$(document).on("click", "#where_value_clear", function(event) {
+				//清空
+				$("#where_value").val("");
+				$("#fm_nb_value").val("");
+				$("#fm_word_value").val("");
+				$("#fm_time_value").val("");
+
+				$(".column_add").removeAttr("disabled");
+				$(".select_btn").attr("disabled", "disabled");
+				$("#where_value_add").attr("disabled", "disabled");
+			});
+			//========list========
+			$(document).on("click", ".list_remove", function(event) {
+				$("#list" + event.target.id.replace('list_where', '')).remove();
+			});
+			$(document).on("click", "#list_cancel_btn", function(event) {
+				$(".list_where").remove();
+				$(".report_excel_list").remove();
+			});
+			$(document).on("click", "#list_search_btn", function(event) {
+				analysis.reportSend();
+			});
+
+			//========report========
+
+			$(document).on("click", "#export_excel_report", function(event) {
+				$("#report_excel_example").table2excel({
 					// exclude CSS class
 					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors:false,
-					exclude_img:true,
-					exclude_links:true,
-					exclude:".noExl",
-					name:"Worksheet Name",
-					filename:"MES_Report_"+analysis.reportDate,//do not include extension
-					fileext:".xls" // file extension
-					});
-	            });
-			},
-			reportSend() {
-				//https://ithelp.ithome.com.tw/articles/10215281
-				//例遍 處理
-				main.loading(true);
-				var search_arr =[];
-				var search = $(".list_where input").map((index,el) => el.value);
-					for(var a=0;a<search.length;a++ ){
-						search_arr.push(""+analysis.stringToBytes(search[a]));
-					}
-				console.log(search_arr);
-				//包裝
-				var s_url = (t_body.html_body + ".RT").replace("html", "basil").replace("body_", "");
-				var s_type = "POST";
-				var s_data = {};
-				var req = {};
-				req.user = ""+$('#name').text();
-				req.date = new Date();
-				req.action = "RT";
-				req.body = {};
-				req.body.search = search_arr;
-				req.page_total = 0;
-				req.page_batch = 0;
-				req.page_now_nb = 0;
-				req.html_body = "";
-				req.call_bk_fn = "report";
-				req.call_bk_vals = {};
-				s_data.req_content = req;
-				
-				//console.log(s_url);
-				//傳送
-				main.ajaxSend(s_url, s_type, s_data);
-			},
-			reportReturn(){
-				//更新時間
-				var myDate = new Date();
-				analysis.reportDate = 
-						myDate.getFullYear() + '-' +
-						('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  
-						('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+
-						('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();
- 
-				console.log("reportReturn");
-				
-	           if(main.allData.body!=null){
-		            var list = main.allData.body.search;
-		            $(".report_excel_list").remove();
-		            var fixed_cell_color = false;
-						console.log(new Date());
-		            for(var j = 0 ; list.length>j ;j++){
-			            var report_item = $("#report_excel_tbody_tr").clone(); //複製樣本
-						report_item[0].id="report_excel_tbody_tr_"+j;
-						report_item[0].className="report_excel_list";
-						report_item.insertBefore("#report_excel_tbody_tr");
-						//排序
-		                list[j] = main.orderedSort(list[j]);
-						
-		                var ii = 0;//有效欄位
-						var left_ii = 1;//有效靠左
-						//資料內容
-						for (var i = 0; i < Object.keys(list[j]).length; i++) {
-							 var report_item_one = $("#report_excel_tbody_tr_"+j+" .report_excel_td").clone(); /*複製樣本*/
-							 var key_id = Object.keys(list[j])[i];
-		                     var value_name = list[j][Object.keys(list[j])[i]];
-							 report_item_one[0].className = "report_"+key_id;
-							 report_item_one[0].innerText = value_name;
-							 report_item_one.insertBefore("#report_excel_tbody_tr_"+j+" .report_excel_td");
-							 $("#report_excel_tbody_tr_"+j+" .report_excel_td").text(j+1);
-						
-							/*固定*/
-							if(ii<2){ 
-								var min_width = $("#report_"+key_id.split("_b__")[1]).css('min-width');
-								$(".report_"+key_id).addClass('fixed_cell');
-								if(fixed_cell_color){
-									$("#"+report_item[0].id+" .report_"+key_id).css("background-color","#f8f9fc");
-								}else{
-									$("#"+report_item[0].id+" .report_"+key_id).css("background-color","#ebecef"); 
-								}
-								$(".report_"+key_id).css('left',left_ii);
-								$(".report_"+key_id).css('min-width',min_width);
-								left_ii+=parseInt(min_width);
-								ii+=1;
+					preserveColors: false,
+					exclude_img: true,
+					exclude_links: true,
+					exclude: ".noExl",
+					name: "Worksheet Name",
+					filename: "MES_Report_" + analysis.reportDate, //do not include extension
+					fileext: ".xls" // file extension
+				});
+			});
+		},
+		reportSend() {
+			//https://ithelp.ithome.com.tw/articles/10215281
+			//例遍 處理
+			main.loading(true);
+			var search_arr = [];
+			var search = $(".list_where input").map((index, el) => el.value);
+			for (var a = 0; a < search.length; a++) {
+				search_arr.push("" + analysis.stringToBytes(search[a]));
+			}
+			console.log(search_arr);
+			//包裝
+			var s_url = (t_body.html_body + ".RT").replace("html", "basil").replace("body_", "");
+			var s_type = "POST";
+			var s_data = {};
+			var req = {};
+			req.user = "" + $('#name').text();
+			req.date = new Date();
+			req.action = "RT";
+			req.body = {};
+			req.body.search = search_arr;
+			req.page_total = 0;
+			req.page_batch = 0;
+			req.page_now_nb = 0;
+			req.html_body = "";
+			req.call_bk_fn = "report";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		reportReturn() {
+			//更新時間
+			var myDate = new Date();
+			analysis.reportDate =
+				myDate.getFullYear() + '-' +
+				('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+				('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+				('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+
+			console.log("reportReturn");
+
+			if (main.allData.body != null) {
+				var list = main.allData.body.search;
+				$(".report_excel_list").remove();
+				var fixed_cell_color = false;
+				console.log(new Date());
+				for (var j = 0; list.length > j; j++) {
+					var report_item = $("#report_excel_tbody_tr").clone(); //複製樣本
+					report_item[0].id = "report_excel_tbody_tr_" + j;
+					report_item[0].className = "report_excel_list";
+					report_item.insertBefore("#report_excel_tbody_tr");
+					//排序
+					list[j] = main.orderedSort(list[j]);
+
+					var ii = 0; //有效欄位
+					var left_ii = 1; //有效靠左
+					//資料內容
+					for (var i = 0; i < Object.keys(list[j]).length; i++) {
+						var report_item_one = $("#report_excel_tbody_tr_" + j + " .report_excel_td").clone(); /*複製樣本*/
+						var key_id = Object.keys(list[j])[i];
+						var value_name = list[j][Object.keys(list[j])[i]];
+						report_item_one[0].className = "report_" + key_id;
+						report_item_one[0].innerText = value_name;
+						report_item_one.insertBefore("#report_excel_tbody_tr_" + j + " .report_excel_td");
+						$("#report_excel_tbody_tr_" + j + " .report_excel_td").text(j + 1);
+
+						/*固定*/
+						if (ii < 2) {
+							var min_width = $("#report_" + key_id.split("_b__")[1]).css('min-width');
+							$(".report_" + key_id).addClass('fixed_cell');
+							if (fixed_cell_color) {
+								$("#" + report_item[0].id + " .report_" + key_id).css("background-color", "#f8f9fc");
+							} else {
+								$("#" + report_item[0].id + " .report_" + key_id).css("background-color", "#ebecef");
 							}
+							$(".report_" + key_id).css('left', left_ii);
+							$(".report_" + key_id).css('min-width', min_width);
+							left_ii += parseInt(min_width);
+							ii += 1;
 						}
-					   	if(fixed_cell_color){
-						   fixed_cell_color = false;
-	     			    }else{
-	     			    	fixed_cell_color = true;
-	     			    }
-		            }
-					console.log(new Date());
-	           }
-	            main.loading(false);
-			},
-			//轉Bytes
-			stringToBytes (str) {  
-			    var ch, st, re = [];  
-			    for (var i = 0; i < str.length; i++ ) {    
-			        ch = str.charCodeAt(i);   
-			        st = [];        
-			        do {     
-			             st.push( ch & 0xFF );
-			             ch = ch >> 8;
-			        } while ( ch );
-			        re = re.concat( st.reverse() );  
-			     }   // return an array of bytes  
-			     return re;
-			},
+					}
+					if (fixed_cell_color) {
+						fixed_cell_color = false;
+					} else {
+						fixed_cell_color = true;
+					}
+				}
+				console.log(new Date());
+			}
+			main.loading(false);
 		},
-		//移除監聽事件
-		beforeDestroy() {
-			console.log("analysis.html(beforeDestroy)");
-			$(document).off("click", ".column_add");
-			$(document).off("click", ".select_btn");
-			$(document).off("click", "#where_value_clear");
-			$(document).off("click", "#where_value_add");
-			$(document).off("click", ".list_remove");
-			$(document).off("click", "#list_cancel_btn");
-			$(document).off("click", "#list_search_btn");
-			
-			$(document).off("click", "#export_excel_report");
+		//轉Bytes
+		stringToBytes(str) {
+			var ch, st, re = [];
+			for (var i = 0; i < str.length; i++) {
+				ch = str.charCodeAt(i);
+				st = [];
+				do {
+					st.push(ch & 0xFF);
+					ch = ch >> 8;
+				} while (ch);
+				re = re.concat(st.reverse());
+			} // return an array of bytes  
+			return re;
 		},
-	});
+	},
+	//移除監聽事件
+	beforeDestroy() {
+		console.log("analysis.html(beforeDestroy)");
+		$(document).off("click", ".column_add");
+		$(document).off("click", ".select_btn");
+		$(document).off("click", "#where_value_clear");
+		$(document).off("click", "#where_value_add");
+		$(document).off("click", ".list_remove");
+		$(document).off("click", "#list_cancel_btn");
+		$(document).off("click", "#list_search_btn");
+
+		$(document).off("click", "#export_excel_report");
+	},
+});
 </script>

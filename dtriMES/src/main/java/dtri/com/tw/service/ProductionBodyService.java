@@ -78,7 +78,7 @@ public class ProductionBodyService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_b_sn", FFS.h_t("SN_(燒錄/產品)", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_sn", FFS.h_t("SN_(身分/產品)", "160px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_old_sn", FFS.h_t("SN_(身分/產品)[舊]", "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_model", FFS.h_t("產品型號", "160px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_model", FFS.h_t("產品型號", "160px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_shipping_date", FFS.h_t("出貨日", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_recycling_date", FFS.h_t("回收日", "150px", FFM.Wri.W_Y));
@@ -190,7 +190,7 @@ public class ProductionBodyService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pb_id", "SN_ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pb_g_id", "TL_S_ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_id", "TL_ID"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "ph_model", "產品型號"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_p_model", "產品型號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ph_pr_id", "工單號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_sn", "SN_(身分/產品)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_b_sn", "SN_(燒錄/產品)"));
@@ -299,7 +299,7 @@ public class ProductionBodyService {
 			}
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "pb_sn_name", "SN_類型", a_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pb_sn_value", "SN_值", n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ph_model", "產品型號", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_p_model", "產品型號", n_val));
 
 			// object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2",
 			// "pb_sn", "SN_(系統/產品)序號", n_val));
@@ -338,7 +338,7 @@ public class ProductionBodyService {
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
-			phmodel = body.getJSONObject("search").getString("ph_model");
+			phmodel = body.getJSONObject("search").getString("pr_p_model");
 			phmodel = (phmodel == null) ? "" : phmodel;
 
 			phprid = body.getJSONObject("search").getString("ph_pr_id");
@@ -426,7 +426,7 @@ public class ProductionBodyService {
 
 		nativeQuery += " ( b.sys_status = :sys_status) and ";
 
-		nativeQuery += " (:ph_model='' or p.pr_p_model LIKE :ph_model) and ";
+		nativeQuery += " (:pr_p_model='' or p.pr_p_model LIKE :pr_p_model) and ";
 		nativeQuery += " (:ph_pr_id='' or h.ph_pr_id LIKE :ph_pr_id) and ";
 		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0)  order by b.pb_id desc ";
 		nativeQuery += " LIMIT :limit OFFSET :offset ";
@@ -447,7 +447,7 @@ public class ProductionBodyService {
 		query.setParameter("pb_old_sn", pb_old_sn);
 		query.setParameter("sys_status", Integer.parseInt(sysstatus));
 		query.setParameter("pb_sn", "%" + pb_sn + "%");
-		query.setParameter("ph_model", "%" + phmodel + "%");
+		query.setParameter("pr_p_model", "%" + phmodel + "%");
 		query.setParameter("ph_pr_id", "%" + phprid + "%");
 		if (pb_sn_check != null) {
 			query.setParameter("pb_check", Boolean.parseBoolean(pb_sn_check));
@@ -489,7 +489,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_b_sn", one.getPbbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_sn", one.getPbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_model", productionHeader.getProductionRecords().getPrpmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", productionHeader.getProductionRecords().getPrpmodel());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_shipping_date", one.getPbshippingdate() == null ? "" : one.getPbshippingdate());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_recycling_date", one.getPbrecyclingdate() == null ? "" : one.getPbrecyclingdate());
@@ -630,6 +630,7 @@ public class ProductionBodyService {
 		}
 		// 取代共用參數
 		str = str.replace("sys_", "b.sys_");
+		str = str.replace("pr_", "p.pr_");
 
 		// Step2.=======Analysis report 查詢SN欄位+產品型號+製令單號 =======
 		String nativeQuery = "SELECT b.* FROM production_body b " + //
@@ -675,7 +676,7 @@ public class ProductionBodyService {
 			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_sn", one.getPbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
 
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_model", productionHeader.getProductionRecords().getPrpmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", productionHeader.getProductionRecords().getPrpmodel());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_shipping_date", one.getPbshippingdate() == null ? "" : one.getPbshippingdate());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_recycling_date", one.getPbrecyclingdate() == null ? "" : one.getPbrecyclingdate());

@@ -42,9 +42,11 @@ public class WorkstationDisassembleService {
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
-
+		List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
 		// 進行-特定查詢(拆解工單)
 		String now_order = body.getJSONObject("search").getString("m_now_order");
+		String m_old_sn = body.getJSONObject("search").getString("m_old_sn");
+
 		ProductionRecords phprid = new ProductionRecords();
 		phprid.setPrid(now_order);
 		prArrayList = headerDao.findAllByProductionRecordsAndPhtype(phprid, "A431_disassemble");
@@ -54,9 +56,19 @@ public class WorkstationDisassembleService {
 			// 查詢多少台
 			Long phpbgid = prArrayList.get(0).getPhpbgid();
 			List<ProductionBody> bodies = bodyDao.findAllByPbgidAndPbbsnNotOrderByPbsnAsc(phpbgid, "no_sn");
+			List<ProductionBody> bodies_old = bodyDao.findAllByPbbsn(m_old_sn);
+
+			// 如果有-> 回傳原先製令單
+			String m_old_order = "";
+			if (bodies_old.size() == 1) {
+				prArrayList_old = headerDao.findAllByPhpbgid(bodies_old.get(0).getPbgid());
+				m_old_order = prArrayList_old.size() > 0 ? prArrayList_old.get(0).getProductionRecords().getPrid() : "";
+			}
+
 			bean.setBody(new JSONObject().put("search", new JSONObject().//
 					put("phpnumber_total", prArrayList.get(0).getProductionRecords().getPrpquantity()).//
 					put("phpnumber_register", bodies.size()).//
+					put("m_old_order", m_old_order).//
 					put("check", true)));//
 		} else {
 			bean.autoMsssage("102");
@@ -161,7 +173,7 @@ public class WorkstationDisassembleService {
 			// 取舊的-> 新建的資料
 			if (action.equals("order_btn")) {
 				String now_order = body.getJSONObject("modify").getString("m_now_order");
-				String m_now_sn = body.getJSONObject("modify").getString("m_now_sn");
+				String m_old_sn = body.getJSONObject("modify").getString("m_old_sn");
 				String m_old_order = body.getJSONObject("modify").getString("m_old_order");
 				ProductionRecords phprid = new ProductionRecords();
 
@@ -183,14 +195,14 @@ public class WorkstationDisassembleService {
 				}
 
 				// Step3. 進行-特定查詢(重工工單)-> 指定的SN
-				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList.get(0).getPhpbgid());
+				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
 				if (bodies.size() >= 1) {
 					return false;
 				}
 
 				// Step4. 進行-特定查詢(曾經工單)-> 指定的SN
-				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_now_sn, prArrayList_old.get(0).getPhpbgid());
+				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList_old.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效資料)
 				if (bodies_old.size() != 1) {
 					return false;
@@ -205,7 +217,7 @@ public class WorkstationDisassembleService {
 				Long id_b_g = pro_h.getPhpbgid();
 				if (id_b_g == 1) {
 					id_b_g = bodyDao.getProductionBodyGSeq();
-					// 註冊到 重工 工單號
+					// 註冊到 拆解 工單號
 					pro_h.setPhpbgid(id_b_g);
 					headerDao.save(pro_h);
 				}
@@ -216,11 +228,15 @@ public class WorkstationDisassembleService {
 					pboldsns = new JSONArray(pro_b_one_old.getPboldsn());
 				}
 				// 更換成舊的SN
-				String sn_new = pro_b_one_old.getPbbsn();
+				String sn_new = pro_b_one_old.getPbbsn() + "_old_Delete";
 				String sn_old = pro_b_one_old.getPbbsn() + "_old_" + pboldsns.length();
 				pboldsns.put(sn_old);
 
 				// 舊
+				if (pboldsns.length() == 1) {// 開頭資訊(剛開始繼承的話)
+					pro_b_one_old.setPboldsn("" + new JSONArray().put(pro_b_one_old.getPbbsn() + "_old_beginning"));
+					//sn_old = pro_b_one_old.getPbbsn()+ "_old_beginning";
+				}
 				pro_b_one_old.setPbbsn(sn_old);
 				pro_b_one_old.setPbsn(sn_old);
 				pro_b_one_old.setSysmuser(user.getSuaccount());
@@ -348,8 +364,68 @@ public class WorkstationDisassembleService {
 								// 還原舊資料
 								ProductionBody p_old = old_sns.get(0);
 								p_old.setPbbsn(old_sn.split("_")[0]);
+								p_old.setPbsn(old_sn.split("_")[0]);
+								// 只有單一繼承,清除源頭紀錄
+								if (re_old_sn.length() == 1) {
+									p_old.setPboldsn("");
+								}
 								bodyDao.save(p_old);
 								// 移除新資料
+								bodyDao.delete(p_now);
+								check = true;
+							}
+						} else {
+							// 移除新資料
+							bodyDao.delete(p_now);
+							check = true;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			return false;
+		}
+		return check;
+	}
+
+	// 還原 資料清單
+	@Transactional
+	public boolean deleteData(JSONObject body, SystemUser user) {
+		boolean check = false;
+		// 預備資料
+		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
+		// List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
+		String action = body.getJSONObject("modify").getString("action");
+		try {
+			if (action.equals("return_order_btn")) {
+				// 歸還資料
+				String return_sn = body.getJSONObject("modify").getString("m_return_sn");
+				List<ProductionBody> now_sns = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn+"_old_Delete", "% %");
+
+				// Step0. 確定有歸還 對象
+				if (now_sns.size() == 1) {
+					ProductionBody p_now = now_sns.get(0);
+					// Step1. 檢查製令單
+					prArrayList = headerDao.findAllByPhpbgid(p_now.getPbgid());
+					if (prArrayList.size() == 1 //
+							&& (prArrayList.get(0).getPhtype().equals("A431_disassemble"))) {
+						// Step2. 是否有舊紀錄
+						if (p_now.getPboldsn() != null && !p_now.getPboldsn().equals("")) {
+							JSONArray re_old_sn = new JSONArray(p_now.getPboldsn());
+							String old_sn = re_old_sn.getString(re_old_sn.length() - 1);
+							// 核對
+							List<ProductionBody> old_sns = bodyDao.findAllByPbbsn(old_sn);
+							if (old_sns.size() == 1) {
+								// Step3. 還原舊資料
+								ProductionBody p_old = old_sns.get(0);
+								p_old.setPbbsn(old_sn.split("_")[0]);
+								p_old.setPbsn(old_sn.split("_")[0]);
+								// 只有單一繼承,清除源頭紀錄
+								if (re_old_sn.length() == 1) {
+									p_old.setPboldsn("");
+								}
+								bodyDao.save(p_old);
 								bodyDao.delete(p_now);
 								check = true;
 							}

@@ -244,6 +244,9 @@ public class WorkstationRepeatService {
 				pboldsns.put(sn_old);
 
 				// 舊
+				if (pboldsns.length() == 1) {// 開頭資訊
+					pro_b_one_old.setPboldsn("" + new JSONArray().put(pro_b_one_old.getPbbsn() + "_old_beginning"));
+				}
 				pro_b_one_old.setPbbsn(sn_old);
 				pro_b_one_old.setPbsn(sn_old);
 				pro_b_one_old.setSysmuser(user.getSuaccount());
@@ -391,6 +394,11 @@ public class WorkstationRepeatService {
 								// Step3. 還原舊資料
 								ProductionBody p_old = old_sns.get(0);
 								p_old.setPbbsn(old_sn.split("_")[0]);
+								p_old.setPbsn(old_sn.split("_")[0]);
+								// 只有單一繼承,清除源頭紀錄
+								if (re_old_sn.length() == 1) {
+									p_old.setPboldsn("");
+								}
 								bodyDao.save(p_old);
 
 								// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )

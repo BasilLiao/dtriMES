@@ -1,6 +1,5 @@
 package dtri.com.tw.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +27,7 @@ public class MaintainCodeService {
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
 		ArrayList<MaintainCode> maintainCodes = new ArrayList<MaintainCode>();
+		ArrayList<MaintainCode> mcgid_obj = new ArrayList<MaintainCode>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -43,7 +43,8 @@ public class MaintainCodeService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表?", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組代表?", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ui_group_id", FFS.h_t("UI_Group_ID", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "mc_id", FFS.h_t("ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "mc_g_id", FFS.h_t("群組ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "mc_g_name", FFS.h_t("故障(總項目)名稱", "180px", FFM.Wri.W_Y));
@@ -71,15 +72,7 @@ public class MaintainCodeService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "mc_g_name", "故障(總項目)名稱"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "mc_name", "故障(支項目)名稱"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "mc_value", "故障編碼"));
-
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFS.See.DIS, "col-md-2", false, n_val, "sys_c_date", "建立時間"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFS.See.DIS, "col-md-2", false, n_val, "sys_c_user", "建立人"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFS.See.DIS, "col-md-2", false, n_val, "sys_m_date", "修改時間"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "", FFS.See.DIS, "col-md-2", false, n_val, "sys_m_user", "修改人"));
-
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFS.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", "備註"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-2", true, n_val, "sys_sort", "排序"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFS.NUMB, "", "", FFS.See.DIS, "col-md-2", false, n_val, "sys_ver", "版本"));
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
@@ -92,7 +85,6 @@ public class MaintainCodeService {
 			JSONArray obj_g_m = new JSONArray();
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "mc_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "mc_g_name", ""));
-
 			bean.setCell_g_modify(obj_g_m);
 
 			// 放入包裝(search)
@@ -115,19 +107,24 @@ public class MaintainCodeService {
 			status = body.getJSONObject("search").getString("sys_status");
 			status = status.equals("") ? "0" : status;
 		}
-		ArrayList<BigInteger> mcgid_obj = mcDao.findAllBySysheaderOrderByMcgidAsc(true, page_r);
-		List<Long>  mcgid = new ArrayList<Long>();
-		for (BigInteger obj : mcgid_obj) {
-			String one = obj.toString();
-			 mcgid.add(Long.parseLong(one));
+
+		// 父類別
+		mcgid_obj = mcDao.findAllBySysheaderOrderByMcgidAsc(true, mc_g_name, page_r);
+		List<Long> mcgid = new ArrayList<Long>();
+		for (MaintainCode obj : mcgid_obj) {
+			String one = obj.getMcgid().toString();
+			mcgid.add(Long.parseLong(one));
 		}
-		maintainCodes = mcDao.findAllByMaintainCode(mc_value, mc_g_name, mcgid, Integer.parseInt(status));
+		// 子類別
+		maintainCodes = mcDao.findAllByMaintainCode(mc_value, mcgid, false, Integer.parseInt(status));
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
-		maintainCodes.forEach(one -> {
+		JSONObject object_bodys_son = new JSONObject();
+		mcgid_obj.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());// 群組專用-必須放前面
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getMcgid());// 群組專用-必須放前面
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_id", one.getMcid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_g_id", one.getMcgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_g_name", one.getMcgname());
@@ -142,9 +139,33 @@ public class MaintainCodeService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+
 			object_bodys.put(object_body);
+			// 準備子類別容器
+			object_bodys_son.put(one.getMcgid() + "", new JSONArray());
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
+		maintainCodes.forEach(one -> {
+			JSONObject object_son = new JSONObject();
+			object_son.put("sys_header", one.getSysheader() + "");
+			object_son.put("mc_g_id", one.getMcgid() + "");
+			object_son.put("mc_id", one.getMcid() + "");
+			object_son.put("mc_g_name", one.getMcgname() + "");
+			object_son.put("mc_name", one.getMcname());
+			object_son.put("mc_value", one.getMcvalue() + "");
+
+			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
+			object_son.put("sys_c_user", one.getSyscuser());
+			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
+			object_son.put("sys_m_user", one.getSysmuser() + "");
+			object_son.put("sys_note", one.getSysnote() + "");
+			object_son.put("sys_sort", one.getSyssort() + "");
+			object_son.put("sys_ver", one.getSysver() + "");
+			object_son.put("sys_status", one.getSysstatus() + "");
+			object_bodys_son.getJSONArray(one.getMcgid() + "").put(object_son);
+		});
+		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
+
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
 		// 沒查到東西

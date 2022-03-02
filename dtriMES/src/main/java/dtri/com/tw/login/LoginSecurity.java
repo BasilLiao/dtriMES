@@ -45,7 +45,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String workstation_disassemble = "/ajax/workstation_disassemble.basil";
 		
 		String own_user = "/ajax/own_user.basil";
-		
+		String customer = "/ajax/customer.basil";
 		
 		String maintain_code = "/ajax/maintain_code.basil";
 		String work_hours = "/ajax/work_hours.basil";
@@ -160,10 +160,10 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				
 				// ----請求-workstation_disassemble-(訪問) ----
 				.antMatchers(HttpMethod.POST, workstation_disassemble).hasAuthority(actionRole(workstation_disassemble, ""))//
-				//.antMatchers(HttpMethod.POST, workstation_disassemble + ".AR").hasAuthority(actionRole(workstation_disassemble, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, workstation_disassemble + ".AR").hasAuthority(actionRole(workstation_disassemble, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, workstation_disassemble + ".AC").hasAuthority(actionRole(workstation_disassemble, "AC"))// (新增)
-				//.antMatchers(HttpMethod.PUT, workstation_disassemble + ".AU").hasAuthority(actionRole(workstation_disassemble, "AU"))// (修改)
-				//.antMatchers(HttpMethod.DELETE, workstation_disassemble + ".AD").hasAuthority(actionRole(workstation_disassemble, "AD"))// (移除)
+				.antMatchers(HttpMethod.PUT, workstation_disassemble + ".AU").hasAuthority(actionRole(workstation_disassemble, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, workstation_disassemble + ".AD").hasAuthority(actionRole(workstation_disassemble, "AD"))// (移除)
 
 				// ----請求-maintain_code-(訪問) ----
 				.antMatchers(HttpMethod.POST, maintain_code).hasAuthority(actionRole(maintain_code, ""))//
@@ -193,6 +193,12 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, own_user + ".AU").hasAuthority(actionRole(own_user, "AU"))// (修改)
 				//.antMatchers(HttpMethod.DELETE, own_user + ".AD").hasAuthority(actionRole(own_user, "AD"))// (移除)
 				
+				// ----請求-work_type-(訪問) ----
+				.antMatchers(HttpMethod.POST, customer).hasAuthority(actionRole(customer, ""))//
+				.antMatchers(HttpMethod.POST, customer + ".AR").hasAuthority(actionRole(customer, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, customer + ".AC").hasAuthority(actionRole(customer, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, customer + ".AU").hasAuthority(actionRole(customer, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, customer + ".AD").hasAuthority(actionRole(customer, "AD"))// (移除)
 				
 
 				// 請求需要檢驗-全部請求

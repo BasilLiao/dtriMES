@@ -2,6 +2,7 @@ package dtri.com.tw.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +31,7 @@ public class WorkstationProgramService {
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
 		ArrayList<WorkstationProgram> workstationPrograms = new ArrayList<WorkstationProgram>();
+		ArrayList<WorkstationProgram> workstationPrograms_son = new ArrayList<WorkstationProgram>();
 		ArrayList<Workstation> workstations = new ArrayList<Workstation>();
 		JSONArray a_vals = new JSONArray();
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -46,7 +48,8 @@ public class WorkstationProgramService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t("群組", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ui_group_id", FFS.h_t("UI_Group_ID", "100px", FFM.Wri.W_N));// 群組專用-必須放前面
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_id", FFS.h_t("ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_g_id", FFS.h_t("群組[ID]", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_name", FFS.h_t("流程序[名稱]", "250px", FFM.Wri.W_Y));
@@ -108,7 +111,7 @@ public class WorkstationProgramService {
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "wp_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-1", "wp_c_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_N, "col-md-1", "w_c_name", ""));
-			
+
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_N, "col-md-1", "sys_sort", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_N, "col-md-1", "sys_ver", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-1", "sys_status", ""));
@@ -127,7 +130,6 @@ public class WorkstationProgramService {
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "sys_status", "狀態", a_val));
 			bean.setCell_searchs(object_searchs);
 		} else {
-
 			// 進行-特定查詢
 			wp_name = body.getJSONObject("search").getString("wp_name");
 			wp_name = wp_name.equals("") ? null : wp_name;
@@ -136,14 +138,22 @@ public class WorkstationProgramService {
 			status = body.getJSONObject("search").getString("sys_status");
 			status = status.equals("") ? "0" : status;
 		}
-		workstationPrograms = programDao.findAllByProgram(wp_name, wp_c_name, Integer.parseInt(status), page_r);
+		workstationPrograms = programDao.findAllByProgram(wp_name, wp_c_name, Integer.parseInt(status), true, page_r);
+		List<Long> wpgid = new ArrayList<Long>();
+		for (WorkstationProgram obj : workstationPrograms) {
+			String one = obj.getWpgid().toString();
+			wpgid.add(Long.parseLong(one));
+		}
+		workstationPrograms_son = programDao.findAllByProgram(wp_name, wp_c_name, wpgid, false);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
+		JSONObject object_bodys_son = new JSONObject();
 		workstationPrograms.forEach(one -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getWpgid());// 群組專用-必須放前面
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_id", one.getWpid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_g_id", one.getWpgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_name", one.getWpname());
@@ -161,9 +171,37 @@ public class WorkstationProgramService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+			
+			object_bodys_son.put(one.getWpgid() + "", new JSONArray());
 			object_bodys.put(object_body);
+			// 準備子類別容器
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
+		// son
+		workstationPrograms_son.forEach(one -> {
+			JSONObject object_son = new JSONObject();
+			object_son.put("sys_header", one.getSysheader() + "");
+			object_son.put("wp_g_id", one.getWpgid() + "");
+			object_son.put("wp_id", one.getWpid() + "");
+			object_son.put("wp_name", one.getWpname() + "");
+			object_son.put("wp_c_name", one.getWpcname() + "");
+			object_son.put("wp_w_g_id", one.getWpwgid() + "");
+			Workstation work = workstationDao.findAllByWgidOrderBySyssortAsc(one.getWpwgid()).get(0);
+			object_son.put("w_pb_name", work.getWpbname() + "");
+			object_son.put("w_c_name", work.getWcname() + "");
+
+			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
+			object_son.put("sys_c_user", one.getSyscuser() + "");
+			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
+			object_son.put("sys_m_user", one.getSysmuser() + "");
+			object_son.put("sys_note", one.getSysnote() + "");
+			object_son.put("sys_sort", one.getSyssort() + "");
+			object_son.put("sys_ver", one.getSysver() + "");
+			object_son.put("sys_status", one.getSysstatus() + "");
+			object_bodys_son.getJSONArray(one.getWpgid() + "").put(object_son);
+		});
+		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
+
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
 		return bean;

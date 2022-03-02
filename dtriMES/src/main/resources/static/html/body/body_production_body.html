@@ -86,7 +86,9 @@
 			//查詢-模板 
 			$("#index #search_tab").load("./html/model/search.html", function() {
 				search.setDataTitle(main.allData.header,main.allData.html_permission);
-				search.setDataList(main.allData.body.search,main.allData.body_type);
+				search.setDataList(main.allData.body.search,
+	            		   main.allData.body.search_son,
+	            		   main.allData.body_type);  
 				search.setSearch(main.allData.cell_searchs);
 				search.selectAllInit();
 			});

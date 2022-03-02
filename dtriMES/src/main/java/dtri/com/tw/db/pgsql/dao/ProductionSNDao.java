@@ -1,6 +1,7 @@
 package dtri.com.tw.db.pgsql.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,10 +22,29 @@ public interface ProductionSNDao extends JpaRepository<ProductionSN, Long> {
 	@Query("SELECT c FROM ProductionSN c " //
 			+ "WHERE (:psname is null or c.psname LIKE %:psname% ) and "//
 			+ "(:psgname is null or c.psgname LIKE %:psgname% ) and " //
-			+ "( c.sysstatus = :sysstatus )  " //
+			+ "( c.sysstatus = :sysstatus ) and " //
+			+ "( c.sysheader = :sysheader )  "//
 			+ "order by c.psgid asc,c.sysheader desc,c.psid asc")
-	ArrayList<ProductionSN> findAllByProductionSN(@Param("psname") String psname, @Param("psgname") String psgname,
-			@Param("sysstatus") Integer sysstatus, Pageable pageable);
+	ArrayList<ProductionSN> findAllByProductionSN(//
+			@Param("psname") String psname, //
+			@Param("psgname") String psgname, //
+			@Param("sysstatus") Integer sysstatus, //
+			Boolean sysheader, Pageable pageable);
+
+	// 查詢一部分-son
+	@Query("SELECT c FROM ProductionSN c " //
+			+ "WHERE (:psname is null or c.psname LIKE %:psname% ) and "//
+			+ "((:psgid) is null or c.psgid in (:psgid)) and"//
+			+ "(:psgname is null or c.psgname LIKE %:psgname% ) and " //
+			+ "( c.sysstatus = :sysstatus ) and " //
+			+ "( c.sysheader = :sysheader )  "//
+			+ "order by c.psgid asc,c.sysheader desc,c.psid asc")
+	ArrayList<ProductionSN> findAllByProductionSN(//
+			@Param("psname") String psname, //
+			List<Long> psgid, //
+			@Param("psgname") String psgname, //
+			@Param("sysstatus") Integer sysstatus, //
+			Boolean sysheader, Pageable pageable);
 
 	// 查詢不含群組代表
 	ArrayList<ProductionSN> findAllBySysheaderOrderByPsgidAsc(boolean sysheader);

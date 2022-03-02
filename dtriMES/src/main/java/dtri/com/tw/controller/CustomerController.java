@@ -19,24 +19,24 @@ import dtri.com.tw.db.entity.SystemGroup;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.login.LoginUserDetails;
+import dtri.com.tw.service.CustomerService;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.WorkstationDisassembleService;
 
 @Controller
-public class WorkstationDisassembleController {
+public class CustomerController {
 	// 功能
-	final static String SYS_F = "workstation_disassemble.basil";
+	final static String SYS_F = "customer.basil";
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	WorkstationDisassembleService disassembleService;
+	CustomerService customerService;
 
 	/**
 	 * 訪問
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_disassemble.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/customer.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		System.out.println("---controller -access " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -55,14 +55,13 @@ public class WorkstationDisassembleController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-				one.setSppermission(p.getSystemPermission().getSppermission());
+					one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		// resp = configService.getData(req.getBody(), req.getPage_batch(),
-		// req.getPage_total());
+		resp = customerService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
@@ -73,7 +72,7 @@ public class WorkstationDisassembleController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_disassemble.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/customer.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
 		System.out.println("---controller -search " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -83,7 +82,7 @@ public class WorkstationDisassembleController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = disassembleService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
+		resp = customerService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
@@ -94,7 +93,7 @@ public class WorkstationDisassembleController {
 	 * 新增
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_disassemble.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/customer.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
 		System.out.println("---controller -create " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -113,7 +112,10 @@ public class WorkstationDisassembleController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = disassembleService.createData(req.getBody(), user);
+		check = customerService.createData(req.getBody(), user);
+		if (check) {
+			check = customerService.save_asData(req.getBody(), user);
+		}
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -133,7 +135,7 @@ public class WorkstationDisassembleController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_disassemble.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/customer.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		System.out.println("---controller - -modify " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -152,7 +154,7 @@ public class WorkstationDisassembleController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = disassembleService.updateData(req.getBody(), user);
+		check = customerService.updateData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -172,7 +174,7 @@ public class WorkstationDisassembleController {
 	 * 移除
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_disassemble.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/customer.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		System.out.println("---controller -delete " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -180,18 +182,11 @@ public class WorkstationDisassembleController {
 		boolean check = false;
 
 		System.out.println(json_object);
-		// 取得-當前用戶資料
-		SystemUser user = new SystemUser();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料
-			user = userDetails.getSystemUser();
-		}
+
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行移除
-		check = disassembleService.deleteData(req.getBody(), user);
+		// Step2.進行新增
+		check = customerService.deleteData(req.getBody());
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
