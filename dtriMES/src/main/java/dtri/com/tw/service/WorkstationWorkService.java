@@ -353,7 +353,7 @@ public class WorkstationWorkService {
 			if (set_replace) {
 				bean.autoMsssage("WK020");
 			} else {
-				bean.autoMsssage("WK021");
+				bean.autoMsssage("WK022");
 			}
 		}
 		return bean;

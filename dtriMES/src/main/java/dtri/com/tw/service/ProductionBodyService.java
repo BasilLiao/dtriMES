@@ -48,7 +48,7 @@ public class ProductionBodyService {
 		}
 		// PageRequest pageable = PageRequest.of(page, p_size,
 		// Sort.by("pbid").ascending());
-		String phprid = "";
+		String prid = "";
 		String phmodel = "";
 		String sysstatus = "0";
 		String pb_sn_value = "";
@@ -74,7 +74,7 @@ public class ProductionBodyService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_id", FFS.h_t("SN_ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_g_id", FFS.h_t("SN_G_ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_id", FFS.h_t("TL_ID", "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_pr_id", FFS.h_t("工單號", "160px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_id", FFS.h_t("工單號", "160px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_b_sn", FFS.h_t("SN_(燒錄/產品)", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_sn", FFS.h_t("SN_(身分/產品)", "160px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_old_sn", FFS.h_t("SN_(身分/產品)[舊]", "180px", FFM.Wri.W_Y));
@@ -191,7 +191,7 @@ public class ProductionBodyService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pb_g_id", "TL_S_ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_id", "TL_ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_p_model", "產品型號"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ph_pr_id", "工單號"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "pr_id", "工單號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_sn", "SN_(身分/產品)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pb_b_sn", "SN_(燒錄/產品)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "3", "3", FFM.Wri.W_N, "col-md-1", true, a_val, "pb_w_years", "保固年份"));
@@ -260,7 +260,7 @@ public class ProductionBodyService {
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ph_pr_id", "製令單號", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_id", "製令單號", n_val));
 
 			// 項目查詢(選單)
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pb_b_sn", "SN_(燒錄/產品)序號", n_val));
@@ -341,8 +341,8 @@ public class ProductionBodyService {
 			phmodel = body.getJSONObject("search").getString("pr_p_model");
 			phmodel = (phmodel == null) ? "" : phmodel;
 
-			phprid = body.getJSONObject("search").getString("ph_pr_id");
-			phprid = (phprid == null) ? "" : phprid;
+			prid = body.getJSONObject("search").getString("pr_id");
+			prid = (prid == null) ? "" : prid;
 
 			sysstatus = body.getJSONObject("search").getString("sys_status");
 			sysstatus = (sysstatus.equals("")) ? "0" : sysstatus;
@@ -427,7 +427,7 @@ public class ProductionBodyService {
 		nativeQuery += " ( b.sys_status = :sys_status) and ";
 
 		nativeQuery += " (:pr_p_model='' or p.pr_p_model LIKE :pr_p_model) and ";
-		nativeQuery += " (:ph_pr_id='' or h.ph_pr_id LIKE :ph_pr_id) and ";
+		nativeQuery += " (:pr_id='' or h.ph_pr_id LIKE :pr_id) and ";
 		nativeQuery += " (b.pb_g_id != 1) and (b.pb_g_id != 0)  order by b.pb_id desc ";
 		nativeQuery += " LIMIT :limit OFFSET :offset ";
 		Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
@@ -448,7 +448,7 @@ public class ProductionBodyService {
 		query.setParameter("sys_status", Integer.parseInt(sysstatus));
 		query.setParameter("pb_sn", "%" + pb_sn + "%");
 		query.setParameter("pr_p_model", "%" + phmodel + "%");
-		query.setParameter("ph_pr_id", "%" + phprid + "%");
+		query.setParameter("pr_id", "%" + prid + "%");
 		if (pb_sn_check != null) {
 			query.setParameter("pb_check", Boolean.parseBoolean(pb_sn_check));
 		}
@@ -466,14 +466,6 @@ public class ProductionBodyService {
 		em.clear();
 		em.close();
 
-//		// 如果有 查詢 完成與否
-//		if (pb_sn_check == null) {
-//			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, PageRequest.of(0, 100));
-//		} else {
-//			// 查詢有特定pb_id
-//			productionBodies = bodyDao.findAllByProductionBody(Integer.parseInt(sysstatus), pbid, Boolean.parseBoolean(pb_sn_check), PageRequest.of(0, 100));
-//		}
-
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
 		productionBodies.forEach(one -> {
@@ -485,7 +477,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_id", one.getPbid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_g_id", one.getPbgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_id", productionHeader.getPhid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_pr_id", productionHeader.getProductionRecords().getPrid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_id", productionHeader.getProductionRecords().getPrid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_b_sn", one.getPbbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_sn", one.getPbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
@@ -631,6 +623,8 @@ public class ProductionBodyService {
 		// 取代共用參數
 		str = str.replace("sys_", "b.sys_");
 		str = str.replace("pr_", "p.pr_");
+		str = str.replace("ph_", "h.ph_");
+		
 
 		// Step2.=======Analysis report 查詢SN欄位+產品型號+製令單號 =======
 		String nativeQuery = "SELECT b.* FROM production_body b " + //
@@ -671,7 +665,7 @@ public class ProductionBodyService {
 			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_g_id", one.getPbgid());
 			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_id",
 			// productionHeader.getPhid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_pr_id", productionHeader.getProductionRecords().getPrid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_id", productionHeader.getProductionRecords().getPrid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_b_sn", one.getPbbsn());
 			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_sn", one.getPbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
@@ -790,7 +784,7 @@ public class ProductionBodyService {
 				ProductionBody p_body = new ProductionBody();
 				JSONObject data = (JSONObject) one;
 				ProductionRecords search = new ProductionRecords();
-				search.setPrid(data.getString("ph_pr_id"));
+				search.setPrid(data.getString("pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
 				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
 				// 有資料
@@ -862,7 +856,7 @@ public class ProductionBodyService {
 				ProductionBody p_body = new ProductionBody();
 				JSONObject data = (JSONObject) one;
 				ProductionRecords search = new ProductionRecords();
-				search.setPrid(data.getString("ph_pr_id"));
+				search.setPrid(data.getString("pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
 				List<ProductionBody> p_Bodys = bodyDao.findAllByPbbsn(data.getString("pb_b_sn"));
 				// 有資料
@@ -929,7 +923,7 @@ public class ProductionBodyService {
 				JSONObject data = (JSONObject) one;
 				List<ProductionBody> p_Bodys = bodyDao.findAllByPbid(data.getLong("pb_id"));
 				ProductionRecords search = new ProductionRecords();
-				search.setPrid(data.getString("ph_pr_id"));
+				search.setPrid(data.getString("pr_id"));
 				List<ProductionHeader> p_Headers = headerDao.findAllByProductionRecords(search);
 				// 有資料?
 				if (p_Headers.size() < 1) {

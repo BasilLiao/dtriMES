@@ -14,20 +14,19 @@ import javax.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
- * 
- * @see 客戶資料<br>
- *      ccname 公司名稱<br>
- *      cname 客戶名稱<br>
- *      caddress 地址<br>
- *      ctex 電話<br>
- *      cfax 傳真<br>
- * 
- **/
+ * @author Basil
+ * @see 單位設定<br>
+ *      mu_id : 單位_ID<br>
+ *      mu_name : 單位_名稱<br>
+ *      mu_su_id : 帳號關聯_ID<br>
+ *      mu_su_name : 帳號關聯_名稱<br>
+ *      mu_content : 可處理內容敘述<br>
+ */
 @Entity
-@Table(name = "customer")
+@Table(name = "maintenance_unit")
 @EntityListeners(AuditingEntityListener.class)
-public class Customer {
-	public Customer() {
+public class MaintenanceUnit {
+	public MaintenanceUnit() {
 		this.syscdate = new Date();
 		this.syscuser = "system";
 		this.sysmdate = new Date();
@@ -69,25 +68,25 @@ public class Customer {
 
 	// 功能項目
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
-	@SequenceGenerator(name = "customer_seq", sequenceName = "customer_seq", allocationSize = 1)
-	@Column(name = "c_id")
-	private Long cid;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "maintenance_unit_seq")
+	@SequenceGenerator(name = "maintenance_unit_seq", sequenceName = "maintenance_unit_seq", allocationSize = 1)
+	@Column(name = "mu_id")
+	private Long muid;
 
-	@Column(name = "c_c_name", nullable = false, columnDefinition = "varchar(50)")
-	private String ccname;
+	@Column(name = "mu_g_id", nullable = false)
+	private Long mugid;
 
-	@Column(name = "c_name", columnDefinition = "varchar(50)")
-	private String cname;
+	@Column(name = "mu_g_name", nullable = false, columnDefinition = "varchar(50)")
+	private String mugname;
 
-	@Column(name = "c_address", columnDefinition = "varchar(100)")
-	private String caddress;
+	@Column(name = "mu_su_id", nullable = false)
+	private Long musuid;
 
-	@Column(name = "c_tex", columnDefinition = "varchar(20)")
-	private String ctex;
+	@Column(name = "mu_su_name", nullable = false, columnDefinition = "varchar(50)")
+	private String musuname;
 
-	@Column(name = "c_fax", columnDefinition = "varchar(20)")
-	private String cfax;
+	@Column(name = "mu_content", nullable = false, columnDefinition = "varchar(255)")
+	private String mucontent;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -161,52 +160,52 @@ public class Customer {
 		this.sysheader = sysheader;
 	}
 
-	public Long getCid() {
-		return cid;
+	public Long getMuid() {
+		return muid;
 	}
 
-	public void setCid(Long cid) {
-		this.cid = cid;
+	public void setMuid(Long muid) {
+		this.muid = muid;
 	}
 
-	public String getCcname() {
-		return ccname;
+	public Long getMugid() {
+		return mugid;
 	}
 
-	public void setCcname(String ccname) {
-		this.ccname = ccname;
+	public void setMugid(Long mugid) {
+		this.mugid = mugid;
 	}
 
-	public String getCname() {
-		return cname;
+	public String getMugname() {
+		return mugname;
 	}
 
-	public void setCname(String cname) {
-		this.cname = cname;
+	public void setMugname(String mugname) {
+		this.mugname = mugname;
 	}
 
-	public String getCaddress() {
-		return caddress;
+	public Long getMusuid() {
+		return musuid;
 	}
 
-	public void setCaddress(String caddress) {
-		this.caddress = caddress;
+	public void setMusuid(Long musuid) {
+		this.musuid = musuid;
 	}
 
-	public String getCtex() {
-		return ctex;
+	public String getMusuname() {
+		return musuname;
 	}
 
-	public void setCtex(String ctex) {
-		this.ctex = ctex;
+	public void setMusuname(String musuname) {
+		this.musuname = musuname;
 	}
 
-	public String getCfax() {
-		return cfax;
+	public String getMucontent() {
+		return mucontent;
 	}
 
-	public void setCfax(String cfax) {
-		this.cfax = cfax;
+	public void setMucontent(String mucontent) {
+		this.mucontent = mucontent;
 	}
 
 }

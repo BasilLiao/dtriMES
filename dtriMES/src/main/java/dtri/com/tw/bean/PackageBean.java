@@ -53,7 +53,8 @@ public class PackageBean {
 	public static final String info_work_warning18 = "[WK018] 特定(PLT [SN序號]與[產品規格]) 不相合! ";
 	public static final String info_work_warning19 = "[WK019] 請先清除 [故障代碼] 後進行過站! [Warning]!!";
 	public static final String info_work_success20 = "[WK020] The command was executed [Successfully/成功/Thành công]!!";
-	public static final String info_work_success21 = "[WK021] 此(產品/燒錄 序號) 已 重複過站!!";
+	public static final String info_work_success21 = "[WK021] 存檔 此(產品/燒錄 序號) 已 重複過站!!";
+	public static final String info_work_success22 = "[WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!";
 
 	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
 
@@ -189,8 +190,12 @@ public class PackageBean {
 			this.info = info_work_success20;
 			this.info_color = info_color_success;
 			break;
-		case "WK021":// [WK021] 此(產品/燒錄 序號) 已 重複過站!!
+		case "WK021":// [WK021] 存檔 此(產品/燒錄 序號) 已 重複過站!!
 			this.info = info_work_success21;
+			this.info_color = info_color_success;
+			break;
+		case "WK022":// [WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!
+			this.info = info_work_success22;
 			this.info_color = info_color_success;
 			break;
 

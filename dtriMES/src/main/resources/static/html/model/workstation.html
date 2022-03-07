@@ -171,6 +171,31 @@
 									</div>
 								</div>
 								<div class="dropdown-divider p-0 mt-2"></div>
+								<div class="p-2" id="logout">
+									<div id="barcode_BC020"></div>
+									<div id="BC020" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
+										<div class="small font-weight-bold">
+											check mode<br>(檢查模式)[BC020]
+										</div>
+									</div>
+								</div>
+								<div class="p-2" id="logout">
+									<div id="barcode_BC021"></div>
+									<div id="BC021" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
+										<div class="small font-weight-bold">
+											general mode<br>(一般模式)[BC021]
+										</div>
+									</div>
+								</div>
+								<div class="p-2" id="logout">
+									<div id="barcode_BC022"></div>
+									<div id="BC022" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
+										<div class="small font-weight-bold">
+											PLT mode<br>(PLT模式)[BC022]
+										</div>
+									</div>
+								</div>
+
 								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="p-2" id="logout">
 									<div id="barcode_BC007"></div>
@@ -503,7 +528,7 @@
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="p-0 pl-1">[PLT]設定</div>
-											<div class="col-12 row p-0 m-0">
+											<div class="col-12 row p-0 m-0" id="checkbox_plt">
 												<div class="row p-0 m-0 col-12">
 													<div class="p-0 pl-1">檢查 :</div>
 													<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="plt_check" name="" value="true" type="checkbox" style="max-width: 30px;">
@@ -522,7 +547,7 @@
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="p-0 pl-1">[保留]設定</div>
-											<div class="col-12 row p-0 m-0">
+											<div class="col-12 row p-0 m-0" id="checkbox_only">
 												<div class="p-0">唯讀SN :</div>
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
@@ -532,7 +557,7 @@
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="col-12 p-0">[產品/燒錄 序號]輸入後</div>
-											<div class="col-12 p-0 m-0">
+											<div class="col-12 p-0 m-0" id="checkbox_auto">
 												<div class="row p-0 m-0 col-12">
 													<div class="p-0">Auto 儲存 :</div>
 													<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="after_sn_save" name="" value="true" type="checkbox" style="max-width: 30px;">
@@ -548,7 +573,7 @@
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="col-12 p-0">[聲效]特效</div>
-											<div class="col-12 p-0 m-0">
+											<div class="col-12 p-0 m-0" id="checkbox_sound">
 												<div class="row p-0 m-0 col-12">
 													<div class="p-0">儲存-重複過站:</div>
 													<input id="set_replace" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
@@ -931,6 +956,11 @@
    		//維修代號
    		this.create_barcode("barcode_BC013","BC013","code39",22);
    		this.create_barcode("barcode_BC014","BC014","code39",22);
+   		
+   		//過站模式
+   		this.create_barcode("barcode_BC020","BC020","code39",22);
+   		this.create_barcode("barcode_BC021","BC021","code39",22);
+   		this.create_barcode("barcode_BC022","BC022","code39",22);
    		
    		//barcode_open 顯示 ?
    		$(document).on("click", ".pn__op", function (event){
@@ -1377,6 +1407,48 @@
    					workstation.clearOrder();
    					return false;
    					break;
+   				case "BC020":
+   					//檢查模式
+   					$("#checkbox_plt input").prop("checked", false);
+   					$("#checkbox_only input").prop("checked", false);
+   					$("#checkbox_auto input").prop("checked", false);
+   					$("#checkbox_sound input").prop("checked", false);
+   					
+   					$("#after_sn_check").prop("checked", true);
+   					$("#set_check_replace").prop("checked", true);
+   					workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC021":
+   					//一般模式
+   					$("#checkbox_plt input").prop("checked", false);
+   					$("#checkbox_only input").prop("checked", false);
+   					$("#checkbox_auto input").prop("checked", false);
+   					$("#checkbox_sound input").prop("checked", false);
+   					
+   					$("#after_sn_save").prop("checked", true);
+   					$("#after_sn_check").prop("checked", true);
+   					$("#set_replace").prop("checked", true);
+   					$("#set_success").prop("checked", true);
+   					workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC022":
+   					//PLT模式
+   					$("#checkbox_plt input").prop("checked", false);
+   					$("#checkbox_only input").prop("checked", false);
+   					$("#checkbox_auto input").prop("checked", false);
+   					$("#checkbox_sound input").prop("checked", false);
+   					
+   					$("#checkbox_plt input").prop("checked", true);
+   					$("#only_check").prop("checked", true);
+   					$("#after_sn_save").prop("checked", true);
+   					$("#after_sn_check").prop("checked", true);
+   					$("#set_replace").prop("checked", true);
+   					$("#set_success").prop("checked", true);
+   					workstation.clearOrder();
+   					return false;
+   					break;
    				default:
    					break;
    				}
@@ -1797,6 +1869,16 @@
    			if($(".sn_list").length>0 && $("#w_focus_6").val()!=""){
 				workstation.nb=7;
 			}
+   		 	//Step7. 自動位移 如果有勾選檢查模式
+   			if($('#set_check_replace').is(":checked")){
+   				if($('.w_i_6').hasClass('d-none')){
+   					workstation.nb-=2;
+   				}else{
+   					workstation.nb-=1;
+   				}
+			}
+   			 
+   			$("#after_sn_check").prop("checked", true);
 
 			//更換Class
 			$("#"+id).removeClass("border-1");
