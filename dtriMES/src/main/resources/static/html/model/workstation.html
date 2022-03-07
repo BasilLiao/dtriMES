@@ -1096,6 +1096,14 @@
    					$('#'+id+' input').addClass("d-none");
    					$('#'+id+' textarea').removeClass("d-none");
    				}
+   				//配色 m__pb_workstation 工作站顯示用
+   				if(id == 'm__pb_workstation'){
+   					$('#'+id+' .doc_c_value').addClass("font-weight-bold");    
+   					$('#'+id+' .doc_c_value').addClass("text-dark");  
+   					$('#'+id+' .doc_c_value').addClass("h4");  
+   					$('#'+id+' .doc_c_value').addClass("mb-0");  
+   					
+   				}
    				console.log(name+" "+value+" "+col);
    			}
    		},
@@ -1783,6 +1791,17 @@
                	 value = value.replaceAll('},', '},\n');
                 }
    				$('#'+key+' .doc_c_value').val(value);
+   				
+   				//配色 m__pb_workstation 工作站顯示用
+   				if(key == 'm__pb_workstation'){
+   					if(value==">>已經過站<<"){
+	   					$('#'+key+' .doc_c_value').removeClass("bg-warning");
+	   					$('#'+key+' .doc_c_value').addClass("bg-success");      						
+   					}else{
+	   					$('#'+key+' .doc_c_value').removeClass("bg-success");
+	   					$('#'+key+' .doc_c_value').addClass("bg-warning");   						
+   					}
+   				}
    			}
    			//Step3-2.更新SN_List
    			var sn_list = main.allData.body.sn_list;
