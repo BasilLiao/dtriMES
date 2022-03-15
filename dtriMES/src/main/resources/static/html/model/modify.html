@@ -825,6 +825,8 @@
                     if($("#detail_really_tr_"+this.detail_nb+" .m__sys_header input").val()=="true"){
 						//群組不可顯示+號(因為後端無法檢核新的群組資料還是 舊的子類別)                    	
                     	$("#detail_really_tr_"+this.detail_nb +" .detail_example_add").addClass("d-none");
+                    	$("#detail_really_tr_"+this.detail_nb +" .detail_example_remove").addClass("d-none");
+                    	
     					$("#detail_really_tr_"+this.detail_nb+" .detail_example_group").addClass("d-none");
                     	$("#detail_really_tr_"+this.detail_nb).addClass("bg-yellow-30");
                     	//群組特定設定
@@ -838,6 +840,7 @@
     					}
                     }else{
                     	$("#detail_really_tr_"+this.detail_nb+" .detail_example_group").removeClass("d-none");
+                    	$("#detail_really_tr_"+this.detail_nb +" .detail_example_remove").addClass("d-none");
                     }
                     this.detail_nb+=1;
 				}

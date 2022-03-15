@@ -144,8 +144,7 @@ public class WorkstationWorkService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "全部/完成(整體數量)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "本工作站(通過數量)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_workstation", "工作站(狀態)"));
-			
-			
+
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_dt", "PLT_Log上傳時間"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_size", "PLT_Log_Size"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_path", "PLT_Log位置"));
@@ -185,8 +184,7 @@ public class WorkstationWorkService {
 			ArrayList<WorkstationProgram> wp_all = new ArrayList<WorkstationProgram>();
 			List<ProductionHeader> ph_all = new ArrayList<ProductionHeader>();
 			List<ProductionBody> pb_all = new ArrayList<ProductionBody>();
-			
-			
+
 			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
 			// 檢查資料是否存在
 			if (pb_all.size() != 1) {
@@ -216,8 +214,7 @@ public class WorkstationWorkService {
 						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
 						if (pb_all.size() == 1) {
 							// 計算 此工作站完成數
-							List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(pb_all.get(0).getPbgid(),
-									"%" + wpcname + "_Y%");
+							List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "%" + wpcname + "_Y%");
 							int all_nb = wk_schedules.size();
 							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
 							// 如果是A521 有舊的SN (要排除已經繼承)
@@ -236,10 +233,10 @@ public class WorkstationWorkService {
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
 							JSONObject object_body_all = new JSONObject();
-							//過站狀態
-							JSONObject pb_workstation = new JSONObject(pb_one.getPbschedule()).getJSONObject(""+wpcname);
+							// 過站狀態
+							JSONObject pb_workstation = new JSONObject(pb_one.getPbschedule()).getJSONObject("" + wpcname);
 							String pb_w_pass = "<<尚未過站>>";
-							if(pb_workstation.get("type").equals(wpcname+"_Y")) {
+							if (pb_workstation.get("type").equals(wpcname + "_Y")) {
 								pb_w_pass = ">>已經過站<<";
 								set_replace = false;
 							}
@@ -349,7 +346,7 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK002");
 				return bean;
 			}
-			
+
 			if (set_replace) {
 				bean.autoMsssage("WK020");
 			} else {
@@ -430,8 +427,8 @@ public class WorkstationWorkService {
 					JSONObject pbschedule = new JSONObject(body_s.get(0).getPbschedule());// 目前工作程序
 					Map<String, JSONObject> body_map_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					Map<String, JSONObject> body_map_old = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
-					List<ProductionBody> check_sn = pbDao.findAllByPbgidOrderByPbsnAsc(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
-					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 10));// 產品規格內容(檢驗用)
+					List<String> check_sn = pbDao.findPbbsnList(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
+					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 1));// 產品規格內容(檢驗用)
 					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
 					Map<String, JSONObject> wpi_pr_map_auto = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數
 					Map<String, JSONObject> wpi_pr_map_def = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數(預設值)
@@ -631,8 +628,8 @@ public class WorkstationWorkService {
 									String title_name = (String) get_method.invoke(title_body);
 
 									// Step4-3.[檢核階段-進階] 檢查 避免小卡 輸入主SN序號
-									for (ProductionBody one_sn : check_sn) {
-										if (one_sn.getPbbsn().equals(body_value)) {
+									for (String pbbsn : check_sn) {
+										if (pbbsn.equals(body_value)) {
 											bean.autoMsssage("WK010");
 											return bean;
 										}
@@ -1043,15 +1040,10 @@ public class WorkstationWorkService {
 					if (p_header.getSysstatus() == 0) {
 						p_header.setPhsdate(new Date());
 					}
-					// 關聯SN 計算完成數量
-					List<ProductionBody> p_body = pbDao.findAllByPbgidOrderByPbsnAsc(p_header.getPhpbgid());
-					int finish = 0;
-					// 完成?
-					for (ProductionBody productionBody : p_body) {
-						if (productionBody.getPbcheck()) {
-							finish += 1;
-						}
-					}
+					// 關聯SN 計算完成數量 完成?
+					List<Boolean> p_body = pbDao.findPbcheckList(p_header.getPhpbgid());
+					int finish = p_body.size();
+
 					// 規格
 					ProductionRecords p_records = p_header.getProductionRecords();
 					p_records.setPrpokquantity(finish);
@@ -1061,8 +1053,7 @@ public class WorkstationWorkService {
 					p_header.setSysmdate(new Date());
 					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
 					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
-					List<ProductionBody> wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(p_header.getPhpbgid(),
-							"%" + list.getString("w_c_name") + "_Y%");
+					List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "%" + list.getString("w_c_name") + "_Y%");
 
 					if (p_header.getPhpbschedule() != null && !p_header.getPhpbschedule().equals("")) {
 						JSONObject phpbs = new JSONObject(p_header.getPhpbschedule());
@@ -1075,7 +1066,7 @@ public class WorkstationWorkService {
 						for (WorkstationProgram p_one : programs) {
 							ArrayList<Workstation> works = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
 							// 計算 此工作站完成數
-							wk_schedules = pbDao.findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(p_header.getPhpbgid(), "%" + works.get(0).getWcname() + "_Y%");
+							wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "%" + works.get(0).getWcname() + "_Y%");
 							json_ph_pb_schedule.put(works.get(0).getWcname(), wk_schedules.size());
 						}
 						p_header.setPhpbschedule(json_ph_pb_schedule.toString());

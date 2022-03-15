@@ -54,7 +54,21 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 	List<ProductionBody> findAllByPbgidAndPbbsnNotOrderByPbsnAsc(Long pbgid, String pbbsn);
 
 	// 查詢SN群組 已過站
-	List<ProductionBody> findAllByPbgidAndPbscheduleLikeOrderByPbsnAsc(Long pbgid, String pbschedule);
+	@Query(value = "SELECT b.pbbsn FROM ProductionBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbschedule LIKE %:pbschedule% ) "// coalesce 回傳非NULL值
+			+ " order by b.pbsn asc")
+	List<String> findPbbsnPbscheduleList(Long pbgid, String pbschedule);
+
+	// 查詢SN群組(此工單 ->產品完成[總數])
+	@Query(value = "SELECT b.pbcheck FROM ProductionBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and (b.pbcheck = true) order by b.pbsn asc")
+	List<Boolean> findPbcheckList(Long pbgid);
+
+	// 查詢SN群組(此工單 ->產品 SN重複)
+	@Query(value = "SELECT b.pbbsn FROM ProductionBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) order by b.pbsn asc")
+	List<String> findPbbsnList(Long pbgid);
 
 	// 查詢一部分_Body
 	@Query(value = "SELECT b FROM ProductionBody b WHERE "//
