@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display Webcam Stream</title>
+
+<style>
+.container {
+	margin: 0px auto;
+	width: 480px;
+	height: 360px;
+	border: 10px #333 solid;
+}
+
+.container_btn {
+	margin: 0px auto;
+	width: 980px;
+	height: 50px;
+	border: 10px #333 solid;
+	padding-top: 10px;
+}
+
+#videoElement {
+	width: 480px;
+	height: 360px;
+	background-color: #666;
+}
+
+#copy {
+	width: 480px;
+	height: 360px;
+	background-color: rgb(230, 230, 242);
+}
+
+#snName:focus {
+	color: blue;
+}
+
+#show {
+	margin: 0px auto;
+	display: flex;
+	width: 1000px;
+}
+</style>
+</head>
+
+<body>
+	<div id="show">
+		<!-- 影像 -->
+		<div class="container">
+			<video id="videoElement" autoplay="true">
+			</video>
+		</div>
+		<!-- 圖片 -->
+		<div class="container">
+			<canvas id="copy" width="640" height="480"></canvas>
+		</div>
+	</div>
+	<!-- 動作 -->
+	<div class="container_btn">
+		檔案:產品SN命名:<input id="snName" value="" width="20">
+		<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit" onclick="capture()">Capture Picture</button>
+		<!--  -->
+		<a id="downloadPic" href="#" download="自訂名稱.png" onclick="toDataURL();">Download Picture</a>
+	</div>
+
+</body>
+<script type="text/javascript">
+var video = document.querySelector("#videoElement");
+var canvas = document.getElementById("copy");
+var snName = document.getElementById("snName");
+var downloadPic = document.getElementById("downloadPic");
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function (err0r) {
+      console.log("Something went wrong!");
+    });
+}
+
+snName.addEventListener("keyup", function(event) {
+	console.log("keyup"+event.keyCode);
+	  // Number 13 is the "Enter" key on the keyboard
+	  if (event.keyCode === 13) {
+	    // Cancel the default action, if needed
+	    event.preventDefault();
+	    // Trigger the button element with a click
+	    capture();
+	  }
+	});
+
+function capture() {
+	console.log("拍照");
+	canvas.getContext('2d').drawImage(video, 0, 0);
+	snName.focus();
+	downloadPic.click();
+	}
+	
+function toDataURL() {
+	console.log("下載");
+	downloadPic.download = snName.value;
+	downloadPic.href=canvas.toDataURL();
+	snName.value = "";
+	}
+</script>
+</html>

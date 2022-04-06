@@ -237,39 +237,42 @@ public class SystemGroupService {
 
 		// 子類別物件
 		systemGroup_son.forEach(one -> {
+			int ord = 0;
 			JSONObject object_son = new JSONObject();
-			object_son.put("sys_header", one.getSysheader()+ "");// 群組專用-必須放前面
-			object_son.put("ui_group_id", one.getSggid()+ "");// 群組專用-必須放前面
-			object_son.put("sg_id", one.getSgid()+ "");
-			object_son.put("sg_g_id", one.getSggid()+ "");
-			object_son.put("sg_name", one.getSgname()+ "");
-			object_son.put("sg_sp_name", one.getSystemPermission().getSpname()+ "");
-			object_son.put("sg_sp_id", one.getSystemPermission().getSpid()+ "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getSggid());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_id", one.getSgid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_g_id", one.getSggid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_name", one.getSgname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_sp_name", one.getSystemPermission().getSpname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_sp_id", one.getSystemPermission().getSpid());
 
-			object_son.put("sg_permission_512", Character.toString(one.getSgpermission().charAt(0)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_256", Character.toString(one.getSgpermission().charAt(1)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_128", Character.toString(one.getSgpermission().charAt(2)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_64", Character.toString(one.getSgpermission().charAt(3)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_32", Character.toString(one.getSgpermission().charAt(4)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_16", Character.toString(one.getSgpermission().charAt(5)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_8", Character.toString(one.getSgpermission().charAt(6)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_4", Character.toString(one.getSgpermission().charAt(7)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_2", Character.toString(one.getSgpermission().charAt(8)).equals("0") ? false+ "" : true+ "");
-			object_son.put("sg_permission_1", Character.toString(one.getSgpermission().charAt(9)).equals("0") ? false+ "" : true+ "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_512",
+					Character.toString(one.getSgpermission().charAt(0)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_256",
+					Character.toString(one.getSgpermission().charAt(1)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_128",
+					Character.toString(one.getSgpermission().charAt(2)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_64", Character.toString(one.getSgpermission().charAt(3)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_32", Character.toString(one.getSgpermission().charAt(4)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_16", Character.toString(one.getSgpermission().charAt(5)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_8", Character.toString(one.getSgpermission().charAt(6)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_4", Character.toString(one.getSgpermission().charAt(7)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_2", Character.toString(one.getSgpermission().charAt(8)).equals("0") ? false : true);
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sg_permission_1", Character.toString(one.getSgpermission().charAt(9)).equals("0") ? false : true);
 
-			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate())+ "");
-			object_son.put("sys_c_user", one.getSyscuser()+ "");
-			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate())+ "");
-			object_son.put("sys_m_user", one.getSysmuser()+ "");
-			object_son.put("sys_sort", one.getSyssort()+ "");
-			object_son.put("sys_ver", one.getSysver()+ "");
-			object_son.put("sys_status", one.getSysstatus()+ "");
-			object_son.put("sys_note", one.getSysnote()+ "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
 			object_bodys_son.getJSONArray(one.getSggid() + "").put(object_son);
 		});
 		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
 
-		
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
 		return bean;

@@ -6,52 +6,35 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import dtri.com.tw.db.entity.SystemGroup;
+import dtri.com.tw.db.entity.MaintenanceUnit;
 
-public interface MaintenanceUnitDao extends JpaRepository<SystemGroup, Long> {
-
-	// 查詢群組
-	@Query("SELECT c FROM SystemGroup c "//
-			+ "WHERE  (c.sggid = :sggid) "//
-			+ "order by c.sggid asc, c.systemPermission.syssort asc")
-	List<SystemGroup> findBySggidOrderBySggid(Long sggid);
+public interface MaintenanceUnitDao extends JpaRepository<MaintenanceUnit, Long> {
 
 	// 查詢ID
-	List<SystemGroup> findBySgidOrderBySgidAscSyssortAsc(Long sgid);
+	List<MaintenanceUnit> findByMuidOrderBySyssortAsc(Long muid);
 
-	// 查詢群組名稱
-	@Query("SELECT c FROM SystemGroup c "//
-			+ "WHERE  (:sgname is null or c.sgname LIKE %:sgname%) and "//
-			+ "((:sggid) is null or c.sggid in (:sggid)) and"//
-			+ "( c.sgid != :sgid) and"//
-			+ "( c.sysstatus = :sysstatus ) and "//
-			+ "( c.sysheader = :sysheader )  "//
-			+ "order by c.sggid asc, c.sgid asc")
-	List<SystemGroup> findAllBySystemGroup(String sgname, List<Long> sggid, Long sgid, Integer sysstatus, boolean sysheader, Pageable p);
+	// 查詢G_ID
+	List<MaintenanceUnit> findByMugidOrderBySyssortAsc(Long mugid);
 
-	// 查詢群組[頭]數量
-	List<SystemGroup> findAllBySysheader(boolean sysheader, Pageable p);
-
-	// 查詢群組[頭]數量不包含 Admin群組
-	List<SystemGroup> findAllBySysheaderAndSgidNot(boolean sysheader, Long sgid, Pageable p);
-
-	// 查詢群組分頁
-	List<SystemGroup> findAllByOrderBySggidAscSgidAsc(Pageable p);
-
-	// 查詢全部
-	ArrayList<SystemGroup> findAll();
-
-	// 查詢是否重複 群組
-	@Query("SELECT c FROM SystemGroup c WHERE  (c.sgname = :sgname) order by c.sgid desc")
-	ArrayList<SystemGroup> findAllByGroupTop1(@Param("sgname") String spgname, Pageable pageable);
+	// 查詢群組名稱()
+	@Query("SELECT m FROM MaintenanceUnit m "//
+			+ "WHERE  "//
+			+ "(:mugid = 0L or m.mugid = mugid) and "//
+			+ "(:mugname is null or m.mugname LIKE %:mugname%) and "//
+			+ "(:musuname is null or m.musuname LIKE %:musuname%) and "//
+			+ "( m.sysheader = :sysheader )  "//
+			+ "order by m.mugid asc, m.muid asc")
+	List<MaintenanceUnit> findAllByMaintenanceUnit(Long mugid, String mugname, String musuname, boolean sysheader, Pageable p);
 
 	// 取得G_ID
-	@Query(value = "SELECT NEXTVAL('system_group_g_seq')", nativeQuery = true)
-	Long getSystem_group_g_seq();
+	@Query(value = "SELECT NEXTVAL('maintenance_unit_g_seq')", nativeQuery = true)
+	Long getMaintenance_unit_g_seq();
+
+	// 查詢是否重複 群組
+	@Query("SELECT c FROM MaintenanceUnit c WHERE  (c.mugname = :mugname) order by c.muid desc")
+	ArrayList<MaintenanceUnit> findAllByGroupTop1(String mugname, Pageable pageable);
 
 	// 移除
-	Long deleteBySggid(Long sggid);
-
+	Long deleteByMugid(Long mugid);
 }

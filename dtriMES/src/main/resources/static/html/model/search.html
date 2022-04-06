@@ -272,6 +272,25 @@ search = new Vue({
 
 				//排序
 				list[j] = main.orderedSort(list[j]);
+				//排序-子類別
+				if(list_son!=null){
+					var son_size = list_son[list[j]['02_b__ui_group_id']].length;
+					for(var s = 0;s<son_size;s++){
+						//排序
+						list_son[list[j]['02_b__ui_group_id']][s] = main.orderedSort(list_son[list[j]['02_b__ui_group_id']][s]);
+						//排序-子類別(將 02_b__ 替換掉)
+						var re_son = list_son[list[j]['02_b__ui_group_id']][s];
+						var new_son = {};
+						for(var y = 0;y<Object.keys(re_son).length;y++){
+							var key_id = Object.keys(re_son)[y];
+							var value_name = re_son[Object.keys(re_son)[y]];
+							key_id = key_id.split('_b__')[1];
+							new_son[key_id] = value_name+'';
+						}
+						//回寫
+						list_son[list[j]['02_b__ui_group_id']][s] = new_son;
+					}
+				}
 				//資料筆數
 				var list_item = $(".search_example_content").clone(); //複製樣本
 				//是否為群組

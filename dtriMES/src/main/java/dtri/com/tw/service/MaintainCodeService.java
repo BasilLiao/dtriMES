@@ -147,21 +147,23 @@ public class MaintainCodeService {
 		bean.setBody(new JSONObject().put("search", object_bodys));
 		maintainCodes.forEach(one -> {
 			JSONObject object_son = new JSONObject();
-			object_son.put("sys_header", one.getSysheader() + "");
-			object_son.put("mc_g_id", one.getMcgid() + "");
-			object_son.put("mc_id", one.getMcid() + "");
-			object_son.put("mc_g_name", one.getMcgname() + "");
-			object_son.put("mc_name", one.getMcname());
-			object_son.put("mc_value", one.getMcvalue() + "");
+			int ord = 0;
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getMcgid());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_id", one.getMcid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_g_id", one.getMcgid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_g_name", one.getMcgname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_name", one.getMcname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "mc_value", one.getMcvalue());
 
-			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
-			object_son.put("sys_c_user", one.getSyscuser());
-			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
-			object_son.put("sys_m_user", one.getSysmuser() + "");
-			object_son.put("sys_note", one.getSysnote() + "");
-			object_son.put("sys_sort", one.getSyssort() + "");
-			object_son.put("sys_ver", one.getSysver() + "");
-			object_son.put("sys_status", one.getSysstatus() + "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_bodys_son.getJSONArray(one.getMcgid() + "").put(object_son);
 		});
 		bean.setBody(bean.getBody().put("search_son", object_bodys_son));

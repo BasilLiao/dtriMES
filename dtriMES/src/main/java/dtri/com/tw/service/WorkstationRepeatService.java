@@ -433,6 +433,11 @@ public class WorkstationRepeatService {
 							check = true;
 						}
 					}
+				} else {
+					// 移除舊資料
+					ProductionBody p_now = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%").get(0);
+					bodyDao.delete(p_now);
+					check = true;
 				}
 			}
 		} catch (Exception e) {

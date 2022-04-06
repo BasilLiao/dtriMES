@@ -241,7 +241,6 @@ SELECT setval('public.work_hours_seq', 8, true);
 SELECT setval('public.customer_seq', 1, true);
 
 --指派單位資料
-SELECT setval('public.maintenance_unit_seq', 1, true);
 DROP sequence IF EXISTS MAINTENANCE_UNIT_G_SEQ CASCADE;
 create sequence MAINTENANCE_UNIT_G_SEQ start with 1 increment by 1;
 

@@ -29,7 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      su_id : 主key <br>
  *      su_name : 使用者名稱<br>
  *      su_e_name : 使用者英文名稱<br>
- *      su_position : 使用者職位名稱<br>
+ *      su_position : 使用者[單位]名稱<br>
+ *      su_template : 使用者[階級]名稱<br>
+ *      階級 1=[約聘]/ 2=[助理] 3=[一般職員]/ 4=[主任] 5=[組長] 6=[領班] 7=[課長] 8=[副理]
+ *      9=[經理]<br>
  *      su_account : 使用者帳號<br>
  *      su_password : 使用者密碼<br>
  *      su_email : 使用者E mail<br>
@@ -109,14 +112,14 @@ public class SystemUser {
 
 	@Column(name = "sys_sort", columnDefinition = "int default 0")
 	private Integer syssort;
-	
+
 	@Column(name = "sys_g_header", nullable = false, columnDefinition = "boolean default false")
 	private Boolean sysgheader;
 
 	// 主體型
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_user_seq") 
-    @SequenceGenerator(name = "system_user_seq", sequenceName = "system_user_seq",allocationSize =1) 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_user_seq")
+	@SequenceGenerator(name = "system_user_seq", sequenceName = "system_user_seq", allocationSize = 1)
 	@Column(name = "su_id")
 	private Long suid;
 
@@ -132,6 +135,9 @@ public class SystemUser {
 	@Column(name = "su_position", columnDefinition = "varchar(50)")
 	private String suposition;
 
+	@Column(name = "su_template", columnDefinition = "varchar(50) default '一般職員'")
+	private String sutemplate;
+
 	@Column(name = "su_account", nullable = false, columnDefinition = "varchar(50)")
 	private String suaccount;
 
@@ -140,7 +146,7 @@ public class SystemUser {
 
 	@Column(name = "su_email", columnDefinition = "varchar(200) default ''")
 	private String suemail;
-	
+
 	public Boolean getSysgheader() {
 		return sysgheader;
 	}
@@ -275,5 +281,13 @@ public class SystemUser {
 
 	public void setSuemail(String suemail) {
 		this.suemail = suemail;
+	}
+
+	public String getSutemplate() {
+		return sutemplate;
+	}
+
+	public void setSutemplate(String sutemplate) {
+		this.sutemplate = sutemplate;
 	}
 }

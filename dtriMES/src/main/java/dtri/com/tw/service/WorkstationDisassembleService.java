@@ -84,7 +84,7 @@ public class WorkstationDisassembleService {
 			// 新建的資料
 			List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
 			String now_order = body.getJSONObject("create").getString("m_now_order");
-			String m_now_sn = body.getJSONObject("create").getString("m_now_sn");
+			String m_old_sn = body.getJSONObject("create").getString("m_old_sn");
 			ProductionRecords phprid = new ProductionRecords();
 
 			// 進行-特定查詢(重工工單)
@@ -94,14 +94,14 @@ public class WorkstationDisassembleService {
 			if (prArrayList.size() == 1) {
 				ProductionHeader pro_h = prArrayList.get(0);
 				Long phpbgid = prArrayList.get(0).getPhpbgid();
-				List<ProductionBody> bodies = bodyDao.findAllByPbsnAndPbgid(m_now_sn, phpbgid);
+				List<ProductionBody> bodies = bodyDao.findAllByPbsnAndPbgid(m_old_sn, phpbgid);
 				// 檢查 此工單+SN 是否重複
 				if (bodies.size() > 0) {
 					return false;
 				}
 				// 查詢 指定的SN
 				bodies = new ArrayList<ProductionBody>();
-				bodies = bodyDao.findAllByPbsn(m_now_sn);
+				bodies = bodyDao.findAllByPbsn(m_old_sn);
 				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
 				if (bodies.size() >= 1) {
 					return false;
@@ -134,8 +134,8 @@ public class WorkstationDisassembleService {
 					pro_b.setSysver(0);
 					pro_b.setPbgid(id_b_g);
 					pro_b.setSysheader(false);
-					pro_b.setPbsn(m_now_sn);
-					pro_b.setPbbsn(m_now_sn);
+					pro_b.setPbsn(m_old_sn);
+					pro_b.setPbbsn(m_old_sn);
 
 					pro_b.setPbcheck(false);
 					pro_b.setPbusefulsn(0);
@@ -397,10 +397,10 @@ public class WorkstationDisassembleService {
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
 		// List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
 		String action = body.getJSONObject("modify").getString("action");
+		String return_sn = body.getJSONObject("modify").getString("m_return_sn");
 		try {
 			if (action.equals("return_order_btn")) {
 				// 歸還資料
-				String return_sn = body.getJSONObject("modify").getString("m_return_sn");
 				List<ProductionBody> now_sns = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn+"_old_Delete", "% %");
 
 				// Step0. 確定有歸還 對象
@@ -435,6 +435,11 @@ public class WorkstationDisassembleService {
 							check = true;
 						}
 					}
+				}else {
+					// 移除舊資料
+					ProductionBody p_now = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "% %").get(0);
+					bodyDao.delete(p_now);
+					check = true;
 				}
 			}
 		} catch (Exception e) {

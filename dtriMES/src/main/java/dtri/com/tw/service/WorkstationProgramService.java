@@ -171,7 +171,7 @@ public class WorkstationProgramService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
-			
+
 			object_bodys_son.put(one.getWpgid() + "", new JSONArray());
 			object_bodys.put(object_body);
 			// 準備子類別容器
@@ -180,24 +180,26 @@ public class WorkstationProgramService {
 		// son
 		workstationPrograms_son.forEach(one -> {
 			JSONObject object_son = new JSONObject();
-			object_son.put("sys_header", one.getSysheader() + "");
-			object_son.put("wp_g_id", one.getWpgid() + "");
-			object_son.put("wp_id", one.getWpid() + "");
-			object_son.put("wp_name", one.getWpname() + "");
-			object_son.put("wp_c_name", one.getWpcname() + "");
-			object_son.put("wp_w_g_id", one.getWpwgid() + "");
+			int ord = 0;
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getWpgid());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_id", one.getWpid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_g_id", one.getWpgid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_name", one.getWpname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_c_name", one.getWpcname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_w_g_id", one.getWpwgid());
 			Workstation work = workstationDao.findAllByWgidOrderBySyssortAsc(one.getWpwgid()).get(0);
-			object_son.put("w_pb_name", work.getWpbname() + "");
-			object_son.put("w_c_name", work.getWcname() + "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", work.getWpbname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", work.getWcname());
 
-			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
-			object_son.put("sys_c_user", one.getSyscuser() + "");
-			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
-			object_son.put("sys_m_user", one.getSysmuser() + "");
-			object_son.put("sys_note", one.getSysnote() + "");
-			object_son.put("sys_sort", one.getSyssort() + "");
-			object_son.put("sys_ver", one.getSysver() + "");
-			object_son.put("sys_status", one.getSysstatus() + "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_bodys_son.getJSONArray(one.getWpgid() + "").put(object_son);
 		});
 		bean.setBody(bean.getBody().put("search_son", object_bodys_son));

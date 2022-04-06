@@ -38,6 +38,7 @@ public class SystemUserService {
 		}
 		String su_account = null;
 		String su_name = null;
+		String su_position = null;
 		String status = "0";
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("suid").descending());
 		// 初次載入需要標頭 / 之後就不用
@@ -50,7 +51,9 @@ public class SystemUserService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_sg_g_id", FFS.h_t("群組ID", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_name", FFS.h_t("姓名", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_e_name", FFS.h_t("英文姓名", "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_position", FFS.h_t("職位", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_position", FFS.h_t("單位(部門)", "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_template", FFS.h_t("階級", "180px", FFM.Wri.W_Y));
+
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_account", FFS.h_t("帳號", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_email", FFS.h_t("Email", "200px", FFM.Wri.W_Y));
 
@@ -84,37 +87,31 @@ public class SystemUserService {
 
 			JSONArray value = new JSONArray();
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, groups, "su_sg_g_id", "群組名稱"));
-			JSONArray values = new JSONArray();
-			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
-			values.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_name", "姓名"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_e_name", "英文姓名"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_account", "帳號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.PASS, "", "", FFM.Wri.W_Y, "col-md-2", false, value, "su_password", "密碼"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_position", "職位"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-4", true, value, "su_email", "Email"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, value, "sys_c_date", "建立時間"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, value, "sys_c_user", "建立人"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, value, "sys_m_date", "修改時間"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, value, "sys_m_user", "修改人"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_position", "單位(部門)"));
+			
+			JSONArray values = new JSONArray();
+			values.put((new JSONObject()).put("value", "約聘").put("key", "約聘"));
+			values.put((new JSONObject()).put("value", "助理").put("key", "助理"));
+			values.put((new JSONObject()).put("value", "一般職員").put("key", "一般職員"));
+			values.put((new JSONObject()).put("value", "主任").put("key", "主任"));
+			values.put((new JSONObject()).put("value", "組長").put("key", "組長"));
+			values.put((new JSONObject()).put("value", "領班").put("key", "領班"));
+			values.put((new JSONObject()).put("value", "課長").put("key", "課長"));
+			values.put((new JSONObject()).put("value", "副理").put("key", "副理"));
+			values.put((new JSONObject()).put("value", "經理").put("key", "經理"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "一般職員", "一般職員", FFM.Wri.W_Y, "col-md-2", true, values, "su_template", "階級"));
 
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFS.NUMB, "0", "0", FFM.Wri.W_N,
-			// "col-md-1",
-			// false, value, "sys_ver", "版本"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFS.NUMB, "0", "0", FFM.Wri.W_Y,
-			// "col-md-1",
-			// true, value, "sys_sort", "排序"));
-
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, value, "sys_note", "備註"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-3", true, value, "su_email", "Email"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-5", false, value, "sys_note", "備註"));
+			
+			values = new JSONArray();
+			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
+			values.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-2", true, values, "sys_status", "狀態"));
 			bean.setCell_modify(obj_m);
 
@@ -122,6 +119,7 @@ public class SystemUserService {
 			JSONArray object_searchs = new JSONArray();
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_account", "帳號", value));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_name", "姓名", value));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_position", "職位", value));
 
 			values = new JSONArray();
 			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
@@ -135,14 +133,17 @@ public class SystemUserService {
 			su_account = su_account.equals("") ? null : su_account;
 			su_name = body.getJSONObject("search").getString("su_name");
 			su_name = su_name.equals("") ? null : su_name;
+			su_position = body.getJSONObject("search").getString("su_position");
+			su_position = su_position.equals("") ? null : su_position;
 			status = body.getJSONObject("search").getString("sys_status");
 			status = status.equals("") ? "0" : status;
+
 		}
 		// 全查
 		if (user.getSusggid() == 1) {
-			systemUsers = userDao.findAllBySystemUser(su_name, su_account, Integer.parseInt(status), page_r);
+			systemUsers = userDao.findAllBySystemUser(su_name, su_account, su_position, Integer.parseInt(status), page_r);
 		} else {
-			systemUsers = userDao.findAllBySystemUserNotAdmin(su_name, su_account, Integer.parseInt(status), page_r);
+			systemUsers = userDao.findAllBySystemUserNotAdmin(su_name, su_account, su_position, Integer.parseInt(status), page_r);
 		}
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
@@ -155,6 +156,8 @@ public class SystemUserService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_name", one.getSuname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_e_name", one.getSuename());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_position", one.getSuposition());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_template", one.getSutemplate());
+
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_account", one.getSuaccount());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "su_email", one.getSuemail());
 
@@ -187,6 +190,7 @@ public class SystemUserService {
 				sys_c.setSuname(data.getString("su_name"));
 				sys_c.setSuename(data.getString("su_e_name"));
 				sys_c.setSuposition(data.getString("su_position"));
+				sys_c.setSutemplate(data.getString("su_template"));
 				sys_c.setSuaccount(data.getString("su_account"));
 				// 密碼空不存
 				if (data.getString("su_password").equals("")) {
@@ -231,6 +235,7 @@ public class SystemUserService {
 				sys_c.setSuname(data.getString("su_name"));
 				sys_c.setSuename(data.getString("su_e_name"));
 				sys_c.setSuposition(data.getString("su_position"));
+				sys_c.setSutemplate(data.getString("su_template"));
 				sys_c.setSuaccount(data.getString("su_account"));
 
 				// 密碼空不存
@@ -277,6 +282,7 @@ public class SystemUserService {
 				sys_c.setSuname(data.getString("su_name"));
 				sys_c.setSuename(data.getString("su_e_name"));
 				sys_c.setSuposition(data.getString("su_position"));
+				sys_c.setSutemplate(data.getString("su_template"));
 				sys_c.setSuaccount(data.getString("su_account"));
 				// 密碼空不存
 				if (!data.getString("su_password").equals("")) {

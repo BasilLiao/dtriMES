@@ -156,29 +156,29 @@ public class ProductionSnService {
 
 		productinoSns_son.forEach(one -> {
 			JSONObject object_son = new JSONObject();
-			object_son.put("sys_header", one.getSysheader() + "");
-			object_son.put("ui_group_id", one.getPsgid() + "");// 群組專用-必須放前面
-			object_son.put("ps_id", one.getPsid() + "");
-			object_son.put("ps_g_id", one.getPsgid() + "");
-			object_son.put("ps_g_name", one.getPsgname() + "");
-			object_son.put("ps_name", one.getPsname());
-			object_son.put("ps_value", one.getPsvalue() + "");
+			int ord = 0;
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getPsgid());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_id", one.getPsid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_g_id", one.getPsgid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_g_name", one.getPsgname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_name", one.getPsname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ps_value", one.getPsvalue());
 
-			object_son.put("sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
-			object_son.put("sys_c_user", one.getSyscuser());
-			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
-			object_son.put("sys_m_user", one.getSysmuser() + "");
-			object_son.put("sys_note", one.getSysnote() + "");
-			object_son.put("sys_sort", one.getSyssort() + "");
-			object_son.put("sys_ver", one.getSysver() + "");
-			object_son.put("sys_status", one.getSysstatus() + "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_bodys_son.getJSONArray(one.getPsgid() + "").put(object_son);
 		});
 		bean.setBody(bean.getBody().put("search_son", object_bodys_son));
 
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
-
 		return bean;
 	}
 
