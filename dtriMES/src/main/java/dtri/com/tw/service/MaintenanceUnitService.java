@@ -16,14 +16,14 @@ import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemGroup;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
-import dtri.com.tw.db.pgsql.dao.SystemGroupDao;
+import dtri.com.tw.db.pgsql.dao.MaintenanceUnitDao;
 import dtri.com.tw.db.pgsql.dao.SystemPermissionDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class MaintenanceUnitService {
 	@Autowired
-	private SystemGroupDao groupDao;
+	private MaintenanceUnitDao unitDao;
 	@Autowired
 	private SystemPermissionDao permissionDao;
 
@@ -175,17 +175,17 @@ public class MaintenanceUnitService {
 		List<Long> sggid = new ArrayList<Long>();
 		// 是否=為系統使用者?(父類別)
 		if (user.getSuid() == 1) {
-			systemGroup = groupDao.findAllBySystemGroup(sg_name, null, 0l, Integer.parseInt(status), true, page_r);
+			systemGroup = unitDao.findAllBySystemGroup(sg_name, null, 0l, Integer.parseInt(status), true, page_r);
 			for (SystemGroup group_1 : systemGroup) {
 				sggid.add(group_1.getSggid());
 			}
-			systemGroup_son = groupDao.findAllBySystemGroup(sg_name, sggid, 0l, Integer.parseInt(status), false, null);
+			systemGroup_son = unitDao.findAllBySystemGroup(sg_name, sggid, 0l, Integer.parseInt(status), false, null);
 		} else {
-			systemGroup = groupDao.findAllBySystemGroup(sg_name, null, 1l, Integer.parseInt(status), true, page_r);
+			systemGroup = unitDao.findAllBySystemGroup(sg_name, null, 1l, Integer.parseInt(status), true, page_r);
 			for (SystemGroup group_1 : systemGroup) {
 				sggid.add(group_1.getSggid());
 			}
-			systemGroup_son = groupDao.findAllBySystemGroup(sg_name, sggid, 1l, Integer.parseInt(status), false, null);
+			systemGroup_son = unitDao.findAllBySystemGroup(sg_name, sggid, 1l, Integer.parseInt(status), false, null);
 		}
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
@@ -313,7 +313,7 @@ public class MaintenanceUnitService {
 				// 新建 群組代表名稱-父類別
 				// SystemGroup sys_p_h = new SystemGroup();
 				if (sg_g_id == 0) {
-					sys_p.setSggid(groupDao.getSystem_group_g_seq());
+					sys_p.setSggid(unitDao.getSystem_group_g_seq());
 					sg_g_id = sys_p.getSggid();
 					sg_name = sys_p.getSgname();
 
@@ -327,13 +327,13 @@ public class MaintenanceUnitService {
 					sys_p_h.setSysstatus(0);
 					sys_p_h.setSysmuser(user.getSuaccount());
 					sys_p_h.setSyscuser(user.getSuaccount());
-					groupDao.save(sys_p_h);
+					unitDao.save(sys_p_h);
 				} else {
 					// 登記子類別
 					sys_p.setSysheader(false);
 					sys_p.setSgname(sg_name);
 					sys_p.setSggid(sg_g_id);
-					groupDao.save(sys_p);
+					unitDao.save(sys_p);
 				}
 
 			}
@@ -362,7 +362,7 @@ public class MaintenanceUnitService {
 			for (Object one : list) {
 				JSONObject data = (JSONObject) one;
 				if (data.getBoolean("sys_header")) {
-					ArrayList<SystemGroup> sys_p_g = groupDao.findAllByGroupTop1(data.getString("sg_name"), PageRequest.of(0, 1));
+					ArrayList<SystemGroup> sys_p_g = unitDao.findAllByGroupTop1(data.getString("sg_name"), PageRequest.of(0, 1));
 					if (sys_p_g != null && sys_p_g.size() > 0) {
 						return false;
 					} else {
@@ -396,11 +396,11 @@ public class MaintenanceUnitService {
 				// 新建 群組代表名稱-父類別
 				if (data.getBoolean("sys_header")) {
 					// 查詢最新 群組ID
-					// sg_g_id = groupDao.findAllByTop1(PageRequest.of(0, 1)).get(0).getSggid() + 1;
+					// sg_g_id = unitDao.findAllByTop1(PageRequest.of(0, 1)).get(0).getSggid() + 1;
 					// 登記父類 群組代表名稱
 					sg_name = data.getString("sg_name");
 					SystemGroup sys_p_h = new SystemGroup();
-					sys_p_h.setSggid(groupDao.getSystem_group_g_seq());
+					sys_p_h.setSggid(unitDao.getSystem_group_g_seq());
 					sys_p_h.setSgname(sg_name);
 					sys_p_h.setSgpermission("0000000000");
 					sys_p_h.setSysheader(true);
@@ -412,12 +412,12 @@ public class MaintenanceUnitService {
 					sys_p_h.setSysmuser(user.getSuaccount());
 					sys_p_h.setSyscuser(user.getSuaccount());
 					sg_g_id = sys_p_h.getSggid();
-					groupDao.save(sys_p_h);
+					unitDao.save(sys_p_h);
 				} else {
 					// 登記子類別
 					sys_p.setSgname(sg_name == "" ? null : sg_name);
 					sys_p.setSggid(sg_g_id);
-					groupDao.save(sys_p);
+					unitDao.save(sys_p);
 
 				}
 			}
@@ -457,17 +457,17 @@ public class MaintenanceUnitService {
 				sys_p.setSysmdate(new Date());
 
 				// 檢查[群組名稱]重複
-				ArrayList<SystemGroup> sys_p_g = groupDao.findAllByGroupTop1(data.getString("sg_name"), PageRequest.of(0, 1));
+				ArrayList<SystemGroup> sys_p_g = unitDao.findAllByGroupTop1(data.getString("sg_name"), PageRequest.of(0, 1));
 				if (sys_p_g != null || data.getBoolean("sys_header")) {
 					// 如果是 父類別(限定修改)+(子類別全數修改)
 					if (data.getBoolean("sys_header")) {
-						List<SystemGroup> sys_p_g_old = groupDao.findBySggidOrderBySggid(sys_p.getSggid());
+						List<SystemGroup> sys_p_g_old = unitDao.findBySggidOrderBySggid(sys_p.getSggid());
 						sys_p_g_old.forEach(d -> {
 							d.setSgname(data.getString("sg_name"));
 							d.setSysstatus(sys_p.getSysstatus());
 							d.setSgpermission(sys_p.getSgpermission());
 							d.setSysmuser(user.getSuaccount());
-							groupDao.save(d);
+							unitDao.save(d);
 						});
 						sg_name = sys_p.getSgname();
 						// 父類別(限定修改) 還原
@@ -476,13 +476,13 @@ public class MaintenanceUnitService {
 						sys_p.setSystemPermission(new SystemPermission(1l));
 						sys_p.setSyssort(0);
 						sys_p.setSysmuser(user.getSuaccount());
-						groupDao.save(sys_p);
+						unitDao.save(sys_p);
 					} else {
 						// 子類別
 						if (!sg_name.equals("")) {
 							sys_p.setSgname(sg_name);
 						}
-						groupDao.save(sys_p);
+						unitDao.save(sys_p);
 					}
 					check = true;
 				} else {
@@ -515,13 +515,13 @@ public class MaintenanceUnitService {
 				if (data.getInt("sg_id") != user.getSusggid()) {
 					if (data.getInt("sg_sp_id") == 0) {
 						// 父類別 關聯全清除
-						groupDao.deleteBySggid(data.getLong("sg_g_id"));
+						unitDao.deleteBySggid(data.getLong("sg_g_id"));
 					}
 				} else {
 					return false;
 				}
 
-				groupDao.delete(sys_p);
+				unitDao.delete(sys_p);
 				check = true;
 			}
 		} catch (Exception e) {

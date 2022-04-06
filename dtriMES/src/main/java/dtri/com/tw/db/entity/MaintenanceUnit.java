@@ -21,6 +21,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      mu_su_id : 帳號關聯_ID<br>
  *      mu_su_name : 帳號關聯_名稱<br>
  *      mu_content : 可處理內容敘述<br>
+ *      mu_cell_mail : 自動通知Mail<br>
+ * 
  */
 @Entity
 @Table(name = "maintenance_unit")
@@ -87,6 +89,9 @@ public class MaintenanceUnit {
 
 	@Column(name = "mu_content", nullable = false, columnDefinition = "varchar(255)")
 	private String mucontent;
+
+	@Column(name = "mu_cell_mail", nullable = false, columnDefinition = "boolean default false")
+	private Boolean mucellmail;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -206,6 +211,14 @@ public class MaintenanceUnit {
 
 	public void setMucontent(String mucontent) {
 		this.mucontent = mucontent;
+	}
+
+	public Boolean getMucellmail() {
+		return mucellmail;
+	}
+
+	public void setMucellmail(Boolean mucellmail) {
+		this.mucellmail = mucellmail;
 	}
 
 }
