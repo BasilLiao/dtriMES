@@ -235,7 +235,7 @@ public class WorkstationService {
 			String one = obj.getWgid().toString();
 			wgid.add(Long.parseLong(one));
 		}
-		workstations_son = workstationDao.findAllByWorkstation(w_sg_name, w_pb_name, Integer.parseInt(status), false, wgid, page_r);
+		workstations_son = workstationDao.findAllByWorkstation(w_sg_name, w_pb_name, Integer.parseInt(status), false, wgid, null);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
@@ -248,21 +248,21 @@ public class WorkstationService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_id", one.getWid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_g_id", one.getWgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_id", one.getWorkstationItem().getWiid());
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_name", one.getWorkstationItem().getWipbvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_option", one.getWoption());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly());
-
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust());
-
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly()+"");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength()+"");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat()+"");
+			
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust()+"");
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_name", one.getWsgname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_replace", one.getWreplace());
-
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_check", one.getWpicheck());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_name", one.getWpiname());
 
@@ -284,37 +284,38 @@ public class WorkstationService {
 		// 子類別
 		workstations_son.forEach(one -> {
 			JSONObject object_son = new JSONObject();
+			int ord = 0;
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", one.getSysheader());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ui_group_id", one.getWgid());// 群組專用-必須放前面
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_id", one.getWid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_g_id", one.getWgid());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_id", one.getWorkstationItem().getWiid());
+			
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_name", one.getWorkstationItem().getWipbvalue());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_option", one.getWoption());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat());
+			
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
+			
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_name", one.getWsgname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_replace", one.getWreplace());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_check", one.getWpicheck());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_name", one.getWpiname());
 
-			object_son.put("sys_header", one.getSysheader() + "");
-			object_son.put("w_id", one.getWid() + "");
-			object_son.put("w_g_id", one.getWgid() + "");
-			object_son.put("w_i_id", one.getWorkstationItem().getWiid() + "");
-			object_son.put("w_i_name", one.getWorkstationItem().getWipbvalue() + "");
-			object_son.put("w_option", one.getWoption() + "");
-			object_son.put("w_only", one.getWonly() + "");
-
-			object_son.put("w_length", one.getWlength() + "");
-			object_son.put("w_format", one.getWformat() + "");
-			object_son.put("w_must", one.getWmust() + "");
-
-			object_son.put("w_c_name", one.getWcname() + "");
-			object_son.put("w_pb_name", one.getWpbname() + "");
-			object_son.put("w_pb_cell", one.getWpbcell() + "");
-			object_son.put("w_sg_id", one.getWsgid() + "");
-			object_son.put("w_sg_name", one.getWsgname() + "");
-			object_son.put("w_replace", one.getWreplace() + "");
-
-			object_son.put("w_pi_check", one.getWpicheck() + "");
-			object_son.put("w_pi_name", one.getWpiname() + "");
-
-			object_son.put("sys_t_date", Fm_Time.to_yMd_Hms(one.getSyscdate()) + "");
-			object_son.put("sys_t_user", one.getSyscuser() + "");
-			object_son.put("sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()) + "");
-			object_son.put("sys_m_user", one.getSysmuser() + "");
-			object_son.put("sys_note", one.getSysnote() + "");
-			object_son.put("sys_sort", one.getSyssort() + "");
-			object_son.put("sys_ver", one.getSysver() + "");
-			object_son.put("sys_status", one.getSysstatus() + "");
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_t_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_t_user", one.getSyscuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 
 			object_bodys_son.getJSONArray(one.getWgid() + "").put(object_son);
 		});

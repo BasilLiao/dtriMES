@@ -232,6 +232,7 @@ public class WorkstationWorkService {
 							ProductionBody pb_one = pb_all.get(0);
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
+							Boolean w_for_check = false;
 							JSONObject object_body_all = new JSONObject();
 							// 過站狀態
 							JSONObject pb_workstation = new JSONObject(pb_one.getPbschedule()).getJSONObject("" + wpcname);
@@ -274,41 +275,68 @@ public class WorkstationWorkService {
 							object_body_all.put("search", object_doc);
 
 							// sn_list
+							// 規格設定-取出數量
+							Map<String, Integer> w_pi_name = new HashedMap<String, Integer>();
+							try {
+								JSONObject w_pi_sn = new JSONObject(ph_all.get(0).getProductionRecords().getPrbitem());
+								Iterator<String> keys = w_pi_sn.keys();
+								while (keys.hasNext()) {
+									String key = keys.next();
+									if (w_pi_sn.get(key) instanceof JSONObject) {
+										w_pi_name.put(key, w_pi_sn.getJSONObject(key).getInt("Qty"));
+									}
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+								bean.setBody(new JSONObject());
+								bean.autoMsssage("WK023");
+								return bean;
+							}
+
 							ArrayList<Workstation> w_for_sn = new ArrayList<Workstation>();
 							w_for_sn = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(w_one.get(0).getWgid(), false);
 							w_for_sn.forEach(w -> {
 								// 是否顯示
 								if (w.getWoption() == 0 || w.getWoption() == 2) {
+									Boolean w_pi_pass = true;// 是否規格檢驗數量 設置顯示
 									JSONObject object_body = new JSONObject();
 									JSONObject object_work = new JSONObject();
 									// 此工作站 項目
 									object_work.put("name", w.getWorkstationItem().getWipbvalue());
 									// 貸出已存入的 內容值
 									String get_name = w.getWorkstationItem().getWipbcell().replace("pb_value", "getPbvalue");
-									try {
-										// 取出欄位名稱 ->存入body_title資料
-										Method get_method = pb_one.getClass().getMethod(get_name);
-										String value = (String) get_method.invoke(pb_one);
-
-										object_work.put("value", value);
-										object_work.put("woption", w.getWoption());
-									} catch (NoSuchMethodException e) {
-										e.printStackTrace();
-									} catch (SecurityException e) {
-										e.printStackTrace();
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-									} catch (IllegalArgumentException e) {
-										e.printStackTrace();
-									} catch (InvocationTargetException e) {
-										e.printStackTrace();
+									// 規格資訊
+									if (w_pi_name.containsKey(w.getWpiname())) {
+										if (w_pi_name.get(w.getWpiname()) > 0) {
+											w_pi_name.put(w.getWpiname(), w_pi_name.get(w.getWpiname()) - 1);
+										} else {
+											w_pi_pass = false;
+										}
 									}
-									object_body.put(w.getWorkstationItem().getWipbcell(), object_work);
-									object_sn.put(object_body);
+
+									// 如果有規格 限制->顯示項目內容
+									if (w_pi_pass) {
+										try {
+											// 取出欄位名稱 ->存入body_title資料
+											Method get_method = pb_one.getClass().getMethod(get_name);
+											String value = (String) get_method.invoke(pb_one);
+											object_work.put("value", value);
+											object_work.put("woption", w.getWoption());
+										} catch (Exception e) {
+											e.printStackTrace();
+											bean.setBody(new JSONObject());
+											bean.autoMsssage("WK023");
+										}
+										object_body.put(w.getWorkstationItem().getWipbcell(), object_work);
+										object_sn.put(object_body);
+									}
 								}
 							});
+							// 如果格式異常
+							if (bean.getType().equals("WK023")) {
+								return bean;
+							}
 							// [body]
-
 							object_body_all.put("pb_fvalue", pb_all.get(0).getPbfvalue());
 							object_body_all.put("sn_list", object_sn);
 							object_body_all.put("workdatation_program_name", wp_all.get(0).getWpname());
@@ -321,7 +349,6 @@ public class WorkstationWorkService {
 							bean.autoMsssage("WK004");
 							return bean;
 						}
-
 					} else {
 						bean.setBody(new JSONObject());
 						bean.autoMsssage("WK000");
@@ -648,13 +675,14 @@ public class WorkstationWorkService {
 										// Step4-5.[檢核階段-進階] 需要檢查規格?
 										if (wk.getWpicheck() == 1 || wk.getWpicheck() == 3) {
 											// 需要檢查的數量
-											if (wpi_pr_map.containsKey(wk.getWpiname())) {
+											String wpiname = (String)wk.getWpiname().replaceAll(" ", "");
+											if (wpi_pr_map.containsKey(wpiname)) {
 												// 如果有值:則計算+標記 / 沒值:則標記
-												int nb = wpi_pr_map.get(wk.getWpiname()).getInt("Qty");
+												int nb = wpi_pr_map.get(wpiname).getInt("Qty");
 												if (!body_value.equals("")) {
 													nb = nb - 1;
 												}
-												wpi_pr_map.put(wk.getWpiname(), new JSONObject().put("Qty", nb).put("Check", true));
+												wpi_pr_map.put(wpiname, new JSONObject().put("Qty", nb).put("Check", true));
 											}
 										}
 
@@ -830,13 +858,14 @@ public class WorkstationWorkService {
 														// Step6-4.[檢核階段-進階] 需要檢查產品?
 														if (wk.getWpicheck() == 2 || wk.getWpicheck() == 3) {
 															// 需要檢查的數量
-															if (wpi_pr_map_auto.containsKey(wk.getWpiname())) {
+															String wpiname = (String)wk.getWpiname().replaceAll(" ", "");
+															if (wpi_pr_map_auto.containsKey(wpiname)) {
 																// 如果有值:則計算+標記 / 沒值:則標記
-																int nb = wpi_pr_map_auto.get(wk.getWpiname()).getInt("Qty");
+																int nb = wpi_pr_map_auto.get(wpiname).getInt("Qty");
 																if (!body_value.equals("")) {
 																	nb = nb - 1;
 																}
-																wpi_pr_map_auto.put(wk.getWpiname(), new JSONObject().put("Qty", nb).put("Check", true));
+																wpi_pr_map_auto.put(wpiname, new JSONObject().put("Qty", nb).put("Check", true));
 															}
 														}
 

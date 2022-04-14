@@ -55,6 +55,7 @@ public class PackageBean {
 	public static final String info_work_success20 = "[WK020] The command was executed [Successfully/成功/Thành công]!!";
 	public static final String info_work_success21 = "[WK021] 存檔 此(產品/燒錄 序號) 已 重複過站!!";
 	public static final String info_work_success22 = "[WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!";
+	public static final String info_work_warning23 = "[WK023] 檢查 此(產品) 規格異常! [Warning]!!";
 
 	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
 
@@ -85,6 +86,7 @@ public class PackageBean {
 
 	private JSONArray cell_g_modify;// 修改群組欄位
 	private String error_ms;// 特定錯誤訊息
+	private String type;// 錯誤代號
 
 	public PackageBean() {
 		this.info = info_success;
@@ -92,6 +94,7 @@ public class PackageBean {
 		this.body_type = new JSONObject("{'type':'general','createOnly':'all'}");//
 		this.date = new Date();
 		this.error_ms = "";
+		this.type = "";
 	}
 
 	/**
@@ -101,6 +104,7 @@ public class PackageBean {
 	 * 
 	 **/
 	public void autoMsssage(String type) {
+		this.setType(type);
 		this.info_color = info_color_warning;
 		switch (type) {
 		case "001":// 一般指令 存檔
@@ -197,6 +201,9 @@ public class PackageBean {
 		case "WK022":// [WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!
 			this.info = info_work_success22;
 			this.info_color = info_color_success;
+			break;
+		case "WK023":// [WK023] 檢查 此(產品) 規格異常! [Warning]!!
+			this.info = info_work_warning23;
 			break;
 
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"
@@ -402,6 +409,14 @@ public class PackageBean {
 		psJson.put("de", ps[8]);
 		psJson.put("se", ps[9]);
 		return psJson;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
