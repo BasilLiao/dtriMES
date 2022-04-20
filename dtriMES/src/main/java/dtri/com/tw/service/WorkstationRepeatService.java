@@ -1,6 +1,5 @@
 package dtri.com.tw.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -332,25 +331,12 @@ public class WorkstationRepeatService {
 						// 欄位有值
 					}
 
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-					return check;
-				} catch (SecurityException e) {
-					e.printStackTrace();
-					return check;
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					return check;
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-					return check;
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					return check;
 				}
 
 				bodyDao.save(pro_b_one);
-
 				check = true;
 			}
 		} catch (Exception e) {
@@ -399,7 +385,6 @@ public class WorkstationRepeatService {
 								if (re_old_sn.length() == 1) {
 									p_old.setPboldsn("");
 								}
-								bodyDao.save(p_old);
 
 								// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
 								if (prArrayList.get(0).getPhtype().equals("A521_no_and_has_sn")//
@@ -425,19 +410,18 @@ public class WorkstationRepeatService {
 								} else {
 									bodyDao.delete(p_now);
 								}
+								bodyDao.save(p_old);
 								check = true;
 							}
-						} else {
-							// 移除新資料
-							bodyDao.delete(p_now);
-							check = true;
 						}
 					}
 				} else {
-					// 移除舊資料
-					ProductionBody p_now = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%").get(0);
-					bodyDao.delete(p_now);
-					check = true;
+					// 移除舊資料(不是 old )
+					List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
+					if (p_nows != null && p_nows.size() == 1) {
+						bodyDao.delete(p_nows.get(0));
+						check = true;
+					}
 				}
 			}
 		} catch (Exception e) {

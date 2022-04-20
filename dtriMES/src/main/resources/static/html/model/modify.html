@@ -488,6 +488,10 @@
 							$(".create_example ."+title[d].id+" input").addClass('datetimepicker_date');
 							$(".create_example ."+title[d].id+" .save_value").attr("type","text");
 						}
+						if(title[d].type=='time'){
+							$(".create_example ."+title[d].id+" input").addClass('datetimepicker_time');
+							$(".create_example ."+title[d].id+" .save_value").attr("type","text");
+						}
 						if(title[d].d_none=='d-none'){
 							$(".create_example ."+title[d].id).addClass('d-none');
 						}
@@ -510,6 +514,10 @@
 							$(".save_as_example ."+title[d].id+" input").addClass('datetimepicker_date');
 							$(".save_as_example ."+title[d].id+" .save_value").attr("type","text");
 						}
+						if(title[d].type=='time'){
+							$(".save_as_example ."+title[d].id+" input").addClass('datetimepicker_time');
+							$(".save_as_example ."+title[d].id+" .save_value").attr("type","text");
+						}
 						if(title[d].d_none=='d-none'){
 							$(".save_as_example ."+title[d].id).addClass('d-none');
 						}
@@ -530,6 +538,10 @@
 						}
 						if(title[d].type=='date'){
 							$(".modify_example ."+title[d].id+" input").addClass('datetimepicker_date');
+							$(".modify_example ."+title[d].id+" .save_value").attr("type","text");
+						}
+						if(title[d].type=='time'){
+							$(".modify_example ."+title[d].id+" input").addClass('datetimepicker_time');
 							$(".modify_example ."+title[d].id+" .save_value").attr("type","text");
 						}
 						if(title[d].d_none=='d-none'){
@@ -1422,9 +1434,19 @@
                     todayBtn:true,
                     //......可以同上項目代碼自定義設置
                 });
+                //時間格式
+                $('.datetimepicker_time').datetimepicker({
+                    format: 'hh:ii',
+                    startView: 1,
+                    minuteStep: 30,
+                    pickDate: false,
+                    autoclose: true
+                });
               	
               	//如果是群組類型 在自動新增一次
-                if($(".create_really_tr").length==1 && main.allData.body_type.type=="group" && type_data !="son_data" && main.allData.body_type.createOnly=="all"){
+                if($(".create_really_tr").length==1 && 
+                		main.allData.body_type.type=="group" && 
+                		type_data !="son_data" && main.allData.body_type.createOnly=="all"){
                 	 $( "#create_example_tr .create_example_add" ).trigger( "click" );
                 }
 			},

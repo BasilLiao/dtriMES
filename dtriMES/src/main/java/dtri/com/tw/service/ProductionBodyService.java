@@ -109,15 +109,7 @@ public class ProductionBodyService {
 					if (value != null && !value.equals("")) {
 						object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + name, FFS.h_t("SN_[" + value + "]", "250px", FFM.Wri.W_Y));
 					}
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -136,15 +128,7 @@ public class ProductionBodyService {
 						object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + name, FFS.h_t("過站簽名[" + value + "]", "270px", FFM.Wri.W_Y));
 						object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + name_date, FFS.h_t("過站時間[" + value_date + "]", "270px", FFM.Wri.W_Y));
 					}
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -285,17 +269,9 @@ public class ProductionBodyService {
 					if (value != null && !value.equals("")) {
 						a_val.put((new JSONObject()).put("value", value).put("key", name));
 					}
-				} catch (NoSuchMethodException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
+				} 
 			}
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "pb_sn_name", "SN_類型", a_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pb_sn_value", "SN_值", n_val));
@@ -317,17 +293,9 @@ public class ProductionBodyService {
 					if (value != null && !value.equals("")) {
 						a_val.put((new JSONObject()).put("value", value).put("key", name));
 					}
-				} catch (NoSuchMethodException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
+				} 
 			}
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "pb_w_name", "工作站類型", a_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "過站人員", "col-md-1", "pb_w_value", "過站人", n_val));
@@ -624,7 +592,6 @@ public class ProductionBodyService {
 		str = str.replace("sys_", "b.sys_");
 		str = str.replace("pr_", "p.pr_");
 		str = str.replace("ph_", "h.ph_");
-		
 
 		// Step2.=======Analysis report 查詢SN欄位+產品型號+製令單號 =======
 		String nativeQuery = "SELECT b.* FROM production_body b " + //

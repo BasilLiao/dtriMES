@@ -436,10 +436,12 @@ public class WorkstationDisassembleService {
 						}
 					}
 				}else {
-					// 移除舊資料
-					ProductionBody p_now = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "% %").get(0);
-					bodyDao.delete(p_now);
-					check = true;
+					// 移除舊資料(不是 old )
+					List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
+					if (p_nows != null && p_nows.size() == 1) {
+						bodyDao.delete(p_nows.get(0));
+						check = true;
+					}
 				}
 			}
 		} catch (Exception e) {

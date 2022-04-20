@@ -23,7 +23,7 @@ public class FFM {
 
 	/** 限制規格-類型 **/
 	public static enum Type {
-		TEXT, NUMB, PASS, DATE, CHE
+		TEXT, NUMB, PASS, DATE, TIME, CHE
 	}
 
 	/** 限制規格-大小 **/
@@ -80,6 +80,9 @@ public class FFM {
 			break;
 		case "DATE":
 			value = "date";
+			break;
+		case "TIME":
+			value = "time";
 			break;
 		// SIZE
 		case "S10":

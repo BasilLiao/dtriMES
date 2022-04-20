@@ -1,6 +1,5 @@
 package dtri.com.tw.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Year;
 import java.util.ArrayList;
@@ -184,6 +183,8 @@ public class WorkstationWorkService {
 			ArrayList<WorkstationProgram> wp_all = new ArrayList<WorkstationProgram>();
 			List<ProductionHeader> ph_all = new ArrayList<ProductionHeader>();
 			List<ProductionBody> pb_all = new ArrayList<ProductionBody>();
+			List<ProductionBody> pb_old_all = new ArrayList<ProductionBody>();
+			ArrayList<ProductionRecords> pr_old = new ArrayList<ProductionRecords>();
 
 			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
 			// 檢查資料是否存在
@@ -219,28 +220,35 @@ public class WorkstationWorkService {
 							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
 							// 如果是A521 有舊的SN (要排除已經繼承)
 							if (pb_b_sn_old != null && pb_old_sn.indexOf(pb_b_sn_old) < 0) {
-								pb_all = pbDao.findAllByPbbsnAndPbbsnNotLike(pb_b_sn_old, "_old");
-								if (pb_all.size() != 1) {
+								pb_old_all = pbDao.findAllByPbbsnAndPbbsnNotLike(pb_b_sn_old, "_old");
+								if (pb_old_all.size() != 1) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_1");
+									return bean;
+								}
+								// 不可繼承自己工單
+								pr_old = prDao.findAllByRecords(null, null, null, pb_b_sn_old, 0, null);
+								if (pr_old != null && pr_old.size() > 0 && pr_old.get(0).getPrid().equals(ph_pr_id)) {
+									bean.setBody(new JSONObject());
+									bean.autoMsssage("WK004_2");
 									return bean;
 								}
 							}
 
 							// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 							// doc
-							ProductionBody pb_one = pb_all.get(0);
+							ProductionBody pb_one = pb_old_all.size() == 1 ? pb_old_all.get(0) : pb_all.get(0);
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
-							Boolean w_for_check = false;
 							JSONObject object_body_all = new JSONObject();
 							// 過站狀態
-							JSONObject pb_workstation = new JSONObject(pb_one.getPbschedule()).getJSONObject("" + wpcname);
+							JSONObject pb_workstation = new JSONObject(pb_all.get(0).getPbschedule()).getJSONObject("" + wpcname);
 							String pb_w_pass = "<<尚未過站>>";
 							if (pb_workstation.get("type").equals(wpcname + "_Y")) {
 								pb_w_pass = ">>已經過站<<";
 								set_replace = false;
 							}
+							
 							String pb_w = pb_w_pass;
 							ph_all.forEach(one -> {
 								JSONObject object_body = new JSONObject();
@@ -675,7 +683,7 @@ public class WorkstationWorkService {
 										// Step4-5.[檢核階段-進階] 需要檢查規格?
 										if (wk.getWpicheck() == 1 || wk.getWpicheck() == 3) {
 											// 需要檢查的數量
-											String wpiname = (String)wk.getWpiname().replaceAll(" ", "");
+											String wpiname = (String) wk.getWpiname().replaceAll(" ", "");
 											if (wpi_pr_map.containsKey(wpiname)) {
 												// 如果有值:則計算+標記 / 沒值:則標記
 												int nb = wpi_pr_map.get(wpiname).getInt("Qty");
@@ -858,7 +866,7 @@ public class WorkstationWorkService {
 														// Step6-4.[檢核階段-進階] 需要檢查產品?
 														if (wk.getWpicheck() == 2 || wk.getWpicheck() == 3) {
 															// 需要檢查的數量
-															String wpiname = (String)wk.getWpiname().replaceAll(" ", "");
+															String wpiname = (String) wk.getWpiname().replaceAll(" ", "");
 															if (wpi_pr_map_auto.containsKey(wpiname)) {
 																// 如果有值:則計算+標記 / 沒值:則標記
 																int nb = wpi_pr_map_auto.get(wpiname).getInt("Qty");
