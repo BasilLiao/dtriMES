@@ -1,6 +1,5 @@
 package dtri.com.tw.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -322,19 +321,7 @@ public class WorkstationDisassembleService {
 						// 欄位有值
 					}
 
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-					return check;
-				} catch (SecurityException e) {
-					e.printStackTrace();
-					return check;
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					return check;
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-					return check;
-				} catch (InvocationTargetException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					return check;
 				}

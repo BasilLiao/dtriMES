@@ -1018,6 +1018,15 @@
                     todayBtn:true,
                     //......可以同上項目代碼自定義設置
                 });
+                //時間格式
+                $('.datetimepicker_time').datetimepicker({
+                    format: 'hh:ii',
+                    startView: 1,
+                    minuteStep: 30,
+                    pickDate: false,
+                    autoclose: true,
+                    timeFormat: 'hh:mm',
+                });
 				
 				/*印出
 				for(var a_p=0;a_p <= obj_all.a_print.length;a_p++){

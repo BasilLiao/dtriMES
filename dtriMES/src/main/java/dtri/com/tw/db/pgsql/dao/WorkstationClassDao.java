@@ -18,20 +18,20 @@ public interface WorkstationClassDao extends JpaRepository<WorkstationClass, Lon
 			+ "WHERE (:wcclass is null or c.wcclass LIKE %:wcclass% ) and "//
 			+ "(:wcpline is null or c.wcpline LIKE %:wcpline% ) and "//
 			+ "( c.sysstatus = :sysstatus ) "//
-			+ "order by c.wcpline asc ,c.wcclass asc, c.wcwcname")
+			+ "order by c.wcpline asc , c.wcstime asc, c.wcwcname asc")
 	ArrayList<WorkstationClass> findAllByClass(String wcclass, String wcpline, Integer sysstatus, Pageable pageable);
 
 	// 查詢是否重複 同一線別+班別+工作站
 	@Query("SELECT c FROM WorkstationClass c " + //
-			"WHERE  (c.wcclass = :wcclass) and " + //
+			"WHERE (c.wcclass = :wcclass) and " + //
 			"(c.wcpline = :wcpline) and " + //
 			"(c.wcwcname = :wcwcname)  " + //
 			"order by c.wcpline asc ,c.wcclass asc, c.wcwcname")
 	ArrayList<WorkstationClass> findAllByClass(String wcclass, String wcpline, String wcwcname, Pageable pageable);
 
-	// 取得ID
-	@Query(value = "SELECT CURRVAL('system_config_seq')", nativeQuery = true)
-	Long getSystemConfigSeq();
+	// 取得不同班別
+	@Query(value = "SELECT DISTINCT w.wcpline FROM WorkstationClass w")
+	ArrayList<String> getWcLineDistinct();
 
 	// delete
 	Long deleteByWcid(Long id);

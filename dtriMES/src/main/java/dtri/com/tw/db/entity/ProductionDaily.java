@@ -20,8 +20,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pdstime = 工單 開始時間<br>
  *      pdetime = 工單 結束時間<br>
  *      pdtime = 共使用多少時間(小時)<br>
- *      pdline = 生產線別<br>
- *      pdclass = 班別<br>
+ *      pdwcline = 生產線別<br>
+ *      pdwcclass = 班別<br>
  *      pdworkernb = 工單 使用人數<br>
  *      pdwnames = 使用人名單<br>
  *      pdlsuid = 工作站管理者 ID<br>
@@ -30,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pdwpbname = 工作站 迷稱<br>
  *      pdprid = 工單號碼<br>
  *      pdprpmodel = 產品型號<br>
+ *      pdprbomid = 產品BOM<br>
  *      pdprpsn = 登記產品SN (json)<br>
  */
 @Entity
@@ -93,10 +94,10 @@ public class ProductionDaily {
 	private String pdtime;
 
 	@Column(name = "pd_wc_line", nullable = false, columnDefinition = "varchar(50)")
-	private String pdline;
+	private String pdwcline;
 
 	@Column(name = "pd_wc_class", nullable = false, columnDefinition = "varchar(50)")
-	private String pdclass;
+	private String pdwcclass;
 
 	@Column(name = "pd_worker_nb", columnDefinition = "int default 0")
 	private Integer pdworkernb;
@@ -121,6 +122,9 @@ public class ProductionDaily {
 
 	@Column(name = "pd_pr_p_model", nullable = false, columnDefinition = "varchar(50)")
 	private String pdprpmodel;
+	
+	@Column(name = "pd_pr_bom_id", nullable = false, columnDefinition = "varchar(50)")
+	private String pdprbomid;
 
 	@Column(name = "pd_pr_p_sn", columnDefinition = "text default ''")
 	private String pdprpsn;

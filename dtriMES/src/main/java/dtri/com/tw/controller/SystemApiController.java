@@ -31,7 +31,7 @@ public class SystemApiController {
 		System.out.println("---controller -access " + SYS_F + " Check");
 		System.out.println(json_object);
 		JSONObject obj = new JSONObject(json_object);
-		String obj_re = "";
+		JSONObject obj_re = new JSONObject();
 		SystemUser user = new SystemUser();
 		user.setSuaccount("system");
 
@@ -41,7 +41,9 @@ public class SystemApiController {
 			headerService.createData(obj, user);
 			break;
 		case "get_work_program":
-			obj_re = apiService.getWorkstationProgramList().toString();
+			// obj_re =
+			obj_re.put("wProgram", apiService.getWorkstationProgramList().toString());
+			obj_re.put("wLine", apiService.getWorkstationLineList().toString());
 			break;
 
 		default:
@@ -49,7 +51,7 @@ public class SystemApiController {
 		}
 
 		// 回傳-資料
-		return obj_re;
+		return obj_re.toString();
 	}
 
 }

@@ -8,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dtri.com.tw.db.entity.WorkstationProgram;
+import dtri.com.tw.db.pgsql.dao.WorkstationClassDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
 
 @Service
 public class SystemApiService {
 	@Autowired
 	private WorkstationProgramDao programDao;
+
+	@Autowired
+	private WorkstationClassDao classDao;
 
 	// 取得當前 工作站 資料清單
 	public JSONArray getWorkstationProgramList() {
@@ -22,6 +26,18 @@ public class SystemApiService {
 		JSONArray array = new JSONArray();
 		list.forEach(s -> {
 			array.put(new JSONObject().put("value", s.getWpname()).put("key", s.getWpgid()));
+		});
+
+		return array;
+	}
+
+	// 取得當前 產線線別 資料清單
+	public JSONArray getWorkstationLineList() {
+
+		ArrayList<String> list = classDao.getWcLineDistinct();
+		JSONArray array = new JSONArray();
+		list.forEach(s -> {
+			array.put(s);
 		});
 
 		return array;

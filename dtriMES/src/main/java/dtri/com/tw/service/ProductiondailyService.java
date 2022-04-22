@@ -15,12 +15,13 @@ import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemConfig;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.ProductiondailyDao;
+import dtri.com.tw.db.pgsql.dao.SystemConfigDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class ProductiondailyService {
 	@Autowired
-	private ProductiondailyDao dailyDao;
+	private SystemConfigDao dailyDao;
 
 	// 取得當前 資料清單
 	public PackageBean getData(JSONObject body, int page, int p_size) {

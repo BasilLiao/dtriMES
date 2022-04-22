@@ -116,19 +116,19 @@ public class WorkstationClass {
 	private String wcwpbname;
 
 	@Column(name = "wc_w_time", nullable = false, columnDefinition = "boolean default false")
-	private String wcwtime;
+	private Boolean wcwtime;
 
 	@Column(name = "wc_w_quantity", nullable = false, columnDefinition = "boolean default false")
-	private String wcwquantity;
+	private Boolean wcwquantity;
 
 	@Column(name = "wc_s_auto", nullable = false, columnDefinition = "boolean default false")
-	private String wcsauto;
+	private Boolean wcsauto;
 
 	@Column(name = "wc_e_auto", nullable = false, columnDefinition = "boolean default false")
-	private String wceauto;
+	private Boolean wceauto;
 
 	@Column(name = "wc_group", nullable = false, columnDefinition = "boolean default false")
-	private String wcgroup;
+	private Boolean wcgroup;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -290,43 +290,43 @@ public class WorkstationClass {
 		this.wcwpbname = wcwpbname;
 	}
 
-	public String getWcwtime() {
+	public Boolean getWcwtime() {
 		return wcwtime;
 	}
 
-	public void setWcwtime(String wcwtime) {
+	public void setWcwtime(Boolean wcwtime) {
 		this.wcwtime = wcwtime;
 	}
 
-	public String getWcwquantity() {
+	public Boolean getWcwquantity() {
 		return wcwquantity;
 	}
 
-	public void setWcwquantity(String wcwquantity) {
+	public void setWcwquantity(Boolean wcwquantity) {
 		this.wcwquantity = wcwquantity;
 	}
 
-	public String getWcsauto() {
+	public Boolean getWcsauto() {
 		return wcsauto;
 	}
 
-	public void setWcsauto(String wcsauto) {
+	public void setWcsauto(Boolean wcsauto) {
 		this.wcsauto = wcsauto;
 	}
 
-	public String getWceauto() {
+	public Boolean getWceauto() {
 		return wceauto;
 	}
 
-	public void setWceauto(String wceauto) {
+	public void setWceauto(Boolean wceauto) {
 		this.wceauto = wceauto;
 	}
 
-	public String getWcgroup() {
+	public Boolean getWcgroup() {
 		return wcgroup;
 	}
 
-	public void setWcgroup(String wcgroup) {
+	public void setWcgroup(Boolean wcgroup) {
 		this.wcgroup = wcgroup;
 	}
 }

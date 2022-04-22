@@ -29,7 +29,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pr_e_sn : 產品序號 結束 EX: xxxxxx 01YW12042J050<br>
  *      pr_s_b_sn : 燒錄序號 開始 EX:xxxxxx 01YW12042J044-<br>
  *      pr_e_b_sn : 燒錄序號 結束 EX:xxxxxx 01YW12042J044-<br>
- *      pr_w_years : 保固
+ *      pr_w_years : 保固<br>
+ *      pr_wc_line : 產線<br>
  * 
  */
 @Entity
@@ -134,6 +135,11 @@ public class ProductionRecords {
 
 	@Column(name = "pr_w_years", columnDefinition = "int default 0")
 	private Integer prwyears;
+	
+	@Column(name = "pr_wc_line", columnDefinition = "varchar(50) default ''")
+	private String prwcline;
+	
+	
 
 	@OneToOne(mappedBy = "productionRecords")
 	private ProductionHeader header;
@@ -356,4 +362,13 @@ public class ProductionRecords {
 	public void setPrhokquantity(Integer prhokquantity) {
 		this.prhokquantity = prhokquantity;
 	}
+
+	public String getPrwcline() {
+		return prwcline;
+	}
+
+	public void setPrwcline(String prwcline) {
+		this.prwcline = prwcline;
+	}
+	
 }

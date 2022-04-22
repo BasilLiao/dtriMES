@@ -1141,7 +1141,7 @@ public class WorkstationWorkService {
 		}
 
 		// ========Step0. 是否有過站更新成功 ========
-
+		System.out.println(bean.getType());
 		return bean;
 	}
 
