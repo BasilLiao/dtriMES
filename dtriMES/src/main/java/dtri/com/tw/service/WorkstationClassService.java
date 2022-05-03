@@ -67,7 +67,7 @@ public class WorkstationClassService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wc_se_time", FFS.h_t(wc_se_time, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wc_s_time", FFS.h_t(wc_s_time, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wc_e_time", FFS.h_t(wc_e_time, "150px", FFM.Wri.W_N));
-			
+
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wc_w_c_name", FFS.h_t(wc_w_c_name, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wc_w_pb_name", FFS.h_t(wc_w_pb_name, "200px", FFM.Wri.W_N));
 
@@ -271,7 +271,9 @@ public class WorkstationClassService {
 				item.setSyscuser(user.getSuaccount());
 
 				// 檢查名稱重複
-				ArrayList<WorkstationClass> arrayList = classDao.findAllByClass(data.getString("wc_class"), data.getString("wc_p_line"), wc_w_c_name, null);
+				String wc_class = data.getString("wc_class");
+				String wc_p_line = data.getString("wc_p_line");
+				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
 					check = false;
 					return check;
@@ -330,7 +332,9 @@ public class WorkstationClassService {
 				item.setSyscuser(user.getSuaccount());
 
 				// 檢查名稱重複
-				ArrayList<WorkstationClass> arrayList = classDao.findAllByClass(data.getString("wc_class"), data.getString("wc_p_line"), wc_w_c_name, null);
+				String wc_class = data.getString("wc_class");
+				String wc_p_line = data.getString("wc_p_line");
+				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
 					check = false;
 					return check;
@@ -366,7 +370,9 @@ public class WorkstationClassService {
 				// 檢查名稱重複
 				ArrayList<Workstation> lists = workstationDao.findAllByWgidOrderBySyssortAsc(data.getLong("wc_w_pb_name"));
 				String wc_w_c_name = lists.get(0).getWcname() + "(" + lists.get(0).getWpbname() + ")";
-				ArrayList<WorkstationClass> arrayList = classDao.findAllByClass(data.getString("wc_class"), data.getString("wc_p_line"), wc_w_c_name, null);
+				String wc_class = data.getString("wc_class");
+				String wc_p_line = data.getString("wc_p_line");
+				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 1) {
 					check = false;
 					return check;

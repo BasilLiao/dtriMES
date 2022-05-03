@@ -28,6 +28,7 @@ import dtri.com.tw.bean.FtpUtilBean;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.MaintainCode;
 import dtri.com.tw.db.entity.ProductionBody;
+import dtri.com.tw.db.entity.ProductionDaily;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
 import dtri.com.tw.db.entity.SystemConfig;
@@ -69,6 +70,9 @@ public class WorkstationWorkService {
 
 	@Autowired
 	EntityManager em;
+
+	@Autowired
+	ProductiondailyService pDailyService;
 
 	// 取得當前 資料清單
 	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
@@ -248,7 +252,7 @@ public class WorkstationWorkService {
 								pb_w_pass = ">>已經過站<<";
 								set_replace = false;
 							}
-							
+
 							String pb_w = pb_w_pass;
 							ph_all.forEach(one -> {
 								JSONObject object_body = new JSONObject();
@@ -456,6 +460,7 @@ public class WorkstationWorkService {
 
 				// 更新 [ProductionBody] 開始
 				if (body_s.size() == 1) {
+					ProductionRecords p_records = new ProductionRecords();
 					ProductionBody body_one_now = body_s.get(0);// 目前產品資料
 					ProductionBody body_one_old = body_s_old.size() > 0 ? body_s_old.get(0) : null;// 舊產品資料
 					ProductionBody title_body = pbDao.findAllByPbid(0l).get(0);// 目前產品 自訂義SN欄位
@@ -472,7 +477,7 @@ public class WorkstationWorkService {
 					boolean check_fn = true;// 是否完成此 品製成
 					boolean f_code_check = true;// 是否需要 維修
 					String f_code = "";// 維修代號
-					String w_c_name = "";// 過站人
+					String w_c_name = "";// 工作站
 					Boolean set_replace = true;// 重複過站?true=重複過站/ false = 沒重複過站
 
 					// ========Step0. 是否原先有故障代碼 ========
@@ -1082,7 +1087,7 @@ public class WorkstationWorkService {
 					int finish = p_body.size();
 
 					// 規格
-					ProductionRecords p_records = p_header.getProductionRecords();
+					p_records = p_header.getProductionRecords();
 					p_records.setPrpokquantity(finish);
 					p_header.setSysstatus(1);
 					p_header.setPhschedule(p_records.getPrpokquantity() + "／" + p_records.getPrpquantity());
@@ -1125,6 +1130,21 @@ public class WorkstationWorkService {
 					} else {
 						bean.autoMsssage("WK021");
 					}
+					
+					// ======== Step10. 製令單+規格更新[Productiondaily] ========
+					ProductionDaily newDaily = new ProductionDaily();
+					newDaily.setPdprpbsn(body_one_now.getPbbsn());// 產品SN號
+					newDaily.setPdprid(p_records.getPrid());  // 製令單號
+					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
+					newDaily.setPdprbomid(p_records.getPrbomid());  // 產品BOM
+					newDaily.setPdprtotal(p_records.getPrpquantity());  // 製令單 生產總數
+					newDaily.setPdwcline(p_records.getPrwcline());  // 生產產線
+					newDaily.setPdwcname(list.getString("w_c_name"));  // 工作站代號
+					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname());  // 工作站名稱
+					newDaily.setPdwaccounts(list.getString("w_c_us_name"));  // 工作站人員
+					
+					pDailyService.setData(newDaily, user);
+					
 				} else {
 					bean.autoMsssage("WK003");
 					return bean;
@@ -1139,9 +1159,10 @@ public class WorkstationWorkService {
 			bean.autoMsssage("1111");
 			return bean;
 		}
-
 		// ========Step0. 是否有過站更新成功 ========
 		System.out.println(bean.getType());
+
+		
 		return bean;
 	}
 

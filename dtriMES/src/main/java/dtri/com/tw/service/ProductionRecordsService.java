@@ -57,6 +57,7 @@ public class ProductionRecordsService {
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t("PR_BOM料號", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_c_from", FFS.h_t("PR_單據來源", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_wc_line", FFS.h_t("PR_產線", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_b_item", FFS.h_t("PR_規格定義", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_item", FFS.h_t("PR_軟體定義", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_sn", FFS.h_t("PR_產品SN_開始", "150px", FFM.Wri.W_Y));
@@ -104,6 +105,8 @@ public class ProductionRecordsService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", "備註"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_c_from", "單據來源"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "pr_wc_line", "產線"));
+			
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-2", true, n_val, "sys_sort", "排序"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_ver", "版本"));
 
@@ -158,6 +161,8 @@ public class ProductionRecordsService {
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", one.getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_c_from", one.getPrcfrom());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_wc_line", one.getPrwcline());
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_b_item", one.getPrbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_item", one.getPrsitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_sn", one.getPrssn());
@@ -203,6 +208,7 @@ public class ProductionRecordsService {
 				entity.setPrid(data.getString("pr_id"));
 				entity.setPrbomid(data.getString("pr_bom_id"));
 				entity.setPrcfrom(data.getString("pr_c_from"));
+				entity.setPrwcline(data.getString("pr_wc_line"));
 				entity.setPrcname(data.getString("pr_c_name"));
 				entity.setPrssn(data.getString("pr_s_sn"));
 				entity.setPresn(data.getString("pr_e_sn"));
@@ -235,6 +241,7 @@ public class ProductionRecordsService {
 				entity.setPrid(data.getString("pr_id"));
 				entity.setPrbomid(data.getString("pr_bom_id"));
 				entity.setPrcfrom(data.getString("pr_c_from"));
+				entity.setPrwcline(data.getString("pr_wc_line"));
 				entity.setPrcname(data.getString("pr_c_name"));
 				entity.setPrssn(data.getString("pr_s_sn"));
 				entity.setPresn(data.getString("pr_e_sn"));
@@ -285,6 +292,7 @@ public class ProductionRecordsService {
 					entity.setPrbitem(data.getString("pr_b_item"));
 					entity.setPrsitem(data.getString("pr_s_item"));
 					entity.setSysnote(data.getString("sys_note"));
+					entity.setPrwcline(data.getString("pr_wc_line"));
 					entity.setSysmdate(new Date());
 					entity.setSysmuser(user.getSuaccount());
 

@@ -115,7 +115,7 @@
 		},
 		//可呼叫方法
 		methods : {
-			init() {
+			selectAllInit() {
 				$('#m_now_order').val('');
 				$('#m_now_order').focus();
 				//檢查工單製令 ?
@@ -254,7 +254,7 @@
 	   			$("#m_old_sn").select();
 			},
 			//嘗試檢查後
-	   		checkReturn(){
+	   		searchReturn(){
 				main.loading(false);
 				if(main.allData.body==null){
 					//如果沒資料

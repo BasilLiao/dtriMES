@@ -8,9 +8,14 @@ import java.util.Date;
 public class Fm_Time {
 
 	private static SimpleDateFormat format_yyyyMMdd_HHmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static SimpleDateFormat format_yyyyMMdd_HHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	private static SimpleDateFormat format_yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+	/** 格式:yyyy-MM-dd HH:mm **/
+	public static String to_yMd_Hm(Date date) {
+		return format_yyyyMMdd_HHmm.format(date);
+	}
 	/** 格式:yyyy-MM-dd HH:mm:ss **/
 	public static String to_yMd_Hms(Date date) {
 		return format_yyyyMMdd_HHmmss.format(date);
