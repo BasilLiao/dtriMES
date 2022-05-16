@@ -21,7 +21,7 @@ public interface WorkstationDao extends JpaRepository<Workstation, Long> {
 	ArrayList<Workstation> findAllByWgidOrderBySyssortAsc(Long wgid);
 
 	// 查詢工作站代表
-	ArrayList<Workstation> findAllBySysheader(Boolean sysheader, Pageable pageable);
+	ArrayList<Workstation> findAllBySysheaderOrderByWcnameAsc(Boolean sysheader, Pageable pageable);
 
 	// 查詢工作站代表
 	ArrayList<Workstation> findAllBySysheaderAndWidNot(Boolean sysheader, Long wid, Pageable pageable);

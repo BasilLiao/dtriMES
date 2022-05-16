@@ -12,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @author Basil
@@ -21,7 +22,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pdetime = 工單 結束時間<br>
  * 
  *      pdttime = 當天 總共使用多少時間(小時)<br>
- *      pdtqty =當天 總共數量 pdtsu = 當天 使用人數<br>
+ *      pdtqty =當天 總共數量 <br>
+ *      pdtsu = 當天 使用人數<br>
  * 
  *      pdwcline = 生產線別<br>
  *      pdwcclass = 班別<br>

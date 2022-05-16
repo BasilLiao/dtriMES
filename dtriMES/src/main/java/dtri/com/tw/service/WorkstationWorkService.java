@@ -19,6 +19,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,7 @@ import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class WorkstationWorkService {
+	private static final Logger log = LoggerFactory.getLogger(WorkstationWorkService.class);
 	@Autowired
 	private ProductionHeaderDao phDao;
 	@Autowired
@@ -299,6 +302,7 @@ public class WorkstationWorkService {
 									}
 								}
 							} catch (JSONException e) {
+								log.error(e.toString());
 								e.printStackTrace();
 								bean.setBody(new JSONObject());
 								bean.autoMsssage("WK023");
@@ -335,6 +339,7 @@ public class WorkstationWorkService {
 											object_work.put("value", value);
 											object_work.put("woption", w.getWoption());
 										} catch (Exception e) {
+											log.error(e.toString());
 											e.printStackTrace();
 											bean.setBody(new JSONObject());
 											bean.autoMsssage("WK023");
@@ -409,6 +414,7 @@ public class WorkstationWorkService {
 //			}
 //			check = true;
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 		}
 		return check;
@@ -427,6 +433,7 @@ public class WorkstationWorkService {
 			// }
 			// check = true;
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 		}
 		return check;
@@ -541,6 +548,7 @@ public class WorkstationWorkService {
 								// body_one.setPbltext(body_one_old.getPbltext());
 								// body_one.setPbldt(body_one_old.getPbldt());
 							} catch (Exception e) {
+								log.error(e.toString());
 								e.printStackTrace();
 								bean.autoMsssage("1111");
 								return bean;
@@ -636,7 +644,8 @@ public class WorkstationWorkService {
 								if (prbitem != null && !prbitem.equals("")) {
 									try {
 										new JSONObject(prbitem);
-									} catch (JSONException ex) {
+									} catch (JSONException e) {
+										log.error(e.toString());
 										prbitem = new JSONObject().toString();
 									}
 								} else {
@@ -804,12 +813,14 @@ public class WorkstationWorkService {
 							}
 
 						} catch (NoSuchMethodException e) {
+							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
 							return bean;
 						}
 
 						// ======== Step5. FTP檢查[] ========
+						log.info("Step5. FTP檢查[]");
 						JSONObject list_log = new JSONObject();
 						if (plt_check) {
 							ArrayList<SystemConfig> config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
@@ -839,6 +850,7 @@ public class WorkstationWorkService {
 							}
 
 							// ======== Step6. 需要Log 更新資料?? ========
+							log.info("Step6. 需要Log 更新資料??");
 							// (檢查是否有LOG+內容是否正確)
 							if (list_log != null && list_log.length() > 0 && list_log.has("pb_l_size")) {
 								try {
@@ -1007,6 +1019,7 @@ public class WorkstationWorkService {
 //								body_one.setPblsize(list_log.getInt("pb_l_size") + "");
 									}
 								} catch (Exception e) {
+									log.error(e.toString());
 									e.printStackTrace();
 									bean.autoMsssage("1111");
 									return bean;
@@ -1025,6 +1038,7 @@ public class WorkstationWorkService {
 					}
 
 					// ======== Step8.其他參數紀錄 ========
+					log.info("Step8.其他參數紀錄");
 					body_map_now.put("setSysmdate", new JSONObject().put("value", new Date()).put("type", Date.class));
 					body_map_now.put("setSysmuser", new JSONObject().put("value", user.getSuaccount()).put("type", String.class));
 					body_map_now.put("setPbposition", new JSONObject().put("value", list.getString("pb_position")).put("type", String.class));
@@ -1045,6 +1059,7 @@ public class WorkstationWorkService {
 							}
 
 						} catch (Exception e) {
+							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
 							return bean;
@@ -1068,6 +1083,7 @@ public class WorkstationWorkService {
 							}
 
 						} catch (Exception e) {
+							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
 							return bean;
@@ -1075,6 +1091,7 @@ public class WorkstationWorkService {
 					}
 
 					// ======== Step9. 製令單+規格更新[ProductionRecords]========
+					log.info("Step9. 製令單+規格更新[ProductionRecords]");
 					ProductionRecords phprid = new ProductionRecords();
 					phprid.setPrid(list.getString("ph_pr_id"));
 					ProductionHeader p_header = phDao.findAllByProductionRecords(phprid).get(0);
@@ -1130,31 +1147,34 @@ public class WorkstationWorkService {
 					} else {
 						bean.autoMsssage("WK021");
 					}
-					
+
 					// ======== Step10. 製令單+規格更新[Productiondaily] ========
+					log.info("Step10. 製令單+規格更新[Productiondaily]");
 					ProductionDaily newDaily = new ProductionDaily();
 					newDaily.setPdprpbsn(body_one_now.getPbbsn());// 產品SN號
-					newDaily.setPdprid(p_records.getPrid());  // 製令單號
+					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
-					newDaily.setPdprbomid(p_records.getPrbomid());  // 產品BOM
-					newDaily.setPdprtotal(p_records.getPrpquantity());  // 製令單 生產總數
-					newDaily.setPdwcline(p_records.getPrwcline());  // 生產產線
-					newDaily.setPdwcname(list.getString("w_c_name"));  // 工作站代號
-					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname());  // 工作站名稱
-					newDaily.setPdwaccounts(list.getString("w_c_us_name"));  // 工作站人員
-					
+					newDaily.setPdprbomid(p_records.getPrbomid()); // 產品BOM
+					newDaily.setPdprtotal(p_records.getPrpquantity()); // 製令單 生產總數
+					newDaily.setPdwcline(p_records.getPrwcline()); // 生產產線
+					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
+					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱
+					newDaily.setPdwaccounts(list.getString("w_c_us_name")); // 工作站人員
+
 					pDailyService.setData(newDaily, user);
-					
+
 				} else {
 					bean.autoMsssage("WK003");
 					return bean;
 				}
 			}
 		} catch (NullPointerException e) {
+			log.error(e.toString());
 			System.out.println(e);
 			bean.autoMsssage("WK013");
 			return bean;
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 			bean.autoMsssage("1111");
 			return bean;
@@ -1162,7 +1182,6 @@ public class WorkstationWorkService {
 		// ========Step0. 是否有過站更新成功 ========
 		System.out.println(bean.getType());
 
-		
 		return bean;
 	}
 
@@ -1183,6 +1202,7 @@ public class WorkstationWorkService {
 //				check = true;
 //			}
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 			return false;
 		}
@@ -1212,6 +1232,7 @@ public class WorkstationWorkService {
 				}
 			}
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 		}
 		return check;

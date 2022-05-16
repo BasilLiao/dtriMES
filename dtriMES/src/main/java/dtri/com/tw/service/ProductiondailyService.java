@@ -3,36 +3,37 @@ package dtri.com.tw.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import dtri.com.tw.bean.PackageBean;
+import dtri.com.tw.bean.ProductionDailyBean;
 import dtri.com.tw.db.entity.ProductionDaily;
-import dtri.com.tw.db.entity.SystemConfig;
+import dtri.com.tw.db.entity.ProductionHeader;
+import dtri.com.tw.db.entity.ProductionRecords;
 import dtri.com.tw.db.entity.SystemUser;
+import dtri.com.tw.db.entity.Workstation;
 import dtri.com.tw.db.entity.WorkstationClass;
+import dtri.com.tw.db.entity.WorkstationProgram;
+import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductiondailyDao;
-import dtri.com.tw.db.pgsql.dao.SystemConfigDao;
 import dtri.com.tw.db.pgsql.dao.SystemUserDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationClassDao;
+import dtri.com.tw.db.pgsql.dao.WorkstationDao;
+import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class ProductiondailyService {
-
-	@Autowired
-	private SystemConfigDao configDao;
-
+	private static final Logger log = LoggerFactory.getLogger(ProductiondailyService.class);
 	@Autowired
 	private ProductiondailyDao dailyDao;
 
@@ -40,118 +41,236 @@ public class ProductiondailyService {
 	private WorkstationClassDao classDao;
 
 	@Autowired
+	private WorkstationDao workstationDao;
+
+	@Autowired
+	private WorkstationProgramDao programDao;
+
+	@Autowired
 	private SystemUserDao userDao;
+
+	@Autowired
+	private ProductionHeaderDao headerDao;
 
 	// 取得當前 資料清單
 	public PackageBean getData(JSONObject body, int page, int p_size) {
 		PackageBean bean = new PackageBean();
-		ArrayList<SystemConfig> systemConfigs = new ArrayList<SystemConfig>();
-		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("scgid").descending());
-		String sc_name = null;
-		String sc_g_name = null;
-		String status = "0";
+		ArrayList<ProductionDaily> productionDailys = new ArrayList<ProductionDaily>();
+		ArrayList<Workstation> workstations = new ArrayList<Workstation>();
+		LinkedHashMap<String, ProductionDailyBean> dailybeans = new LinkedHashMap<String, ProductionDailyBean>();
+
+		// 查詢
+		String sc_s_date = null;
+		String sc_e_date = null;
+		String sc_bom_id = null;
+		String sc_model = null;
+		String sc_class = null;
+		String sc_line = null;
+		String sc_id = null;
+
+		// 功能-名稱編譯
+		String /* pd_id = "ID", */ pd_wc_class = "班別", sys_m_date = "時間", //
+				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
+				pd_pr_p_model = "產品型號", pd_progress = "進度", pd_t_qty = "完成量";
+
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
+			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null);
+
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sc_id", FFS.h_t("ID", "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sc_g_id", FFS.h_t("群組ID", "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sc_g_name", FFS.h_t("群組名稱", "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sc_name", FFS.h_t("名稱", "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sc_value", FFS.h_t("參數", "400px", FFM.Wri.W_Y));
+			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_id", FFS.h_t(pd_id,
+			// "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_line", FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_class", FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t("修改時間", "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t("修改人", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_progress, "100px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t("備註", "300px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("排序", "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t("版本", "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t("狀態", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "80px", FFM.Wri.W_Y));
+			for (Workstation w_one : workstations) {
+				if (w_one.getWgid() != 0)
+					object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
+			}
+
 			bean.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_m = new JSONArray();
 			JSONArray n_val = new JSONArray();
-			JSONArray a_val = new JSONArray();
-
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "sc_id", "ID"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "sc_g_id", "群組ID"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "sc_g_name", "群組名稱"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "sc_name", "名稱"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-3", true, n_val, "sc_value", "參數"));
-
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, n_val, "sys_c_date", "建立時間"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, n_val, "sys_c_user", "建立人"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, n_val, "sys_m_date", "修改時間"));
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFM.Tag.INP, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_N,
-			// "col-md-2", false, n_val, "sys_m_user", "修改人"));
-
-			// obj_m.put(FFS.h_m(FFM.Dno.D_S,FFS.TTA, FFM.Type.TEXT, "", "",
-			// FFM.Wri.W_Y, "col-md-12",
-			// false, n_val, "sys_note", "備註"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_Y, "col-md-1", true, n_val, "sys_sort", "排序"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "sys_ver", "版本"));
-
-			a_val = new JSONArray();
-			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, a_val, "sys_status", "狀態"));
+			// JSONArray a_val = new JSONArray();
 			bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "sc_g_name", "群組名稱", n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "sc_name", "名稱", n_val));
-
-			a_val = new JSONArray();
-			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "sys_status", "狀態", a_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 00:00:00", "col-md-2", "sys_s_date", "時間(起)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 23:59:00", "col-md-2", "sys_e_date", "時間(終)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-1", "pd_wc_class", pd_wc_class, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-1", "pd_wc_line", pd_wc_line, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pd_pr_id", pd_pr_id, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_bom_id", pr_bom_id, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pd_pr_p_model", pd_pr_p_model, n_val));
 			bean.setCell_searchs(object_searchs);
 		} else {
-
 			// 進行-特定查詢
-			sc_name = body.getJSONObject("search").getString("sc_name");
-			sc_name = sc_name.equals("") ? null : sc_name;
-			sc_g_name = body.getJSONObject("search").getString("sc_g_name");
-			sc_g_name = sc_g_name.equals("") ? null : sc_g_name;
-			status = body.getJSONObject("search").getString("sys_status");
-			status = status.equals("") ? "0" : status;
+			sc_s_date = body.getJSONObject("search").getString("sys_s_date");
+			sc_s_date = sc_s_date.equals("") ? null : sc_s_date;
+
+			sc_e_date = body.getJSONObject("search").getString("sys_e_date");
+			sc_e_date = sc_e_date.equals("") ? null : sc_e_date;
+
+			sc_bom_id = body.getJSONObject("search").getString("pr_bom_id");
+			sc_bom_id = sc_bom_id.equals("") ? null : sc_bom_id;
+
+			sc_model = body.getJSONObject("search").getString("pd_pr_p_model");
+			sc_model = sc_model.equals("") ? null : sc_model;
+
+			sc_class = body.getJSONObject("search").getString("pd_wc_class");
+			sc_class = sc_class.equals("") ? null : sc_class;
+
+			sc_line = body.getJSONObject("search").getString("pd_wc_line");
+			sc_line = sc_line.equals("") ? null : sc_line;
+
+			sc_id = body.getJSONObject("search").getString("pd_pr_id");
+			sc_id = sc_id.equals("") ? null : sc_id;
+
 		}
-		systemConfigs = configDao.findAllByConfig(sc_name, sc_g_name, Integer.parseInt(status), page_r);
+		Date s_Date = new Date();
+		Date e_Date = new Date();
+		if (sc_s_date == null || sc_e_date == null) {
+			s_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(new Date()) + " 00:00:00");
+			e_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(new Date()) + " 23:59:00");
+		} else {
+			s_Date = Fm_Time.toDateTime(sc_s_date);
+			e_Date = Fm_Time.toDateTime(sc_e_date);
+		}
+
+		// 把每個工作站查詢出過站的資料 dailybeans(準備好)
+		// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
+		workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null);
+		JSONArray pbwNewArr = new JSONArray();
+		for (Workstation w_one : workstations) {
+			if (w_one.getWgid() != 0) {
+				JSONObject pbwNewObj = new JSONObject();
+				pbwNewObj.put("wcname", w_one.getWcname());
+				pbwNewObj.put("wpbmane", w_one.getWpbname());
+				pbwNewObj.put("qty", 0);
+				pbwNewArr.put(pbwNewObj);
+
+			}
+		}
+
+		// [每日生產數量]把每個工作站查詢出過站的資料() dailybeans
+		productionDailys = dailyDao.findAllByProductionDaily(sc_line, sc_class, sc_id, sc_model, sc_bom_id, s_Date, e_Date);
+		if (productionDailys.size() > 0) {
+
+			// 此工單的 最後一站的數量 今天的產出數量
+			String prid = productionDailys.get(0).getPdprid();
+			String pbwcnameLast = "";
+			ProductionRecords prs = new ProductionRecords();
+			prs.setPrid(prid);
+			List<ProductionHeader> headers = headerDao.findAllByProductionRecords(prs);
+			Long wpid = headers.get(0).getPhwpid();// 取得 工作程序 ID
+			ArrayList<WorkstationProgram> pbwLast = programDao.findAllByWpgidOrderBySyssortAsc(wpid);
+			Long wpwgid = pbwLast.get(pbwLast.size() - 1).getWpwgid();
+			pbwcnameLast = workstationDao.findAllByWgidOrderBySyssortAsc(wpwgid).get(0).getWcname();
+
+			// 把同一個工作站 的 倒出來
+			for (ProductionDaily pdOne : productionDailys) {
+				// 同一天+同一條產線+同一班別+同一張工單
+				String key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + pdOne.getPdwcline() + pdOne.getPdwcclass() + pdOne.getPdprid();
+				ProductionDailyBean dailyBean = new ProductionDailyBean();//
+				JSONArray pbwArr = new JSONArray();
+				// 如果[同一天+同一條產線+同一班別+同一張工單]
+				if (dailybeans.containsKey(key)) {
+					dailyBean = dailybeans.get(key);
+
+					// 工作站[統計]
+					pbwArr = dailyBean.getPdwpbname();
+					for (int index = 0; index < pbwArr.length(); index++) {
+						JSONObject pbOne = pbwArr.getJSONObject(index);
+						// 如果工作站[同一個]:累加數量
+						if (pbOne.getString("wcname").equals(pdOne.getPdwcname())) {
+							pbOne.put("qty", pbOne.getInt("qty") + pdOne.getPdtqty());
+							pbwArr.put(index, pbOne);
+
+							// 如果是最後一站(再累加)
+							if (pbwcnameLast.equals(pdOne.getPdwcname())) {
+								int tqty = Integer.parseInt(dailyBean.getPdtqty()) + pdOne.getPdtqty();
+								dailyBean.setPdprogress(tqty + "/" + pdOne.getPdprtotal());
+								dailyBean.setPdtqty(tqty + "");
+							}
+							break;
+						}
+					}
+				} else {
+					// 如果不同[新建]
+					dailyBean.setId(pdOne.getPdid());
+					dailyBean.setSysmdate(Fm_Time.to_y_M_d(pdOne.getSysmdate()));
+					dailyBean.setPdprbomid(pdOne.getPdprbomid());
+					dailyBean.setPdprid(pdOne.getPdprid());
+					dailyBean.setPdprpmodel(pdOne.getPdprpmodel());
+					dailyBean.setPdwcline(pdOne.getPdwcline());
+					dailyBean.setPdwcclass(pdOne.getPdwcclass());
+					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
+					// 如果是最後一站
+					int tqty = 0;
+					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
+						tqty = pdOne.getPdtqty();
+					}
+					dailyBean.setPdprogress(tqty + "/" + pdOne.getPdprtotal());
+					dailyBean.setPdtqty(tqty + "");
+
+					// 工作站[統計]
+					pbwArr = dailyBean.getPdwpbname();
+					for (int index = 0; index < pbwArr.length(); index++) {
+						JSONObject pbOne = pbwArr.getJSONObject(index);
+						// 如果工作站[同一個]:累加數量
+						if (pbOne.getString("wcname").equals(pdOne.getPdwcname())) {
+							pbOne.put("qty", pdOne.getPdtqty());
+							pbOne.put("wcname", pdOne.getPdwcname());
+							pbOne.put("wpbmane", pdOne.getPdwpbname());
+
+							System.out.println("" + pbOne);
+							pbwArr.put(index, pbOne);
+							break;
+						}
+					}
+					dailyBean.setPdwpbname(pbwArr);
+					dailybeans.put(key, dailyBean);
+				}
+			}
+		}
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
-		systemConfigs.forEach(one -> {
+		dailybeans.forEach((key, pdb_val) -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sc_id", one.getScid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sc_g_id", one.getScgid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sc_g_name", one.getScgname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sc_name", one.getScname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sc_value", one.getScvalue());
+			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_id", pdb_val.getId());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_wc_line", pdb_val.getPdwcline());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_wc_class", pdb_val.getPdwcclass());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_progress", pdb_val.getPdprogress());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
 
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+			JSONArray pbwArr = pdb_val.getPdwpbname();
+			for (int index = 0; index < pbwArr.length(); index++) {
+				JSONObject pbOne = pbwArr.getJSONObject(index);
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + pbOne.getString("wcname"), pbOne.getInt("qty"));
+			}
+
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
+		updateData();
 		return bean;
 	}
 
@@ -171,8 +290,53 @@ public class ProductiondailyService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData() {
 		boolean check = false;
+		log.info("updateData 更新每日生產報告");
+		// 檢查[結算 每日 資料]
+		ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
+		oldDailys = dailyDao.findAllByProductionDailyCheck(null, null, null, null, null, 0);
+		for (ProductionDaily productionDaily : oldDailys) {
+			String wcc = productionDaily.getPdwcclass();
+			String wcl = productionDaily.getPdwcline();
+			String wcn = productionDaily.getPdwcname();
+
+			// 取出 [所配班別]
+			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(wcc, wcl, wcn, null, null);
+			if (classes.size() > 0) {
+				WorkstationClass oneClass = classes.get(0);
+				// 如果[目前時間] 大於 [結算時間]
+				Date n_Date = new Date();
+				Date s_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(n_Date) + " " + oneClass.getWcstime() + ":00");
+				Date e_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(n_Date) + " " + oneClass.getWcetime() + ":00");
+
+				if (n_Date.after(e_Date)) {
+					// (時*分*秒*毫秒)(24 * 60 * 60 * 1000)
+					double total_time = 0.0;
+
+					// 時間到[true]: 最後修改時間|| [false]:結算時間
+					if (oneClass.getWceauto()) {
+						e_Date = Fm_Time.toDateTime(Fm_Time.to_yMd_Hm(productionDaily.getSysmdate()) + ":00");
+						productionDaily.setPdetime(e_Date);
+						total_time = (double) (e_Date.getTime() - s_Date.getTime()) / (60 * 60 * 1000);
+						total_time = Math.round(total_time * 100.0) / 100.0;
+					} else {
+						productionDaily.setPdetime(e_Date);
+						total_time = (double) (e_Date.getTime() - s_Date.getTime()) / (60 * 60 * 1000);
+						total_time = Math.round(total_time * 100.0) / 100.0;
+					}
+					JSONObject wnames = new JSONObject(productionDaily.getPdwnames());
+					JSONObject pbsn = new JSONObject(productionDaily.getPdprpbsn());
+
+					productionDaily.setSysstatus(1);// 結算- 今日班別
+					productionDaily.setPdtsu(wnames.getJSONArray("list").length());// 結算-人數
+					productionDaily.setPdprtotal(pbsn.getJSONArray("list").length());// 結算-台數
+					productionDaily.setPdttime(Double.toString(total_time));// 結算-工時
+					productionDaily.setSysmuser("system");
+					dailyDao.save(productionDaily);
+				}
+			}
+		}
 		return check;
 	}
 
@@ -186,7 +350,7 @@ public class ProductiondailyService {
 	// 登記入每日報表
 	@Transactional
 	public PackageBean setData(ProductionDaily newDaily, SystemUser user) {
-		Boolean check = false;
+		// Boolean check = false;
 		PackageBean bean = new PackageBean();
 
 		// Step0.檢查必要值
@@ -212,7 +376,7 @@ public class ProductiondailyService {
 			String n_pdwaccount = newDaily.getPdwaccounts();
 			List<String> n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
 			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];
-			Boolean wcg = null;
+			Boolean n_wcg = null;
 			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(null, n_wcpline, (n_wcwcname + "(" + n_wpbname + ")"), n_time, null);
 			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
 			ProductionDaily oldDaily = new ProductionDaily();
@@ -223,10 +387,10 @@ public class ProductiondailyService {
 				// Step2. 取出 設定工作模式? [群組/個人]
 				WorkstationClass wClass = classes.get(0);
 				n_wcclass = wClass.getWcclass();
-				wcg = wClass.getWcgroup();// true = 群組/ false = 單人
+				n_wcg = wClass.getWcgroup();// true = 群組/ false = 單人
 
 				// Step3. 是否有 今日登記過的 工單+產品+產線+工作站 未結單 工單資訊?
-				oldDailys = dailyDao.findAllByProductionDaily(n_pdprbomid, null, null, null, null, 0, n_wcclass, n_wcpline, n_pdprid, null, null);
+				oldDailys = dailyDao.findAllByProductionDailyCheck(n_pdprid, n_pdprbomid, n_wcpline, n_wcclass, n_wcwcname, 0);
 				if (oldDailys != null && oldDailys.size() > 0) {
 					oldDaily = oldDailys.get(0);
 
@@ -234,7 +398,7 @@ public class ProductiondailyService {
 					if (!oldDaily.getPdprpbsn().contains(n_pdprpbsn)) {
 
 						// Step3-1-1. True群組? False單人?
-						if (wcg) {
+						if (n_wcg) {
 							// Step3-1-2. 同張工單+同一批人+時段一致->[更新] && 添加新 產品SN
 							if (oldDaily.getPdwaccounts().equals(n_pdwaccount)) {
 								JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdprpbsn());
@@ -242,8 +406,8 @@ public class ProductiondailyService {
 								o_pdprpbsn.put("list", o_pdprpbsns);
 								oldDaily.setPdprpbsn(o_pdprpbsn + "");
 								oldDaily.setPdtqty(oldDaily.getPdtqty() + 1);
-								oldDaily.setPdetime(new Date());
-								oldDaily.setSysmdate(new Date());
+								oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+								oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								oldDaily.setSysmuser(user.getSuaccount());
 								dailyDao.save(oldDaily);
 							} else {
@@ -256,13 +420,14 @@ public class ProductiondailyService {
 								newDaily.setPdwcclass(n_wcclass);
 
 								newDaily.setPdtqty(1);
-								newDaily.setSyscdate(new Date());
+								newDaily.setSyscdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								newDaily.setSyscuser(user.getSuaccount());
-								newDaily.setSysmdate(new Date());
+								newDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								newDaily.setSysmuser(user.getSuaccount());
 								newDaily.setSysstatus(0);
 
-								newDaily.setPdstime(new Date());
+								newDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+								newDaily.setPdstime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								newDaily.setPdlsuid(wClass.getWclsuid());
 								newDaily.setPdlname(userDao.findAllBySuid(wClass.getWclsuid()).get(0).getSuname());
 								newDaily.setPdprpbsn(new JSONObject().put("list", new JSONArray().put(n_pdwaccount)).toString());
@@ -278,9 +443,11 @@ public class ProductiondailyService {
 							// 取得使用者
 							JSONObject wname_list = new JSONObject(oldDaily.getPdwnames());
 							JSONArray wnames = wname_list.getJSONArray("list");
-							if (!oldDaily.getPdwnames().contains(su_name.get(0))) {
+							if (su_name.size() > 0 && !oldDaily.getPdwnames().contains(su_name.get(0))) {
 								wnames.put(su_name.get(0));
 								oldDaily.setPdwnames(new JSONObject().put("list", wnames).toString());
+							} else {
+								return bean;
 							}
 
 							JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdprpbsn());
@@ -289,8 +456,8 @@ public class ProductiondailyService {
 							oldDaily.setPdprpbsn(o_pdprpbsn + "");
 							oldDaily.setPdtqty(o_pdprpbsns.length());
 							oldDaily.setPdtsu(wnames.length());// 人數
-							oldDaily.setPdetime(new Date());
-							oldDaily.setSysmdate(new Date());
+							oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+							oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 							oldDaily.setSysmuser(user.getSuaccount());
 							dailyDao.save(oldDaily);
 						}
@@ -305,15 +472,15 @@ public class ProductiondailyService {
 					newDaily.setPdwcclass(n_wcclass);
 
 					newDaily.setPdtqty(1);
-					newDaily.setSyscdate(new Date());
+					newDaily.setSyscdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setSyscuser(user.getSuaccount());
-					newDaily.setSysmdate(new Date());
+					newDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setSysmuser(user.getSuaccount());
 					newDaily.setSysstatus(0);
 
 					newDaily.setPdtsu(n_pdwaccounts.size());// 人數
-					newDaily.setPdstime(new Date());
-					newDaily.setPdetime(new Date());
+					newDaily.setPdstime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+					newDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setPdlsuid(wClass.getWclsuid());
 					newDaily.setPdlname(userDao.findAllBySuid(wClass.getWclsuid()).get(0).getSuname());
 

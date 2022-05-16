@@ -44,7 +44,7 @@
 				<button id="search_btn" class="col-md-3 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
 				<button id="clear_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
 				<div class="row col-md-4 m-1 p-0 pt-1">
-					<input class="col-md-2 p-0" type="checkbox" checked="checked" style="width: 20px; height: 100%;">
+					<input id="search_30s" class="col-md-2 p-0" type="checkbox"  style="width: 20px; height: 100%;">
 					<div class="col-md-10 p-0">自動查詢(30秒)</div>
 				</div>
 			</div>
@@ -52,12 +52,58 @@
 	</div>
 	<!-- 查詢結果 生產量 -->
 	<div class="shadow mt-2">
-		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-list-ul mr-1"></i>Product production
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
+			<div class="col-10">
+				<i class="bi bi-list-ul mr-1"></i>Daily production
+			</div>
+			<div class="col-2">
+				<button id="dp_export_btn" class="col-md-12 mt-1 btn btn-info btn-sm" type="button">Export Excel</button>
+			</div>
 		</div>
 		<div class="p-2">
-			<table class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
-				<thead class="thead bg-dark table-dark pp_search_example_title" style="white-space: nowrap;">
+			<table id="dp_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
+				<thead class="thead bg-dark table-dark dp_search_example_title" style="white-space: nowrap;">
+					<tr class="">
+						<th class="s_title_body noExl" style="min-width: 150px;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Last</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+						<th class="s_title_last p-1" style="min-width: 150px; width: 100%;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Handle</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="dp_search_example_list" style="white-space: nowrap;">
+					<tr class="noExl dp_search_example_content">
+						<td title="" id="" class="s_list_body d-none">0</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- 查詢結果 總工時 -->
+	<div class="shadow mt-2 d-none">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
+			<div class="col-10">
+				<i class="bi bi-list-ul mr-1"></i>Daily working hours
+			</div>
+			<div class="col-2">
+				<button id="dwh_export_btn" class="col-md-12 mt-1 btn btn-info btn-sm" type="button">Export Excel</button>
+			</div>
+		</div>
+		<div class="p-2">
+			<table id="daily_working_hours_production" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
+				<thead class="thead bg-dark table-dark dwh_search_example_title" style="white-space: nowrap;">
 					<tr class="">
 						<th class="s_title_body" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
@@ -77,19 +123,14 @@
 						</th>
 					</tr>
 				</thead>
-				<tbody class="pp_search_example_list" style="white-space: nowrap;">
-					<tr class="pp_search_example_content">
-						<td title="" class="s_list_body">0</td>
+				<tbody class="dwh_search_example_list" style="white-space: nowrap;">
+					<tr class="dwh_search_example_content">
+						<td title="" id="" class="noExl s_list_body">0</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-	
-
-	
-	
-	
 </div>
 <script type="text/javascript">
 //控制端
@@ -107,6 +148,7 @@ customized = new Vue({
 		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
 		data_item_f_id: "", //父類別ID
 		list_son:{},// 群組-子類別
+		Interval_update30s:"",//30秒一次
 	},
 	//初始化
 	created() {
@@ -119,7 +161,7 @@ customized = new Vue({
 			//排序
 			title = main.orderedSort(title);
 			for (var i = 0; i < Object.keys(title).length - 1; i++) {
-				var one_item = $(".pp_search_example_title .s_title_body").clone(); //複製樣本
+				var one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
 				var key_id = Object.keys(title)[i];
 				var value_name = title[Object.keys(title)[i]].name;
 				var value_size = title[Object.keys(title)[i]].size;
@@ -128,7 +170,7 @@ customized = new Vue({
 				one_item[0].className = "p-1 ";
 				one_item[0].id = key_id;
 				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".pp_search_example_title .s_title_last");
+				one_item.insertBefore(".dp_search_example_title .s_title_last");
 				$("#" + key_id).css("min-width", value_size);
 				$("#" + key_id).css("max-width", value_size);
 				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
@@ -139,13 +181,13 @@ customized = new Vue({
 			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
 			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
 
-			$(".pp_search_example_title .s_title_last").attr("id", key_id);
-			$(".pp_search_example_title .s_title_last .title_name").text(value_name);
+			$(".dp_search_example_title .s_title_last").attr("id", key_id);
+			$(".dp_search_example_title .s_title_last .title_name").text(value_name);
 			$("#" + key_id).css("min-width", value_size);
 			$("#" + key_id).css("max-width", value_size);
 			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
 			//關閉範例
-			$(".pp_search_example_title .s_title_body").addClass("d-none");
+			$(".dp_search_example_title .s_title_body").addClass("d-none");
 			//權限設置
 			if (html_permission != null) {
 				if (html_permission['cr'] != 1) {
@@ -189,8 +231,8 @@ customized = new Vue({
 			$(".search_data_list").remove();
 
 			//開啟樣式
-			$(".pp_search_example_list .s_list_body").removeClass("d-none");
-			$(".pp_search_example_content").removeClass("d-none");
+			$(".dp_search_example_list .s_list_body").removeClass("d-none");
+			$(".dp_search_example_content").removeClass("d-none");
 			var fixed_cell_color = false;
 
 			for (var j = 0; j < list.length; j++) {
@@ -223,18 +265,19 @@ customized = new Vue({
 					}
 				}
 				//資料筆數
-				var list_item = $(".pp_search_example_content").clone(); //複製樣本
+				var list_item = $(".dp_search_example_content").clone(); //複製樣本
 				//是否為群組
 				list_item[0].className = "search_data_list";
 				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".pp_search_example_list");
+				list_item.appendTo(".dp_search_example_list");
 				
 				//===每筆 資料欄位===
 				var fixed_cell_nb = 0;
 				var fixed_cell_wh = 1;
+				console.log( );
 				
 				for (var i = 0; i < Object.keys(list[j]).length; i++) {
-					var one_item = $(".pp_search_example_list .s_list_body").clone(); //複製樣本
+					var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
 					var key_id = Object.keys(list[j])[i];
 					var value_name = list[j][Object.keys(list[j])[i]];
 					//取得title Size顯示
@@ -266,13 +309,14 @@ customized = new Vue({
 					one_item[0].id = "";
 					one_item[0].title = key_id;
 					one_item[0].innerText = value_name;
-					one_item.insertBefore(".pp_search_example_list #" + list_item[0].id + " .s_list_body");
+					one_item.insertBefore(".dp_search_example_list #" + list_item[0].id + " .s_list_body");
 				}
-				$(".pp_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
+				
+				$(".dp_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
 			}
 			//關閉樣式
-			$(".pp_search_example_list .s_list_body").addClass("d-none");
-			$(".pp_search_example_content").addClass("d-none");
+			$(".dp_search_example_list .s_list_body").addClass("d-none");
+			$(".dp_search_example_content").addClass("d-none");
 		},
 		setSearch(search) {
 			//查詢注入資訊
@@ -341,6 +385,16 @@ customized = new Vue({
 			//監聽-同步相同屬性
 			$(document).on("click", "#search_btn", function (event) {
 				console.log("search_btn");
+				//是否每30秒觸發
+				if ($("#search_30s[type=checkbox]").is(":checked")) {
+					console.log("Start_search_30s");
+					clearInterval(customized.Interval_update30s);
+					customized.Interval_update30s = setInterval(customized.update30s, 30000);
+				}else{
+					console.log("Stop_search_30s");
+					clearInterval(customized.Interval_update30s);
+				}
+				
 				//回歸
 				customized.page_total = main.page_total; //每次_總筆數
 				customized.page_batch = main.page_batch; //每次_第幾批
@@ -352,9 +406,33 @@ customized = new Vue({
 			
 			$(document).on("click", "#clear_btn", function (event) {
 				console.log("clear_btn");
+				console.log("Stop_search_30s");
 				$(".search_example_finds input").val("");
 				$(".search_example_finds select").val("");
+				clearInterval(customized.Interval_update30s);
 			});
+			$(document).on("click", "#dp_export_btn", function (event) {
+				console.log("dp_export_btn");
+				//更新時間
+				var myDate = new Date();
+				var reportDate =
+					myDate.getFullYear() + '-' +
+					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+				$("#dp_excel").table2excel({
+					// exclude CSS class
+					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+					preserveColors: false,
+					exclude_img: true,
+					exclude_links: true,
+					exclude: ".noExl",
+					name: "Worksheet Name",
+					filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+					fileext: ".xls" // file extension
+				});
+			});
+			
 
 			//快速查詢 監聽確認
 			$(document).on("keypress", ".search_true input", function (event) {
@@ -362,6 +440,11 @@ customized = new Vue({
 					$('#search_btn').trigger('click');
 				}
 			});
+		},
+		//更新30s
+		update30s() {
+			console.log("search_30s");  
+			customized.searchSend();
 		},
 		//search
 		searchSend() {
@@ -413,7 +496,10 @@ customized = new Vue({
 		console.log("daily.html(beforeDestroy)");
 		$(document).off("click", "#clear_btn");
 		$(document).off("click", "#search_btn");
+		$(document).off("click", "#export_btn");
+		$(document).off("click", "#dp_export_btn");
 		$(document).off("keypress", ".search_true input");
+		clearInterval(customized.Interval_update30s);
 	},
 });
 </script>

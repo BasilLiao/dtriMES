@@ -49,12 +49,12 @@ public class WorkstationClassService {
 		// 功能-名稱編譯
 		String wc_id = "ID", wc_se_time = "班別區間", wc_s_time = "班別(起時)", wc_e_time = "班別(結時)", wc_l_name = "組長(名稱)", wc_l_su_id = "組長選擇", //
 				wc_m_name = "管理者(名稱)", wc_m_su_id = "管理者選擇", wc_p_line = "產線別", wc_class = "班別", //
-				wc_w_c_name = "工作站(名稱)", wc_w_pb_name = "工作站選擇", wc_group = "工作站(模式)?", wc_w_time = "工時登記?", //
+				wc_w_c_name = "工作站(名稱)", wc_w_pb_name = "工作站選擇", wc_group = "工作(模式)?", wc_w_time = "工時登記?", //
 				wc_w_quantity = "數量統計?", wc_s_auto = "開始(自動)?", wc_e_auto = "結束(自動)?";
 
 		// 固定-名稱編譯
 		String sys_c_date = "建立時間", sys_c_user = "建立人", sys_m_date = "修改時間", sys_m_user = "修改人", sys_note = "備註", //
-				sys_sort = "排序", sys_ver = "版本", sys_status = "狀態", sys_header = "群組", ui_group_id = "UI_Group_ID";
+				sys_sort = "排序", sys_ver = "版本", sys_status = "狀態"/* , sys_header = "群組", ui_group_id = "UI_Group_ID" */;
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -126,7 +126,7 @@ public class WorkstationClassService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, st_val, "wc_m_su_id", wc_m_su_id));
 
 			JSONArray a_vals = new JSONArray();
-			ArrayList<Workstation> workstations = workstationDao.findAllBySysheader(true, PageRequest.of(0, 999));
+			ArrayList<Workstation> workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, PageRequest.of(0, 999));
 			workstations.forEach(w -> {
 				if (w.getWgid() != 0)
 					a_vals.put((new JSONObject()).put("value", w.getWpbname()).put("key", w.getWgid()));

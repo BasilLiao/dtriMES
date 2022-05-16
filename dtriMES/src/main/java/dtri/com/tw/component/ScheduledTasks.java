@@ -5,16 +5,26 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import dtri.com.tw.service.ProductiondailyService;
 
 //https://polinwei.com/spring-boot-scheduling-tasks/
 @Component
 public class ScheduledTasks {
-
 	/// 標準範例
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+	@Autowired
+	ProductiondailyService pdyService;
+
+	@Scheduled(fixedDelay = 600000)
+	public void autoDaily() {
+		logger.info("===fixedDelay:pdyService.updateData(): 時間:{}", dateFormat.format(new Date()));
+		pdyService.updateData();
+	}
 
 	// fixedDelay = 60000 表示當前方法執行完畢 60000ms(1分鐘) 後，Spring scheduling會再次呼叫該方法
 	// @Scheduled(fixedDelay = 60000)

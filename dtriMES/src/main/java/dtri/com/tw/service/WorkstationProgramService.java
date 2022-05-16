@@ -81,7 +81,7 @@ public class WorkstationProgramService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_name", "流程序[名稱]"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "wp_c_name", "流程序[代碼]"));
 
-			workstations = workstationDao.findAllBySysheader(true, PageRequest.of(0, 999));
+			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, PageRequest.of(0, 999));
 			workstations.forEach(w -> {
 				if (w.getWgid() != 0)
 					a_vals.put((new JSONObject()).put("value", w.getWpbname()).put("key", w.getWgid()));

@@ -55,7 +55,7 @@ public class ProductiondailyController {
 		SystemPermission one = new SystemPermission();
 		systemGroup.forEach(p -> {
 			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-					one.setSppermission(p.getSgpermission());
+				one.setSppermission(p.getSgpermission());
 			}
 		});
 		// Step1.包裝解析
@@ -138,34 +138,10 @@ public class ProductiondailyController {
 	@RequestMapping(value = { "/ajax/production_daily.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		System.out.println("---controller - -modify " + SYS_F + " Check");
-		PackageBean req = new PackageBean();
+		// PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		boolean check = false;
+		// boolean check = false;
 
-		System.out.println(json_object);
-		// 取得-當前用戶資料
-		SystemUser user = new SystemUser();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料
-			user = userDetails.getSystemUser();
-		}
-		// Step1.包裝解析
-		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
-		check = dailyService.updateData(req.getBody(), user);
-		// Step3.進行判定
-		if (check) {
-			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, null);
-		} else {
-			// Step4.包裝回傳
-			req.setCall_bk_vals(new JSONObject().put("search", false));
-			req.setAction("");
-			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, null);
-		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -177,27 +153,10 @@ public class ProductiondailyController {
 	@RequestMapping(value = { "/ajax/production_daily.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		System.out.println("---controller -delete " + SYS_F + " Check");
-		PackageBean req = new PackageBean();
+		// PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
-		boolean check = false;
+		// boolean check = false;
 
-		System.out.println(json_object);
-
-		// Step1.包裝解析
-		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
-		check = dailyService.deleteData(req.getBody());
-		// Step3.進行判定
-		if (check) {
-			// Step4.包裝回傳
-			resp = packageService.setObjResp(resp, req, null);
-		} else {
-			// Step4.包裝回傳
-			req.setCall_bk_vals(new JSONObject().put("search", false));
-			req.setAction("");
-			resp.autoMsssage("100");
-			resp = packageService.setObjResp(resp, req, null);
-		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}

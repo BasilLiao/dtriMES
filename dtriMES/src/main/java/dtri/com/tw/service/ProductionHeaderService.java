@@ -730,6 +730,7 @@ public class ProductionHeaderService {
 					pro_r.setPrpokquantity(0);
 					pro_r.setPrhokquantity(0);
 					pro_r.setPrwyears(data.getInt("pr_w_years"));
+					pro_r.setPrwcline(data.getString("pr_wl_id"));
 
 					// 有序號登記
 					if (!data.getString("ph_type").equals("A511_no_sn") //

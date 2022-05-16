@@ -8,6 +8,8 @@ import javax.print.PrintService;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,6 +42,7 @@ public class IndexController {
 
 	@Autowired
 	ConfigBean configBean;
+	private static final Logger log = LoggerFactory.getLogger(IndexController.class);
 
 	/**
 	 * 登入 and 登出-畫面
