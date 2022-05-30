@@ -92,7 +92,7 @@
 	</div>
 
 	<!-- 查詢結果 總工時 -->
-	<div class="shadow mt-2 d-none">
+	<div class="shadow mt-2 ">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
 			<div class="col-10">
 				<i class="bi bi-list-ul mr-1"></i>Daily working hours
@@ -216,9 +216,10 @@ customized = new Vue({
 		setDataList(list, list_son, body_type) {
 			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
 			this.data_type = body_type.type;
-			this.list_son = list_son;
-			console.log(list.length, body_type.type);
+			//this.list_son = list_son;
+			console.log(Object.keys(list).length, body_type.type);
 			//console.log(new Date());
+			
 			//舊有資料清除
 			if (list.length < 1) {
 				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
@@ -235,7 +236,8 @@ customized = new Vue({
 			$(".dp_search_example_content").removeClass("d-none");
 			var fixed_cell_color = false;
 
-			for (var j = 0; j < list.length; j++) {
+			var ls_dp = list['bodys_dp'];
+			for (var j = 0; j < ls_dp.length; j++) {
 				//固定顏色
 				if (fixed_cell_color) {
 					fixed_cell_color = false;
@@ -244,26 +246,8 @@ customized = new Vue({
 				}
 
 				//排序
-				list[j] = main.orderedSort(list[j]);
-				//排序-子類別
-				if(list_son!=null){
-					var son_size = list_son[list[j]['02_b__ui_group_id']].length;
-					for(var s = 0;s<son_size;s++){
-						//排序
-						list_son[list[j]['02_b__ui_group_id']][s] = main.orderedSort(list_son[list[j]['02_b__ui_group_id']][s]);
-						//排序-子類別(將 02_b__ 替換掉)
-						var re_son = list_son[list[j]['02_b__ui_group_id']][s];
-						var new_son = {};
-						for(var y = 0;y<Object.keys(re_son).length;y++){
-							var key_id = Object.keys(re_son)[y];
-							var value_name = re_son[Object.keys(re_son)[y]];
-							key_id = key_id.split('_b__')[1];
-							new_son[key_id] = value_name+'';
-						}
-						//回寫
-						list_son[list[j]['02_b__ui_group_id']][s] = new_son;
-					}
-				}
+				ls_dp[j] = main.orderedSort(ls_dp[j]);
+				
 				//資料筆數
 				var list_item = $(".dp_search_example_content").clone(); //複製樣本
 				//是否為群組
@@ -276,10 +260,10 @@ customized = new Vue({
 				var fixed_cell_wh = 1;
 				console.log( );
 				
-				for (var i = 0; i < Object.keys(list[j]).length; i++) {
+				for (var i = 0; i < Object.keys(ls_dp[j]).length; i++) {
 					var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(list[j])[i];
-					var value_name = list[j][Object.keys(list[j])[i]];
+					var key_id = Object.keys(ls_dp[j])[i];
+					var value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
 					//取得title Size顯示
 					// console.log(key_id+" "+value_name);
 					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");

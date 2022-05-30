@@ -69,7 +69,7 @@ public class ProductiondailyService {
 		String sc_id = null;
 
 		// 功能-名稱編譯
-		String /* pd_id = "ID", */ pd_wc_class = "班別", sys_m_date = "時間", //
+		String pd_wc_class = "班別", sys_m_date = "時間", //
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
 				pd_pr_p_model = "產品型號", pd_progress = "進度", pd_t_qty = "完成量";
 
@@ -79,18 +79,15 @@ public class ProductiondailyService {
 
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
+			// 總數量_header_dp
 			int ord = 0;
-			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_id", FFS.h_t(pd_id,
-			// "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_line", FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_class", FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
-
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_progress, "100px", FFM.Wri.W_Y));
-
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "80px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
@@ -247,7 +244,7 @@ public class ProductiondailyService {
 		}
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
-		JSONArray object_bodys = new JSONArray();
+		JSONArray object_dp_bodys = new JSONArray();
 		dailybeans.forEach((key, pdb_val) -> {
 			JSONObject object_body = new JSONObject();
 			int ord = 0;
@@ -267,9 +264,15 @@ public class ProductiondailyService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + pbOne.getString("wcname"), pbOne.getInt("qty"));
 			}
 
-			object_bodys.put(object_body);
+			object_dp_bodys.put(object_body);
 		});
-		bean.setBody(new JSONObject().put("search", object_bodys));
+		// 共有4張表 同時回傳
+		JSONObject all_json = new JSONObject();
+		all_json.put("bodys_dp", object_dp_bodys);
+		all_json.put("bodys_dwh", object_dp_bodys);
+
+		bean.setBody(new JSONObject().put("search", all_json));
+
 		updateData();
 		return bean;
 	}
@@ -307,8 +310,8 @@ public class ProductiondailyService {
 				WorkstationClass oneClass = classes.get(0);
 				// 如果[目前時間] 大於 [結算時間]
 				Date n_Date = new Date();
-				Date s_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(n_Date) + " " + oneClass.getWcstime() + ":00");
-				Date e_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(n_Date) + " " + oneClass.getWcetime() + ":00");
+				Date s_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcstime() + ":00");
+				Date e_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcetime() + ":00");
 
 				if (n_Date.after(e_Date)) {
 					// (時*分*秒*毫秒)(24 * 60 * 60 * 1000)
@@ -317,6 +320,7 @@ public class ProductiondailyService {
 					// 時間到[true]: 最後修改時間|| [false]:結算時間
 					if (oneClass.getWceauto()) {
 						e_Date = Fm_Time.toDateTime(Fm_Time.to_yMd_Hm(productionDaily.getSysmdate()) + ":00");
+						s_Date = Fm_Time.toDateTime(Fm_Time.to_yMd_Hm(productionDaily.getSyscdate()) + ":00");
 						productionDaily.setPdetime(e_Date);
 						total_time = (double) (e_Date.getTime() - s_Date.getTime()) / (60 * 60 * 1000);
 						total_time = Math.round(total_time * 100.0) / 100.0;
@@ -330,7 +334,6 @@ public class ProductiondailyService {
 
 					productionDaily.setSysstatus(1);// 結算- 今日班別
 					productionDaily.setPdtsu(wnames.getJSONArray("list").length());// 結算-人數
-					productionDaily.setPdprtotal(pbsn.getJSONArray("list").length());// 結算-台數
 					productionDaily.setPdttime(Double.toString(total_time));// 結算-工時
 					productionDaily.setSysmuser("system");
 					dailyDao.save(productionDaily);

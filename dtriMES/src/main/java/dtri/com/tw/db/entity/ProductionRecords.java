@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pr_p_quantity : 生產數量<br>
  *      pr_p_model : 產品型號<br>
  *      pr_bom_id : BOM料號<br>
+ *      pr_bom_c_id : 客戶BOM料號<br>
  *      pr_c_from : 單據來源<br>
  *      pr_b_item : 規格定義{"名稱1":"內容1","名稱2":"內容2"}<br>
  *      pr_s_item : 軟體定義{"名稱1":"內容1","名稱2":"內容2"}<br>
@@ -107,6 +108,9 @@ public class ProductionRecords {
 
 	@Column(name = "pr_bom_id", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prbomid;
+	
+	@Column(name = "pr_bom_c_id", nullable = false, columnDefinition = "varchar(50) default ''")
+	private String prbomcid;
 
 	// @Column(name = "pr_v_motherboard", nullable = false, columnDefinition =
 	// "varchar(50) default ''")
@@ -369,6 +373,14 @@ public class ProductionRecords {
 
 	public void setPrwcline(String prwcline) {
 		this.prwcline = prwcline;
+	}
+
+	public String getPrbomcid() {
+		return prbomcid;
+	}
+
+	public void setPrbomcid(String prbomcid) {
+		this.prbomcid = prbomcid;
 	}
 	
 }

@@ -30,6 +30,10 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 
 	// 查詢燒錄 SN重複
 	List<ProductionBody> findAllByPbbsn(String pbbsn);
+	
+	
+	// 查詢燒錄_Like+是舊的SN
+	List<ProductionBody> findAllByPbbsnLike(String old_sn);
 
 	// 查詢燒錄_Like+不是舊的SN
 	List<ProductionBody> findAllByPbbsnAndPbbsnNotLike(String pbbsn, String not_old_sn);

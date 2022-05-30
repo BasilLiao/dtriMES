@@ -1,83 +1,102 @@
+<style>
+#固定第一欄位
+.st1 {
+	left: 1px;
+}
+
+#固定第二欄位
+.st2 {
+	left: 161px;
+}
+
+.datalist {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+</style>
 <!-- 統計報告 -->
 <div id="analysis">
 	<!-- 欄位 -->
-	<div class="shadow mt-0 text-left mb-2">
-		<div class="bg-white rounded-top m-0 pl-1 h4 mb-1">
-			<i class="bi bi-file-earmark-spreadsheet mr-1"></i>Columns
+	<!-- col-md-2/4/6/8/10/12 -->
+	<div class="shadow row text-left mb-2 m-0">
+		<div class="col-12 bg-white rounded-top m-0 pl-1 h4 mb-1 row">
+			<div class="col-2 p-0">
+				<i class="bi bi-file-earmark-spreadsheet mr-1"></i>Columns
+			</div>
+			<div class="col-10 p-0">
+				<i class="bi bi-card-checklist mr-1"></i>Select
+			</div>
 		</div>
-		<div id="column_scroll" class="p-2 m-0" style="overflow-y: auto; max-height: 280px;">
-			<!-- col-md-2/4/6/8/10/12 -->
-			<div class="row m-0 p-0 border border-secondary rounded-top shadow bg-white">
-				<div class="col-12 h5 m-0 p-1 pl-2 mb-2 text-white rounded-top bg-dark">Step1. choose ?</div>
-				<div id="columns_sample" class="col-md-2 p-0 m-0 d-none">
-					<div class="columns_list p-1 m-1 border border-secondary rounded shadow bg-white">
-						<!-- 欄位資料 -->
-						<div class="row p-1 m-0 h6 mb-1 d-none">
-							<div class="col-4 p-0">欄位:</div>
-							<input value="test" name="" class="col-8 p-0 column_name" type="text" disabled="disabled" placeholder="欄位名稱">
-						</div>
-						<div class="row p-1 m-0 h6 mb-1">
-							<div class="col-4 p-0">名稱:</div>
-							<input value="" name="" class="col-8 p-0 column_exp" type="text" disabled="disabled" placeholder="說明">
-						</div>
-						<!-- 限定選項 -->
-						<div class="row m-0 p-0">
-							<!-- 顯示? -->
-							<div class="col-5 m-0 p-1 small row">
-								<input class="m-0 mr-1 mt-1 p-1 border border-dark column_show" id="" name="" value="true" type="checkbox" checked="checked">
-								<div>Show?</div>
+		<!-- 欄位 -->
+		<div id="column_scroll" class="col-2 p-2 m-0" style="overflow-y: auto; max-height: 515px;">
+			<div class="col-12 m-0 p-0">
+				<div class="m-0 p-0 border border-secondary rounded-top shadow bg-white">
+					<div class="col-12 h5 m-0 p-1 pl-2 mb-2 text-white rounded-top bg-dark">Step1. choose ?</div>
+					<div class="row m-0 p-1">
+						<div class="col-8 p-1 border border-secondary">(選)查詢欄位</div>
+						<div class="col-4 p-1 border border-secondary">顯示</div>
+					</div>
+					<div id="columns_sample" class="col-md-12 p-0 m-0 d-none">
+						<!-- 每個選項 -->
+						<div class="columns_list p-1 m-1 border border-secondary rounded shadow bg-white">
+							<!-- 欄位資料 -->
+							<div class="row d-none">
+								<input value="" name="欄位" class="col-8 p-0 column_name" type="text"> <input value="" name="名稱" class="col-8 p-0 column_exp" type="text">
 							</div>
-							<!-- 累計? -->
-							<div class="col-7 m-0 p-1 small row">
-								<input class="m-0 mr-1 mt-1 p-1 border border-dark column_cumu" id="" name="" value="true" type="checkbox">
-								<div>Cumulative?</div>
+							<!-- 添加條件 -->
+							<div class="m-0 p-0 row">
+								<button id="btn_columns_sample" class="col-10 m-0 p-1 btn btn-primary btn-sm column_add" type="button" style="line-height: 15px;">Add select</button>
+								<!-- Show? -->
+								<input value="" name="" class="col-2 m-0 mt-1 p-1" type="checkbox" style="height: 20px;" checked="checked">
 							</div>
-						</div>
-						<!-- 添加條件 -->
-						<div class="row m-0 p-0">
-							<button id="btn_columns_sample" class="col m-0 mt-1 p-1 btn btn-primary btn-sm column_add" type="submit">Add select</button>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
-	</div>
-	<!-- 條件 -->
-	<div class="shadow mt-0 text-left mb-2">
-		<div class="bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-card-checklist mr-1"></i>Select
-		</div>
-		<div class="row p-1 m-0">
-			<div class="col-6 m-0 p-0">
-				<div class="row m-1 p-0 border border-secondary rounded-top shadow bg-white">
-					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step2. where ?</div>
-					<button id="select_0" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Like" [Text](比對類似於 [限:文字/數字])</button>
-					<button id="select_1" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＝" [Text/Number](完全相同 [限:文字/數字])</button>
-					<button id="select_2" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"!＝" [Text/Number](不相同 [限:文字/數字])</button>
-					<button id="select_3" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＜" [Number/Date Time](小於區間 [限:數字/時間])</button>
-					<button id="select_4" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"＞" [Number/Date Time](大於區間 [限:數字/時間])</button>
-					<button id="select_5" class="select_btn col-ms m-1 p-1 btn btn-primary btn-sm font-weight-bold" type="button">"Between" [Number/Date Time](指定特定區間 [限:數字/時間])</button>
-				</div>
-				<div class="row m-1 mt-2 p-0 border border-secondary rounded-top shadow bg-white">
-					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step3. value ?</div>
-					<div class="col-md-12 p-1 m-0">
-						<input id="where_value" value="" name="" class="p-1 col-md-12 m-0" type="text" disabled="disabled" placeholder="Ex:XXXX LIKE '%${data}%'">
+		<!-- 條件 -->
+		<div class="col-10 row p-1 m-0">
+			<div class="col-8 m-0 p-0">
+				<div class="row m-1 mt-1 p-0 border border-secondary rounded-top shadow bg-white">
+					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step2.Select value ?</div>
+					<div class="d-none">
+						<div class="col-md-4 p-1 m-0">
+							<input id="where_key" value="" name="" class="p-1 col-md-12 m-0" type="text" disabled="disabled">
+						</div>
+						<div class="col-md-8 p-1 m-0">
+							<input id="where_value" value="" name="" class="p-1 col-md-12 m-0" type="text" disabled="disabled" placeholder="Ex:XXXX LIKE '%${data}%'">
+						</div>
 					</div>
-					<!--  -->
-					<div class="col-md-12 row p-1 m-0">
-						<select id="fm_type" class="col-md-3 p-1 m-0">
-							<option value="fm_word" selected>Text[type](文字)</option>
-							<option value="fm_nb">Number[type](數字)</option>
-							<option value="fm_time">Date Time[type](時間)</option>
-						</select>
-						<div class="h3 col-md-1 p-0 m-0 text-center">:</div>
-						<!-- 文字 -->
-						<input id="fm_word_value" value="" name="" class="fm_value col-md-8 p-1 m-0" type="text" placeholder="Value[Text]=${data1,2}">
-						<!-- 數字 -->
-						<input id="fm_nb_value" value="" name="" class="fm_value col-md-8 p-1 m-0 d-none" type="number" placeholder="Value[Number]=${data1,2}">
-						<!-- 時間 -->
-						<input id="fm_time_value" value="" name="" class="fm_value col-md-8 p-1 m-0 d-none datetimepicker_date" type="text" placeholder="Value[Date Time]=${data1,2}">
+					<!-- 條件 -->
+					<div class="col-md-12 row p-0 m-0">
+						<div class="col-3 p-1">
+							<input id="chooes_show" value="" name="" class="p-1 col-md-12 m-0" type="text" disabled="disabled" placeholder="Ex:工單號 ">
+						</div>
+						<div class="col-md-3 p-1 m-0">
+							<select class="col-md-12 p-1" id="fm_select">
+								<option class="select_option" value="select_notthing">選擇條件</option>
+								<option class="select_option" value="select_like">包含有</option>
+								<option class="select_option" value="select_notsame">完全相同</option>
+								<option class="select_option" value="select_same">完全不同</option>
+								<option class="select_option" value="select_small">小於區間</option>
+								<option class="select_option" value="select_bigger">大於區間</option>
+							</select>
+						</div>
+						<div class="col-md-3 p-1 m-0">
+							<select class="col-md-12 p-1" id="fm_type">
+								<option value="fm_word" selected>Text(文字)</option>
+								<option value="fm_nb">Number(數字)</option>
+								<option value="fm_time">Date Time(時間)</option>
+							</select>
+						</div>
+						<div class="col-md-3 p-1 m-0">
+							<!-- 文字 -->
+							<input id="fm_word_value" value="" name="" class="fm_value col-md-12 p-1 m-0" type="text" placeholder="Value[Text]=${data1,2}">
+							<!-- 數字 -->
+							<input id="fm_nb_value" value="" name="" class="fm_value col-md-12 p-1 m-0 d-none" type="number" placeholder="Value[Number]=${data1,2}">
+							<!-- 時間 -->
+							<input id="fm_time_value" value="" name="" class="fm_value col-md-12 p-1 m-0 d-none datetimepicker_date" type="text" placeholder="Value[Date Time]=${data1,2}">
+						</div>
 					</div>
 					<div class="col-12 row m-0 p-0 mt-2">
 						<div class="col"></div>
@@ -85,10 +104,8 @@
 						<button id="where_value_clear" class="col m-1 p-1 btn btn-warning btn-sm" type="button">Clear</button>
 					</div>
 				</div>
-			</div>
-			<div class="col-6 m-0 p-0">
-				<div class="row m-1 p-0 border border-secondary rounded-top shadow bg-white">
-					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Step4. search list</div>
+				<div class="row m-1 mt-2 p-0 border border-secondary rounded-top shadow bg-white">
+					<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">Query list</div>
 					<div class="col-12 m-0 p-0">
 						<!-- 樣本 -->
 						<div id="list_i" class="row p-0 m-1 border border-secondary d-none">
@@ -96,7 +113,9 @@
 								<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0 list_remove" id="list_where_i"></i>
 							</div>
 							<div class="col-md-11 h4 mb-0 p-1">
-								<input disabled="disabled" value="" name="" class="col list_where_value" type="text" placeholder="">
+								<input disabled="disabled" value="" name="" class="col list_where_show" type="text" placeholder="">
+								<!--  -->
+								<input disabled="disabled" value="" name="" class="col list_where_value d-none" type="text" placeholder="">
 							</div>
 						</div>
 
@@ -105,8 +124,32 @@
 							<button id="list_search_btn" class="col m-1 p-1 btn btn-primary btn-sm" type="submit">Search</button>
 							<button id="list_cancel_btn" class="col m-1 p-1 btn btn-warning btn-sm" type="button">Cancel</button>
 						</div>
-						<div class="col-12 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 5,000 Data</div>
-
+						<div class="col-12 row m-0 p-1 mt-2">
+							<div class="col-8 p-0 progress">
+								<div id="pro_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+							</div>
+							<div class="col-4 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 5,000 Data</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-4 m-0 p-0" style="overflow-y: auto; height: 515px;">
+				<div class="col-12 m-0 p-0">
+					<div class="row m-1 mt-1 p-0 border border-secondary rounded-top shadow bg-white">
+						<div class="col-12 h5 m-0 mb-2 pl-2 p-1 text-white rounded-top bg-dark">History</div>
+						<div class="col-12 m-0 p-0">
+							<!-- 樣本 -->
+							<div id="list_his" class="row p-0 m-1 border border-secondary d-none">
+								<div class="col-md-1 p-2">
+									<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0 list_add" id="list_where_his"></i>
+								</div>
+								<div class="col-md-11 h4 mb-0 p-1">
+									<input disabled="disabled" value="" name="" class="col list_his_show" type="text" placeholder="">
+									<!--  -->
+									<input disabled="disabled" value="" name="" class="col list_his_value d-none" type="text" placeholder="">
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -114,17 +157,15 @@
 	</div>
 	<!-- 報告 -->
 	<div class=" shadow mt-0 text-left mb-2">
-		<div class="bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-graph-up mr-1"></i>Report
+		<div class="bg-white rounded-top m-0 pl-1 h4 row justify-content-between">
+			<div class="col-md-5 p-0">
+				<i class="bi bi-graph-up mr-1"></i>Report
+			</div>
+			<div class="col-md-2 p-0 mr-2">
+				<button id="export_excel_report" class="col-md-12 m-0 p-1 btn btn-primary btn-sm" type="button">Export excel report</button>
+			</div>
 		</div>
 		<div class="row p-0 m-0">
-			<div class="col-12 row m-0 p-0 pt-2">
-				<div class="col-md-5"></div>
-				<div class="col-md-5"></div>
-				<div class="col-md-2">
-					<button id="export_excel_report" class="col-md-12 m-1 p-1 btn btn-primary btn-sm" type="button">Export excel report</button>
-				</div>
-			</div>
 			<div class="col-md-12 m-0 p-2">
 				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 600px;">
 					<thead id="report_excel_header" class="thead bg-dark table-dark">
@@ -133,9 +174,8 @@
 						</tr>
 					</thead>
 					<tbody id="report_excel_body">
-						<tr id="report_excel_tbody_tr">
-							<td class="report_excel_td" id="" nowrap="nowrap"></td>
-
+						<tr id="report_excel_tbody_tr" class="noExl d-none">
+							<td class="report_excel_td" nowrap="nowrap"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -171,25 +211,34 @@ analysis = new Vue({
 				var value_name = title[Object.keys(title)[i]].name,
 					value_size = title[Object.keys(title)[i]].size,
 					value_write = title[Object.keys(title)[i]].write;
-				if (value_write != "disabled") {
-					if (analysis[key_id] != "W_N") {
-						//Columns
-						var one_item = $("#columns_sample").clone(); //複製樣本
-						one_item[0].id = "columns_" + key_id;
-						one_item.insertBefore("#columns_sample");
-						$("#" + one_item[0].id).removeClass("d-none");
-						$("#" + one_item[0].id + " .column_name").val(key_id);
-						$("#" + one_item[0].id + " .column_exp").val(value_name);
-						$("#" + one_item[0].id + " button").attr("id", "btn_" + one_item[0].id);
-					}
-					//Report
-					var report_item = $("#report_excel_th").clone(); //複製樣本
-					report_item[0].id = "report_" + key_id;
-					report_item.insertBefore("#report_excel_th");
-					$("#" + report_item[0].id).text(value_name).css('max-width', value_size).css('min-width', value_size);
+				
+				if (analysis[key_id] != "W_N") {
+					//Columns(選擇清單)
+					var one_item = $("#columns_sample").clone(); //複製樣本
+					one_item[0].id = "columns_" + key_id;
+					one_item.insertBefore("#columns_sample");
+					$("#" + one_item[0].id).removeClass("d-none");
+					$("#" + one_item[0].id + " .column_name").val(key_id);
+					$("#" + one_item[0].id + " .column_exp").val(value_name);
+					$("#" + one_item[0].id + " button").attr("id", "btn_" + one_item[0].id);
+					$("#" + one_item[0].id + " button").text(value_name);
+					
+					//Report(報告欄位)
+					var report_header = $("#report_excel_th").clone(); //複製樣本
+					var report_body = $(".report_excel_td").clone();
+					report_header[0].id = "report_t_" + key_id;
+					report_header.insertBefore("#report_excel_th");
+					report_body[0].id= "report_b_" + key_id;
+					report_body[0].className = "";
+					report_body.insertBefore(".report_excel_td");
+					$("#" + report_header[0].id).text(value_name).css('max-width', value_size).css('min-width', value_size);
+					$("#" + report_body[0].id).text("");
+					//.css('max-width', value_size).css('min-width', value_size).css('overflow', 'hidden');
+					
 					//固定
 					if (ii < 2) {
-						$("#" + report_item[0].id).addClass('fixed_cell').addClass('bg-dark').css('left', left_ii);
+						$("#" + report_header[0].id).addClass('fixed_cell').addClass('bg-dark').css('left', left_ii);
+						$("#" + report_body[0].id).addClass('fixed_cell').css('left', left_ii);
 						ii += 1;
 						left_ii += parseInt(value_size);
 					}
@@ -217,38 +266,49 @@ analysis = new Vue({
 			//========choose========
 			$(document).on("click", ".column_add", function(event) {
 				var id = event.target.id.replace('btn_columns_', '');
-				$("#where_value").val($("#columns_" + id + " .column_name").val());
+				$("#where_key").val($("#columns_" + id + " .column_name").val());
+				$("#chooes_show").val($("#columns_" + id + " .column_exp").val());
+				
 				$(".select_btn").removeAttr("disabled");
 				$(".column_add").attr("disabled", "disabled");
+
+				if($("#fm_select").find(":selected").val()!="select_notthing"){
+					$(".column_add").attr("disabled", "disabled");
+					$(".select_btn").attr("disabled", "disabled");
+					$("#where_value_add").removeAttr("disabled");					
+				}
 			});
 
-			//========Where======== 
-			$(document).on("click", ".select_btn", function(event) {
-				switch (event.target.id) {
-					case "select_0":
+			//========Select value======== 
+			$(document).on("click", "#fm_select", function() {
+				$("#where_value").val("");
+				switch ($(this).find(":selected").val()) {
+					case "select_notthing":
+						$("#where_value_add").attr("disabled", "disabled");
+						return null;
+					break;
+					case "select_like":
 						$("#where_value").val($("#where_value").val() + " Like '%${data2}%' ");
 						break;
-					case "select_1":
+					case "select_notsame":
 						$("#where_value").val($("#where_value").val() + " = ${data2} ");
 						break;
-					case "select_2":
+					case "select_same":
 						$("#where_value").val($("#where_value").val() + " != ${data2} ");
 						break;
-					case "select_3":
+					case "select_small":
 						$("#where_value").val($("#where_value").val() + " < ${data2} ");
 						break;
-					case "select_4":
+					case "select_bigger":
 						$("#where_value").val($("#where_value").val() + " > ${data2} ");
 						break;
-					case "select_5":
-						$("#where_value").val($("#where_value").val() + " betweet ${data1} and ${data2}");
-						break;
 				}
-				$(".column_add").attr("disabled", "disabled");
+				//$(".column_add").attr("disabled", "disabled");
 				$(".select_btn").attr("disabled", "disabled");
 				$("#where_value_add").removeAttr("disabled");
+				
 			});
-			//========value========
+			//========Query list========
 			$(document).on("click", "#where_value_add", function(event) {
 				//添加條件式
 				var where_value = $("#fm_word_value").val();
@@ -283,13 +343,16 @@ analysis = new Vue({
 					var one_item = $("#list_i").clone(); //複製樣本
 					one_item[0].id = "list_" + (analysis.list_id += 1);
 					one_item.insertBefore("#list_i");
-					$("#" + one_item[0].id + " .list_where_value").val($("#where_value").val().replace('${data2}', where_value));
+					$("#" + one_item[0].id + " .list_where_value").val($("#where_key").val()+$("#where_value").val().replace('${data2}', where_value));
+					$("#" + one_item[0].id + " .list_where_show").val($("#chooes_show").val()+" "+$("#fm_select").find(":selected").text()+" "+where_value);
+					
 					$("#" + one_item[0].id + " #list_where_i").attr("id", "list_where_" + analysis.list_id);
 					$("#" + one_item[0].id).removeClass("d-none");
 					$("#" + one_item[0].id).addClass("list_where");
 
 					//清空
-					$("#where_value").val("");
+					//$("#where_value").val("");
+					//$("#where_key").val("");
 					$("#fm_nb_value").val("");
 					$("#fm_word_value").val("");
 					$("#fm_time_value").val("");
@@ -312,7 +375,7 @@ analysis = new Vue({
 				$(".select_btn").attr("disabled", "disabled");
 				$("#where_value_add").attr("disabled", "disabled");
 			});
-			//========list========
+			//========Search list========
 			$(document).on("click", ".list_remove", function(event) {
 				$("#list" + event.target.id.replace('list_where', '')).remove();
 			});
@@ -321,6 +384,21 @@ analysis = new Vue({
 				$(".report_excel_list").remove();
 			});
 			$(document).on("click", "#list_search_btn", function(event) {
+				
+				var search = $(".list_where .list_where_value").map((index, el) => el.value);
+				var show = $(".list_where .list_where_show").map((index, el) => el.value);
+				for (var a = 0; a < search.length; a++) {
+					var one_item = $("#list_his").clone(); //複製樣本
+					one_item[0].id = "list_" + (analysis.list_id += 1);
+					one_item.insertBefore("#list_his");
+					$("#" + one_item[0].id + " .list_his_value").val(search[a]);
+					$("#" + one_item[0].id + " .list_his_show").val(show[a]);
+					
+					$("#" + one_item[0].id + " #list_where_his").attr("id", "list_where_" + analysis.list_id);
+					$("#" + one_item[0].id).removeClass("d-none");
+					$("#" + one_item[0].id).addClass("list_where");
+				}
+				
 				analysis.reportSend();
 			});
 
@@ -340,12 +418,19 @@ analysis = new Vue({
 				});
 			});
 		},
+		proBar(total,nowqty){
+			var p = (nowqty*100)/total;
+			$("#pro_bar").text(nowqty+"/"+total);
+			$("#pro_bar").attr("aria-valuenow",p);
+			$("#pro_bar").css("width",p+"%");
+			
+		},
 		reportSend() {
 			//https://ithelp.ithome.com.tw/articles/10215281
 			//例遍 處理
 			main.loading(true);
 			var search_arr = [];
-			var search = $(".list_where input").map((index, el) => el.value);
+			var search = $(".list_where .list_where_value").map((index, el) => el.value);
 			for (var a = 0; a < search.length; a++) {
 				search_arr.push("" + analysis.stringToBytes(search[a]));
 			}
@@ -388,47 +473,44 @@ analysis = new Vue({
 				$(".report_excel_list").remove();
 				var fixed_cell_color = false;
 				console.log(new Date());
-				for (var j = 0; list.length > j; j++) {
-					var report_item = $("#report_excel_tbody_tr").clone(); //複製樣本
+				var list_length = list.length ;
+				var key_length = Object.keys(list[0]).length;
+				var report_item = "";
+				this.proBar(list_length,0);
+				var key_id = null, report_item_one = null, i = 0, rep_i_one = "",ii = 0; /*有效欄位*/
+				for (var j = 0; list_length > j; j++) {
+					report_item = $("#report_excel_tbody_tr").clone(); /*複製樣本*/
 					report_item[0].id = "report_excel_tbody_tr_" + j;
 					report_item[0].className = "report_excel_list";
-					report_item.insertBefore("#report_excel_tbody_tr");
-					//排序
-					list[j] = main.orderedSort(list[j]);
-
-					var ii = 0; //有效欄位
-					var left_ii = 1; //有效靠左
-					//資料內容
-					for (var i = 0; i < Object.keys(list[j]).length; i++) {
-						var report_item_one = $("#report_excel_tbody_tr_" + j + " .report_excel_td").clone(); /*複製樣本*/
-						var key_id = Object.keys(list[j])[i];
-						var value_name = list[j][Object.keys(list[j])[i]];
-						report_item_one[0].className = "report_" + key_id;
-						report_item_one[0].innerText = value_name;
-						report_item_one.insertBefore("#report_excel_tbody_tr_" + j + " .report_excel_td");
-						$("#report_excel_tbody_tr_" + j + " .report_excel_td").text(j + 1);
-
+					list[j] = main.orderedSort(list[j]);/*排序*/
+					
+					/*資料內容*/
+					key_id = null, report_item_one = null, i = 0, rep_i_one = "",ii = 0; /*有效欄位*/
+					for (i = 0; i < key_length; i++) {		
+						//資料
+						key_id = (Object.keys(list[j])[i]).split("_b__")[1];/*Ex:"01_b__pr_id"*/
+						value_name = list[j][Object.keys(list[j])[i]];
+						/*取得Report位置 : 如果*/
+						if(report_item[0].children[i]==null){continue;}/*如果沒有此欄位*/
+						report_item[0].children[i].className="report_" + key_id;
+						report_item[0].children[i].id = "";
+						report_item[0].children[i].innerHTML = value_name;
 						/*固定*/
 						if (ii < 2) {
-							var min_width = $("#report_" + key_id.split("_b__")[1]).css('min-width');
-							$(".report_" + key_id).addClass('fixed_cell');
+							report_item[0].children[i].className="report_" + key_id+" fixed_cell";
 							if (fixed_cell_color) {
-								$("#" + report_item[0].id + " .report_" + key_id).css("background-color", "#f8f9fc");
+								report_item[0].children[i].style.backgroundColor = "#f8f9fc";
 							} else {
-								$("#" + report_item[0].id + " .report_" + key_id).css("background-color", "#ebecef");
-							}
-							$(".report_" + key_id).css('left', left_ii);
-							$(".report_" + key_id).css('min-width', min_width);
-							left_ii += parseInt(min_width);
-							ii += 1;
+								report_item[0].children[i].style.backgroundColor = "#ebecef";
+							}ii += 1;
 						}
 					}
-					if (fixed_cell_color) {
-						fixed_cell_color = false;
-					} else {
-						fixed_cell_color = true;
-					}
+					report_item[0].children[i].innerHTML = j+1;/*計數器*/
+					report_item.insertBefore("#report_excel_tbody_tr");
+					if (fixed_cell_color) {fixed_cell_color = false;
+					}else {fixed_cell_color = true;}
 				}
+				this.proBar(list_length,j);
 				console.log(new Date());
 			}
 			main.loading(false);

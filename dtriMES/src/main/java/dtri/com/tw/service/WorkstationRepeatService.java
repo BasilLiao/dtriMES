@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
 
 @Service
 public class WorkstationRepeatService {
+	private static final Logger log = LoggerFactory.getLogger(WorkstationRepeatService.class);
 	@Autowired
 	private ProductionHeaderDao headerDao;
 	@Autowired
@@ -60,6 +63,15 @@ public class WorkstationRepeatService {
 			// 如果有-> 回傳原先製令單
 			String m_old_order = "";
 			if (bodies_old.size() == 1) {
+				ProductionBody one_old = bodies_old.get(0);
+				// 有舊資料 則顯示舊的工單
+				if (one_old != null && !one_old.getPboldsn().equals("")) {
+					List<ProductionBody> bodies_old_last = bodyDao.findAllByPbbsnLike("%" + m_old_sn + "_old%");
+					if (bodies_old_last.size() == 1) {
+						bodies_old = bodies_old_last;
+					}
+				}
+
 				prArrayList_old = headerDao.findAllByPhpbgid(bodies_old.get(0).getPbgid());
 				m_old_order = prArrayList_old.size() > 0 ? prArrayList_old.get(0).getProductionRecords().getPrid() : "";
 			}
@@ -71,6 +83,7 @@ public class WorkstationRepeatService {
 					put("check", true)));//
 		} else {
 			bean.autoMsssage("102");
+			log.error(bean.getError_ms());
 		}
 		return bean;
 	}
@@ -149,11 +162,11 @@ public class WorkstationRepeatService {
 					pro_b.setSysmdate(new Date());
 
 					bodyDao.save(pro_b);
-
 				}
 			}
 			check = true;
 		} catch (Exception e) {
+			log.error(e.toString());
 			System.out.println(e);
 		}
 		return check;
@@ -333,6 +346,7 @@ public class WorkstationRepeatService {
 
 				} catch (Exception e) {
 					e.printStackTrace();
+					log.error(e.toString());
 					return check;
 				}
 
@@ -341,6 +355,7 @@ public class WorkstationRepeatService {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			log.error(e.toString());
 			return false;
 		}
 		return check;
@@ -426,6 +441,7 @@ public class WorkstationRepeatService {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			log.error(e.toString());
 			return false;
 		}
 		return check;
