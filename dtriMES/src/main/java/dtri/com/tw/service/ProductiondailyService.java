@@ -446,13 +446,11 @@ public class ProductiondailyService {
 							// 取得使用者
 							JSONObject wname_list = new JSONObject(oldDaily.getPdwnames());
 							JSONArray wnames = wname_list.getJSONArray("list");
+							//有沒有新使用者
 							if (su_name.size() > 0 && !oldDaily.getPdwnames().contains(su_name.get(0))) {
 								wnames.put(su_name.get(0));
 								oldDaily.setPdwnames(new JSONObject().put("list", wnames).toString());
-							} else {
-								return bean;
 							}
-
 							JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdprpbsn());
 							JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(n_pdprpbsn);
 							o_pdprpbsn.put("list", o_pdprpbsns);

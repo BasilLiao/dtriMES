@@ -177,7 +177,7 @@ public class SystemUserService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(JSONObject body, PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		try {
@@ -206,7 +206,10 @@ public class SystemUserService {
 				sys_c.setSyscuser(user.getSuaccount());
 
 				// 帳號重複
-				if (userDao.findBySuaccount(sys_c.getSuaccount()) != null) {
+				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
+				if (oneUser != null) {
+					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					reBean.autoMsssage("107");
 					check = false;
 					return check;
 				} else {
@@ -222,7 +225,7 @@ public class SystemUserService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(JSONObject body, PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		try {
@@ -252,7 +255,10 @@ public class SystemUserService {
 				sys_c.setSyscuser(user.getSuaccount());
 
 				// 帳號重複
+				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
 				if (userDao.findBySuaccount(sys_c.getSuaccount()) != null) {
+					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					reBean.autoMsssage("107");
 					check = false;
 					return check;
 				} else {
@@ -268,7 +274,7 @@ public class SystemUserService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(JSONObject body, PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		try {
 			PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
@@ -277,13 +283,22 @@ public class SystemUserService {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
 				SystemUser sys_c = userDao.findAllBySuid(data.getLong("su_id")).get(0);
+				// 如果帳號重覆
+				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
+				if (oneUser != null && data.getLong("su_id") != oneUser.getSuid()) {
+					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					reBean.autoMsssage("107");
+					check = false;
+					return check;
+				}
+				sys_c.setSuaccount(data.getString("su_account"));
 				// sys_c.setSuid(data.getInt("su_id"));
 				sys_c.setSusggid(data.getLong("su_sg_g_id"));
 				sys_c.setSuname(data.getString("su_name"));
 				sys_c.setSuename(data.getString("su_e_name"));
 				sys_c.setSuposition(data.getString("su_position"));
 				sys_c.setSutemplate(data.getString("su_template"));
-				sys_c.setSuaccount(data.getString("su_account"));
+
 				// 密碼空不存
 				if (!data.getString("su_password").equals("")) {
 					sys_c.setSupassword(pwdEncoder.encode(data.getString("su_password")));

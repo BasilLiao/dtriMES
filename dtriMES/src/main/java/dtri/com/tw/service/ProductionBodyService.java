@@ -428,7 +428,6 @@ public class ProductionBodyService {
 			bean.autoMsssage("102");
 			return bean;
 		}
-
 		em.clear();
 		em.close();
 
@@ -484,7 +483,6 @@ public class ProductionBodyService {
 						object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + key_b, (value_b == null ? "" : value_b));
 					}
 				}
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -623,8 +621,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_f_value", one.getPbfvalue() == null ? "" : one.getPbfvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_check", one.getPbcheck());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_dt", one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbldt()));
-			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_schedule", /*
-			// one.getPbschedule() == null ? "" : one.getPbschedule() */" ");
+
 			try {
 				// 有效設定的欄位
 				for (int k = 0; k < 50; k++) {

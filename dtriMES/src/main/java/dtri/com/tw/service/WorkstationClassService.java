@@ -109,7 +109,9 @@ public class WorkstationClassService {
 					sysUser.setSutemplate(sysUser.getSutemplate() + "　");
 				}
 				String value = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
-				st_val.put((new JSONObject()).put("value", value).put("key", sysUser.getSuid()));
+				if(value.indexOf("一般職員") < 0) {
+					st_val.put((new JSONObject()).put("value", value).put("key", sysUser.getSuid()));
+				}
 			}
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "wc_id", wc_id));
@@ -228,7 +230,7 @@ public class WorkstationClassService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(JSONObject body,PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -275,6 +277,7 @@ public class WorkstationClassService {
 				String wc_p_line = data.getString("wc_p_line");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
+					reBean.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -289,7 +292,7 @@ public class WorkstationClassService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(JSONObject body,PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -302,9 +305,17 @@ public class WorkstationClassService {
 				String wc_l_name = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
 				sysUser = systemUserDao.findAllBySuid(data.getLong("wc_m_su_id")).get(0);
 				String wc_m_name = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
+				// 如果複製有 自定義時間
+				if (data.getString("wc_s_time") != null && data.getString("wc_e_time") != null && //
+						!data.getString("wc_s_time").equals("") && !data.getString("wc_e_time").equals("")) {
+					item.setWcstime(data.getString("wc_s_time"));
+					item.setWcetime(data.getString("wc_e_time"));
 
-				item.setWcstime(data.getString("wc_s_time"));
-				item.setWcetime(data.getString("wc_e_time"));
+				} else if (data.getString("wc_se_time") != null && !data.getString("wc_se_time").equals("")) {
+					item.setWcstime(data.getString("wc_se_time").split("-")[0]);
+					item.setWcetime(data.getString("wc_se_time").split("-")[1]);
+				}
+
 				item.setWclname(wc_l_name);
 				item.setWclsuid(data.getLong("wc_l_su_id"));
 
@@ -336,6 +347,7 @@ public class WorkstationClassService {
 				String wc_p_line = data.getString("wc_p_line");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
+					reBean.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -350,7 +362,7 @@ public class WorkstationClassService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(JSONObject body,PackageBean reBean, SystemUser user) {
 		boolean check = false;
 		try {
 			SystemUser sysUser = new SystemUser();
@@ -372,8 +384,10 @@ public class WorkstationClassService {
 				String wc_w_c_name = lists.get(0).getWcname() + "(" + lists.get(0).getWpbname() + ")";
 				String wc_class = data.getString("wc_class");
 				String wc_p_line = data.getString("wc_p_line");
+				Long wc_id =data.getLong("wc_id");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
-				if (arrayList != null && arrayList.size() > 1) {
+				if (arrayList != null && arrayList.size() > 0 && wc_id != arrayList.get(0).getWcid()) {
+					reBean.autoMsssage("107");
 					check = false;
 					return check;
 				}

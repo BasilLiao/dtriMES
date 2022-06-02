@@ -51,7 +51,6 @@ public class ProductionRecordsService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_id", FFS.h_t("PR_工單序號ID", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_order_id", FFS.h_t("PR_訂單編號", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_c_name", FFS.h_t("PR_客戶名稱", "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_wc_line", FFS.h_t("PR_產線", "150px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_quantity", FFS.h_t("PR_生產數量", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_ok_quantity", FFS.h_t("PR_完成數量", "150px", FFM.Wri.W_Y));
@@ -110,7 +109,6 @@ public class ProductionRecordsService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", "備註"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_c_from", "單據來源"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "pr_wc_line", "產線"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-2", true, n_val, "sys_sort", "排序"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_ver", "版本"));
@@ -161,7 +159,6 @@ public class ProductionRecordsService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_id", one.getPrid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_order_id", one.getProrderid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_c_name", one.getPrcname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_wc_line", one.getPrwcline());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_quantity", one.getPrpquantity());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_ok_quantity", one.getPrpokquantity());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", one.getPrpmodel());
@@ -169,7 +166,7 @@ public class ProductionRecordsService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", one.getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", one.getPrbomcid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_c_from", one.getPrcfrom());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_wc_line", one.getPrwcline());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_wc_line", one.getPrwcline() == null ? "" : one.getPrwcline());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_b_item", one.getPrbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_item", one.getPrsitem());

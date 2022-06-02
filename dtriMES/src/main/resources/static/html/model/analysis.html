@@ -33,7 +33,7 @@
 				<div class="m-0 p-0 border border-secondary rounded-top shadow bg-white">
 					<div class="col-12 h5 m-0 p-1 pl-2 mb-2 text-white rounded-top bg-dark">Step1. choose ?</div>
 					<div class="row m-0 p-1">
-						<div class="col-8 p-1 border border-secondary">(選)查詢欄位</div>
+						<div class="col-8 p-1 border border-secondary">查詢欄位</div>
 						<div class="col-4 p-1 border border-secondary">顯示</div>
 					</div>
 					<div id="columns_sample" class="col-md-12 p-0 m-0 d-none">
@@ -72,7 +72,7 @@
 						<div class="col-3 p-1">
 							<input id="chooes_show" value="" name="" class="p-1 col-md-12 m-0" type="text" disabled="disabled" placeholder="Ex:工單號 ">
 						</div>
-						<div class="col-md-3 p-1 m-0">
+						<div class="col-md-2 p-1 m-0">
 							<select class="col-md-12 p-1" id="fm_select">
 								<option class="select_option" value="select_notthing">選擇條件</option>
 								<option class="select_option" value="select_like">包含有</option>
@@ -89,7 +89,7 @@
 								<option value="fm_time">Date Time(時間)</option>
 							</select>
 						</div>
-						<div class="col-md-3 p-1 m-0">
+						<div class="col-md-4 p-1 m-0">
 							<!-- 文字 -->
 							<input id="fm_word_value" value="" name="" class="fm_value col-md-12 p-1 m-0" type="text" placeholder="Value[Text]=${data1,2}">
 							<!-- 數字 -->
@@ -140,7 +140,7 @@
 						<div class="col-12 m-0 p-0">
 							<!-- 樣本 -->
 							<div id="list_his" class="row p-0 m-1 border border-secondary d-none">
-								<div class="col-md-1 p-2">
+								<div class="col-md-1 p-1 pt-2">
 									<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0 list_add" id="list_where_his"></i>
 								</div>
 								<div class="col-md-11 h4 mb-0 p-1">
@@ -167,7 +167,7 @@
 		</div>
 		<div class="row p-0 m-0">
 			<div class="col-md-12 m-0 p-2">
-				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 600px;">
+				<table id="report_excel_example" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 620px; max-height: 620px;">
 					<thead id="report_excel_header" class="thead bg-dark table-dark">
 						<tr style="position: sticky; top: 0px; background-color: #343a40; z-index: 5;">
 							<th id="report_excel_th" class="text-center" style="min-width: 150px;" nowrap="nowrap">計數</th>
@@ -259,7 +259,7 @@ analysis = new Vue({
 				todayBtn: true,
 				//......可以同上項目代碼自定義設置
 			});
-			$(".select_btn").attr("disabled", "disabled");
+			
 			$("#where_value_add").attr("disabled", "disabled");
 			$("#list_search_btn").attr("disabled", "disabled");
 
@@ -268,19 +268,19 @@ analysis = new Vue({
 				var id = event.target.id.replace('btn_columns_', '');
 				$("#where_key").val($("#columns_" + id + " .column_name").val());
 				$("#chooes_show").val($("#columns_" + id + " .column_exp").val());
-				
-				$(".select_btn").removeAttr("disabled");
-				$(".column_add").attr("disabled", "disabled");
+				//$(".column_add").attr("disabled", "disabled");
 
-				if($("#fm_select").find(":selected").val()!="select_notthing"){
-					$(".column_add").attr("disabled", "disabled");
-					$(".select_btn").attr("disabled", "disabled");
+				if($("#fm_select").find(":selected").val()!="select_notthing" ){
+					//$(".column_add").attr("disabled", "disabled");
 					$("#where_value_add").removeAttr("disabled");					
 				}
 			});
 
 			//========Select value======== 
 			$(document).on("click", "#fm_select", function() {
+				if($("#chooes_show").val()==""){
+					return null;//如果沒有選項目
+				}
 				$("#where_value").val("");
 				switch ($(this).find(":selected").val()) {
 					case "select_notthing":
@@ -304,7 +304,7 @@ analysis = new Vue({
 						break;
 				}
 				//$(".column_add").attr("disabled", "disabled");
-				$(".select_btn").attr("disabled", "disabled");
+			
 				$("#where_value_add").removeAttr("disabled");
 				
 			});
@@ -336,7 +336,7 @@ analysis = new Vue({
 					}
 					//按鈕鎖定
 					$(".column_add").removeAttr("disabled");
-					$(".select_btn").attr("disabled", "disabled");
+					
 					$("#where_value_add").attr("disabled", "disabled");
 					$("#list_search_btn").removeAttr("disabled");
 					//添加清單
@@ -372,7 +372,7 @@ analysis = new Vue({
 				$("#fm_time_value").val("");
 
 				$(".column_add").removeAttr("disabled");
-				$(".select_btn").attr("disabled", "disabled");
+				
 				$("#where_value_add").attr("disabled", "disabled");
 			});
 			//========Search list========
@@ -454,6 +454,7 @@ analysis = new Vue({
 			s_data.req_content = req;
 
 			//console.log(s_url);
+			this.proBar(100,10);
 			//傳送
 			main.ajaxSend(s_url, s_type, s_data);
 		},
@@ -467,7 +468,6 @@ analysis = new Vue({
 				('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
 
 			console.log("reportReturn");
-
 			if (main.allData.body != null) {
 				var list = main.allData.body.search;
 				$(".report_excel_list").remove();
@@ -505,13 +505,15 @@ analysis = new Vue({
 							}ii += 1;
 						}
 					}
-					report_item[0].children[i].innerHTML = j+1;/*計數器*/
+					report_item[0].children[i].innerHTML = j+1;/* 計數器*/
 					report_item.insertBefore("#report_excel_tbody_tr");
 					if (fixed_cell_color) {fixed_cell_color = false;
 					}else {fixed_cell_color = true;}
 				}
 				this.proBar(list_length,j);
 				console.log(new Date());
+			}else{
+				this.proBar(100,0);
 			}
 			main.loading(false);
 		},
@@ -534,13 +536,13 @@ analysis = new Vue({
 	beforeDestroy() {
 		console.log("analysis.html(beforeDestroy)");
 		$(document).off("click", ".column_add");
-		$(document).off("click", ".select_btn");
+		$(document).off("click", ".fm_select");
 		$(document).off("click", "#where_value_clear");
 		$(document).off("click", "#where_value_add");
 		$(document).off("click", ".list_remove");
 		$(document).off("click", "#list_cancel_btn");
 		$(document).off("click", "#list_search_btn");
-
+		
 		$(document).off("click", "#export_excel_report");
 	},
 });

@@ -122,9 +122,9 @@ public class SystemUserController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = userService.createData(req.getBody(), user);
+		check = userService.createData(req.getBody(), resp, user);
 		if (check) {
-			check = userService.save_asData(req.getBody(), user);
+			check = userService.save_asData(req.getBody(), resp, user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -134,7 +134,9 @@ public class SystemUserController {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
-			resp.autoMsssage("100");
+			if (resp.getType().equals("")) {// 如果有其他錯誤
+				resp.autoMsssage("100");
+			}
 			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
@@ -164,7 +166,7 @@ public class SystemUserController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = userService.updateData(req.getBody(), user);
+		check = userService.updateData(req.getBody(), resp, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -173,7 +175,9 @@ public class SystemUserController {
 			// Step4.包裝回傳
 			req.setCall_bk_vals(new JSONObject().put("search", false));
 			req.setAction("");
-			resp.autoMsssage("100");
+			if (resp.getType().equals("")) {// 如果有其他錯誤
+				resp.autoMsssage("100");
+			}
 			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料

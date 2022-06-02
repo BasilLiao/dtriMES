@@ -22,9 +22,10 @@ public class PackageBean {
 	public static final String info_warning = "[100] The command was executed [Warning/警告/Cảnh cáo]!!";
 	public static final String info_warning_save = "[105] The command was executed (Save/存檔/Lưu trữ) [Warning/警告/Cảnh cáo]!!";
 	public static final String info_warning_check = "[106] The command was executed (Check/檢查/kiểm tra) [Warning/警告/Cảnh cáo]!!";
+	public static final String info_warning_same_data = "[107] The data is duplicated (資料重複)";
 
 	public static final String info_warning1_NotFindUser = "[101] Unable to get user information [Warning]!!";
-	public static final String info_warning2_NotFind = "[102] Did not find any results [Warning]!!";
+	public static final String info_warning2_NotFind = "[102] Did not find any results (查無資料)[Warning]!!";
 	public static final String info_warning3_SQLNotRight = "[103] SQL not Right [Warning]!!";
 	public static final String info_warning3 = "[103] The command was executed [Warning]!!";
 	public static final String info_warning4 = "[104] The command was executed [Warning]!!";
@@ -58,7 +59,7 @@ public class PackageBean {
 	public static final String info_work_success22 = "[WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!";
 	public static final String info_work_warning23 = "[WK023] 檢查 此(產品) 規格異常! [Warning]!!";
 
-	public static final String info_search_warning0 = "[SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!";
+	public static final String info_search_warning0 = "[SH000] 查詢 過多筆資料 ,請更正條件! [Warning]!!";
 
 	public static final String info_danger = "[502] The command was executed [ERROR]!!";
 	public static final String info_administrator = " Please contact the system administrator #321";
@@ -127,6 +128,9 @@ public class PackageBean {
 			break;
 		case "103":// SQL查詢格式異常
 			this.info = info_warning3_SQLNotRight;
+			break;
+		case "107":// 資料重複
+			this.info = info_warning_same_data + error_ms + " [Warning]!!";
 			break;
 		case "WP001":// [WP001] 此工作站被使用中 , 請檢查(工作站-流程管理)! [Warning]!!"
 			this.info = info_work_p_warning1;
