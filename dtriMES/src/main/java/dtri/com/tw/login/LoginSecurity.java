@@ -37,6 +37,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String production_reco = "/ajax/production_records.basil";
 		String production_conf = "/ajax/production_config.basil";
 		String production_daily = "/ajax/production_daily.basil";
+		String production_test = "/ajax/production_test.basil";
 
 		String workstation = "/ajax/workstation.basil";
 		// String workstation_item = "/ajax/workstation_item.basil";
@@ -111,6 +112,10 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, production_reco + ".AC").hasAuthority(actionRole(production_reco, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, production_reco + ".AU").hasAuthority(actionRole(production_reco, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, production_reco + ".AD").hasAuthority(actionRole(production_reco, "AD"))// (移除)
+
+				// ----請求-production_test-(訪問) ----
+				.antMatchers(HttpMethod.POST, production_test).hasAuthority(actionRole(production_test, ""))//
+				.antMatchers(HttpMethod.POST, production_test + ".AR").hasAuthority(actionRole(production_test, "AR"))// (查詢)
 
 				// ----請求-workstation_item-(訪問) ----
 				/*

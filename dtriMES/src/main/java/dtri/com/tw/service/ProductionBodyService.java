@@ -581,7 +581,7 @@ public class ProductionBodyService {
 				"join production_records p on h.ph_pr_id = p.pr_id WHERE ";
 		nativeQuery += str;
 		nativeQuery += " order by b.pb_b_sn desc ";
-		nativeQuery += " LIMIT 5000 OFFSET 0 ";
+		nativeQuery += " LIMIT 25000 OFFSET 0 ";
 		System.out.println(nativeQuery);
 		try {
 			Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
@@ -590,7 +590,7 @@ public class ProductionBodyService {
 				bean.autoMsssage("102");
 				return bean;
 			}
-			if (productionBodies.size() >= 5000) {
+			if (productionBodies.size() > 25000) {
 				bean.autoMsssage("SH000");
 				return bean;
 			}

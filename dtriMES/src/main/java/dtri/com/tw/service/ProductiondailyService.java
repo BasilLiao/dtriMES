@@ -81,7 +81,7 @@ public class ProductiondailyService {
 			JSONObject object_header = new JSONObject();
 			// 總數量_header_dp
 			int ord = 0;
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_line", FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_wc_class", FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
@@ -366,7 +366,6 @@ public class ProductiondailyService {
 				newDaily.getPdwcname() != null && !newDaily.getPdwcname().equals("") && // 工作站代號
 				newDaily.getPdwpbname() != null && !newDaily.getPdwpbname().equals("") && // 工作站名稱
 				newDaily.getPdwaccounts() != null && !newDaily.getPdwaccounts().equals("") // 工作站人員
-
 		) {
 
 			String n_wcclass = null;
@@ -491,7 +490,6 @@ public class ProductiondailyService {
 					dailyDao.save(newDaily);
 				}
 			}
-
 		}
 		return bean;
 	}

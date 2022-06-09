@@ -25,18 +25,20 @@ public interface SystemUserDao extends JpaRepository<SystemUser, Long> {
 			+ "WHERE (:suname is null or c.suname LIKE %:suname% ) and "//
 			+ "(:suaccount is null or c.suaccount LIKE %:suaccount% ) and "//
 			+ "(:suposition is null or c.suposition LIKE %:suposition% ) and "//
+			+ "(:susggid=0L or c.susggid = :susggid ) and "//
 			+ "( c.sysstatus = :sysstatus )  "//
 			+ "order by c.suposition asc, c.suname asc")
-	ArrayList<SystemUser> findAllBySystemUser(String suname, String suaccount, String suposition, Integer sysstatus, Pageable pageable);
+	ArrayList<SystemUser> findAllBySystemUser(Long susggid, String suname, String suaccount, String suposition, Integer sysstatus, Pageable pageable);
 
 	// 查詢全部含-頁數 不含ADMIN
 	@Query("SELECT c FROM SystemUser c "//
 			+ "WHERE (:suname is null or c.suname LIKE %:suname% ) and "//
 			+ "(:suaccount is null or c.suaccount LIKE %:suaccount% ) and "//
 			+ "(:suposition is null or c.suposition LIKE %:suposition% ) and "//
+			+ "(:susggid=0L or c.susggid = :susggid ) and "//
 			+ "( c.sysstatus = :sysstatus ) and (c.susggid != 1) "//
 			+ "order by c.suposition asc, c.suname asc")
-	ArrayList<SystemUser> findAllBySystemUserNotAdmin(String suname, String suaccount, String suposition, Integer sysstatus, Pageable pageable);
+	ArrayList<SystemUser> findAllBySystemUserNotAdmin(Long susggid, String suname, String suaccount, String suposition, Integer sysstatus, Pageable pageable);
 
 	// 查詢全部含-頁數 不含ADMIN 排序名稱
 	@Query("SELECT c FROM SystemUser c "//

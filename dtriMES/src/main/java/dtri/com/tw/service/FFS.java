@@ -38,7 +38,7 @@ public class FFS {
 	 * @param type        : 類型 EXT=text,NUMB=number,PASS=password,DATE=date
 	 * @param placeholder : 預設文字
 	 * @param value       : 預設值
-	 * @param write       : disabled/write 顯示?
+	 * @param write       : disabled/write 寫入?
 	 * @param col         : 規格
 	 * @param required    : 是否必寫
 	 * @param values      : 多選項select 才需要[{key:value,key:value}]

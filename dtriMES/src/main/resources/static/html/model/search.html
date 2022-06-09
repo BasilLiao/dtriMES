@@ -186,32 +186,43 @@ search = new Vue({
 			//標題注入資訊
 			//排序
 			title = main.orderedSort(title);
+			fixed_cell = 0;
 			for (var i = 0; i < Object.keys(title).length - 1; i++) {
-				var one_item = $(".search_example_title .s_title_body").clone(); //複製樣本
+				var one_item_header = $(".search_example_title .s_title_body").clone(); //複製樣本(header)
 				var key_id = Object.keys(title)[i];
 				var value_name = title[Object.keys(title)[i]].name;
 				var value_size = title[Object.keys(title)[i]].size;
 				var value_write = title[Object.keys(title)[i]].write;
 				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".s_title_last");
+				//header
+				one_item_header[0].className = "p-1 ";
+				one_item_header[0].id = key_id;
+				one_item_header[0].children[0].children[0].innerText = value_name;
+				one_item_header.insertBefore(".s_title_last");
 				$("#" + key_id).css("min-width", value_size);
 				$("#" + key_id).css("max-width", value_size);
 				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-
+				//body
+				var one_item_body = $(".search_example_content .s_list_body").clone(); //複製樣本(body)
+				one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+				one_item_body[0].innerText = value_name;
+				one_item_body.insertBefore(".s_list_body");
 			}
 			//結尾
 			var key_id = Object.keys(title)[Object.keys(title).length - 1];
 			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
 			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
-
+			//header
 			$(".s_title_last").attr("id", key_id);
 			$(".s_title_last .title_name").text(value_name);
 			$("#" + key_id).css("min-width", value_size);
 			$("#" + key_id).css("max-width", value_size);
 			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+			//body
+			var one_item_body = $(".search_example_content .s_list_body").clone(); //複製樣本(body)
+			one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+			one_item_body.insertBefore(".s_list_body");
+
 			//關閉範例
 			$(".s_title_body").addClass("d-none");
 			//權限設置
@@ -261,7 +272,8 @@ search = new Vue({
 			$(".s_list_body").removeClass("d-none");
 			$(".search_example_content").removeClass("d-none");
 			var fixed_cell_color = false;
-
+			
+			console.log(new Date());
 			for (var j = 0; j < list.length; j++) {
 				//固定顏色
 				if (fixed_cell_color) {
@@ -316,7 +328,8 @@ search = new Vue({
 
 				var fixed_cell_wh = 246;
 				for (var i = 0; i < Object.keys(list[j]).length; i++) {
-					var one_item = $(".search_example_content .s_list_body").clone(); //複製樣本
+					var where_i = i+7;
+					var one_item = $("#search_data_" + (j + 1))[0].children;  //每個欄位-複製樣本
 					var key_id = Object.keys(list[j])[i];
 					var value_name = list[j][Object.keys(list[j])[i]];
 					//取得title Size顯示
@@ -324,34 +337,35 @@ search = new Vue({
 					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
 					//取得title 是否顯示
 					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
+						one_item[where_i].className = "datalist d-none";
 					} else {
-						one_item[0].className = "datalist ";
+						one_item[where_i].className = "datalist ";
 					}
 
 					//固定前2格
 					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
 						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
 						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
 						}
 						$("#" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
 						$("#" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
 						$("#" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
+						one_item[where_i].className = "datalist fixed_cell ";
 						fixed_cell_wh += parseInt(value_size);
 						fixed_cell_nb += 1;
 					} else {
-						one_item[0].style = "max-width:" + value_size;
+						one_item[where_i].style = "max-width:" + value_size;
 					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore("#" + list_item[0].id + " .s_list_body");
+					one_item[where_i].id = "";
+					one_item[where_i].title = key_id;
+					one_item[where_i].innerText = value_name;
+					//one_item.insertBefore("#" + list_item[0].id + " .s_list_body");
 				}
 				$("#search_data_" + (j+1) + " .s_list_body").remove();
 			}
+			console.log(new Date());
 			//關閉樣式
 			$(".s_list_body").addClass("d-none");
 			$(".search_example_content").addClass("d-none");

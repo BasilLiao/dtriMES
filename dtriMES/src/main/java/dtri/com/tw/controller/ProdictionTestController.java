@@ -20,23 +20,23 @@ import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.login.LoginUserDetails;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.WorkstationRepeatService;
+import dtri.com.tw.service.ProductionTestService;
 
 @Controller
-public class WorkstationRepeatController {
+public class ProdictionTestController {
 	// 功能
-	final static String SYS_F = "workstation_repeat.basil";
+	final static String SYS_F = "production_test.basil";
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	WorkstationRepeatService repeatService;
+	ProductionTestService testService;
 
 	/**
 	 * 訪問
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_repeat.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/production_test.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		System.out.println("---controller -access " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -61,8 +61,7 @@ public class WorkstationRepeatController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		// resp = configService.getData(req.getBody(), req.getPage_batch(),
-		// req.getPage_total());
+		resp = testService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
@@ -73,7 +72,7 @@ public class WorkstationRepeatController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_repeat.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/production_test.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
 		System.out.println("---controller -search " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -83,7 +82,7 @@ public class WorkstationRepeatController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = repeatService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
+		resp = testService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
@@ -94,7 +93,7 @@ public class WorkstationRepeatController {
 	 * 新增
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_repeat.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/production_test.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
 		System.out.println("---controller -create " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -113,7 +112,10 @@ public class WorkstationRepeatController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = repeatService.createData(req.getBody(), resp, user);
+		check = testService.createData(req.getBody(), resp, user);
+		if (check) {
+			check = testService.save_asData(req.getBody(), resp, user);
+		}
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -135,7 +137,7 @@ public class WorkstationRepeatController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_repeat.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/production_test.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		System.out.println("---controller - -modify " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -153,8 +155,8 @@ public class WorkstationRepeatController {
 		}
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行更新
-		check = repeatService.updateData(req.getBody(), resp, user);
+		// Step2.進行新增
+		check = testService.updateData(req.getBody(), resp, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -176,7 +178,7 @@ public class WorkstationRepeatController {
 	 * 移除
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/workstation_repeat.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/production_test.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		System.out.println("---controller -delete " + SYS_F + " Check");
 		PackageBean req = new PackageBean();
@@ -184,18 +186,11 @@ public class WorkstationRepeatController {
 		boolean check = false;
 
 		System.out.println(json_object);
-		// 取得-當前用戶資料
-		SystemUser user = new SystemUser();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料
-			user = userDetails.getSystemUser();
-		}
+
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行移除
-		check = repeatService.deleteData(req.getBody(), user);
+		// Step2.進行新增
+		check = testService.deleteData(req.getBody());
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

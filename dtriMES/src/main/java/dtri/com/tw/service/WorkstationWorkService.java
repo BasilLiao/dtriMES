@@ -33,6 +33,7 @@ import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionDaily;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
+import dtri.com.tw.db.entity.ProductionTest;
 import dtri.com.tw.db.entity.SystemConfig;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.entity.Workstation;
@@ -41,6 +42,7 @@ import dtri.com.tw.db.pgsql.dao.MaintainCodeDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
+import dtri.com.tw.db.pgsql.dao.ProductionTestDao;
 import dtri.com.tw.db.pgsql.dao.SystemConfigDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
@@ -61,6 +63,8 @@ public class WorkstationWorkService {
 	private WorkstationProgramDao wkpDao;
 	@Autowired
 	private MaintainCodeDao codeDao;
+	@Autowired
+	private ProductionTestDao testDao;
 
 	@Autowired
 	private FtpService ftpService;
@@ -192,8 +196,10 @@ public class WorkstationWorkService {
 			List<ProductionBody> pb_all = new ArrayList<ProductionBody>();
 			List<ProductionBody> pb_old_all = new ArrayList<ProductionBody>();
 			ArrayList<ProductionRecords> pr_old = new ArrayList<ProductionRecords>();
+			ArrayList<ProductionTest> pTests = new ArrayList<ProductionTest>();
 
 			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
+
 			// 檢查資料是否存在
 			if (pb_all.size() != 1) {
 				bean.setBody(new JSONObject());
@@ -245,6 +251,7 @@ public class WorkstationWorkService {
 							// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 							// doc
 							ProductionBody pb_one = pb_old_all.size() == 1 ? pb_old_all.get(0) : pb_all.get(0);
+
 							JSONArray object_doc = new JSONArray();
 							JSONArray object_sn = new JSONArray();
 							JSONObject object_body_all = new JSONObject();
@@ -257,6 +264,13 @@ public class WorkstationWorkService {
 							}
 
 							String pb_w = pb_w_pass;
+							// 取得測試LOG資訊
+							pTests = testDao.findAllByTest(pb_b_sn, null, null, null, null, null, PageRequest.of(0, 1));
+							String pb_l_dt = pTests.size() == 1 ? Fm_Time.to_yMd_Hms(pTests.get(0).getPtldt()) : "";
+							String pb_l_size = pTests.size() == 1 ? pTests.get(0).getPtlsize() : "";
+							String pb_l_path = pTests.size() == 1 ? pTests.get(0).getPtlpath() : "";
+							String pb_l_text = pTests.size() == 1 ? pTests.get(0).getPtltext() : "";
+
 							ph_all.forEach(one -> {
 								JSONObject object_body = new JSONObject();
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_s_date",
@@ -277,11 +291,11 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
 
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt",
-										pb_one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(pb_one.getPbldt()));
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_size", pb_one.getPblsize());
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_path", pb_one.getPblpath());
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text", pb_one.getPbltext());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt", pb_l_dt);
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_size", pb_l_size);
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_path", pb_l_path);
+
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text", pb_l_text);
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_b_item", one.getProductionRecords().getPrbitem());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_s_item", one.getProductionRecords().getPrsitem());
@@ -635,6 +649,7 @@ public class WorkstationWorkService {
 
 					// 有維修代碼則不進行其他行為
 					// ========Step4.[檢核階段-進階]========
+					JSONObject list_log = new JSONObject();
 					if (f_code_check) {
 						try {
 							// Step4-1.[檢核階段-進階] 規格轉換
@@ -821,7 +836,7 @@ public class WorkstationWorkService {
 
 						// ======== Step5. FTP檢查[] ========
 						log.info("Step5. FTP檢查[]");
-						JSONObject list_log = new JSONObject();
+
 						if (plt_check) {
 							ArrayList<SystemConfig> config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
 							JSONObject c_json = new JSONObject();
@@ -1009,7 +1024,7 @@ public class WorkstationWorkService {
 										body_map_now.put("setPblsize",
 												new JSONObject().put("value", list_log.getInt("pb_l_size") + "").put("type", String.class));
 										body_map_now.put("setPbltext",
-												new JSONObject().put("value", list_log.getString("pb_l_text")).put("type", String.class));
+												new JSONObject().put("value", ""/* list_log.getString("pb_l_text") */).put("type", String.class));
 										body_map_now.put("setPbldt",
 												new JSONObject().put("value", Fm_Time.toDateTime(list_log.getString("pb_l_dt"))).put("type", Date.class));
 
@@ -1147,9 +1162,40 @@ public class WorkstationWorkService {
 					} else {
 						bean.autoMsssage("WK021");
 					}
-
-					// ======== Step10. 製令單+規格更新[Productiondaily] ========
-					log.info("Step10. 製令單+規格更新[Productiondaily]");
+					// ======== Step10. PLT產品測試更新[ProductionTest] ========
+					if (list_log != null && list_log.length() > 0 && list_log.has("pb_l_size")) {
+						ProductionTest pTest = new ProductionTest();
+						// 有沒有資料?
+						System.out.print(body_map_now);
+						ArrayList<ProductionTest> pTests = testDao.findAllByTest(body_one_now.getPbbsn(), null, null, null, null, null, null);
+						if (pTests.size() > 0) {
+							pTest = pTests.get(0);
+						}
+						if (list_log.has("pb_l_dt")) {
+							pTest.setPtldt(Fm_Time.toDateTime(list_log.getString("pb_l_dt")));
+						}
+						if (list_log.has("pb_l_path")) {
+							pTest.setPtlpath(list_log.getString("pb_l_path"));
+						}
+						if (list_log.has("pb_l_size")) {
+							pTest.setPtlsize(list_log.getInt("pb_l_size") + "");
+						}
+						if (list_log.has("pb_l_text")) {
+							pTest.setPtltext(list_log.getString("pb_l_text"));
+						}
+						pTest.setPtpbbsn(body_one_now.getPbbsn());
+						pTest.setPtprid(p_records.getPrid());
+						pTest.setPtprbomid(p_records.getPrbomid());
+						pTest.setPtprbomid(p_records.getPrpmodel());
+						pTest.setPtprid(p_records.getPrid());
+						pTest.setPtprsitem(p_records.getPrsitem());
+						pTest.setPtprbitem(p_records.getPrbitem());
+						pTest.setSysmdate(new Date());
+						pTest.setSysmuser(user.getSuaccount() + "(" + user.getSuname() + ")");
+						testDao.save(pTest);
+					}
+					// ======== Step11. 製令單+規格更新[Productiondaily] ========
+					log.info("Step10. 製令單+規格更新[Productiondaily]" + body_one_now.getPbbsn());
 					ProductionDaily newDaily = new ProductionDaily();
 					newDaily.setPdprpbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
@@ -1160,7 +1206,6 @@ public class WorkstationWorkService {
 					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
 					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱
 					newDaily.setPdwaccounts(list.getString("w_c_us_name")); // 工作站人員
-
 					pDailyService.setData(newDaily, user);
 
 				} else {

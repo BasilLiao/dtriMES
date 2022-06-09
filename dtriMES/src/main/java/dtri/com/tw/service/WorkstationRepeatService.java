@@ -65,7 +65,7 @@ public class WorkstationRepeatService {
 			if (bodies_old.size() == 1) {
 				ProductionBody one_old = bodies_old.get(0);
 				// 有舊資料 則顯示舊的工單
-				if (one_old != null && !one_old.getPboldsn().equals("")) {
+				if (one_old != null && one_old.getPboldsn() != null && !one_old.getPboldsn().equals("")) {
 					List<ProductionBody> bodies_old_last = bodyDao.findAllByPbbsnLike("%" + m_old_sn + "_old%");
 					if (bodies_old_last.size() == 1) {
 						bodies_old = bodies_old_last;
@@ -90,7 +90,7 @@ public class WorkstationRepeatService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(JSONObject body,PackageBean resp, SystemUser user) {
 		boolean check = false;
 		try {
 			// 新建的資料
@@ -109,6 +109,8 @@ public class WorkstationRepeatService {
 				List<ProductionBody> bodies = bodyDao.findAllByPbbsn(m_old_sn);
 				// 檢查 此工單+SN 是否重複
 				if (bodies.size() > 0) {
+					resp.setError_ms("此序號[" + m_old_sn + "] 已使被使用,不新建SN產品序號 請[取消勾選] ");
+					resp.autoMsssage("107");
 					return false;
 				}
 				// 查詢 指定的SN
@@ -174,7 +176,7 @@ public class WorkstationRepeatService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(JSONObject body, PackageBean resp, SystemUser user) {
 		boolean check = false;
 		try {
 			// 預備資料
@@ -192,6 +194,7 @@ public class WorkstationRepeatService {
 				// Step0.檢查該燒錄SN/ 製令單 是否有存在 排除old
 				List<ProductionBody> bodiess = bodyDao.findAllByPbbsnAndPbbsnNotLike(m_old_sn, "_old");
 				if (bodiess.size() != 1) {
+					resp.autoMsssage("102");
 					return false;
 				}
 				List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodiess.get(0).getPbgid());
@@ -219,8 +222,10 @@ public class WorkstationRepeatService {
 
 				// Step3. 進行-特定查詢(重工工單)-> 指定的SN
 				List<ProductionBody> bodies = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList.get(0).getPhpbgid());
-				// 檢查 SN 是否u效 (有效不可覆蓋 -> 排除)
+				// 檢查 SN 是否u效 (有效不可覆蓋(重複在同目前工單?) -> 排除)
 				if (bodies.size() >= 1) {
+					resp.setError_ms("此序號[" + m_old_sn + "] 已使用此 [" + prArrayList.get(0).getProductionRecords().getPrid() + "] 工單");
+					resp.autoMsssage("107");
 					return false;
 				}
 
@@ -426,6 +431,13 @@ public class WorkstationRepeatService {
 									bodyDao.delete(p_now);
 								}
 								bodyDao.save(p_old);
+								check = true;
+							}
+						}else {
+							//沒有舊紀錄
+							List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
+							if (p_nows != null && p_nows.size() == 1) {
+								bodyDao.delete(p_nows.get(0));
 								check = true;
 							}
 						}

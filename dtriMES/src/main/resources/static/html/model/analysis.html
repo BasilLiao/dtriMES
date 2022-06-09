@@ -128,7 +128,7 @@
 							<div class="col-8 p-0 progress">
 								<div id="pro_bar" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 							</div>
-							<div class="col-4 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 5,000 Data</div>
+							<div class="col-4 m-0 p-0 mt-0 small text-danger text-center">The maximum limit is 25,000 Data</div>
 						</div>
 					</div>
 				</div>
@@ -494,7 +494,7 @@ analysis = new Vue({
 						if(report_item[0].children[i]==null){continue;}/*如果沒有此欄位*/
 						report_item[0].children[i].className="report_" + key_id;
 						report_item[0].children[i].id = "";
-						report_item[0].children[i].innerHTML = value_name;
+						report_item[0].children[i].innerText = value_name;
 						/*固定*/
 						if (ii < 2) {
 							report_item[0].children[i].className="report_" + key_id+" fixed_cell";
