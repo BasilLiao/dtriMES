@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Fm_Time {
 
@@ -16,10 +17,12 @@ public class Fm_Time {
 	public static String to_yMd_Hm(Date date) {
 		return format_yyyyMMdd_HHmm.format(date);
 	}
+
 	/** 格式:yyyy-MM-dd HH:mm:ss **/
 	public static String to_yMd_Hms(Date date) {
 		return format_yyyyMMdd_HHmmss.format(date);
 	}
+
 	/** 格式:yyyy-MM-dd **/
 	public static String to_y_M_d(Date date) {
 		return sdf.format(date);
@@ -37,6 +40,14 @@ public class Fm_Time {
 		c.add(Calendar.DATE, n);
 		dt = c.getTime();
 		return dt;
+	}
+
+	/** 計算:相差多少 小時 **/
+	public static long to_diff(Date dt1, Date dt2) {
+		long diff = dt1.getTime() - dt2.getTime();
+		TimeUnit time = TimeUnit.HOURS;
+		long diffrence = time.convert(diff, TimeUnit.MILLISECONDS);
+		return diffrence;
 	}
 
 	/** yyyy-MM-dd to Date **/

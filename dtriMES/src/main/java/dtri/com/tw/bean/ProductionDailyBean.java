@@ -1,5 +1,7 @@
 package dtri.com.tw.bean;
 
+import java.util.Date;
+
 import org.json.JSONArray;
 
 /**
@@ -10,6 +12,7 @@ public class ProductionDailyBean {
 	public ProductionDailyBean() {
 
 	}
+
 	private Long id;// ID
 	private String sysmdate;// 時間
 	private String pdwcline;// 產線
@@ -18,8 +21,9 @@ public class ProductionDailyBean {
 	private JSONArray pdwpbname;// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
-	private String pdprogress;//進度
+	private String pdprogress;// 進度
 	private String pdtqty;
+	private Double pdttime;// 總時間
 
 	public String getSysmdate() {
 		return sysmdate;
@@ -99,6 +103,14 @@ public class ProductionDailyBean {
 
 	public void setPdtqty(String pdtqty) {
 		this.pdtqty = pdtqty;
+	}
+
+	public Double getPdttime() {
+		return pdttime;
+	}
+
+	public void setPdttime(Double pdttime) {
+		this.pdttime = pdttime;
 	}
 
 }

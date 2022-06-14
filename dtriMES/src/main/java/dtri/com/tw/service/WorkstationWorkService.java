@@ -266,7 +266,7 @@ public class WorkstationWorkService {
 							String pb_w = pb_w_pass;
 							// 取得測試LOG資訊
 							pTests = testDao.findAllByTest(pb_b_sn, null, null, null, null, null, PageRequest.of(0, 1));
-							String pb_l_dt = pTests.size() == 1 ? Fm_Time.to_yMd_Hms(pTests.get(0).getPtldt()) : "";
+							String pb_l_dt = pTests.size() == 1 && pTests.get(0).getPtldt() != null ? Fm_Time.to_yMd_Hms(pTests.get(0).getPtldt()) : "";
 							String pb_l_size = pTests.size() == 1 ? pTests.get(0).getPtlsize() : "";
 							String pb_l_path = pTests.size() == 1 ? pTests.get(0).getPtlpath() : "";
 							String pb_l_text = pTests.size() == 1 ? pTests.get(0).getPtltext() : "";
@@ -1197,7 +1197,7 @@ public class WorkstationWorkService {
 					// ======== Step11. 製令單+規格更新[Productiondaily] ========
 					log.info("Step10. 製令單+規格更新[Productiondaily]" + body_one_now.getPbbsn());
 					ProductionDaily newDaily = new ProductionDaily();
-					newDaily.setPdprpbsn(body_one_now.getPbbsn());// 產品SN號
+					newDaily.setPdpbbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
 					newDaily.setPdprbomid(p_records.getPrbomid()); // 產品BOM

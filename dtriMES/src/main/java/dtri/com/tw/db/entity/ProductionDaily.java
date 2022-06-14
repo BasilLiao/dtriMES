@@ -12,7 +12,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @author Basil
@@ -37,7 +36,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  *      pdprpmodel = 產品型號<br>
  *      pdprbomid = 產品BOM<br>
  *      pdpgs = 進度<br>
- *      pdprpbsn = 登記產品SN (json)<br>
+ *      pdpbbsn = 登記產品SN (json)<br>
  */
 @Entity
 @Table(name = "production_daily")
@@ -138,8 +137,8 @@ public class ProductionDaily {
 	@Column(name = "pd_pr_bom_id", nullable = false, columnDefinition = "varchar(50)")
 	private String pdprbomid;
 
-	@Column(name = "pd_pr_p_b_sn", columnDefinition = "text default ''")
-	private String pdprpbsn;
+	@Column(name = "pd_pb_b_sn", columnDefinition = "text default ''")
+	private String pdpbbsn;
 
 	@Column(name = "pd_pr_total", columnDefinition = "int default 0")
 	private Integer pdprtotal;
@@ -240,6 +239,30 @@ public class ProductionDaily {
 		this.pdetime = pdetime;
 	}
 
+	public String getPdttime() {
+		return pdttime;
+	}
+
+	public void setPdttime(String pdttime) {
+		this.pdttime = pdttime;
+	}
+
+	public Integer getPdtsu() {
+		return pdtsu;
+	}
+
+	public void setPdtsu(Integer pdtsu) {
+		this.pdtsu = pdtsu;
+	}
+
+	public Integer getPdtqty() {
+		return pdtqty;
+	}
+
+	public void setPdtqty(Integer pdtqty) {
+		this.pdtqty = pdtqty;
+	}
+
 	public String getPdwcline() {
 		return pdwcline;
 	}
@@ -270,14 +293,6 @@ public class ProductionDaily {
 
 	public void setPdwaccounts(String pdwaccounts) {
 		this.pdwaccounts = pdwaccounts;
-	}
-
-	public Integer getPdprtotal() {
-		return pdprtotal;
-	}
-
-	public void setPdprtotal(Integer pdprtotal) {
-		this.pdprtotal = pdprtotal;
 	}
 
 	public Long getPdlsuid() {
@@ -336,36 +351,20 @@ public class ProductionDaily {
 		this.pdprbomid = pdprbomid;
 	}
 
-	public String getPdprpbsn() {
-		return pdprpbsn;
+	public String getPdpbbsn() {
+		return pdpbbsn;
 	}
 
-	public void setPdprpbsn(String pdprpbsn) {
-		this.pdprpbsn = pdprpbsn;
+	public void setPdpbbsn(String pdpbbsn) {
+		this.pdpbbsn = pdpbbsn;
 	}
 
-	public String getPdttime() {
-		return pdttime;
+	public Integer getPdprtotal() {
+		return pdprtotal;
 	}
 
-	public void setPdttime(String pdttime) {
-		this.pdttime = pdttime;
-	}
-
-	public Integer getPdtsu() {
-		return pdtsu;
-	}
-
-	public void setPdtsu(Integer pdtsu) {
-		this.pdtsu = pdtsu;
-	}
-
-	public Integer getPdtqty() {
-		return pdtqty;
-	}
-
-	public void setPdtqty(Integer pdtqty) {
-		this.pdtqty = pdtqty;
+	public void setPdprtotal(Integer pdprtotal) {
+		this.pdprtotal = pdprtotal;
 	}
 
 }
