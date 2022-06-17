@@ -151,7 +151,7 @@ public class WorkstationWorkService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_order_id", "訂單編號"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_c_name", "訂購客戶"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "全部/完成(整體數量)"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "目前完成／全部(總數)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "本工作站(通過數量)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_workstation", "工作站(狀態)"));
 
@@ -286,7 +286,7 @@ public class WorkstationWorkService {
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_c_name", one.getProductionRecords().getPrcname());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_quantity",
-										one.getProductionRecords().getPrpquantity() + "/" + one.getProductionRecords().getPrpokquantity());
+										one.getProductionRecords().getPrpokquantity() + "／" + one.getProductionRecords().getPrpquantity());
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
@@ -1202,6 +1202,7 @@ public class WorkstationWorkService {
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
 					newDaily.setPdprbomid(p_records.getPrbomid()); // 產品BOM
 					newDaily.setPdprtotal(p_records.getPrpquantity()); // 製令單 生產總數
+					newDaily.setPdprokqty(p_records.getPrpokquantity());// 製令單 目前進度
 					newDaily.setPdwcline(p_records.getPrwcline()); // 生產產線
 					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
 					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱

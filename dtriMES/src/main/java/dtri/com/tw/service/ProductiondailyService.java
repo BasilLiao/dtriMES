@@ -71,7 +71,8 @@ public class ProductiondailyService {
 		// 功能-名稱編譯
 		String pd_wc_class = "班別", sys_m_date = "時間", //
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
-				pd_pr_p_model = "產品型號", pd_progress = "進度", pd_t_qty = "完成量", pd_w_names = "各站作業員工(清單)";
+				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_pr_ok_qty = "累計完成", pd_t_qty = "日完成數", //
+				pd_w_names = "各站作業員工(清單)";
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -91,8 +92,10 @@ public class ProductiondailyService {
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "150px", FFM.Wri.W_Y));
-			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_progress, "100px", FFM.Wri.W_Y));
-			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "80px", FFM.Wri.W_Y));
+
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
@@ -106,6 +109,8 @@ public class ProductiondailyService {
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "150px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
+
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
@@ -118,11 +123,13 @@ public class ProductiondailyService {
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "150px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
+
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
 			}
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names", FFS.h_t(pd_w_names, "800px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names", FFS.h_t(pd_w_names, "550px", FFM.Wri.W_Y));
 
 			object_header.put("header_dp", object_dp);
 			object_header.put("header_dwh", object_dwh);
@@ -246,7 +253,6 @@ public class ProductiondailyService {
 							// 如果是最後一站(再累加)
 							if (pbwcnameLast.equals(pdOne.getPdwcname())) {
 								int tqty = Integer.parseInt(dailyBean.getPdtqty()) + pdOne.getPdtqty();
-								dailyBean.setPdprogress(tqty + "／" + pdOne.getPdprtotal());
 								dailyBean.setPdtqty(tqty + "");
 							}
 							break;
@@ -262,12 +268,14 @@ public class ProductiondailyService {
 					dailyBean.setPdwcline(pdOne.getPdwcline());
 					dailyBean.setPdwcclass(pdOne.getPdwcclass());
 					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
+					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
+					dailyBean.setPdprokqty(pdOne.getPdprokqty() + "");
 					// 如果是最後一站
 					int tqty = 0;
 					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
 						tqty = pdOne.getPdtqty();
 					}
-					dailyBean.setPdprogress(tqty + "／" + pdOne.getPdprtotal());
+
 					dailyBean.setPdtqty(tqty + "");
 
 					// 工作站[統計]
@@ -319,7 +327,8 @@ public class ProductiondailyService {
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
-			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_progress", pdb_val.getPdprogress());
+			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal());
+			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_ok_qty", pdb_val.getPdprokqty());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
 
 			// 每日總工時
@@ -329,7 +338,7 @@ public class ProductiondailyService {
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
-
+			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
 			// 每日總人數
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_wc_line", pdb_val.getPdwcline());
@@ -337,7 +346,8 @@ public class ProductiondailyService {
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
-
+			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
+			
 			JSONArray pbwArr = pdb_val.getPdwpbname();
 			String tsulist = "";
 			for (int index = 0; index < pbwArr.length(); index++) {
@@ -453,6 +463,7 @@ public class ProductiondailyService {
 				newDaily.getPdprpmodel() != null && !newDaily.getPdprpmodel().equals("") && // 產品型號
 				newDaily.getPdprbomid() != null && !newDaily.getPdprbomid().equals("") && // 產品BOM
 				newDaily.getPdprtotal() != null && newDaily.getPdprtotal() != 0 && // 製令單 生產總數
+				newDaily.getPdprokqty() != null && newDaily.getPdprokqty() != 0 && // 製令單 生產目前總數
 				newDaily.getPdwcline() != null && !newDaily.getPdwcline().equals("") && // 生產產線
 				newDaily.getPdwcname() != null && !newDaily.getPdwcname().equals("") && // 工作站代號
 				newDaily.getPdwpbname() != null && !newDaily.getPdwpbname().equals("") && // 工作站名稱
@@ -465,13 +476,13 @@ public class ProductiondailyService {
 			String n_wpbname = newDaily.getPdwpbname();
 			String n_pdprid = newDaily.getPdprid();
 			String n_pdprbomid = newDaily.getPdprbomid();
-			String n_pdprpbsn = newDaily.getPdpbbsn();
+			String n_pdpbbsn = newDaily.getPdpbbsn();
 			String n_pdwaccount = newDaily.getPdwaccounts();
 			List<String> n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
 			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];
 			Boolean n_wcg = null;
 			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(null, n_wcpline, (n_wcwcname + "(" + n_wpbname + ")"), n_time, null);
-			ArrayList<ProductionDaily> oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLike(n_pdprid, n_pdprpbsn);
+			ArrayList<ProductionDaily> oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(n_pdprid, "%" + n_pdpbbsn + "%", n_wcwcname);
 			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
 			ProductionDaily oldDaily = new ProductionDaily();
 
@@ -505,7 +516,7 @@ public class ProductiondailyService {
 					if (n_wcg) {
 						// 同張工單+同一批人+時段一致->[更新] && 添加新 產品SN
 						JSONObject o_pdpbbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdpbbsn.getJSONArray("list")).put(n_pdprpbsn);
+						JSONArray o_pdprpbsns = (o_pdpbbsn.getJSONArray("list")).put(n_pdpbbsn);
 						o_pdpbbsn.put("list", o_pdprpbsns);
 						oldDaily.setPdpbbsn(o_pdpbbsn + "");
 						oldDaily.setPdtqty(o_pdprpbsns.length());
@@ -532,7 +543,7 @@ public class ProductiondailyService {
 							oldDaily.setPdwaccounts(oldDaily.getPdwaccounts() + "_" + n_one);
 						}
 						JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(n_pdprpbsn);
+						JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(n_pdpbbsn);
 						o_pdprpbsn.put("list", o_pdprpbsns);
 						oldDaily.setPdpbbsn(o_pdprpbsn + "");
 						oldDaily.setPdtqty(o_pdprpbsns.length());
@@ -564,7 +575,7 @@ public class ProductiondailyService {
 					newDaily.setPdlsuid(wClass.getWclsuid());
 					newDaily.setPdlname(userDao.findAllBySuid(wClass.getWclsuid()).get(0).getSuname());
 
-					JSONArray o_pdprpbsns = new JSONArray().put(n_pdprpbsn);// 產品登記
+					JSONArray o_pdprpbsns = new JSONArray().put(n_pdpbbsn);// 產品登記
 					newDaily.setPdpbbsn(new JSONObject().put("list", o_pdprpbsns) + "");
 
 					dailyDao.save(newDaily);

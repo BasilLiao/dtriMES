@@ -35,7 +35,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pdprid = 工單號碼<br>
  *      pdprpmodel = 產品型號<br>
  *      pdprbomid = 產品BOM<br>
- *      pdpgs = 進度<br>
+ *      pdprtotal = 總數量<br>
+ *      pdprpokqty = (完成累計)總數量<br>
  *      pdpbbsn = 登記產品SN (json)<br>
  */
 @Entity
@@ -142,6 +143,9 @@ public class ProductionDaily {
 
 	@Column(name = "pd_pr_total", columnDefinition = "int default 0")
 	private Integer pdprtotal;
+
+	@Column(name = "pd_pr_okqty", columnDefinition = "int default 0")
+	private Integer pdprokqty;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -365,6 +369,14 @@ public class ProductionDaily {
 
 	public void setPdprtotal(Integer pdprtotal) {
 		this.pdprtotal = pdprtotal;
+	}
+
+	public Integer getPdprokqty() {
+		return pdprokqty;
+	}
+
+	public void setPdprokqty(Integer pdprokqty) {
+		this.pdprokqty = pdprokqty;
 	}
 
 }

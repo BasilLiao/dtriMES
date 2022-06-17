@@ -37,7 +37,7 @@ public interface SystemUserDao extends JpaRepository<SystemUser, Long> {
 			+ "(:suposition is null or c.suposition LIKE %:suposition% ) and "//
 			+ "(:susggid=0L or c.susggid = :susggid ) and "//
 			+ "( c.sysstatus = :sysstatus ) and (c.susggid != 1) "//
-			+ "order by c.suposition asc, c.suname asc")
+			+ "order by c.suposition asc,c.sutemplate asc, c.suname asc")
 	ArrayList<SystemUser> findAllBySystemUserNotAdmin(Long susggid, String suname, String suaccount, String suposition, Integer sysstatus, Pageable pageable);
 
 	// 查詢全部含-頁數 不含ADMIN 排序名稱
@@ -45,7 +45,7 @@ public interface SystemUserDao extends JpaRepository<SystemUser, Long> {
 			+ "WHERE (:suname is null or c.suname LIKE %:suname% ) and "//
 			+ "(:suaccount is null or c.suaccount LIKE %:suaccount% ) and "//
 			+ "( c.sysstatus = 0 ) and (c.susggid != 1) "//
-			+ "order by c.suposition asc,c.suname asc")
+			+ "order by c.suposition asc,c.sutemplate asc,c.suname asc")
 	ArrayList<SystemUser> findAllBySystemUserNotAdmin(String suname, String suaccount);
 
 	// @Query註解裡面寫JPQL語句,定義查詢

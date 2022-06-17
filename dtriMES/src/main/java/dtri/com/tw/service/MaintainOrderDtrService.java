@@ -19,7 +19,7 @@ import dtri.com.tw.db.pgsql.dao.SystemUserDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
-public class MaintenanceUnitService {
+public class MaintainOrderDtrService {
 	@Autowired
 	private MaintenanceUnitDao unitDao;
 	@Autowired

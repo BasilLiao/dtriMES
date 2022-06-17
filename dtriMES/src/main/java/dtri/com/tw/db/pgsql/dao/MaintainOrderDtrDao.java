@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import dtri.com.tw.db.entity.ProductionDaily;
 
-public interface ProductiondailyDao extends JpaRepository<ProductionDaily, Long> {
+public interface MaintainOrderDtrDao extends JpaRepository<ProductionDaily, Long> {
 
 	// 查詢全部
 	ArrayList<ProductionDaily> findAll();

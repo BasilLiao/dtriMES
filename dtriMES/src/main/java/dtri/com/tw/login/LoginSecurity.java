@@ -53,6 +53,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 
 		String maintenance_unit = "/ajax/maintenance_unit.basil";
 		String maintain_code = "/ajax/maintain_code.basil";
+		String maintain_order_dtr = "/ajax/maintain_order_dtr.basil";
+		
 		String work_hours = "/ajax/work_hours.basil";
 		String work_type = "/ajax/work_type.basil";
 
@@ -208,6 +210,13 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, maintenance_unit + ".AC").hasAuthority(actionRole(maintenance_unit, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, maintenance_unit + ".AU").hasAuthority(actionRole(maintenance_unit, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, maintenance_unit + ".AD").hasAuthority(actionRole(maintenance_unit, "AD"))// (移除)
+
+				// ----請求-maintain_order_dtr-(訪問) ----
+				.antMatchers(HttpMethod.POST, maintain_order_dtr).hasAuthority(actionRole(maintain_order_dtr, ""))//
+				.antMatchers(HttpMethod.POST, maintain_order_dtr + ".AR").hasAuthority(actionRole(maintain_order_dtr, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, maintain_order_dtr + ".AC").hasAuthority(actionRole(maintain_order_dtr, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, maintain_order_dtr + ".AU").hasAuthority(actionRole(maintain_order_dtr, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, maintain_order_dtr + ".AD").hasAuthority(actionRole(maintain_order_dtr, "AD"))// (移除)
 
 				// ----請求-work_hours-(訪問) ----
 				.antMatchers(HttpMethod.POST, work_hours).hasAuthority(actionRole(work_hours, ""))//

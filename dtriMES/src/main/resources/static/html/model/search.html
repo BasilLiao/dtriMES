@@ -241,10 +241,10 @@ search = new Vue({
 				}
 				//查詢
 				if (html_permission['se'] != 1) {
-					$(".search_example_finds input").attr("disabled", "disabled")
+					$("#search .search_example_finds input").attr("disabled", "disabled")
 				}
 				if (html_permission['se'] != 1) {
-					$(".search_example_finds select").attr("disabled", "disabled")
+					$("#search .search_example_finds select").attr("disabled", "disabled")
 				}
 
 			}
@@ -379,10 +379,10 @@ search = new Vue({
 			for (var i = 0; i < search.length; i++) {
 				switch (search[i].tag) {
 					case "input":
-						var search_input = $(".search_example_input").clone(); //複製樣本
+						var search_input = $("#search .search_example_input").clone(); //複製樣本
 						search_input[0].className = search[i].col + " p-2 search_true";
 						search_input[0].id = "search_" + search[i].id;
-						search_input.appendTo(".search_example_finds");
+						search_input.appendTo("#search .search_example_finds");
 						$("#" + search_input[0].id + " .s_name").text(search[i].name);
 						//$("#" + search_input[0].id + " .s_value").val(search[i].value);
 						//時間類型
@@ -397,10 +397,10 @@ search = new Vue({
 					case "select":
 						//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
 						//id / value / type
-						var search_selsect = $(".search_example_selsect").clone(); //複製樣本
+						var search_selsect = $("#search  .search_example_selsect").clone(); //複製樣本
 						search_selsect[0].className = search[i].col + " p-2 search_true";
 						search_selsect[0].id = "search_" + search[i].id;
-						search_selsect.appendTo(".search_example_finds");
+						search_selsect.appendTo("#search  .search_example_finds");
 						$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
 						for (var o = 0; o < search[i].values.length; o++) {
 							var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
@@ -415,14 +415,14 @@ search = new Vue({
 					default:
 				}
 				//關閉樣式
-				$(".example_select_one").addClass("d-none");
-				$(".search_example_input").addClass("d-none");
-				$(".search_example_selsect").addClass("d-none");
+				$("#search .example_select_one").addClass("d-none");
+				$("#search .search_example_input").addClass("d-none");
+				$("#search .search_example_selsect").addClass("d-none");
 				main.loading(false);
 			}
 
 			//時間格式
-			$('.datetimepicker_date').datetimepicker({
+			$('#search .datetimepicker_date').datetimepicker({
 				format: 'yyyy-mm-dd hh:ii:00',
 				pickerPosition: 'bottom-right',
 				//minView:1,
@@ -477,8 +477,8 @@ search = new Vue({
 			});
 			$(document).on("click", "#clear_btn", function (event) {
 				console.log("clear_btn");
-				$(".search_example_finds input").val("");
-				$(".search_example_finds select").val("");
+				$("#search .search_example_finds input").val("");
+				$("#search .search_example_finds select").val("");
 			});
 			$(document).on("click", ".pagination .page-item", function (event) {
 				search.pageChange(event.currentTarget);

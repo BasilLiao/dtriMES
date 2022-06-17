@@ -21,7 +21,8 @@ public class ProductionDailyBean {
 	private JSONArray pdwpbname;// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
-	private String pdprogress;// 進度
+	private String pdprtotal;//工單 總數量
+	private String pdprokqty;//工單 目前數量
 	private String pdtqty;
 	private Double pdttime;// 總時間
 
@@ -88,15 +89,7 @@ public class ProductionDailyBean {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public String getPdprogress() {
-		return pdprogress;
-	}
-
-	public void setPdprogress(String pdprogress) {
-		this.pdprogress = pdprogress;
-	}
-
+	
 	public String getPdtqty() {
 		return pdtqty;
 	}
@@ -111,6 +104,22 @@ public class ProductionDailyBean {
 
 	public void setPdttime(Double pdttime) {
 		this.pdttime = pdttime;
+	}
+
+	public String getPdprtotal() {
+		return pdprtotal;
+	}
+
+	public void setPdprtotal(String pdprtotal) {
+		this.pdprtotal = pdprtotal;
+	}
+
+	public String getPdprokqty() {
+		return pdprokqty;
+	}
+
+	public void setPdprokqty(String pdprokqty) {
+		this.pdprokqty = pdprokqty;
 	}
 
 }
