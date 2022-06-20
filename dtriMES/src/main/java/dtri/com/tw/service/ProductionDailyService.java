@@ -32,8 +32,8 @@ import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
-public class ProductiondailyService {
-	private static final Logger log = LoggerFactory.getLogger(ProductiondailyService.class);
+public class ProductionDailyService {
+	private static final Logger log = LoggerFactory.getLogger(ProductionDailyService.class);
 	@Autowired
 	private ProductiondailyDao dailyDao;
 
@@ -220,6 +220,7 @@ public class ProductiondailyService {
 			pbwcnameLast = workstationDao.findAllByWgidOrderBySyssortAsc(wpwgid).get(0).getWcname();
 
 			// 把同一個工作站 的 倒出來
+			int pdprokqty = 0;// 取最大值
 			for (ProductionDaily pdOne : productionDailys) {
 				// 同一天+同一條產線+同一班別+同一張工單
 				String key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + pdOne.getPdwcline() + pdOne.getPdwcclass() + pdOne.getPdprid();
@@ -255,11 +256,18 @@ public class ProductiondailyService {
 								int tqty = Integer.parseInt(dailyBean.getPdtqty()) + pdOne.getPdtqty();
 								dailyBean.setPdtqty(tqty + "");
 							}
+							//同一日的最大完成數量
+							if (pdOne.getPdprokqty() > pdprokqty) {
+								pdprokqty = pdOne.getPdprokqty();
+							}
+							dailyBean.setPdprokqty(pdprokqty + "");
+							
 							break;
 						}
 					}
 				} else {
 					// 如果不同[新建]
+					pdprokqty = 0;
 					dailyBean.setId(pdOne.getPdid());
 					dailyBean.setSysmdate(Fm_Time.to_y_M_d(pdOne.getSysmdate()));
 					dailyBean.setPdprbomid(pdOne.getPdprbomid());
@@ -269,13 +277,17 @@ public class ProductiondailyService {
 					dailyBean.setPdwcclass(pdOne.getPdwcclass());
 					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
 					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
-					dailyBean.setPdprokqty(pdOne.getPdprokqty() + "");
 					// 如果是最後一站
 					int tqty = 0;
 					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
 						tqty = pdOne.getPdtqty();
 					}
+					//同一日的最大完成數量
+					if (pdOne.getPdprokqty() > pdprokqty) {
+						pdprokqty = pdOne.getPdprokqty();
+					}
 
+					dailyBean.setPdprokqty(pdprokqty + "");
 					dailyBean.setPdtqty(tqty + "");
 
 					// 工作站[統計]
@@ -347,7 +359,7 @@ public class ProductiondailyService {
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
-			
+
 			JSONArray pbwArr = pdb_val.getPdwpbname();
 			String tsulist = "";
 			for (int index = 0; index < pbwArr.length(); index++) {
@@ -463,7 +475,7 @@ public class ProductiondailyService {
 				newDaily.getPdprpmodel() != null && !newDaily.getPdprpmodel().equals("") && // 產品型號
 				newDaily.getPdprbomid() != null && !newDaily.getPdprbomid().equals("") && // 產品BOM
 				newDaily.getPdprtotal() != null && newDaily.getPdprtotal() != 0 && // 製令單 生產總數
-				newDaily.getPdprokqty() != null && newDaily.getPdprokqty() != 0 && // 製令單 生產目前總數
+				newDaily.getPdprokqty() != null && // 製令單 生產目前總數
 				newDaily.getPdwcline() != null && !newDaily.getPdwcline().equals("") && // 生產產線
 				newDaily.getPdwcname() != null && !newDaily.getPdwcname().equals("") && // 工作站代號
 				newDaily.getPdwpbname() != null && !newDaily.getPdwpbname().equals("") && // 工作站名稱

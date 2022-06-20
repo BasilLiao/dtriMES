@@ -79,7 +79,7 @@ public class WorkstationWorkService {
 	EntityManager em;
 
 	@Autowired
-	ProductiondailyService pDailyService;
+	ProductionDailyService pDailyService;
 
 	// 取得當前 資料清單
 	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {

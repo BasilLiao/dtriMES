@@ -20,17 +20,17 @@ import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.login.LoginUserDetails;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.ProductiondailyService;
+import dtri.com.tw.service.ProductionDailyService;
 
 @Controller
-public class ProductiondailyController {
+public class ProductionDailyController {
 	// 功能
 	final static String SYS_F = "production_daily.basil";
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	ProductiondailyService dailyService;
+	ProductionDailyService dailyService;
 
 	/**
 	 * 訪問

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import dtri.com.tw.service.ProductiondailyService;
+import dtri.com.tw.service.ProductionDailyService;
 
 //https://polinwei.com/spring-boot-scheduling-tasks/
 @Component
@@ -18,7 +18,7 @@ public class ScheduledTasks {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
 	@Autowired
-	ProductiondailyService pdyService;
+	ProductionDailyService pdyService;
 
 	@Scheduled(fixedDelay = 600000)
 	public void autoDaily() {
