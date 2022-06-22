@@ -1,5 +1,6 @@
 package dtri.com.tw.service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -256,12 +257,12 @@ public class ProductionDailyService {
 								int tqty = Integer.parseInt(dailyBean.getPdtqty()) + pdOne.getPdtqty();
 								dailyBean.setPdtqty(tqty + "");
 							}
-							//同一日的最大完成數量
+							// 同一日的最大完成數量
 							if (pdOne.getPdprokqty() > pdprokqty) {
 								pdprokqty = pdOne.getPdprokqty();
 							}
 							dailyBean.setPdprokqty(pdprokqty + "");
-							
+
 							break;
 						}
 					}
@@ -282,7 +283,7 @@ public class ProductionDailyService {
 					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
 						tqty = pdOne.getPdtqty();
 					}
-					//同一日的最大完成數量
+					// 同一日的最大完成數量
 					if (pdOne.getPdprokqty() > pdprokqty) {
 						pdprokqty = pdOne.getPdprokqty();
 					}
@@ -443,11 +444,11 @@ public class ProductionDailyService {
 						total_time = Math.round(total_time * 100.0) / 100.0;
 					}
 					JSONObject wnames = new JSONObject(productionDaily.getPdwnames());
-					// JSONObject pbsn = new JSONObject(productionDaily.getPdprpbsn());
-
+					// 格式化
+					DecimalFormat df = new DecimalFormat("###.##");
 					productionDaily.setSysstatus(1);// 結算- 今日班別
 					productionDaily.setPdtsu(wnames.getJSONArray("list").length());// 結算-人數
-					productionDaily.setPdttime(Double.toString(total_time));// 結算-工時
+					productionDaily.setPdttime(df.format(total_time));// 結算-工時
 					productionDaily.setSysmuser("system");
 					dailyDao.save(productionDaily);
 				}
@@ -490,15 +491,20 @@ public class ProductionDailyService {
 			String n_pdprbomid = newDaily.getPdprbomid();
 			String n_pdpbbsn = newDaily.getPdpbbsn();
 			String n_pdwaccount = newDaily.getPdwaccounts();
-			List<String> n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
+			Integer n_pdprokqty = newDaily.getPdprokqty();
 			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];
 			Boolean n_wcg = null;
-			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(null, n_wcpline, (n_wcwcname + "(" + n_wpbname + ")"), n_time, null);
-			ArrayList<ProductionDaily> oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(n_pdprid, "%" + n_pdpbbsn + "%", n_wcwcname);
+			List<String> n_pdwaccounts = new ArrayList<String>();
+			ArrayList<WorkstationClass> classes = new ArrayList<WorkstationClass>();
+			ArrayList<ProductionDaily> oldDailySn = new ArrayList<ProductionDaily>();
+			n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
+			classes = classDao.findAllBySameClass(null, n_wcpline, (n_wcwcname + "(" + n_wpbname + ")"), n_time, null);
+			oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(n_pdprid, "%" + n_pdpbbsn + "%", n_wcwcname);
+
 			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
 			ProductionDaily oldDaily = new ProductionDaily();
 
-			// Step1. 檢查 設置內是否有此工作站資料 && 不重複SN
+			// Step1. 檢查 設置內是否有此工作站資料 && 不重複SN && (工單+SN是配對的)
 			if (classes != null && classes.size() > 0 && oldDailySn.size() == 0) {
 
 				// Step2. 取出 設定工作模式 [群組/個人]
@@ -535,6 +541,7 @@ public class ProductionDailyService {
 						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmuser(user.getSuaccount());
+						oldDaily.setPdprokqty(n_pdprokqty);
 						dailyDao.save(oldDaily);
 					} else {
 						// Step5-2 單人
@@ -563,6 +570,7 @@ public class ProductionDailyService {
 						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmuser(user.getSuaccount());
+						oldDaily.setPdprokqty(n_pdprokqty);
 						dailyDao.save(oldDaily);
 					}
 				} else {

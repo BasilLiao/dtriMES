@@ -37,7 +37,7 @@
 					<tr>
 						<th style="min-width: 35px;" class="text-center">
 							<div>
-								<i id="barcode_open" class="bi bi-upc-scan btn btn-outline-primary p-0 pl-1 pr-1"></i>
+								<i id="barcode_open" class="bi bi-upc-scan btn btn-outline-light p-0 pl-1 pr-1"></i>
 							</div>
 						</th>
 						<th style="min-width: 10px;">
@@ -45,10 +45,14 @@
 								<div style="min-width: 80px;">Barcode</div>
 							</div>
 						</th>
-						<th style="min-width: 300px; width: 100%;">Info:</th>
 						<th class="">
 							<div>
-								<i id="fix_open" class="bi bi-tools btn btn-outline-primary p-0 pl-1 pr-1"></i>
+								<i id="fix_open" class="bi bi-tools btn btn-outline-warning p-0 pl-1 pr-1"></i>
+							</div>
+						</th>
+						<th style="min-width: 10px;">
+							<div id="" class="fix_open" style="display: none;">
+								<div style="min-width: 300px;">Fix</div>
 							</div>
 						</th>
 						<th style="min-width: 35px;">
@@ -59,6 +63,7 @@
 								<i class="bi bi-shield-lock btn btn-outline-success p-0 pl-1 pr-1"></i>
 							</div>
 						</th>
+						<th style="min-width: 440px; width: 100%;">Info</th>
 						<th style="min-width: 35px;" class="text-center">
 							<div>
 								<i id="doc_open" class="bi bi-layout-text-sidebar-reverse btn btn-outline-primary p-0 pl-1 pr-1"></i>
@@ -74,7 +79,7 @@
 				<tbody>
 					<tr>
 						<!-- fix -->
-						<td colspan="7" class="p-0 border border-dark">
+						<td colspan="8" class="p-0 border border-dark">
 							<div class="row justify-content-between m-0">
 								<div class="row m-0 p-2">
 									<div id="barcode_BC008" class="m-1"></div>
@@ -207,11 +212,11 @@
 								</div>
 							</div>
 						</td>
-						<td colspan="3" class="p-0 border-dark border">
+						<td colspan="2" rowspan="100" class="p-0 border-dark border">
 							<!-- 維修條碼_類型(浮動) -->
-							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 112px; overflow: auto;">
+							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 280px; overflow: auto;">
 								<!-- 浮動上下 -->
-								<div class="bg-white fixed-top shadow border border-primary rounded " style="top: 18%; left: auto; right: 30px; width: 170px;">
+								<div class="bg-white fixed-top shadow border border-primary rounded " style="top: 32%; left: auto; right: 35px; width: 140px;">
 									<div class="col-12 p-1">
 										<div class="row m-0 p-1 bg-light">
 											<div id="barcode_BC016" class="m-0 col-lg-12"></div>
@@ -240,33 +245,33 @@
 								</div>
 
 								<div class="row col-12 p-0 m-0">
-									<div class="col-3 p-1"></div>
-									<div class="col-6 m-0 p-1 h2" style="height: 56px;">故障類別</div>
-									<div class="col-3 p-1"></div>
+									<div class="col-12 m-0 p-1 h4" style="height: 56px;">故障類別</div>
 								</div>
-								<div id="fix_t_example" class="p-1 col-3">
+								<div id="fix_t_example" class="p-1 col-6">
 									<div class="row m-0 p-1 bg-light">
-										<div id="barcode_BC013" class="m-0 col-lg-12"></div>
-										<div id="BC013" class="fix_t_css barcode_action btn btn-light p-0 border-0 pt-1">XXX[BC013]</div>
+										<div id="barcode_BC013" class="m-0 pl-4 col-12"></div>
+										<div id="BC013" title="" class="fix_t_css barcode_action btn btn-light p-0 border-0 pt-1 font-weight-bold">XXX[BC013]</div>
 									</div>
 								</div>
 							</div> <!-- 維修條碼_項目(浮動) -->
-							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 112px; overflow: auto;">
+							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 300px; overflow: auto;">
 								<div class="col-12 row m-0 p-0">
-									<div class="col-3 p-1"></div>
-									<div class="col-6 m-0 p-1 h2" style="height: 56px;">
-										故障代碼:<i id="fix-item"></i>
+									<div class="col-12 m-0 p-1 h4" style="height: 56px;">
+										代碼:<i id="fix-item"></i>
 									</div>
-									<div class="col-3 p-1"></div>
 								</div>
 
-								<div id="fix_i_example" class="p-1 col-3">
+								<div id="fix_i_example" class="p-1 col-6">
 									<div class="row m-0 p-1 bg-light">
-										<div id="barcode_BC014" class="m-0 col-lg-12"></div>
-										<div id="BC014" class="barcode_action fix_i_css btn btn-light p-0 border-0 pt-1">XXX[BC014]</div>
+										<div id="barcode_BC014" class="m-0 pl-4 col-12"></div>
+										<div id="BC014" title="" class="barcode_action fix_i_css btn btn-light p-0 border-0 pt-1 pb-1 font-weight-bold">XXX[BC014]</div>
+										<textarea id="fix_i_textarea" rows="7" cols="" class="p-1 col-12 d-none"></textarea>
 									</div>
 								</div>
 							</div>
+						</td>
+						<td colspan="3" class="p-0">
+							<!-- 必要性框架隔板 -->
 						</td>
 						<!-- Doc -->
 						<td colspan="2" class="p-1 border border-dark" rowspan="100">
@@ -407,7 +412,7 @@
 					<tr id="barcode_sn" class="w_i_5 font-weight-bold">
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded">
-								<div class="col-3 p-1 m-0 b_code_w">*產品/燒錄 序號:</div>
+								<div class="col-3 p-1 m-0 b_code_w">*產品序號:</div>
 								<div class="col-9 p-0">
 									<input title="pb_b_sn" id="w_focus_5" disabled="disabled" class="w_sn_value col p-1 border-0 border-primary rounded" type="text" required>
 								</div>
@@ -429,7 +434,7 @@
 					<tr id="barcode_old_sn" class="w_i_6 font-weight-bold d-none">
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded">
-								<div class="col-3 p-1 m-0 b_code_w">[舊]產品/燒錄 序號:</div>
+								<div class="col-3 p-1 m-0 b_code_w">[舊]產品序號:</div>
 								<div class="col-9 p-0">
 									<input title="pb_old_sn" id="w_focus_6" disabled="disabled" class="w_sn_value col p-1 border-0 border-primary rounded" type="text" required>
 								</div>
@@ -524,7 +529,7 @@
 								<div class=" bg-white rounded-top m-0 pl-1 h5">
 									<i class="bi bi-file-earmark-check mr-1"></i> Action/Options
 								</div>
-								<div class="col-12 p-2 m-0 row justify-content-center">
+								<div class="col-12 p-1 m-0 row justify-content-center">
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
 											<div class="p-0 pl-1">[PLT]設定</div>
@@ -556,7 +561,7 @@
 
 									<div class="col-sm-3 p-1">
 										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
-											<div class="col-12 p-0">[產品/燒錄 序號]輸入後</div>
+											<div class="col-12 p-0">[產品序號]輸入後</div>
 											<div class="col-12 p-0 m-0" id="checkbox_auto">
 												<div class="row p-0 m-0 col-12">
 													<div class="p-0">Auto 儲存 :</div>
@@ -575,15 +580,15 @@
 											<div class="col-12 p-0">[聲效]特效</div>
 											<div class="col-12 p-0 m-0" id="checkbox_sound">
 												<div class="row p-0 m-0 col-12">
-													<div class="p-0">儲存-重複過站:</div>
+													<div class="p-0">重複過站:</div>
 													<input id="set_replace" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
 												</div>
 												<div class="row p-0 m-0 col-12">
-													<div class="p-0">儲存-提醒過站:</div>
+													<div class="p-0">提醒過站:</div>
 													<input id="set_success" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
 												</div>
 												<div class="row p-0 m-0 col-12">
-													<div class="p-0">檢查-重複過站:</div>
+													<div class="p-0">重複檢查:</div>
 													<input id="set_check_replace" value="true" type="checkbox" class="col-2 mt-1 p-1 border border-dark rounded big-checkbox" style="max-width: 30px;">
 												</div>
 											</div>
@@ -993,10 +998,11 @@
    		//fix_open 顯示?
    		$(document).on("click", "#fix_open", function (event) {
    		    console.log("fix_open");
-   		    $("#fix_t_open").slideToggle("fast");
+   		    $("#fix_t_open").toggle("fast");
+   		 	$(".fix_open").toggle("fast");
    		    //如果顯示則關閉
    		    if($("#fix_i_open").css('display')!='none'){
-   		    	  $("#fix_i_open").slideToggle("fast");
+   		    	 $("#fix_i_open").toggle("fast");
    		    }
    		});
    		//barcode_action-> m_order行為執行?
@@ -1033,7 +1039,7 @@
    				workstation.send_command();
 		    }
    		});
-   		 main.loading(false);
+   		main.loading(false);
    
    	},
    	//可呼叫方法
@@ -1066,6 +1072,7 @@
    				var fix_t_example =$("#fix_t_example").clone();
    				fix_t_example[0].id = "";
    				fix_t_example[0].children[0].children[1].innerText = '['+key_id+']'+key_name;
+   				fix_t_example[0].children[0].children[1].title = '['+key_id+']'+key_name;
    				fix_t_example[0].children[0].children[1].id=key_id;
    				fix_t_example[0].children[0].children[0].id='barcode_'+key_id;
    				fix_t_example[0].children[0].children[0].innerText="";
@@ -1074,6 +1081,21 @@
    				this.create_barcode('barcode_'+key_id,key_id,"code39",22);
    				//console.log(fix_t_example);
    			}
+   			//自定義寫入
+            var key_id = 'ZZZ';
+            var key_name ='<自定義>產品故障';
+			var fix_t_example =$("#fix_t_example").clone();
+			fix_t_example[0].id = "";
+			fix_t_example[0].children[0].children[1].innerText = '['+key_id+']'+key_name;
+			fix_t_example[0].children[0].children[1].title = '['+key_id+']'+key_name;
+			fix_t_example[0].children[0].children[1].id=key_id;
+			fix_t_example[0].children[0].children[0].id='barcode_'+key_id;
+			fix_t_example[0].children[0].children[0].innerText="";
+			fix_t_example.insertBefore("#fix_t_example");
+			//建立新code
+			this.create_barcode('barcode_'+key_id,key_id,"code39",22);
+   			
+   			
    			$("#fix_t_example").addClass('d-none');
    			
    			//console.log(this.fix_type);
@@ -1388,30 +1410,55 @@
    					return false;
    					break;
    				case "BC016":
-   					if(workstation.fix_t_open>0){
-	   					workstation.fix_t_open -=112;    						
-   					}
-   				 	$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
+   					//類別
+   				 	if(workstation.fix_t_open -280 <=0){
+						workstation.fix_t_open = 0;
+						$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'fast'); 
+					}else{
+	   					workstation.fix_t_open -=280; 
+	   					$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'fast'); 
+					}
    				 	workstation.clearOrder();
    					return false;
    					break;
    				case "BC017":
-   					workstation.fix_t_open +=112; 
-   					$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'slow'); 
+   					//原始位置+預設高度+下次移動高度 最大值
+   					if($("#fix_t_open").scrollTop() +280+280 >=$("#fix_t_open").prop("scrollHeight")){
+   						workstation.fix_t_open=$("#fix_t_open").prop("scrollHeight")-280;
+   						$("#fix_t_open").animate({ scrollTop: (workstation.fix_t_open) }, 'fast'); 
+   					}else{
+	   					workstation.fix_t_open +=280; 
+	   					$("#fix_t_open").animate({ scrollTop: workstation.fix_t_open }, 'fast'); 
+   					}
+   					console.log("目前位置:"+$("#fix_t_open").scrollTop());
+   					console.log("總高度置:"+$("#fix_t_open").prop("scrollHeight"));
    					workstation.clearOrder();
    					return false;
    					break;
    				case "BC018":
-   					if(workstation.fix_i_open>0){
-	   					workstation.fix_i_open -=112;    						
+   					//項目
+   					if(workstation.fix_i_open -300 <=0){
+   						workstation.fix_i_open = 0;
+   						$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
+   					}else{
+	   					workstation.fix_i_open -=300; 
+	   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
    					}
-   				 	$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
    				 	workstation.clearOrder();
    					return false;
    					break;
    				case "BC019":
-   					workstation.fix_i_open +=112; 
-   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'slow'); 
+   					//原始位置+預設高度+下次移動高度 最大值
+   					if($("#fix_i_open").scrollTop() +300+300 >=$("#fix_i_open").prop("scrollHeight")){
+   						workstation.fix_i_open=$("#fix_i_open").prop("scrollHeight")-300;
+   						$("#fix_i_open").animate({ scrollTop: (workstation.fix_i_open) }, 'fast'); 
+   					}else{
+	   					workstation.fix_i_open +=300; 
+	   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
+   					}
+   					console.log("目前位置:"+$("#fix_i_open").scrollTop());
+   					console.log("總高度置:"+$("#fix_i_open").prop("scrollHeight"));
+   					 
    					workstation.clearOrder();
    					return false;
    					break;
@@ -1461,7 +1508,7 @@
    					break;
    				}
    				//是否為維修代碼(群組類別)
-   				if(workstation.fix_type[code]!=null){
+   				if(workstation.fix_type[code]!=null ||code=='ZZZ'){
    					if(($("#fix-item").text()!=code && $("#fix_i_open").css("display")=="none") ||$("#fix-item").text()==code || $("#fix-item").text()==""){
    						 $("#fix_i_open").slideToggle("fast");						
    					}
@@ -1473,23 +1520,54 @@
 					$("#"+id).addClass("border-0");
 					$("#w_focus_"+workstation.nb).addClass("border-1");
 					$("#w_focus_"+workstation.nb).removeClass("border-0");
-					
-					var items = workstation.fix_type[code]['item'];
+					//scrollTop 歸位
+					workstation.fix_i_open=0;
+   					$("#fix_i_open").animate({ scrollTop: (workstation.fix_i_open) }, 'fast'); 
 					//顯示[維修]屬性內容
 					$("#fix_i_example").removeClass('d-none');
 					$(".fix_i_list").remove();
-					$("#fix-item").text( workstation.fix_type[code]['name']);
 					
-					items = main.orderedSort(items);//排序
-					for(var a = 0;a<Object.keys(items).length;a++){
-		                var key_id = Object.keys(items)[a];
-		                var key_name =items[key_id];
-		                
-						var fix_t_example =$("#fix_i_example").clone();				
-						fix_t_example[0].id = "";
-						fix_t_example[0].className="p-1 fix_i_list col-3";
+   					//一般維修
+   					if(code!='ZZZ'){
+						var items = workstation.fix_type[code]['item'];
+						
+						$("#fix-item").attr('title',workstation.fix_type[code]['name']);
+						$("#fix-item").text(workstation.fix_type[code]['name']);
+						items = main.orderedSort(items);//排序
 	
+						for(var a = 0;a<Object.keys(items).length;a++){
+			                var key_id = Object.keys(items)[a];
+			                var key_name =items[key_id];
+			                
+							var fix_t_example =$("#fix_i_example").clone();				
+							fix_t_example[0].id = "";
+							fix_t_example[0].className="p-1 fix_i_list col-6";
+		
+							fix_t_example[0].children[0].children[1].innerText = '['+key_id+']'+key_name;
+							fix_t_example[0].children[0].children[1].title = '['+key_id+']'+key_name;
+							fix_t_example[0].children[0].children[1].id=key_id;
+							fix_t_example[0].children[0].children[0].id='barcode_'+key_id;
+							fix_t_example[0].children[0].children[0].innerText="";
+		
+							fix_t_example.insertBefore("#fix_i_example");
+							//建立新code
+							workstation.create_barcode('barcode_'+key_id,key_id,"code39",22);
+							//console.log(fix_t_example);
+						}
+   					}else{
+   						//自訂維修
+   						$("#fix-item").attr('title','<自定義>產品故障');
+   						$("#fix-item").text('<自定義>產品故障');
+   					 	var key_id = 'ZZZZ';
+		                var key_name ='<自定義>故障代碼';
+   						var fix_t_example =$("#fix_i_example").clone();		
+						fix_t_example[0].id = "";
+						fix_t_example[0].className="p-1 fix_i_list col-12";
+						
+						fix_t_example[0].children[0].children[2].id ="fix_i_textarea_zzzz";
+						fix_t_example[0].children[0].children[2].className ="p-1 col-12";
 						fix_t_example[0].children[0].children[1].innerText = '['+key_id+']'+key_name;
+						fix_t_example[0].children[0].children[1].title = '['+key_id+']'+key_name;
 						fix_t_example[0].children[0].children[1].id=key_id;
 						fix_t_example[0].children[0].children[0].id='barcode_'+key_id;
 						fix_t_example[0].children[0].children[0].innerText="";
@@ -1497,16 +1575,28 @@
 						fix_t_example.insertBefore("#fix_i_example");
 						//建立新code
 						workstation.create_barcode('barcode_'+key_id,key_id,"code39",22);
-						//console.log(fix_t_example);
-					}
+   					}
 					$("#fix_i_example").addClass('d-none');
 					workstation.fix_code_type=code;
 					workstation.clearOrder();
    					return false;
    				}
+   				
    				//(項目類別)
-   				if(workstation.fix_code_type!="" && workstation.fix_type[workstation.fix_code_type].item[code]!=null){
-   					//維修代碼已經存在
+   				if((code=='ZZZZ')||
+   					(workstation.fix_code_type!='ZZZ' && workstation.fix_code_type!="" && workstation.fix_type[workstation.fix_code_type].item[code]!=null)){
+   					//維修代碼-如果是自訂義(必須要有自訂義內容)
+   					if(workstation.fix_code_type=='ZZZ' && code=='ZZZZ'){
+   						if($('#fix_i_textarea_zzzz').val()!='' ){
+	   						code+= '['+$('#fix_i_textarea_zzzz').val()+']';
+	   						$('#fix_i_textarea_zzzz').val("");   							
+   						}else{
+   							workstation.clearOrder();
+   		   					return false;
+   						}
+   					}
+   					
+   					//維修代碼-複數已經存在?
    					if($('#'+id).val()!=""){
    						$('#'+id).val($('#'+id).val()+'_'+code);						
    					}else{
