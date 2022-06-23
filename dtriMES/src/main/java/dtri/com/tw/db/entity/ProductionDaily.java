@@ -379,4 +379,14 @@ public class ProductionDaily {
 		this.pdprokqty = pdprokqty;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductionDaily [syscdate=" + syscdate + ", syscuser=" + syscuser + ", sysmdate=" + sysmdate + ", sysmuser=" + sysmuser + ", sysver=" + sysver
+				+ ", sysnote=" + sysnote + ", syssort=" + syssort + ", sysstatus=" + sysstatus + ", sysheader=" + sysheader + ", pdid=" + pdid + ", pdstime="
+				+ pdstime + ", pdetime=" + pdetime + ", pdttime=" + pdttime + ", pdtsu=" + pdtsu + ", pdtqty=" + pdtqty + ", pdwcline=" + pdwcline
+				+ ", pdwcclass=" + pdwcclass + ", pdwnames=" + pdwnames + ", pdwaccounts=" + pdwaccounts + ", pdlsuid=" + pdlsuid + ", pdlname=" + pdlname
+				+ ", pdwcname=" + pdwcname + ", pdwpbname=" + pdwpbname + ", pdprid=" + pdprid + ", pdprpmodel=" + pdprpmodel + ", pdprbomid=" + pdprbomid
+				+ ", pdpbbsn=" + pdpbbsn + ", pdprtotal=" + pdprtotal + ", pdprokqty=" + pdprokqty + "]";
+	}
+
 }

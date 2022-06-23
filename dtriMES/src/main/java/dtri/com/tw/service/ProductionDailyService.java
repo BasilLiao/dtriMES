@@ -482,24 +482,18 @@ public class ProductionDailyService {
 				newDaily.getPdwpbname() != null && !newDaily.getPdwpbname().equals("") && // 工作站名稱
 				newDaily.getPdwaccounts() != null && !newDaily.getPdwaccounts().equals("") // 工作站人員
 		) {
-
+			log.info("Step1.登記入每日報表[ProductionDaily]" + newDaily.toString());
 			String n_wcclass = null;
-			String n_wcpline = newDaily.getPdwcline();
-			String n_wcwcname = newDaily.getPdwcname();
-			String n_wpbname = newDaily.getPdwpbname();
-			String n_pdprid = newDaily.getPdprid();
-			String n_pdprbomid = newDaily.getPdprbomid();
-			String n_pdpbbsn = newDaily.getPdpbbsn();
-			String n_pdwaccount = newDaily.getPdwaccounts();
-			Integer n_pdprokqty = newDaily.getPdprokqty();
 			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];
 			Boolean n_wcg = null;
 			List<String> n_pdwaccounts = new ArrayList<String>();
 			ArrayList<WorkstationClass> classes = new ArrayList<WorkstationClass>();
 			ArrayList<ProductionDaily> oldDailySn = new ArrayList<ProductionDaily>();
 			n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
-			classes = classDao.findAllBySameClass(null, n_wcpline, (n_wcwcname + "(" + n_wpbname + ")"), n_time, null);
-			oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(n_pdprid, "%" + n_pdpbbsn + "%", n_wcwcname);
+			classes = classDao.findAllBySameClass(//
+					null, newDaily.getPdwcline(), //
+					(newDaily.getPdwcname() + "(" + newDaily.getPdwpbname() + ")"), n_time, null);
+			oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(newDaily.getPdprid(), "%" + newDaily.getPdpbbsn() + "%", newDaily.getPdwcname());
 
 			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
 			ProductionDaily oldDaily = new ProductionDaily();
@@ -514,7 +508,7 @@ public class ProductionDailyService {
 
 				// Step3. 今日登記過的 工單+產品+產線+工作站 未結單 工單資訊
 				oldDailys = dailyDao.findAllByProductionDailyCheck(//
-						n_pdprid, n_pdprbomid, n_wcpline, n_wcclass, n_wcwcname, null, //
+						newDaily.getPdprid(), newDaily.getPdprbomid(), newDaily.getPdwcline(), n_wcclass, newDaily.getPdwcname(), null, //
 						Fm_Time.to_y_M_d(new Date()), 0);
 
 				Boolean need_create = false;
@@ -523,7 +517,7 @@ public class ProductionDailyService {
 					need_create = true;
 					oldDaily = oldDailys.get(0);
 					// Step4-1. 如果 [群組模式] + [不同批人]?
-					if (n_wcg && !oldDaily.getPdwaccounts().equals(n_pdwaccount)) {
+					if (n_wcg && !oldDaily.getPdwaccounts().equals(newDaily.getPdwaccounts())) {
 						need_create = false;
 					}
 				}
@@ -532,16 +526,18 @@ public class ProductionDailyService {
 				if (need_create) {
 					// Step5-1. True群組? False單人?
 					if (n_wcg) {
-						// 同張工單+同一批人+時段一致->[更新] && 添加新 產品SN
+						// 同張工單 + 同一批人 + 時段一致->[更新] && 添加新 產品SN
 						JSONObject o_pdpbbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdpbbsn.getJSONArray("list")).put(n_pdpbbsn);
+						JSONArray o_pdprpbsns = (o_pdpbbsn.getJSONArray("list")).put(newDaily.getPdpbbsn());
+						log.info("登記入每日報表[ProductionDaily]模式?:" + n_wcg + " 登記入的 Pdpbbsn :" + newDaily.getPdpbbsn());
 						o_pdpbbsn.put("list", o_pdprpbsns);
 						oldDaily.setPdpbbsn(o_pdpbbsn + "");
 						oldDaily.setPdtqty(o_pdprpbsns.length());
 						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmuser(user.getSuaccount());
-						oldDaily.setPdprokqty(n_pdprokqty);
+						oldDaily.setPdprokqty(newDaily.getPdprokqty());
+						log.info("登記入每日報表[ProductionDaily] 模式?:" + n_wcg + " 更新?:" + oldDaily.toString());
 						dailyDao.save(oldDaily);
 					} else {
 						// Step5-2 單人
@@ -562,7 +558,8 @@ public class ProductionDailyService {
 							oldDaily.setPdwaccounts(oldDaily.getPdwaccounts() + "_" + n_one);
 						}
 						JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(n_pdpbbsn);
+						JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(newDaily.getPdpbbsn());
+						log.info("登記入每日報表[ProductionDaily]模式?:" + n_wcg + " 登記入的 Pdpbbsn :" + newDaily.getPdpbbsn());
 						o_pdprpbsn.put("list", o_pdprpbsns);
 						oldDaily.setPdpbbsn(o_pdprpbsn + "");
 						oldDaily.setPdtqty(o_pdprpbsns.length());
@@ -570,7 +567,8 @@ public class ProductionDailyService {
 						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 						oldDaily.setSysmuser(user.getSuaccount());
-						oldDaily.setPdprokqty(n_pdprokqty);
+						oldDaily.setPdprokqty(newDaily.getPdprokqty());
+						log.info("登記入每日報表[ProductionDaily] 模式?:" + n_wcg + " 更新?:" + oldDaily.toString());
 						dailyDao.save(oldDaily);
 					}
 				} else {
@@ -583,7 +581,7 @@ public class ProductionDailyService {
 					newDaily.setPdwcclass(n_wcclass);// 班別
 					newDaily.setPdttime("0.0");// 工時
 					newDaily.setPdtqty(1);// 初始數量
-					newDaily.setPdwaccounts(n_pdwaccount);// 登記的作業員帳號(s)
+					newDaily.setPdwaccounts(newDaily.getPdwaccounts());// 登記的作業員帳號(s)
 					newDaily.setSyscdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setSyscuser(user.getSuaccount());
 					newDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
@@ -595,9 +593,9 @@ public class ProductionDailyService {
 					newDaily.setPdlsuid(wClass.getWclsuid());
 					newDaily.setPdlname(userDao.findAllBySuid(wClass.getWclsuid()).get(0).getSuname());
 
-					JSONArray o_pdprpbsns = new JSONArray().put(n_pdpbbsn);// 產品登記
+					JSONArray o_pdprpbsns = new JSONArray().put(newDaily.getPdpbbsn());// 產品登記
 					newDaily.setPdpbbsn(new JSONObject().put("list", o_pdprpbsns) + "");
-
+					log.info("登記入每日報表[ProductionDaily] 新建?:" + newDaily.toString());
 					dailyDao.save(newDaily);
 				}
 			}

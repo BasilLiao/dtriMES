@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
+import dtri.com.tw.db.entity.MaintenanceOrder;
 import dtri.com.tw.db.entity.MaintenanceUnit;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.MaintenanceUnitDao;
@@ -91,9 +92,9 @@ public class MaintainOrderDtrService {
 					sysUser.setSutemplate(sysUser.getSutemplate() + "　");
 				}
 				String value = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
-				if(!suposition.equals(sysUser.getSuposition())) {
+				if (!suposition.equals(sysUser.getSuposition())) {
 					suposition = sysUser.getSuposition();
-					st_val.put((new JSONObject()).put("value", "====="+sysUser.getSuposition()+"=======").put("key", ""));
+					st_val.put((new JSONObject()).put("value", "=====" + sysUser.getSuposition() + "=======").put("key", ""));
 				}
 				st_val.put((new JSONObject()).put("value", value).put("key", sysUser.getSuid()));
 			}
@@ -423,7 +424,6 @@ public class MaintainOrderDtrService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-
 				MaintenanceUnit obj = new MaintenanceUnit();
 				obj.setMuid(data.getLong("mu_id"));
 
@@ -439,5 +439,16 @@ public class MaintainOrderDtrService {
 			System.out.println(e);
 		}
 		return check;
+	}
+
+	// 過站登記故障代碼 資料清單
+	@Transactional
+	public boolean setData(MaintenanceOrder order, SystemUser user) {
+		//檢查
+		
+		//order.
+		
+		
+		return false;
 	}
 }
