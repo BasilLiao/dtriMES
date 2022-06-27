@@ -489,6 +489,7 @@ public class WorkstationWorkService {
 					Map<String, JSONObject> body_map_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					Map<String, JSONObject> body_map_old = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					List<String> check_sn = pbDao.findPbbsnList(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
+					
 					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 1));// 產品規格內容(檢驗用)
 					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
 					Map<String, JSONObject> wpi_pr_map_auto = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數
@@ -500,7 +501,12 @@ public class WorkstationWorkService {
 					String f_code = "";// 維修代號
 					String w_c_name = "";// 工作站
 					Boolean set_replace = true;// 重複過站?true=重複過站/ false = 沒重複過站
-
+					// ========Step0. 是否 產品號 匹配 工單號 ========
+					if (wpicheck_pr.size()!=1 || body_one_now.getPbgid() !=wpicheck_pr.get(0).getHeader().getPhpbgid()) {
+						bean.autoMsssage("WK004");
+						return bean;
+					}
+					
 					// ========Step0. 是否原先有故障代碼 ========
 					if (!list.getString("pb_f_value").equals("") && body_one_now.getPbfvalue() != null && !body_one_now.getPbfvalue().equals("")) {
 						bean.autoMsssage("WK019");
@@ -1186,7 +1192,7 @@ public class WorkstationWorkService {
 						pTest.setPtpbbsn(body_one_now.getPbbsn());
 						pTest.setPtprid(p_records.getPrid());
 						pTest.setPtprbomid(p_records.getPrbomid());
-						pTest.setPtprbomid(p_records.getPrpmodel());
+						pTest.setPtprmodel(p_records.getPrpmodel());
 						pTest.setPtprid(p_records.getPrid());
 						pTest.setPtprsitem(p_records.getPrsitem());
 						pTest.setPtprbitem(p_records.getPrbitem());

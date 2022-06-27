@@ -92,10 +92,12 @@ public class ProductionTestService {
 			JSONArray st_val = new JSONArray();
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_id", pt_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pb_g_id", pt_pb_g_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pb_g_id", pt_pb_g_id));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pr_id", pt_pr_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pr_model", pt_pr_model));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pr_bom_id", pt_pr_bom_id));
+
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pb_b_sn", pt_pb_b_sn));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_l_size", pt_l_size));
@@ -161,8 +163,8 @@ public class ProductionTestService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_g_id", one.getPtpbgid());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_id", one.getPtprid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model", one.getPtprmodel());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id", one.getPtprbomid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model", one.getPtprmodel()== null ? "" : one.getPtprmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id", one.getPtprbomid()== null ? "" : one.getPtprbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_b_sn", one.getPtpbbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_b_item", one.getPtprbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_s_item", one.getPtprsitem());
