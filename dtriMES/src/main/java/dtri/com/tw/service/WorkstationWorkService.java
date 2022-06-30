@@ -489,7 +489,7 @@ public class WorkstationWorkService {
 					Map<String, JSONObject> body_map_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					Map<String, JSONObject> body_map_old = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					List<String> check_sn = pbDao.findPbbsnList(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
-					
+
 					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 1));// 產品規格內容(檢驗用)
 					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
 					Map<String, JSONObject> wpi_pr_map_auto = new HashedMap<String, JSONObject>();// [PLT]轉換成檢查參數
@@ -502,11 +502,14 @@ public class WorkstationWorkService {
 					String w_c_name = "";// 工作站
 					Boolean set_replace = true;// 重複過站?true=重複過站/ false = 沒重複過站
 					// ========Step0. 是否 產品號 匹配 工單號 ========
-					if (wpicheck_pr.size()!=1 || body_one_now.getPbgid() !=wpicheck_pr.get(0).getHeader().getPhpbgid()) {
+					System.out.println(body_one_now.getPbgid() + " " + wpicheck_pr.get(0).getHeader().getPhpbgid());
+					String pbgid = body_one_now.getPbgid().toString();
+					String phgid = wpicheck_pr.get(0).getHeader().getPhpbgid().toString();
+					if (wpicheck_pr.size() == 1 && !pbgid.equals(phgid)) {
 						bean.autoMsssage("WK004");
 						return bean;
 					}
-					
+
 					// ========Step0. 是否原先有故障代碼 ========
 					if (!list.getString("pb_f_value").equals("") && body_one_now.getPbfvalue() != null && !body_one_now.getPbfvalue().equals("")) {
 						bean.autoMsssage("WK019");
@@ -650,7 +653,7 @@ public class WorkstationWorkService {
 						body_map_now.put(setPbwpdate, new JSONObject().put("value", new Date()).put("type", Date.class));
 					} else {
 						body_map_now.put(setPbwname, new JSONObject().put("value", "").put("type", String.class));
-						body_map_now.put(setPbwpdate, new JSONObject().put("value", "isNull").put("type", Date.class));
+						body_map_now.put(setPbwpdate, new JSONObject().put("value", new Date()).put("type", Date.class));
 					}
 
 					// 有維修代碼則不進行其他行為

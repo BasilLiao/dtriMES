@@ -2,12 +2,15 @@ package dtri.com.tw.db.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -18,8 +21,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @see <br>
  *      mo_id : 產品維修單_ID<br>
  *      mo_g_sn : 單據序號_(群組)<br>
- *      mo_i_sn : 單據項目_(單位)RAM類型:R001-R999/DTR類型:D001-D999/Self類型:S001-S999<br>
- *      mo_mr_id : 單據項目 對應 維修料號ID<br>
+ *      mo_md_id : 單據項目_(單位)RAM類型:R001-R999/DTR類型:D001-D999/Self類型:S001-S999<br>
+ *      ex:RAM0123456789-R001<br>
  *      mo_c_id : 客戶( 單據 多對一 客戶)<br>
  *      mo_check : 檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=廢止 3=處理中 4=結單)<br>
  *      mo_from : 產線:DTR/場外維修:RAM/如果是DTR單 則每日自動建立<br>
@@ -83,9 +86,6 @@ public class MaintenanceOrder {
 	@Column(name = "mo_g_sn", nullable = false, columnDefinition = "varchar(50)")
 	private String mogsn;
 
-	@Column(name = "mo_i_sn", nullable = false, columnDefinition = "varchar(50)")
-	private String moisn;
-
 	@Column(name = "mo_mr_id", nullable = false)
 	private Long momrid;
 
@@ -109,6 +109,18 @@ public class MaintenanceOrder {
 
 	@Column(name = "mo_ram_date", nullable = false, columnDefinition = "TIMESTAMP default now()")
 	private Date moramdate;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "mo_md_id", referencedColumnName = "md_id")
+	private MaintenanceDetail mdetail;
+
+	public MaintenanceDetail getMdetail() {
+		return mdetail;
+	}
+
+	public void setMdetail(MaintenanceDetail mdetail) {
+		this.mdetail = mdetail;
+	}
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -196,14 +208,6 @@ public class MaintenanceOrder {
 
 	public void setMogsn(String mogsn) {
 		this.mogsn = mogsn;
-	}
-
-	public String getMoisn() {
-		return moisn;
-	}
-
-	public void setMoisn(String moisn) {
-		this.moisn = moisn;
 	}
 
 	public Long getMomrid() {

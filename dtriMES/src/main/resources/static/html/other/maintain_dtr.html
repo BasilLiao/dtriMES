@@ -21,7 +21,7 @@
 <div id="customized">
 	<div class="shadow mt-0 text-left">
 		<div class="bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-search mr-1"></i>Customized
+			<i class="bi bi-search mr-1"></i>Search product maintenance
 		</div>
 		<div class="row p-0 m-0 search_example_finds">
 			<!-- col-md-2/4/6/8/10/12 -->
@@ -41,24 +41,94 @@
 		</div>
 		<div class="row justify-content-end p-0 m-0 search_example_button">
 			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
-				<button id="search_btn" class="col-md-3 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
-				<button id="clear_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
+				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
 			</div>
 		</div>
 	</div>
 	<!-- 客戶資料 & RAM 單據生成 -->
+	<div class="shadow mt-2 m-0 row">
+		<div class="col-6 p-0 border border-secondary rounded-top">
+			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+				<div class="col p-0 pt-1">
+					<i class="bi bi-house mr-1"></i>Factory Information
+				</div>
+			</div>
+			<div class="m-0 p-2">
+				<div id="company_name" class="col row m-0 mt-1">
+					<div class="col-3">Company Name :</div>
+					<input class="col-9" type="text" value="" placeholder="必填:客戶公司">
+				</div>
+				<div id="contact" class="col row m-0 mt-1">
+					<div class="col-3">Contact :</div>
+					<input class="col-9" type="text" value="" placeholder="客戶聯絡人">
+				</div>
+				<div id="address" class="col row m-0 mt-1">
+					<div class="col-3">Address :</div>
+					<textarea class="col-9" rows="3" cols="" placeholder="客戶地址"></textarea>
+				</div>
+				<div id="tex" class="col row m-0 mt-1">
+					<div class="col-3">Tex :</div>
+					<input class="col-9" type="text" value="" placeholder="客戶電話">
+				</div>
+				<div id="fax" class="col row m-0 mt-1">
+					<div class="col-3">Fax :</div>
+					<input class="col-9" type="text" value="" placeholder="客戶傳真">
+				</div>
+				<div id="fi_btn" class="col row m-0 mt-1 justify-content-end">
+					<button id="clear_fi_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-6 p-0 border border-secondary rounded-top">
+			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+				<div class="col p-0 pt-1">
+					<i class="bi bi-gear mr-1"></i>Maintenance documents
+				</div>
+			</div>
+			<div class="m-0 p-2">
+				<div id="dtr_nb" class="col row m-0 mt-1">
+					<div class="col-3">DTR NB :</div>
+					<input class="col-9" type="text" value="" placeholder="必填:維修單據 自動生成">
+				</div>
+				<div id="address" class="col row m-0 mt-1">
+					<div class="col-3">Ship back to :</div>
+					<textarea class="col-9" rows="6" cols="" placeholder="DTR地址"></textarea>
+				</div>
+				<div id="to_whom" class="col row m-0 mt-1">
+					<div class="col-3">To whom :</div>
+					<select class="col-9">
+						<option>請選擇</option>
+					</select>
+				</div>
+				<div id="md_btn" class="col row m-0 mt-1 justify-content-end">
+					<button id="clear_md_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
 
 	<!-- 查詢結果 生產量 -->
-	<div class="shadow mt-2">
+	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-8 p-0 pt-1">
-				<i class="bi bi-list-ul mr-1"></i>RMA 單據(售後服務維修單)
+			<div class="col-2 p-0 pt-1">
+				<i class="bi bi-list-ul mr-1"></i>Maintenance list
 			</div>
-			<div class="col-4 p-0">
+			<div class="col-5 p-0">
+				<div class="row p-0 m-0 justify-content-start">
+					<div class="pt-1">All:</div>
+					<button id="md_designat_all_btn" class="col-md-3 m-1 btn btn-success btn-sm" type="button">default assignment</button>
+					<button id="md_check_all_btn" class="col-md-3 m-1 btn btn-primary btn-sm" type="button">checked</button>
+				</div>
+			</div>
+			<div class="col-5 p-0">
 				<div class="row p-0 m-0 justify-content-end">
+					<div class="pt-1">Action:</div>
 					<button id="md_save_btn" class="col-md-3 m-1 btn btn-success btn-sm" type="button">Save</button>
-					<button id="md_clear_btn" class="col-md-3 m-1 btn btn-warning btn-sm" type="button">Clear</button>
 					<button id="md_export_btn" class="col-md-3 m-1 btn btn-info btn-sm" type="button">Export Excel</button>
+					<button id="md_clear_btn" class="col-md-3 m-1 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
 		</div>
@@ -275,13 +345,13 @@ customized = new Vue({
 						case "select":
 							//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
 							//id / value / type
-							var search_selsect = $(".search_example_selsect").clone(); //複製樣本
+							var search_selsect = $("#customized .search_example_selsect").clone(); //複製樣本
 							search_selsect[0].className = search[i].col + " p-2 search_true";
 							search_selsect[0].id = "search_" + search[i].id;
 							search_selsect.appendTo("#customized .search_example_finds");
 							$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
 							for (var o = 0; o < search[i].values.length; o++) {
-								var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+								var one_option = $("#customized #" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
 								one_option[0].id = "select_" + search[i]["values"][o]["key"];
 								one_option[0].value = search[i]["values"][o]["key"];
 								one_option[0].innerText = search[i]["values"][o]["value"];
@@ -293,9 +363,9 @@ customized = new Vue({
 						default:
 					}
 					//關閉樣式
-					$(".example_select_one").addClass("d-none");
-					$(".search_example_input").addClass("d-none");
-					$(".search_example_selsect").addClass("d-none");
+					$("#customized .example_select_one").addClass("d-none");
+					$("#customized .search_example_input").addClass("d-none");
+					$("#customized .search_example_selsect").addClass("d-none");
 					main.loading(false);
 				}
 			}

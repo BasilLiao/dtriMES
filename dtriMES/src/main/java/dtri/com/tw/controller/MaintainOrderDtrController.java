@@ -19,7 +19,7 @@ import dtri.com.tw.db.entity.SystemGroup;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.login.LoginUserDetails;
-import dtri.com.tw.service.MaintenanceUnitService;
+import dtri.com.tw.service.MaintainOrderDtrService;
 import dtri.com.tw.service.PackageService;
 
 @Controller
@@ -30,7 +30,7 @@ public class MaintainOrderDtrController {
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	MaintenanceUnitService groupService;
+	MaintainOrderDtrService orderDtrService;
 
 	/**
 	 * 訪問
@@ -64,7 +64,7 @@ public class MaintainOrderDtrController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = groupService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
+		resp = orderDtrService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
 		// 回傳-資料
@@ -93,7 +93,7 @@ public class MaintainOrderDtrController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = groupService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
+		resp = orderDtrService.getData(req.getBody(), req.getPage_batch(), req.getPage_total(), user);
 		// Step3.包裝回傳
 		resp = packageService.setObjResp(resp, req, null);
 		// 回傳-資料
@@ -123,9 +123,9 @@ public class MaintainOrderDtrController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = groupService.createData(req.getBody(), user);
+		check = orderDtrService.createData(req.getBody(), user);
 		if (check) {
-			check = groupService.save_asData(req.getBody(), user);
+			check = orderDtrService.save_asData(req.getBody(), user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -165,7 +165,7 @@ public class MaintainOrderDtrController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = groupService.updateData(req.getBody(), user);
+		check = orderDtrService.updateData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -204,7 +204,7 @@ public class MaintainOrderDtrController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = groupService.deleteData(req.getBody(), user);
+		check = orderDtrService.deleteData(req.getBody(), user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

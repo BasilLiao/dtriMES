@@ -188,7 +188,7 @@ search = new Vue({
 			title = main.orderedSort(title);
 			fixed_cell = 0;
 			for (var i = 0; i < Object.keys(title).length - 1; i++) {
-				var one_item_header = $(".search_example_title .s_title_body").clone(); //複製樣本(header)
+				var one_item_header = $("#search .search_example_title .s_title_body").clone(); //複製樣本(header)
 				var key_id = Object.keys(title)[i];
 				var value_name = title[Object.keys(title)[i]].name;
 				var value_size = title[Object.keys(title)[i]].size;
@@ -198,33 +198,33 @@ search = new Vue({
 				one_item_header[0].className = "p-1 ";
 				one_item_header[0].id = key_id;
 				one_item_header[0].children[0].children[0].innerText = value_name;
-				one_item_header.insertBefore(".s_title_last");
+				one_item_header.insertBefore("#search .s_title_last");
 				$("#" + key_id).css("min-width", value_size);
 				$("#" + key_id).css("max-width", value_size);
 				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
 				//body
-				var one_item_body = $(".search_example_content .s_list_body").clone(); //複製樣本(body)
+				var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
 				one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
 				one_item_body[0].innerText = value_name;
-				one_item_body.insertBefore(".s_list_body");
+				one_item_body.insertBefore("#search .s_list_body");
 			}
 			//結尾
 			var key_id = Object.keys(title)[Object.keys(title).length - 1];
 			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
 			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
 			//header
-			$(".s_title_last").attr("id", key_id);
-			$(".s_title_last .title_name").text(value_name);
+			$("#search .s_title_last").attr("id", key_id);
+			$("#search .s_title_last .title_name").text(value_name);
 			$("#" + key_id).css("min-width", value_size);
 			$("#" + key_id).css("max-width", value_size);
 			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
 			//body
-			var one_item_body = $(".search_example_content .s_list_body").clone(); //複製樣本(body)
+			var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
 			one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
-			one_item_body.insertBefore(".s_list_body");
+			one_item_body.insertBefore("#search .s_list_body");
 
 			//關閉範例
-			$(".s_title_body").addClass("d-none");
+			$("#search .s_title_body").addClass("d-none");
 			//權限設置
 			if (html_permission != null) {
 				if (html_permission['cr'] != 1) {
@@ -265,12 +265,12 @@ search = new Vue({
 				}
 				return false;
 			}
-			$(".search_example_list_son tr").remove();
-			$(".search_data_list").remove();
+			$("#search .search_example_list_son tr").remove();
+			$("#search .search_data_list").remove();
 
 			//開啟樣式
-			$(".s_list_body").removeClass("d-none");
-			$(".search_example_content").removeClass("d-none");
+			$("#search .s_list_body").removeClass("d-none");
+			$("#search .search_example_content").removeClass("d-none");
 			var fixed_cell_color = false;
 			
 			console.log(new Date());
@@ -304,11 +304,11 @@ search = new Vue({
 					}
 				}
 				//資料筆數
-				var list_item = $(".search_example_content").clone(); //複製樣本
+				var list_item = $("#search .search_example_content").clone(); //複製樣本
 				//是否為群組
 				list_item[0].className = "search_data_list";
 				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".search_example_list");
+				list_item.appendTo("#search .search_example_list");
 				//===按鈕設定:選紐換色===
 				if (fixed_cell_color) {
 					$("#" + list_item[0].id + " .fixed_cell").css("background-color", "#f8f9fc");
@@ -367,8 +367,8 @@ search = new Vue({
 			}
 			console.log(new Date());
 			//關閉樣式
-			$(".s_list_body").addClass("d-none");
-			$(".search_example_content").addClass("d-none");
+			$("#search .s_list_body").addClass("d-none");
+			$("#search .search_example_content").addClass("d-none");
 			//分頁換算
 			this.pageInit();
 			//console.log(new Date());

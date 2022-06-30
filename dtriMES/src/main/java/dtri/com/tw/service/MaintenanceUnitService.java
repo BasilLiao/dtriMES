@@ -124,7 +124,7 @@ public class MaintenanceUnitService {
 
 			bean.setCell_g_modify(obj_g_m);
 
-			// 放入包裝(search)
+			// 放入包裝(search)-一般查詢
 			JSONArray object_searchs = new JSONArray();
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "mu_su_name", "負責人", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "mu_g_name", "單位名稱", n_val));

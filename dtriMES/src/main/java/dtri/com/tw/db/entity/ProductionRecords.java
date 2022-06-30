@@ -143,8 +143,6 @@ public class ProductionRecords {
 	@Column(name = "pr_wc_line", columnDefinition = "varchar(50) default ''")
 	private String prwcline;
 	
-	
-
 	@OneToOne(mappedBy = "productionRecords")
 	private ProductionHeader header;
 

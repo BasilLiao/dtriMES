@@ -53,17 +53,17 @@
 	<!-- 查詢結果 生產量 -->
 	<div class="shadow mt-2">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-10">
+			<div class="col-10 p-0">
 				<i class="bi bi-list-ul mr-1"></i>Daily production(每日 總產量)
 			</div>
 			<div class="col-2">
-				<button id="dp_export_btn" class="col-md-12 mt-1 btn btn-info btn-sm" type="button">Export Excel</button>
+				<button id="dp_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="p-2">
-			<table id="dp_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
+			<table id="dp_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 630px;">
 				<thead class="thead bg-dark table-dark dp_search_example_title" style="white-space: nowrap;">
-					<tr class="">
+					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
@@ -94,17 +94,17 @@
 	<!-- 查詢結果 總工時 -->
 	<div class="shadow mt-2 ">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-10">
+			<div class="col-10 p-0">
 				<i class="bi bi-list-ul mr-1"></i>Daily working hours(每日 總工時)
 			</div>
 			<div class="col-2">
-				<button id="dwh_export_btn" class="col-md-12 mt-1 btn btn-info btn-sm" type="button">Export Excel</button>
+				<button id="dwh_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="p-2">
-			<table id="dwh_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
+			<table id="dwh_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 630px;">
 				<thead class="thead bg-dark table-dark dwh_search_example_title" style="white-space: nowrap;">
-					<tr class="">
+					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
@@ -135,17 +135,17 @@
 	<!-- 查詢結果 總人數 -->
 	<div class="shadow mt-2 ">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-10">
+			<div class="col-10 p-0">
 				<i class="bi bi-list-ul mr-1"></i>Daily number of employees(每日 總人力)
 			</div>
 			<div class="col-2">
-				<button id="dnoe_export_btn" class="col-md-12 mt-1 btn btn-info btn-sm" type="button">Export Excel</button>
+				<button id="dnoe_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="p-2">
-			<table id="dnoe_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
+			<table id="dnoe_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px; max-height: 630px;">
 				<thead class="thead bg-dark table-dark dnoe_search_example_title" style="white-space: nowrap;">
-					<tr class="">
+					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
@@ -362,7 +362,7 @@ customized = new Vue({
 					}
 
 					//固定前2格
-					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
 						if (fixed_cell_color) {
 							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
 						} else {
@@ -434,7 +434,7 @@ customized = new Vue({
 					}
 
 					//固定前2格
-					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
 						if (fixed_cell_color) {
 							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
 						} else {
@@ -507,7 +507,7 @@ customized = new Vue({
 					}
 
 					//固定前2格
-					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
 						if (fixed_cell_color) {
 							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
 						} else {
@@ -693,8 +693,11 @@ customized = new Vue({
 					fileext: ".xls" // file extension
 				});
 			});
-			
-			
+			$(document).on("click", ".bi-search", function (event) {
+				console.log("bi .bi-search");
+				$(".search_example_finds").slideToggle("fast");
+				$(".search_example_button").slideToggle("fast");
+			});
 
 			//快速查詢 監聽確認
 			$(document).on("keypress", ".search_true input", function (event) {
@@ -762,6 +765,7 @@ customized = new Vue({
 		$(document).off("click", "#dp_export_btn");
 		$(document).off("click", "#dwh_export_btn");
 		$(document).off("click", "#dnoe_export_btn");
+		$(document).off("click", ".bi-search");
 		
 		
 		$(document).off("keypress", ".search_true input");
