@@ -1,36 +1,34 @@
 package dtri.com.tw.db.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Basil
- * @see <br>
- *      mo_id : 產品維修單_ID ex:RAM0123456789-R001<br>
- *      mo_c_id : 客戶( 單據 多對一 客戶)<br>
- *      mo_check : 檢核狀態(0=未結單 1=已結單) <br>
- *      mo_from : 產線:DTR/場外維修:RAM/如果是DTR單 則每日自動建立<br>
- *      mo_e_date : 完成日<br>
- *      mo_s_date : 寄出日<br>
- *      mo_g_date : 收到日<br>
- *      mo_ram_date : 申請RAM日期<br>
+ * @see 單位設定<br>
+ *      ru_id : 單位_ID<br>
+ *      ru_name : 單位_名稱<br>
+ *      ru_su_id : 帳號關聯_ID<br>
+ *      ru_su_name : 帳號關聯_名稱<br>
+ *      ru_content : 可處理內容敘述<br>
+ *      ru_cell_mail : 自動通知Mail<br>
  * 
  */
 @Entity
-@Table(name = "maintenance_order")
+@Table(name = "repair_unit")
 @EntityListeners(AuditingEntityListener.class)
-public class MaintenanceOrder {
-	public MaintenanceOrder() {
+public class RepairUnit {
+	public RepairUnit() {
 		this.syscdate = new Date();
 		this.syscuser = "system";
 		this.sysmdate = new Date();
@@ -72,41 +70,28 @@ public class MaintenanceOrder {
 
 	// 功能項目
 	@Id
-	@Column(name = "mo_id")
-	private String moid;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "repair_unit_seq")
+	@SequenceGenerator(name = "repair_unit_seq", sequenceName = "repair_unit_seq", allocationSize = 1)
+	@Column(name = "ru_id")
+	private Long ruid;
 
-	@Column(name = "mo_c_id", nullable = false)
-	private Long mocid;
+	@Column(name = "ru_g_id", nullable = false)
+	private Long rugid;
 
-	@Column(name = "mo_check", nullable = false)
-	private Integer mocheck;
+	@Column(name = "ru_g_name", nullable = false, columnDefinition = "varchar(50)")
+	private String rugname;
 
-	@Column(name = "mo_from", nullable = false, columnDefinition = "varchar(50)")
-	private String mofrom;
+	@Column(name = "ru_su_id", nullable = false)
+	private Long rusuid;
 
-	@Column(name = "mo_e_date", columnDefinition = "TIMESTAMP default now()")
-	private Date moedate;
+	@Column(name = "ru_su_name", nullable = false, columnDefinition = "varchar(50)")
+	private String rusuname;
 
-	@Column(name = "mo_g_date", columnDefinition = "TIMESTAMP default now()")
-	private Date mogdate;
+	@Column(name = "ru_content", nullable = false, columnDefinition = "varchar(255)")
+	private String rucontent;
 
-	@Column(name = "mo_s_date", columnDefinition = "TIMESTAMP default now()")
-	private Date mosdate;
-
-	@Column(name = "mo_ram_date", columnDefinition = "TIMESTAMP default now()")
-	private Date moramdate;
-
-	@OrderBy("mdid ASC")
-	@OneToMany(mappedBy = "order", orphanRemoval = true)
-	private List<MaintenanceDetail> details;
-
-	public List<MaintenanceDetail> getDetails() {
-		return details;
-	}
-
-	public void setDetails(List<MaintenanceDetail> details) {
-		this.details = details;
-	}
+	@Column(name = "ru_cell_mail", nullable = false, columnDefinition = "boolean default false")
+	private Boolean rucellmail;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -180,68 +165,59 @@ public class MaintenanceOrder {
 		this.sysheader = sysheader;
 	}
 
-	public Long getMocid() {
-		return mocid;
+	public Long getRuid() {
+		return ruid;
 	}
 
-	public void setMocid(Long mocid) {
-		this.mocid = mocid;
+	public void setRuid(Long ruid) {
+		this.ruid = ruid;
 	}
 
-	public Integer getMocheck() {
-		return mocheck;
+	public Long getRugid() {
+		return rugid;
 	}
 
-	public void setMocheck(Integer mocheck) {
-		this.mocheck = mocheck;
+	public void setRugid(Long rugid) {
+		this.rugid = rugid;
 	}
 
-	public String getMofrom() {
-		return mofrom;
+	public String getRugname() {
+		return rugname;
 	}
 
-	public void setMofrom(String mofrom) {
-		this.mofrom = mofrom;
+	public void setRugname(String rugname) {
+		this.rugname = rugname;
 	}
 
-	public Date getMoedate() {
-		return moedate;
+	public Long getRusuid() {
+		return rusuid;
 	}
 
-	public void setMoedate(Date moedate) {
-		this.moedate = moedate;
+	public void setRusuid(Long rusuid) {
+		this.rusuid = rusuid;
 	}
 
-	public Date getMogdate() {
-		return mogdate;
+	public String getRusuname() {
+		return rusuname;
 	}
 
-	public void setMogdate(Date mogdate) {
-		this.mogdate = mogdate;
+	public void setRusuname(String rusuname) {
+		this.rusuname = rusuname;
 	}
 
-	public Date getMosdate() {
-		return mosdate;
+	public String getRucontent() {
+		return rucontent;
 	}
 
-	public void setMosdate(Date mosdate) {
-		this.mosdate = mosdate;
+	public void setRucontent(String rucontent) {
+		this.rucontent = rucontent;
 	}
 
-	public Date getMoramdate() {
-		return moramdate;
+	public Boolean getRucellmail() {
+		return rucellmail;
 	}
 
-	public void setMoramdate(Date moramdate) {
-		this.moramdate = moramdate;
+	public void setRucellmail(Boolean rucellmail) {
+		this.rucellmail = rucellmail;
 	}
-
-	public String getMoid() {
-		return moid;
-	}
-
-	public void setMoid(String moid) {
-		this.moid = moid;
-	}
-
 }

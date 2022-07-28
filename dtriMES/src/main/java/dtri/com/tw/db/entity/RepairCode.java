@@ -15,20 +15,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Basil
- * @see 單位設定<br>
- *      mu_id : 單位_ID<br>
- *      mu_name : 單位_名稱<br>
- *      mu_su_id : 帳號關聯_ID<br>
- *      mu_su_name : 帳號關聯_名稱<br>
- *      mu_content : 可處理內容敘述<br>
- *      mu_cell_mail : 自動通知Mail<br>
- * 
+ * @see 系統設定<br>
+ *      rc_id : ID<br>
+ *      rc_name : 名稱<br>
+ *      rc_g_id : 群組ID<br>
+ *      rc_g_name : 群組名稱<br>
+ *      rc_value : 設定參數<br>
  */
 @Entity
-@Table(name = "maintenance_unit")
+@Table(name = "repair_code")
 @EntityListeners(AuditingEntityListener.class)
-public class MaintenanceUnit {
-	public MaintenanceUnit() {
+public class RepairCode {
+	public RepairCode() {
 		this.syscdate = new Date();
 		this.syscuser = "system";
 		this.sysmdate = new Date();
@@ -70,28 +68,22 @@ public class MaintenanceUnit {
 
 	// 功能項目
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "maintenance_unit_seq")
-	@SequenceGenerator(name = "maintenance_unit_seq", sequenceName = "maintenance_unit_seq", allocationSize = 1)
-	@Column(name = "mu_id")
-	private Long muid;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "repair_code_seq")
+	@SequenceGenerator(name = "repair_code_seq", sequenceName = "repair_code_seq", allocationSize = 1)
+	@Column(name = "rc_id")
+	private Long rcid;
 
-	@Column(name = "mu_g_id", nullable = false)
-	private Long mugid;
+	@Column(name = "rc_g_id", nullable = false)
+	private Long rcgid;
 
-	@Column(name = "mu_g_name", nullable = false, columnDefinition = "varchar(50)")
-	private String mugname;
+	@Column(name = "rc_name", nullable = false, columnDefinition = "varchar(50)")
+	private String rcname;
 
-	@Column(name = "mu_su_id", nullable = false)
-	private Long musuid;
+	@Column(name = "rc_g_name", nullable = false, columnDefinition = "varchar(50)")
+	private String rcgname;
 
-	@Column(name = "mu_su_name", nullable = false, columnDefinition = "varchar(50)")
-	private String musuname;
-
-	@Column(name = "mu_content", nullable = false, columnDefinition = "varchar(255)")
-	private String mucontent;
-
-	@Column(name = "mu_cell_mail", nullable = false, columnDefinition = "boolean default false")
-	private Boolean mucellmail;
+	@Column(name = "rc_value", nullable = false, columnDefinition = "varchar(50)")
+	private String rcvalue;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -165,60 +157,43 @@ public class MaintenanceUnit {
 		this.sysheader = sysheader;
 	}
 
-	public Long getMuid() {
-		return muid;
+	public Long getRcid() {
+		return rcid;
 	}
 
-	public void setMuid(Long muid) {
-		this.muid = muid;
+	public void setRcid(Long rcid) {
+		this.rcid = rcid;
 	}
 
-	public Long getMugid() {
-		return mugid;
+	public Long getRcgid() {
+		return rcgid;
 	}
 
-	public void setMugid(Long mugid) {
-		this.mugid = mugid;
+	public void setRcgid(Long rcgid) {
+		this.rcgid = rcgid;
 	}
 
-	public String getMugname() {
-		return mugname;
+	public String getRcname() {
+		return rcname;
 	}
 
-	public void setMugname(String mugname) {
-		this.mugname = mugname;
+	public void setRcname(String rcname) {
+		this.rcname = rcname;
 	}
 
-	public Long getMusuid() {
-		return musuid;
+	public String getRcgname() {
+		return rcgname;
 	}
 
-	public void setMusuid(Long musuid) {
-		this.musuid = musuid;
+	public void setRcgname(String rcgname) {
+		this.rcgname = rcgname;
 	}
 
-	public String getMusuname() {
-		return musuname;
+	public String getRcvalue() {
+		return rcvalue;
 	}
 
-	public void setMusuname(String musuname) {
-		this.musuname = musuname;
+	public void setRcvalue(String rcvalue) {
+		this.rcvalue = rcvalue;
 	}
-
-	public String getMucontent() {
-		return mucontent;
-	}
-
-	public void setMucontent(String mucontent) {
-		this.mucontent = mucontent;
-	}
-
-	public Boolean getMucellmail() {
-		return mucellmail;
-	}
-
-	public void setMucellmail(Boolean mucellmail) {
-		this.mucellmail = mucellmail;
-	}
-
 }

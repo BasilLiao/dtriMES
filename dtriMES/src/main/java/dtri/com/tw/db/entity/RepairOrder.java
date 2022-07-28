@@ -1,32 +1,36 @@
 package dtri.com.tw.db.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Basil
- * @see 系統設定<br>
- *      mc_id : ID<br>
- *      mc_name : 名稱<br>
- *      mc_g_id : 群組ID<br>
- *      mc_g_name : 群組名稱<br>
- *      mc_value : 設定參數<br>
+ * @see <br>
+ *      ro_id : 產品維修單_ID ex:RAM0123456789-R001<br>
+ *      ro_c_id : 客戶( 單據 多對一 客戶)<br>
+ *      ro_check : 檢核狀態(0=未結單 1=已結單) <br>
+ *      ro_from : 產線:DTR/場外維修:RAM/如果是DTR單 則每日自動建立<br>
+ *      ro_e_date : 完成日<br>
+ *      ro_s_date : 寄出日<br>
+ *      ro_g_date : 收到日<br>
+ *      ro_ram_date : 申請RAM日期<br>
+ * 
  */
 @Entity
-@Table(name = "maintain_code")
+@Table(name = "repair_order")
 @EntityListeners(AuditingEntityListener.class)
-public class MaintainCode {
-	public MaintainCode() {
+public class RepairOrder {
+	public RepairOrder() {
 		this.syscdate = new Date();
 		this.syscuser = "system";
 		this.sysmdate = new Date();
@@ -68,22 +72,105 @@ public class MaintainCode {
 
 	// 功能項目
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "maintain_code_seq")
-	@SequenceGenerator(name = "maintain_code_seq", sequenceName = "maintain_code_seq", allocationSize = 1)
-	@Column(name = "mc_id")
-	private Long mcid;
+	@Column(name = "ro_id")
+	private String roid;
 
-	@Column(name = "mc_g_id", nullable = false)
-	private Long mcgid;
+	@Column(name = "ro_c_id", nullable = false)
+	private Long rocid;
 
-	@Column(name = "mc_name", nullable = false, columnDefinition = "varchar(50)")
-	private String mcname;
+	@Column(name = "ro_check", nullable = false)
+	private Integer rocheck;
 
-	@Column(name = "mc_g_name", nullable = false, columnDefinition = "varchar(50)")
-	private String mcgname;
+	@Column(name = "ro_from", nullable = false, columnDefinition = "varchar(50)")
+	private String rofrom;
 
-	@Column(name = "mc_value", nullable = false, columnDefinition = "varchar(50)")
-	private String mcvalue;
+	@Column(name = "ro_e_date", columnDefinition = "TIMESTAMP default now()")
+	private Date roedate;
+
+	@Column(name = "ro_g_date", columnDefinition = "TIMESTAMP default now()")
+	private Date rogdate;
+
+	@Column(name = "ro_s_date", columnDefinition = "TIMESTAMP default now()")
+	private Date rosdate;
+
+	@Column(name = "ro_ram_date", columnDefinition = "TIMESTAMP default now()")
+	private Date roramdate;
+
+	@OrderBy("rdid ASC")
+	@OneToMany(mappedBy = "order", orphanRemoval = true)
+	private List<RepairDetail> details;
+
+	public List<RepairDetail> getDetails() {
+		return details;
+	}
+
+	public void setDetails(List<RepairDetail> details) {
+		this.details = details;
+	}
+
+	public String getRoid() {
+		return roid;
+	}
+
+	public void setRoid(String roid) {
+		this.roid = roid;
+	}
+
+	public Long getRocid() {
+		return rocid;
+	}
+
+	public void setRocid(Long rocid) {
+		this.rocid = rocid;
+	}
+
+	public Integer getRocheck() {
+		return rocheck;
+	}
+
+	public void setRocheck(Integer rocheck) {
+		this.rocheck = rocheck;
+	}
+
+	public String getRofrom() {
+		return rofrom;
+	}
+
+	public void setRofrom(String rofrom) {
+		this.rofrom = rofrom;
+	}
+
+	public Date getRoedate() {
+		return roedate;
+	}
+
+	public void setRoedate(Date roedate) {
+		this.roedate = roedate;
+	}
+
+	public Date getRogdate() {
+		return rogdate;
+	}
+
+	public void setRogdate(Date rogdate) {
+		this.rogdate = rogdate;
+	}
+
+	public Date getRosdate() {
+		return rosdate;
+	}
+
+	public void setRosdate(Date rosdate) {
+		this.rosdate = rosdate;
+	}
+
+	public Date getRoramdate() {
+		return roramdate;
+	}
+
+	public void setRoramdate(Date roramdate) {
+		this.roramdate = roramdate;
+	}
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -155,46 +242,6 @@ public class MaintainCode {
 
 	public void setSysheader(Boolean sysheader) {
 		this.sysheader = sysheader;
-	}
-
-	public Long getMcid() {
-		return mcid;
-	}
-
-	public void setMcid(Long mcid) {
-		this.mcid = mcid;
-	}
-
-	public Long getMcgid() {
-		return mcgid;
-	}
-
-	public void setMcgid(Long mcgid) {
-		this.mcgid = mcgid;
-	}
-
-	public String getMcname() {
-		return mcname;
-	}
-
-	public void setMcname(String mcname) {
-		this.mcname = mcname;
-	}
-
-	public String getMcgname() {
-		return mcgname;
-	}
-
-	public void setMcgname(String mcgname) {
-		this.mcgname = mcgname;
-	}
-
-	public String getMcvalue() {
-		return mcvalue;
-	}
-
-	public void setMcvalue(String mcvalue) {
-		this.mcvalue = mcvalue;
 	}
 
 }

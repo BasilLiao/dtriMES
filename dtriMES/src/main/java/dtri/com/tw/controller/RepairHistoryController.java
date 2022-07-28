@@ -11,25 +11,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
-import dtri.com.tw.service.MaintenanceUnitService;
 import dtri.com.tw.service.PackageService;
+import dtri.com.tw.service.ProductionRecordsService;
 
 @Controller
-public class MaintenanceUnitController extends AbstractController {
-	public MaintenanceUnitController() {
-		super("maintenance_unit.basil");// 功能
+public class RepairHistoryController extends AbstractController {
+	public RepairHistoryController() {
+		super("repair_history.basil");// 功能
 	}
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	MaintenanceUnitService unitService;
+	ProductionRecordsService recordsService;
 
 	/**
 	 * 訪問
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/maintenance_unit.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_history.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		showSYS_CM("access");
 		show(json_object);
@@ -43,7 +43,7 @@ public class MaintenanceUnitController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = unitService.getData(resp, req, user);
+		check = recordsService.getData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -61,7 +61,7 @@ public class MaintenanceUnitController extends AbstractController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/maintenance_unit.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_history.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
 		showSYS_CM("search");
 		show(json_object);
@@ -74,7 +74,7 @@ public class MaintenanceUnitController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = unitService.getData(resp, req, user);
+		check = recordsService.getData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -92,7 +92,7 @@ public class MaintenanceUnitController extends AbstractController {
 	 * 新增
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/maintenance_unit.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_history.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
 		showSYS_CM("create");
 		show(json_object);
@@ -105,9 +105,9 @@ public class MaintenanceUnitController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = unitService.createData(resp, req, user);
+		check = recordsService.createData(resp, req, user);
 		if (check) {
-			check = unitService.save_asData(resp, req, user);
+			check = recordsService.save_asData(resp, req, user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -126,7 +126,7 @@ public class MaintenanceUnitController extends AbstractController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/maintenance_unit.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_history.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		showSYS_CM("modify");
 		show(json_object);
@@ -139,7 +139,7 @@ public class MaintenanceUnitController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = unitService.updateData(resp, req, user);
+		check = recordsService.updateData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -157,7 +157,7 @@ public class MaintenanceUnitController extends AbstractController {
 	 * 移除
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/maintenance_unit.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_history.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		showSYS_CM("delete");
 		show(json_object);
@@ -170,7 +170,7 @@ public class MaintenanceUnitController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = unitService.deleteData(resp,req, user);
+		check = recordsService.deleteData(resp,req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

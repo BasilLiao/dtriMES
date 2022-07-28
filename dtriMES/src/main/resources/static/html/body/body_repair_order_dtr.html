@@ -62,7 +62,7 @@
 		},
 		//初始化前
 		created() {
-			console.log("body_maintain_order_dtr.html(created)");
+			console.log("body_repair_order_dtr.html(created)");
 		},
 		//初始化後
 		mounted() {
@@ -102,7 +102,7 @@
 			//$("#index #analysis_tab").load("./html/model/analysis.html");
 			//工作站-模板
 			//$("#index #workstation_tab").load("./html/model/workstation.html");
-			$("#index #customized_tab").load("./html/other/maintain_dtr.html", function() {
+			$("#index #customized_tab").load("./html/other/repair_dtr.html", function() {
 				//帶入模板內資料 
 				customized.setDataTitle(
 						main.allData.header['customized_header'],
@@ -132,7 +132,7 @@
             $("#index #customized_tab").addClass("active");
             
             //單元名稱
-            $("#title_name").text(t_nav.nav_list['body_maintain_order_dtr']);
+            $("#title_name").text(t_nav.nav_list['body_repair_order_dtr']);
 		},
 		//可呼叫方法
 		methods : {
@@ -140,7 +140,7 @@
 		},
 		//移除監聽事件
 		beforeDestroy() {
-			console.log("body_maintain_order_dtr.html(beforeDestroy)");
+			console.log("body_repair_order_dtr.html(beforeDestroy)");
 
 		}
 	});

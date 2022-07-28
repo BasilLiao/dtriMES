@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.FtpUtilBean;
 import dtri.com.tw.bean.PackageBean;
-import dtri.com.tw.db.entity.MaintainCode;
+import dtri.com.tw.db.entity.RepairCode;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionDaily;
 import dtri.com.tw.db.entity.ProductionHeader;
@@ -38,7 +38,7 @@ import dtri.com.tw.db.entity.SystemConfig;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.entity.Workstation;
 import dtri.com.tw.db.entity.WorkstationProgram;
-import dtri.com.tw.db.pgsql.dao.MaintainCodeDao;
+import dtri.com.tw.db.pgsql.dao.RepairCodeDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
@@ -62,7 +62,7 @@ public class WorkstationWorkService {
 	@Autowired
 	private WorkstationProgramDao wkpDao;
 	@Autowired
-	private MaintainCodeDao codeDao;
+	private RepairCodeDao codeDao;
 	@Autowired
 	private ProductionTestDao testDao;
 
@@ -103,14 +103,14 @@ public class WorkstationWorkService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject(new LinkedHashMap<>());
 			// 維修代碼fix
-			ArrayList<MaintainCode> codes = codeDao.findAllByOrderByMcgidAscSysheaderDescMcvalueAsc();
+			ArrayList<RepairCode> codes = codeDao.findAllByOrderByRcgidAscSysheaderDescRcvalueAsc();
 			JSONObject fix_obj = new JSONObject();
 			JSONObject fix_type = new JSONObject();
 			// JSONObject fix_item = new JSONObject();
 			Map<String, String> fix_item = new LinkedHashMap<String, String>();// 因為排序(一般JSONObject 是不排序)
 			String mc_g_code = "", mc_g_name = "";
 
-			for (MaintainCode one : codes) {
+			for (RepairCode one : codes) {
 				// TYPE
 				if (one.getSysheader()) {
 					if (fix_item.size() > 0) {
@@ -120,11 +120,11 @@ public class WorkstationWorkService {
 						fix_item = new LinkedHashMap<String, String>();
 						fix_type = new JSONObject();
 					}
-					mc_g_name = one.getMcgname();
-					mc_g_code = one.getMcvalue();
+					mc_g_name = one.getRcgname();
+					mc_g_code = one.getRcvalue();
 				} else {
 					// ITEM
-					fix_item.put(one.getMcvalue(), one.getMcname());
+					fix_item.put(one.getRcvalue(), one.getRcname());
 				}
 			}
 			// 補上最後一圈
@@ -635,14 +635,12 @@ public class WorkstationWorkService {
 								put("workstation", w_c_name).//
 								put("user", user.getSuaccount()).//
 								put("fix_code", list.getString("pb_f_value")).toString();
-
 						f_code_check = false;
 					}
 					// 重複過站[標記]
 					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {
 						set_replace = false;
 					}
-
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
 					body_map_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
