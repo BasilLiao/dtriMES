@@ -3,10 +3,14 @@ package dtri.com.tw.controller;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class WorkstationItemController {
-	// 功能
-	final static String SYS_F = "workstation_item.basil";
-// 遺棄功能獏組
+public class WorkstationItemController{
+//	public WorkstationItemController() {
+//		super("workstation_item.basil");
+//	}
+//
+//	// 功能
+//	final static String SYS_F = "workstation_item.basil";
+//	// 遺棄功能獏組
 //	@Autowired
 //	PackageService packageService;
 //	@Autowired
@@ -18,32 +22,28 @@ public class WorkstationItemController {
 //	@ResponseBody
 //	@RequestMapping(value = { "/ajax/workstation_item.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 //	public String access(@RequestBody String json_object) {
-//		System.out.println("---controller -access " + SYS_F + " Check");
+//		showSYS_CM("access");
+//		show(json_object);
 //		PackageBean req = new PackageBean();
 //		PackageBean resp = new PackageBean();
-//		 
-//		System.out.println(json_object);
-//		// 取得-當前用戶資料
-//		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//			// Step1.查詢資料權限
-//			systemGroup = userDetails.getSystemGroup();
-//		}
-//		// UI限制功能
-//		SystemPermission one = new SystemPermission();
-//		systemGroup.forEach(p -> {
-//			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-//				one.setSppermission(p.getSystemPermission().getSppermission());
-//			}
-//		});
+//		boolean check = false;
+//
+//		// Step0.當前用戶資料-UI權限
+//		SystemUser user = loginUser().getSystemUser();
+//		SystemPermission pern = permissionUI();
 //		// Step1.包裝解析
 //		req = packageService.jsonToObj(new JSONObject(json_object));
 //		// Step2.進行查詢
-//		resp = itemService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
-//		// Step3.包裝回傳
-//		resp = packageService.setObjResp(resp, req, info, info_color, one.getSppermission());
+//		check = itemService.getData(resp, req, user);
+//		// Step3.進行判定
+//		if (check) {
+//			// Step4.包裝回傳
+//			resp = packageService.setObjResp(resp, req, resp.permissionToJson(pern.getSppermission().split("")));
+//		} else {
+//			// Step4.包裝Err回傳
+//			packageService.setObjErrResp(resp, req);
+//			resp = packageService.setObjResp(resp, req, null);
+//		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
 //	}
@@ -54,17 +54,27 @@ public class WorkstationItemController {
 //	@ResponseBody
 //	@RequestMapping(value = { "/ajax/workstation_item.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 //	public String search(@RequestBody String json_object) {
-//		System.out.println("---controller -search " + SYS_F + " Check");
+//		showSYS_CM("search");
+//		show(json_object);
 //		PackageBean req = new PackageBean();
 //		PackageBean resp = new PackageBean();
-//		 
-//		System.out.println(json_object);
+//		boolean check = false;
+//
+//		// Step0.當前用戶資料-UI權限
+//		SystemUser user = loginUser().getSystemUser();
 //		// Step1.包裝解析
 //		req = packageService.jsonToObj(new JSONObject(json_object));
 //		// Step2.進行查詢
-//		resp = itemService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
-//		// Step3.包裝回傳
-//		resp = packageService.setObjResp(resp, req, "");
+//		check = itemService.getData(resp, req, user);
+//		// Step3.進行判定
+//		if (check) {
+//			// Step4.包裝回傳
+//			resp = packageService.setObjResp(resp, req, null);
+//		} else {
+//			// Step4.包裝Err回傳
+//			packageService.setObjErrResp(resp, req);
+//			resp = packageService.setObjResp(resp, req, null);
+//		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
 //	}
@@ -75,34 +85,29 @@ public class WorkstationItemController {
 //	@ResponseBody
 //	@RequestMapping(value = { "/ajax/workstation_item.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 //	public String create(@RequestBody String json_object) {
-//		System.out.println("---controller -create " + SYS_F + " Check");
+//		showSYS_CM("create");
+//		show(json_object);
 //		PackageBean req = new PackageBean();
 //		PackageBean resp = new PackageBean();
 //		boolean check = false;
-//		 
-//		System.out.println(json_object);
-//		// 取得-當前用戶資料
-//		SystemUser user = new SystemUser();
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//			// Step1.查詢資料
-//			user = userDetails.getSystemUser();
-//		}
+//
+//		// Step0.當前用戶資料-UI權限
+//		SystemUser user = loginUser().getSystemUser();
 //		// Step1.包裝解析
 //		req = packageService.jsonToObj(new JSONObject(json_object));
 //		// Step2.進行新增
-//		check = itemService.createData(req.getBody(), user);
+//		check = itemService.createData(resp, req, user);
 //		if (check) {
-//			check = itemService.save_asData(req.getBody(), user);
+//			check = itemService.save_asData(resp, req, user);
 //		}
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
-//			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, PackageBean.info_message_warning, PackageBean.info_color_warning, "");
+//			// Step4.包裝Err回傳
+//			packageService.setObjErrResp(resp, req);
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
@@ -114,31 +119,26 @@ public class WorkstationItemController {
 //	@ResponseBody
 //	@RequestMapping(value = { "/ajax/workstation_item.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 //	public String modify(@RequestBody String json_object) {
-//		System.out.println("---controller - -modify " + SYS_F + " Check");
+//		showSYS_CM("modify");
+//		show(json_object);
 //		PackageBean req = new PackageBean();
 //		PackageBean resp = new PackageBean();
 //		boolean check = false;
-//		 
-//		System.out.println(json_object);
-//		// 取得-當前用戶資料
-//		SystemUser user = new SystemUser();
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//			// Step1.查詢資料
-//			user = userDetails.getSystemUser();
-//		}
+//
+//		// Step0.當前用戶資料-UI權限
+//		SystemUser user = loginUser().getSystemUser();
 //		// Step1.包裝解析
 //		req = packageService.jsonToObj(new JSONObject(json_object));
-//		// Step2.進行新增
-//		check = itemService.updateData(req.getBody(), user);
+//		// Step2.進行修改
+//		check = itemService.updateData(resp, req, user);
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
-//			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, PackageBean.info_message_warning, PackageBean.info_color_warning, "");
+//			// Step4.包裝Err回傳
+//			packageService.setObjErrResp(resp, req);
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);
@@ -150,24 +150,26 @@ public class WorkstationItemController {
 //	@ResponseBody
 //	@RequestMapping(value = { "/ajax/workstation_item.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 //	public String delete(@RequestBody String json_object) {
-//		System.out.println("---controller -delete " + SYS_F + " Check");
+//		showSYS_CM("delete");
+//		show(json_object);
 //		PackageBean req = new PackageBean();
 //		PackageBean resp = new PackageBean();
 //		boolean check = false;
-//		 
-//		System.out.println(json_object);
 //
+//		// Step0.當前用戶資料-UI權限
+//		SystemUser user = loginUser().getSystemUser();
 //		// Step1.包裝解析
 //		req = packageService.jsonToObj(new JSONObject(json_object));
-//		// Step2.進行新增
-//		check = itemService.deleteData(req.getBody());
+//		// Step2.進行移除
+//		check = itemService.deleteData(resp, req, user);
 //		// Step3.進行判定
 //		if (check) {
 //			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, "");
+//			resp = packageService.setObjResp(resp, req, null);
 //		} else {
-//			// Step4.包裝回傳
-//			resp = packageService.setObjResp(resp, req, PackageBean.info_message_warning, PackageBean.info_color_warning, "");
+//			// Step4.包裝Err回傳
+//			packageService.setObjErrResp(resp, req);
+//			resp = packageService.setObjResp(resp, req, null);
 //		}
 //		// 回傳-資料
 //		return packageService.objToJson(resp);

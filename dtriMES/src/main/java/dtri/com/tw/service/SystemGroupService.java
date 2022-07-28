@@ -28,8 +28,11 @@ public class SystemGroupService {
 	private SystemPermissionDao permissionDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
 		List<SystemGroup> systemGroup_son = new ArrayList<SystemGroup>();
 		ArrayList<SystemPermission> permissions = new ArrayList<SystemPermission>();
@@ -275,12 +278,13 @@ public class SystemGroupService {
 
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -348,9 +352,10 @@ public class SystemGroupService {
 		return check;
 	}
 
-	// 另存檔 資料清單
+	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -433,7 +438,8 @@ public class SystemGroupService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			String sg_name = "";
@@ -502,8 +508,8 @@ public class SystemGroupService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");
@@ -523,7 +529,6 @@ public class SystemGroupService {
 				} else {
 					return false;
 				}
-
 				groupDao.delete(sys_p);
 				check = true;
 			}

@@ -24,8 +24,11 @@ public class MaintainCodeService {
 	private MaintainCodeDao mcDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<MaintainCode> maintainCodes = new ArrayList<MaintainCode>();
 		ArrayList<MaintainCode> mcgid_obj = new ArrayList<MaintainCode>();
 
@@ -173,14 +176,15 @@ public class MaintainCodeService {
 		// 沒查到東西
 		if (maintainCodes.size() == 0) {
 			bean.autoMsssage("102");
-			return bean;
+			return false;
 		}
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -238,7 +242,8 @@ public class MaintainCodeService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -301,7 +306,8 @@ public class MaintainCodeService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			List<MaintainCode> sys_p_s = new ArrayList<MaintainCode>();
@@ -358,8 +364,8 @@ public class MaintainCodeService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

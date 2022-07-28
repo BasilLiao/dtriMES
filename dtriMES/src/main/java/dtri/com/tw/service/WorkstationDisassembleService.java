@@ -34,12 +34,12 @@ public class WorkstationDisassembleService {
 	@Autowired
 	private WorkstationDao workDao;
 
-	// @PersistenceUnit(unitName = "default")
-	// private EntityManagerFactory emf;
-
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		//int page = req.getPage_batch();
+		//int p_size = req.getPage_total();
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
 		List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
 		// 進行-特定查詢(拆解工單)
@@ -72,12 +72,13 @@ public class WorkstationDisassembleService {
 		} else {
 			bean.autoMsssage("102");
 		}
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 新建的資料
@@ -161,7 +162,8 @@ public class WorkstationDisassembleService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 預備資料
@@ -234,7 +236,7 @@ public class WorkstationDisassembleService {
 				// 舊
 				if (pboldsns.length() == 1) {// 開頭資訊(剛開始繼承的話)
 					pro_b_one_old.setPboldsn("" + new JSONArray().put(pro_b_one_old.getPbbsn() + "_old_beginning"));
-					//sn_old = pro_b_one_old.getPbbsn()+ "_old_beginning";
+					// sn_old = pro_b_one_old.getPbbsn()+ "_old_beginning";
 				}
 				pro_b_one_old.setPbbsn(sn_old);
 				pro_b_one_old.setPbsn(sn_old);
@@ -376,9 +378,10 @@ public class WorkstationDisassembleService {
 		return check;
 	}
 
-	// 還原 資料清單
+	// 移除(還原) 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		// 預備資料
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
@@ -388,7 +391,7 @@ public class WorkstationDisassembleService {
 		try {
 			if (action.equals("return_order_btn")) {
 				// 歸還資料
-				List<ProductionBody> now_sns = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn+"_old_Delete", "% %");
+				List<ProductionBody> now_sns = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn + "_old_Delete", "% %");
 
 				// Step0. 確定有歸還 對象
 				if (now_sns.size() == 1) {
@@ -422,7 +425,7 @@ public class WorkstationDisassembleService {
 							check = true;
 						}
 					}
-				}else {
+				} else {
 					// 移除舊資料(不是 old )
 					List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
 					if (p_nows != null && p_nows.size() == 1) {

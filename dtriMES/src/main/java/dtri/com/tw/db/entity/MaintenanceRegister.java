@@ -3,6 +3,7 @@ package dtri.com.tw.db.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -98,7 +99,7 @@ public class MaintenanceRegister {
 	private Date mrpbsysmdate;
 
 	@Column(name = "mr_pb_type", nullable = false)
-	private Date mrpbtype;
+	private String mrpbtype;
 
 	@Column(name = "mr_v", columnDefinition = "varchar(50)")
 	private String mrv;
@@ -106,7 +107,7 @@ public class MaintenanceRegister {
 	@Column(name = "mr_f_ok", nullable = false, columnDefinition = "boolean default false")
 	private Boolean mrfok;
 
-	@OneToMany(mappedBy = "register")
+	@OneToMany(mappedBy = "register",cascade = {CascadeType.ALL})
 	private List<MaintenanceDetail> details;
 
 	public Boolean getMrexpired() {
@@ -181,11 +182,11 @@ public class MaintenanceRegister {
 		this.mrpbsysmdate = mrpbsysmdate;
 	}
 
-	public Date getMrpbtype() {
+	public String getMrpbtype() {
 		return mrpbtype;
 	}
 
-	public void setMrpbtype(Date mrpbtype) {
+	public void setMrpbtype(String mrpbtype) {
 		this.mrpbtype = mrpbtype;
 	}
 

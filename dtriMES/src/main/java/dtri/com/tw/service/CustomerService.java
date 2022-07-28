@@ -23,7 +23,11 @@ public class CustomerService {
 	private CustomerDao customerDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
+	public boolean getData(PackageBean resp, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		PackageBean bean = new PackageBean();
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 
@@ -100,7 +104,7 @@ public class CustomerService {
 			status = body.getJSONObject("search").getString("sys_status");
 			status = status.equals("") ? "0" : status;
 		}
-		customers = customerDao.findAllByCustomer(c_c_name, c_name, Integer.parseInt(status), page_r);
+		customers = customerDao.findAllByCustomer(0L, c_c_name, c_name, Integer.parseInt(status), page_r);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
@@ -125,12 +129,13 @@ public class CustomerService {
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -151,7 +156,7 @@ public class CustomerService {
 				item.setSyscuser(user.getSuaccount());
 
 				// 檢查名稱重複
-				ArrayList<Customer> items = customerDao.findAllByCustomer(item.getCcname(), null, 0, PageRequest.of(0, 1));
+				ArrayList<Customer> items = customerDao.findAllByCustomer(0L, item.getCcname(), null, 0, PageRequest.of(0, 1));
 				if (items != null && items.size() > 0) {
 					return check;
 				}
@@ -166,7 +171,8 @@ public class CustomerService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -187,7 +193,7 @@ public class CustomerService {
 				item.setSyscuser(user.getSuaccount());
 
 				// 檢查名稱重複
-				ArrayList<Customer> items = customerDao.findAllByCustomer(item.getCcname(), null, 0, PageRequest.of(0, 1));
+				ArrayList<Customer> items = customerDao.findAllByCustomer(0L, item.getCcname(), null, 0, PageRequest.of(0, 1));
 				if (items != null && items.size() > 0) {
 					return check;
 				}
@@ -202,7 +208,8 @@ public class CustomerService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -237,8 +244,8 @@ public class CustomerService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

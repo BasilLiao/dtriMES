@@ -28,8 +28,11 @@ public class WorkstationProgramService {
 	private WorkstationDao workstationDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<WorkstationProgram> workstationPrograms = new ArrayList<WorkstationProgram>();
 		ArrayList<WorkstationProgram> workstationPrograms_son = new ArrayList<WorkstationProgram>();
 		ArrayList<Workstation> workstations = new ArrayList<Workstation>();
@@ -206,12 +209,13 @@ public class WorkstationProgramService {
 
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		JSONArray list = body.getJSONArray("create");
 		ArrayList<WorkstationProgram> workstationPrograms = new ArrayList<WorkstationProgram>();
@@ -274,7 +278,8 @@ public class WorkstationProgramService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		JSONArray list = body.getJSONArray("save_as");
 		ArrayList<WorkstationProgram> workstationPrograms = new ArrayList<WorkstationProgram>();
@@ -333,7 +338,8 @@ public class WorkstationProgramService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -399,8 +405,8 @@ public class WorkstationProgramService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

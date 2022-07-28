@@ -36,9 +36,11 @@ public class ProductionBodyService {
 	EntityManager em;
 
 	// 取得當前 資料清單
-
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
 		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -46,6 +48,7 @@ public class ProductionBodyService {
 			page = 0;
 			p_size = 100;
 		}
+		// 查詢預設
 		String prid = "";
 		String phmodel = "";
 		String sysstatus = "0";
@@ -426,7 +429,7 @@ public class ProductionBodyService {
 		productionBodies = query.getResultList();
 		if (productionBodies.size() == 0) {
 			bean.autoMsssage("102");
-			return bean;
+			return false;
 		}
 		em.clear();
 		em.close();
@@ -532,12 +535,15 @@ public class ProductionBodyService {
 
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
-	// 客製化 查詢 資料清單
-	public PackageBean getReportData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	// 報表 查詢 資料清單
+	public boolean getReportData(PackageBean bean, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
+		// int page = req.getPage_batch();
+		// int p_size = req.getPage_total();
+		boolean check = false;
 		List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
 		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
 
@@ -588,15 +594,15 @@ public class ProductionBodyService {
 			productionBodies = query.getResultList();
 			if (productionBodies.size() <= 0) {
 				bean.autoMsssage("102");
-				return bean;
+				return false;
 			}
 			if (productionBodies.size() > 25000) {
 				bean.autoMsssage("SH000");
-				return bean;
+				return false;
 			}
 		} catch (Exception e) {
 			bean.autoMsssage("103");
-			return bean;
+			return false;
 		}
 		// Step3.======= 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱] =======
 		JSONArray object_bodys = new JSONArray();
@@ -669,16 +675,19 @@ public class ProductionBodyService {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+
 			}
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		check = true;
+		return check;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -732,13 +741,15 @@ public class ProductionBodyService {
 			check = true;
 		} catch (Exception e) {
 			System.out.println(e);
+			return check;
 		}
 		return check;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -786,6 +797,7 @@ public class ProductionBodyService {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					return false;
 				}
 				bodyDao.save(p_body);
 			}
@@ -798,7 +810,8 @@ public class ProductionBodyService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -861,8 +874,8 @@ public class ProductionBodyService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

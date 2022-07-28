@@ -35,7 +35,7 @@ public class PackageService {
 			data.setCall_bk_fn(req.isNull("call_bk_fn") ? null : req.getString("call_bk_fn"));
 			data.setCall_bk_vals(req.isNull("call_bk_vals") ? new JSONObject() : req.getJSONObject("call_bk_vals"));
 			data.setHtml_body(req.isNull("html_body") ? null : req.getString("html_body"));
-			
+
 			data.setInfo("");
 		} else {
 			data = null;
@@ -70,9 +70,8 @@ public class PackageService {
 		data.put("cell_refresh", object.getCell_refresh());
 		data.put("cell_g_modify", object.getCell_g_modify());
 		data.put("analysis", object.getAnalysis());
-		
-		
-		//System.out.println(data.toString());
+
+		// System.out.println(data.toString());
 		return new JSONObject().put("resp_content", data).toString();
 	}
 
@@ -84,18 +83,38 @@ public class PackageService {
 	 * @param info        訊息
 	 * @param info_color  顏色
 	 **/
-	public PackageBean setObjResp(PackageBean resp_object, PackageBean req_object, /*String info, String info_color,*/JSONObject html_permission) {
+	public PackageBean setObjResp(PackageBean resp_object, PackageBean req_object, /* String info, String info_color, */JSONObject html_permission) {
 		resp_object.setAction(req_object.getaction() == null ? "AR" : req_object.getaction());
+
 		resp_object.setCall_bk_fn(req_object.getCall_bk_fn() == null ? "" : req_object.getCall_bk_fn());
-		resp_object.setCall_bk_vals(
-				req_object.getCall_bk_vals() == null ? new JSONObject() : req_object.getCall_bk_vals());
-		//resp_object.setInfo(info == null ? PackageBean.info_message_success : info);
-		//resp_object.setInfo_color(info_color == null ? PackageBean.info_color_success : info_color);// --danger--warning--success
+		resp_object.setCall_bk_vals(req_object.getCall_bk_vals() == null ? new JSONObject() : req_object.getCall_bk_vals());
+
+		/*
+		 * if(resp_object.getInfo().equals("")) {
+		 * resp_object.setInfo(req_object.getInfo());
+		 * resp_object.setInfo_color(req_object.getInfo_color()); }
+		 */
+		// --danger--warning--success
 		resp_object.setPage_batch(req_object.getPage_batch() == null ? 1 : req_object.getPage_batch());
 		resp_object.setPage_now_nb(req_object.getPage_now_nb() == null ? 1 : req_object.getPage_now_nb());
 		resp_object.setPage_total(req_object.getPage_total() == null ? 100 : req_object.getPage_total());
 		resp_object.setHtml_body(req_object.getHtml_body() == null ? "" : req_object.getHtml_body());
+
 		resp_object.setHtml_permission(html_permission);
 		return resp_object;
+	}
+	/**
+	 * 錯誤-訊息包裝
+	 * 
+	 * @param resp 回應包
+	 * @param req  請求包
+	 **/
+	public void setObjErrResp(PackageBean resp, PackageBean req) {
+		req.setCall_bk_vals(req.getCall_bk_vals().put("search", false));
+		req.setAction("");
+		// 如果有其他錯誤
+		if (resp.getType().equals("")) {
+			resp.autoMsssage("100");
+		}
 	}
 }

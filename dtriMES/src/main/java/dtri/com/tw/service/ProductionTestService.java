@@ -23,8 +23,11 @@ public class ProductionTestService {
 	private ProductionTestDao testDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<ProductionTest> tests = new ArrayList<ProductionTest>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -89,7 +92,6 @@ public class ProductionTestService {
 			JSONArray obj_m = new JSONArray();
 			JSONArray n_val = new JSONArray();
 			JSONArray a_val = new JSONArray();
-			JSONArray st_val = new JSONArray();
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_id", pt_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pb_g_id", pt_pb_g_id));
@@ -163,8 +165,8 @@ public class ProductionTestService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_g_id", one.getPtpbgid());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_id", one.getPtprid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model", one.getPtprmodel()== null ? "" : one.getPtprmodel());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id", one.getPtprbomid()== null ? "" : one.getPtprbomid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model", one.getPtprmodel() == null ? "" : one.getPtprmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id", one.getPtprbomid() == null ? "" : one.getPtprbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_b_sn", one.getPtpbbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_b_item", one.getPtprbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_s_item", one.getPtprsitem());
@@ -186,12 +188,13 @@ public class ProductionTestService {
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		// JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// JSONArray list = body.getJSONArray("create");
@@ -203,7 +206,8 @@ public class ProductionTestService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		// JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// JSONArray list = body.getJSONArray("save_as");
@@ -215,7 +219,7 @@ public class ProductionTestService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
 		boolean check = false;
 		try {
 			// JSONArray list = body.getJSONArray("modify");
@@ -228,8 +232,8 @@ public class ProductionTestService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		//JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// JSONArray list = body.getJSONArray("delete");

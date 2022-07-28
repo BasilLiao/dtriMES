@@ -66,8 +66,11 @@ public class ProductionHeaderService {
 
 	// 取得當前 資料清單
 
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		List<ProductionHeader> productionHeaders = new ArrayList<ProductionHeader>();
 		ProductionBody body_one = productionBodyDao.findAllByPbid(0l).get(0);
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -517,7 +520,7 @@ public class ProductionHeaderService {
 
 		// 刷新修改畫面 [(key)](modify/Create/Delete) 格式
 		JSONArray obj_m = new JSONArray();
-		JSONArray n_val = new JSONArray();
+//		JSONArray n_val = new JSONArray();
 
 		// sn規格定義(固定範圍)
 //		JSONArray a_val_1 = new JSONArray();
@@ -568,16 +571,17 @@ public class ProductionHeaderService {
 		// obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, a_val_6, a_val_6,
 		// FFM.Wri.W_N, "col-md-1", true, n_val, "ps_sn_6", "P_SN_流水"));
 		bean.setCell_refresh(obj_m);
-
 		bean.setBody(object_bodys_all);
 
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		// bean.setBody_type(new JSONObject("{'type':'group','createOnly':'general'}"));
-		return bean;
+		return true;
 	}
 
+	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -873,7 +877,8 @@ public class ProductionHeaderService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -1149,7 +1154,8 @@ public class ProductionHeaderService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -1265,7 +1271,8 @@ public class ProductionHeaderService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

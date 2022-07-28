@@ -82,12 +82,15 @@ public class WorkstationWorkService {
 	ProductionDailyService pDailyService;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		// int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
-			page = 0;
+			// page = 0;
 			p_size = 100;
 		}
 		String w_c_name = null;
@@ -204,7 +207,7 @@ public class WorkstationWorkService {
 			if (pb_all.size() != 1) {
 				bean.setBody(new JSONObject());
 				bean.autoMsssage("WK003");
-				return bean;
+				return false;
 			}
 
 			// Step2. 製令+工作站+SN關聯+Doc 檢查
@@ -228,7 +231,7 @@ public class WorkstationWorkService {
 						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
 						if (pb_all.size() == 1) {
 							// 計算 此工作站完成數
-							List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "%" + wpcname + "_Y%");
+							List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "" + wpcname + "_Y");
 							int all_nb = wk_schedules.size();
 							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
 							// 如果是A521 有舊的SN (要排除已經繼承)
@@ -237,14 +240,14 @@ public class WorkstationWorkService {
 								if (pb_old_all.size() != 1) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_1");
-									return bean;
+									return false;
 								}
 								// 不可繼承自己工單
 								pr_old = prDao.findAllByRecords(null, null, null, pb_b_sn_old, 0, null);
 								if (pr_old != null && pr_old.size() > 0 && pr_old.get(0).getPrid().equals(ph_pr_id)) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_2");
-									return bean;
+									return false;
 								}
 							}
 
@@ -320,7 +323,7 @@ public class WorkstationWorkService {
 								e.printStackTrace();
 								bean.setBody(new JSONObject());
 								bean.autoMsssage("WK023");
-								return bean;
+								return false;
 							}
 
 							ArrayList<Workstation> w_for_sn = new ArrayList<Workstation>();
@@ -365,7 +368,7 @@ public class WorkstationWorkService {
 							});
 							// 如果格式異常
 							if (bean.getType().equals("WK023")) {
-								return bean;
+								return false;
 							}
 							// [body]
 							object_body_all.put("pb_fvalue", pb_all.get(0).getPbfvalue());
@@ -378,17 +381,17 @@ public class WorkstationWorkService {
 						} else {
 							bean.setBody(new JSONObject());
 							bean.autoMsssage("WK004");
-							return bean;
+							return false;
 						}
 					} else {
 						bean.setBody(new JSONObject());
 						bean.autoMsssage("WK000");
-						return bean;
+						return false;
 					}
 				} else {
 					bean.setBody(new JSONObject());
 					bean.autoMsssage("WK001");
-					return bean;
+					return false;
 				}
 
 			} else {
@@ -397,12 +400,12 @@ public class WorkstationWorkService {
 					// 有此公單 但已結案/暫停/終止
 					bean.setBody(new JSONObject());
 					bean.autoMsssage("WK016");
-					return bean;
+					return false;
 				}
 				// 查無公單
 				bean.setBody(new JSONObject());
 				bean.autoMsssage("WK002");
-				return bean;
+				return false;
 			}
 
 			if (set_replace) {
@@ -411,7 +414,7 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK022");
 			}
 		}
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
@@ -455,8 +458,8 @@ public class WorkstationWorkService {
 
 	// 更新 資料清單
 	@Transactional
-	public PackageBean updateData(JSONObject body, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean updateData(PackageBean bean, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		try {
 			JSONObject list = body.getJSONObject("modify");
 			boolean check_end = body.getBoolean("check_end");
@@ -506,14 +509,16 @@ public class WorkstationWorkService {
 					String pbgid = body_one_now.getPbgid().toString();
 					String phgid = wpicheck_pr.get(0).getHeader().getPhpbgid().toString();
 					if (wpicheck_pr.size() == 1 && !pbgid.equals(phgid)) {
+						log.warn("WK004:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK004");
-						return bean;
+						return false;
 					}
 
 					// ========Step0. 是否原先有故障代碼 ========
 					if (!list.getString("pb_f_value").equals("") && body_one_now.getPbfvalue() != null && !body_one_now.getPbfvalue().equals("")) {
+						log.warn("WK019:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK019");
-						return bean;
+						return false;
 					}
 
 					// ========Step1.A521 是否新舊(SN)繼承? ========
@@ -541,8 +546,9 @@ public class WorkstationWorkService {
 								old_sn.put(list.getString("pb_old_sn") + "_old_" + old_sn.length());
 								body_map_now.put("setPboldsn", new JSONObject().put("value", old_sn.toString()).put("type", String.class));
 							} else {
+								log.warn("WK009:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK009");
-								return bean;
+								return false;
 							}
 
 							// Step1-3.[登記-SN] 自訂義的SN範圍+需要繼承內容
@@ -574,24 +580,27 @@ public class WorkstationWorkService {
 								log.error(e.toString());
 								e.printStackTrace();
 								bean.autoMsssage("1111");
-								return bean;
+								return false;
 							}
 						} else {
+							log.warn("WK008:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 							bean.autoMsssage("WK008");
-							return bean;
+							return false;
 						}
 					}
 
 					// ========Step2.[檢核階段-初步] ========
 					// Step2-1.[檢核階段] 製令單有問題?
 					if (check_sn.size() == 0) {
+						log.warn("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK003");
-						return bean;
+						return false;
 					}
 					// Step2-2.[檢核階段-初步] 沒有此工作站?
 					if (!pbschedule.has(list.getString("w_c_name"))) {
+						log.warn("WK001:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK001");
-						return bean;
+						return false;
 					}
 					// Step2-3.[檢核階段-初步] 前置工作站 有沒有過站?
 					Iterator<String> keys_schedule = pbschedule.keys();// 取得每一站 代號
@@ -605,8 +614,9 @@ public class WorkstationWorkService {
 							// 如果有 [前置站] 沒完成,跳錯誤 還別沒刷(除了自己)
 							if (!key_schedule.equals(list.getString("w_c_name"))) {
 								if (type.equals(key_schedule + "_N") && sort_check > sort) {
+									log.warn("WK005:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 									bean.autoMsssage("WK005");
-									return bean;
+									return false;
 								}
 								// 其中有一站 沒完成 =產品未生產完成
 								if (type.equals(key_schedule + "_N")) {
@@ -703,8 +713,9 @@ public class WorkstationWorkService {
 									// Step4-3.[檢核階段-進階] 檢查 避免小卡 輸入主SN序號
 									for (String pbbsn : check_sn) {
 										if (pbbsn.equals(body_value)) {
+											log.warn("WK010:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK010");
-											return bean;
+											return false;
 										}
 									}
 									// 取得對應欄位[檢核條件]資料設定
@@ -734,9 +745,10 @@ public class WorkstationWorkService {
 
 										// Step4-6.[檢核階段-進階] 必填欄位?
 										if (wk.getWmust() == 1 && body_value.equals("")) {
+											log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.setError_ms("此[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
 											bean.autoMsssage("WK014");
-											return bean;
+											return false;
 										}
 
 										// Step4-7.[檢核階段-進階] 不必要檢核空值
@@ -744,9 +756,10 @@ public class WorkstationWorkService {
 
 											// Step4-8.[檢核階段-進階] 是否有要檢查 長度
 											if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
+												log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 												bean.setError_ms("此[" + title_name + "]SN: " + body_value + " 長度不正確,指定:[" + wk.getWlength() + "] 位數");
 												bean.autoMsssage("WK014");
-												return bean;
+												return false;
 											}
 											// Step4-9.[檢核階段-進階] 是否有要檢查 格式
 											if (wk.getWformat() > 0) {
@@ -768,9 +781,10 @@ public class WorkstationWorkService {
 
 												}
 												if (!check) {
+													log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 													bean.setError_ms("此[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 													bean.autoMsssage("WK014");
-													return bean;
+													return false;
 												}
 											}
 											// Step4-10.[檢核階段-進階] 檢查是否有需要 檢查重複
@@ -801,10 +815,11 @@ public class WorkstationWorkService {
 												@SuppressWarnings("unchecked")
 												List<String> pbid_obj = query.getResultList();
 												if (pbid_obj.size() > 0) {// 有重複
+													log.warn("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 													bean.setError_ms(
 															"此[" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
 													bean.autoMsssage("WK011");
-													return bean;
+													return false;
 												}
 											}
 										}
@@ -832,15 +847,16 @@ public class WorkstationWorkService {
 								}
 							}
 							if (wpi_check_fail) {
+								log.warn("WK017:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK017");
-								return bean;
+								return false;
 							}
 
 						} catch (NoSuchMethodException e) {
 							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
-							return bean;
+							return false;
 						}
 
 						// ======== Step5. FTP檢查[] ========
@@ -869,8 +885,9 @@ public class WorkstationWorkService {
 							list_log = ftpService.getLogPLT(ftpClient, ftp, user.getSuaccount(), searchName, plt_file_classify);
 							// Step5-1. FTP檢查[] SIZE
 							if (list_log.length() < 1 || !list_log.has("pb_l_size") || list_log.getInt("pb_l_size") < 10) {
+								log.warn("WK007:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK007");
-								return bean;
+								return false;
 							}
 
 							// ======== Step6. 需要Log 更新資料?? ========
@@ -920,9 +937,10 @@ public class WorkstationWorkService {
 
 														// Step6-5.[檢核階段-進階] 必填欄位?
 														if (wk.getWmust() == 1 && body_value.equals("")) {
+															log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 															bean.setError_ms("此 PLT_LOG[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
 															bean.autoMsssage("WK014");
-															return bean;
+															return false;
 														}
 
 														// Step6-6.[檢核階段-進階] 不必要檢核空值
@@ -930,10 +948,11 @@ public class WorkstationWorkService {
 
 															// Step6-7.[檢核階段-進階] 是否有要檢查 長度
 															if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
+																log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																bean.setError_ms("此 PLT_LOG[" + title_name + "]SN: " + body_value + " 長度不正確,指定:["
 																		+ wk.getWlength() + "] 位數");
 																bean.autoMsssage("WK014");
-																return bean;
+																return false;
 															}
 															// Step6-8.[檢核階段-進階] 是否有要檢查 格式
 															if (wk.getWformat() > 0) {
@@ -954,10 +973,11 @@ public class WorkstationWorkService {
 																	break;
 																}
 																if (!check) {
+																	log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																	bean.setError_ms(
 																			"此 PLT_LOG[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 																	bean.autoMsssage("WK014");
-																	return bean;
+																	return false;
 																}
 															}
 															// Step6-9.[檢核階段-進階] 檢查是否有需要 檢查重複
@@ -988,10 +1008,11 @@ public class WorkstationWorkService {
 																@SuppressWarnings("unchecked")
 																List<String> pbid_obj = query.getResultList();
 																if (pbid_obj.size() > 0) {// 有重複
+																	log.warn("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																	bean.setError_ms("此 PLT_LOG [" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: "
 																			+ pbid_obj.get(0) + " 使用中 ");
 																	bean.autoMsssage("WK011");
-																	return bean;
+																	return false;
 																}
 															}
 														}
@@ -1019,14 +1040,16 @@ public class WorkstationWorkService {
 											}
 										}
 										if (wpi_check_fail) {
+											log.warn("WK018:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK018");
-											return bean;
+											return false;
 										}
 										// Step6-12.[檢核階段-進階] PLT 亂碼檢核
 										// System.out.print(list_log.getString("pb_l_text").indexOf('\u0000'));
 										if (list_log.getString("pb_l_text").indexOf('\u0000') != -1) {
+											log.warn("WK015:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK015");
-											return bean;
+											return false;
 										}
 										body_map_now.put("setPblpath",
 												new JSONObject().put("value", list_log.getString("pb_l_path")).put("type", String.class));
@@ -1046,7 +1069,7 @@ public class WorkstationWorkService {
 									log.error(e.toString());
 									e.printStackTrace();
 									bean.autoMsssage("1111");
-									return bean;
+									return false;
 								}
 							}
 
@@ -1054,8 +1077,9 @@ public class WorkstationWorkService {
 							if (list_log.getJSONArray("pb_l_files").length() > 0) {
 								Boolean check_move = ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
 								if (!check_move) {
+									log.warn("WK012:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 									bean.autoMsssage("WK012");
-									return bean;
+									return false;
 								}
 							}
 						}
@@ -1086,7 +1110,7 @@ public class WorkstationWorkService {
 							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
-							return bean;
+							return false;
 						}
 					}
 
@@ -1110,7 +1134,7 @@ public class WorkstationWorkService {
 							log.error(e.toString());
 							e.printStackTrace();
 							bean.autoMsssage("1111");
-							return bean;
+							return false;
 						}
 					}
 
@@ -1136,7 +1160,7 @@ public class WorkstationWorkService {
 					p_header.setSysmdate(new Date());
 					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
 					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
-					List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "%" + list.getString("w_c_name") + "_Y%");
+					List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + list.getString("w_c_name") + "_Y");
 
 					if (p_header.getPhpbschedule() != null && !p_header.getPhpbschedule().equals("")) {
 						JSONObject phpbs = new JSONObject(p_header.getPhpbschedule());
@@ -1149,7 +1173,7 @@ public class WorkstationWorkService {
 						for (WorkstationProgram p_one : programs) {
 							ArrayList<Workstation> works = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
 							// 計算 此工作站完成數
-							wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "%" + works.get(0).getWcname() + "_Y%");
+							wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + works.get(0).getWcname() + "_Y");
 							json_ph_pb_schedule.put(works.get(0).getWcname(), wk_schedules.size());
 						}
 						p_header.setPhpbschedule(json_ph_pb_schedule.toString());
@@ -1167,8 +1191,10 @@ public class WorkstationWorkService {
 					pbDao.save(body_one_old);
 					// true = 一般過站/false = 重複過站 = ?
 					if (set_replace) {
+						log.warn("WK020:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK020");
 					} else {
+						log.warn("WK021:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK021");
 					}
 					// ======== Step10. PLT產品測試更新[ProductionTest] ========
@@ -1219,43 +1245,35 @@ public class WorkstationWorkService {
 					pDailyService.setData(newDaily, user);
 
 				} else {
+					log.warn("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 					bean.autoMsssage("WK003");
-					return bean;
+					return false;
 				}
 			}
 		} catch (NullPointerException e) {
 			log.error(e.toString());
 			System.out.println(e);
 			bean.autoMsssage("WK013");
-			return bean;
+			return false;
 		} catch (Exception e) {
 			log.error(e.toString());
 			System.out.println(e);
 			bean.autoMsssage("1111");
-			return bean;
+			return false;
 		}
 		// ========Step0. 是否有過站更新成功 ========
 		System.out.println(bean.getType());
 
-		return bean;
+		return true;
 	}
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		// JSONObject body = req.getBody();
 		boolean check = false;
 		try {
-			// JSONArray list = body.getJSONArray("delete");
-//			for (Object one : list) {
-//				// 物件轉換
-//				SystemConfig sys_p = new SystemConfig();
-//				JSONObject data = (JSONObject) one;
-//				sys_p.setScid(data.getInt("sc_id"));
-//
-//				// configDao.deleteByScidAndSysheader(sys_p.getScid(), false);
-//				check = true;
-//			}
+
 		} catch (Exception e) {
 			log.error(e.toString());
 			System.out.println(e);
@@ -1266,7 +1284,8 @@ public class WorkstationWorkService {
 
 	// 傳送列印指令 資料清單
 	@Transactional
-	public boolean printerData(JSONObject body, SystemUser user) {
+	public boolean printerData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONObject printer = body.getJSONObject("printer");

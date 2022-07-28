@@ -185,6 +185,7 @@ search = new Vue({
 		setDataTitle(title, html_permission) {
 			//標題注入資訊
 			//排序
+			console.log(title);
 			title = main.orderedSort(title);
 			fixed_cell = 0;
 			for (var i = 0; i < Object.keys(title).length - 1; i++) {
@@ -246,9 +247,7 @@ search = new Vue({
 				if (html_permission['se'] != 1) {
 					$("#search .search_example_finds select").attr("disabled", "disabled")
 				}
-
 			}
-
 		},
 		setDataList(list, list_son, body_type) {
 			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
@@ -485,7 +484,7 @@ search = new Vue({
 				return false;
 			});
 			//快速查詢 監聽確認
-			$(document).on("keypress", ".search_true input", function (event) {
+			$(document).on("keypress", "#search .search_true input", function (event) {
 				if (event.which == 13) {
 					$('#search_btn').trigger('click');
 				}
@@ -614,9 +613,9 @@ search = new Vue({
 			//查詢
 			//Ex:body:{search:{b:b,c:c}}
 			var search = {};
-			for (var s = 0; s < $(".search_true").length; s++) {
-				var key = $(".search_true")[s].id.replace("search_", "");
-				var value = $("#" + $(".search_true")[s].id + " .s_value").val();
+			for (var s = 0; s < $("#search .search_true").length; s++) {
+				var key = $("#search .search_true")[s].id.replace("search_", "");
+				var value = $("#" + $("#search .search_true")[s].id + " .s_value").val();
 				//console.log(key+ " "+value);
 				search[key] = value;
 			}
@@ -771,7 +770,7 @@ search = new Vue({
 		$(document).off("click", "#clear_btn");
 		$(document).off("click", "#search_btn");
 		$(document).off("click", ".pagination .page-item");
-		$(document).off("keypress", ".search_true input");
+		$(document).off("keypress", "#search .search_true input");
 	},
 });
 </script>

@@ -19,12 +19,12 @@
 }
 </style>
 <div id="customized">
-	<div class="shadow mt-0 text-left">
+	<!-- <div class="shadow mt-0 text-left">
 		<div class="bg-white rounded-top m-0 pl-1 h4">
 			<i class="bi bi-search mr-1"></i>Search product maintenance
 		</div>
 		<div class="row p-0 m-0 search_example_finds">
-			<!-- col-md-2/4/6/8/10/12 -->
+			
 			<div class="col-md-2 p-2 search_example_input">
 				<div class="h6 mb-1 s_name">Search1</div>
 				<div class="p-0">
@@ -45,38 +45,38 @@
 				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
 			</div>
 		</div>
-	</div>
+	</div>-->
 	<!-- 客戶資料 & RAM 單據生成 -->
-	<div class="shadow mt-2 m-0 row">
+	<div class="shadow m-0 row">
 		<div class="col-6 p-0 border border-secondary rounded-top">
 			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
 				<div class="col p-0 pt-1">
-					<i class="bi bi-house mr-1"></i>Factory Information
+					<i class="bi bi-house mr-1"></i>Customer Information
 				</div>
 			</div>
 			<div class="m-0 p-2">
-				<div id="company_name" class="col row m-0 mt-1">
+				<div id="c_c_name" class="col row m-0 mt-1 search_true">
 					<div class="col-3">Company Name :</div>
-					<input class="col-9" type="text" value="" placeholder="必填:客戶公司">
+					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="必填:客戶公司 (可查詢)">
 				</div>
-				<div id="contact" class="col row m-0 mt-1">
+				<div id="c_name" class="col row m-0 mt-1 search_true">
 					<div class="col-3">Contact :</div>
-					<input class="col-9" type="text" value="" placeholder="客戶聯絡人">
+					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶聯絡人 (可查詢)">
 				</div>
-				<div id="address" class="col row m-0 mt-1">
+				<div id="c_address" class="col row m-0 mt-1">
 					<div class="col-3">Address :</div>
 					<textarea class="col-9" rows="3" cols="" placeholder="客戶地址"></textarea>
 				</div>
-				<div id="tex" class="col row m-0 mt-1">
+				<div id="c_tex" class="col row m-0 mt-1 search_true">
 					<div class="col-3">Tex :</div>
-					<input class="col-9" type="text" value="" placeholder="客戶電話">
+					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶電話 (可查詢)">
 				</div>
-				<div id="fax" class="col row m-0 mt-1">
+				<div id="c_fax" class="col row m-0 mt-1">
 					<div class="col-3">Fax :</div>
 					<input class="col-9" type="text" value="" placeholder="客戶傳真">
 				</div>
-				<div id="fi_btn" class="col row m-0 mt-1 justify-content-end">
-					<button id="clear_fi_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				<div id="fi_btn" class="col row m-0 mt-2 justify-content-end">
+					<button id="clear_fi_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
 		</div>
@@ -87,66 +87,120 @@
 				</div>
 			</div>
 			<div class="m-0 p-2">
-				<div id="dtr_nb" class="col row m-0 mt-1">
-					<div class="col-3">DTR NB :</div>
-					<input class="col-9" type="text" value="" placeholder="必填:維修單據 自動生成">
+				<div id="mo_id" class="col row m-0 mt-1 search_true">
+					<div class="col-md-3">DTR NB :</div>
+					<input class="col-md-9 rounded border-1 border-primary" type="text" value="" placeholder="維修單號 (新增請留白{可自動生成} or 可查詢)">
 				</div>
-				<div id="address" class="col row m-0 mt-1">
-					<div class="col-3">Ship back to :</div>
-					<textarea class="col-9" rows="6" cols="" placeholder="DTR地址"></textarea>
+				<div id="mo_address" class="col row m-0 mt-1">
+					<div class="col-md-3">Ship back to :</div>
+					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="DTR地址"></textarea>
 				</div>
-				<div id="to_whom" class="col row m-0 mt-1">
-					<div class="col-3">To whom :</div>
-					<select class="col-9">
-						<option>請選擇</option>
+				<div id="mo_check" class="col row m-0 mt-1">
+					<div class="col-md-3">Case closed? :</div>
+					<select class="col-md-9" required="required">
+						<option value="" class="def">請選擇</option>
 					</select>
 				</div>
-				<div id="md_btn" class="col row m-0 mt-1 justify-content-end">
-					<button id="clear_md_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				<div id="md_mu_id" class="col row m-0 mt-1">
+					<div class="col-md-3">To whom :</div>
+					<div class="col-md-6 p-0 pr-2">
+						<select class="col rounded  border-dark" required="required" style="border-width: 2px; height: 100%;">
+							<option value="" class="def">請選擇</option>
+						</select>
+					</div>
+					<div class="col-md-3 p-0">
+						<button id="md_designat_all_btn" class="col m-0 btn btn-dark btn-sm" type="button">All Def To whom</button>
+					</div>
+				</div>
+				<div id="md_check_only" class="col row m-0 mt-1">
+					<div class="col-md-3">Status :</div>
+					<div class="col-md-6 p-0 pr-2">
+						<select class="col rounded  border-secondary" required="required" style="border-width: 2px; height: 100%;">
+							<option value="" class="def">請選擇</option>
+						</select>
+					</div>
+					<div class="col-md-3 p-0">
+						<button id="md_check_all_btn" class="col m-0 btn btn-secondary btn-sm" type="button">All Def Status</button>
+					</div>
+				</div>
+				<div id="md_btn" class="col row m-0 mt-2 justify-content-end">
+					<button id="search_md_btn" class="col-md-3 m-0 mr-2 btn btn-primary btn-sm" type="button">Search</button>
+					<button id="clear_md_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
 		</div>
-
-
 	</div>
 
 	<!-- 查詢結果 生產量 -->
 	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-2 p-0 pt-1">
+			<div class="col-4 p-0 pt-1">
 				<i class="bi bi-list-ul mr-1"></i>Maintenance list
 			</div>
-			<div class="col-5 p-0">
-				<div class="row p-0 m-0 justify-content-start">
-					<div class="pt-1">All:</div>
-					<button id="md_designat_all_btn" class="col-md-3 m-1 btn btn-success btn-sm" type="button">default assignment</button>
-					<button id="md_check_all_btn" class="col-md-3 m-1 btn btn-primary btn-sm" type="button">checked</button>
-				</div>
-			</div>
-			<div class="col-5 p-0">
+			<div class="col-8 p-0">
 				<div class="row p-0 m-0 justify-content-end">
-					<div class="pt-1">Action:</div>
-					<button id="md_save_btn" class="col-md-3 m-1 btn btn-success btn-sm" type="button">Save</button>
-					<button id="md_export_btn" class="col-md-3 m-1 btn btn-info btn-sm" type="button">Export Excel</button>
-					<button id="md_clear_btn" class="col-md-3 m-1 btn btn-warning btn-sm" type="button">Clear</button>
+					<div class="col-md-2 pt-1">Action:</div>
+					<div class="col-md-2 p-1">
+						<button id="md_export_btn" class="col m-0 btn btn-info btn-sm" type="button">Export excel</button>
+					</div>
+					<div class="col-md-2 p-1">
+						<button id="md_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
+					</div>
+					<div class="col-md-2 p-1">
+						<button id="md_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="p-2">
 			<table id="md_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
-				<thead class="thead bg-dark table-dark md_search_example_title" style="white-space: nowrap;">
+				<thead class="thead bg-dark table-dark md_search_example_title text-left" style="white-space: nowrap;">
+					<tr class="d-none">
+						<th colspan="10">.DTR Repair Order</th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="5">Company Name : <span id="excel_c_n"></span></th>
+						<th colspan="5">DTR NB : <span id="excel_mo_id"></span></th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="5">Contact : <span id="excel_c"></span></th>
+						<th colspan="5" rowspan="4">Ship back to : <span id="excel_sbt"></span></th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="5" rowspan="2">Address : <span id="excel_a"></span></th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="5">Tex : <span id="excel_t"></span></th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="5">Fax : <span id="excel_f"></span></th>
+						<th colspan="5">To whom : <span id="excel_tw"></span></th>
+					</tr>
+					<tr class="d-none">
+						<th colspan="10">.</th>
+					</tr>
 					<tr class="">
-						<th class="s_title_body noExl" style="min-width: 150px;">
+						<th class="s_title_body noExl" style="min-width: 100px;">
 							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">Last</div>
+								<div class="title_name">Function</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i>
+									<!-- 分 -->
+									<i class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
 						<th class="s_title_last p-1" style="min-width: 150px; width: 100%;">
 							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">Handle</div>
+								<div class="title_name noExl">Handle</div>
 								<div class="title_order">
 									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
@@ -156,15 +210,24 @@
 				</thead>
 				<tbody class="md_search_example_list" style="white-space: nowrap;">
 					<tr class="noExl md_search_example_content">
-						<td title="" id="" class="s_list_body ">0</td>
+						<td title="" id="" class="s_function_body noExl"><i class="md_list_add bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1"></i> <i
+							class="md_list_copy bi bi-files btn btn-outline-info p-0 pl-1 pr-1"></i> <i class="md_list_del bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1"></i></td>
+						<td title="" id="" class="s_list_body ">
+							<div class="input_value">
+								<input type="text" class="d_value col p-1 m-0" disabled="disabled" value="">
+							</div>
+							<div class="select_value d-none">
+								<select class="d_value col p-1 m-0" disabled="disabled" style="border-width: 2px;">
+									<option value="" class="def">請選擇</option>
+								</select>
+							</div>
+							<div class="text_value d-none"></div>
+						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-
-
-
 </div>
 <script type="text/javascript">
 //控制端
@@ -179,10 +242,13 @@ customized = new Vue({
 		page_show_size: main.page_show_size, //目前_每分頁顯示數量
 		page_now_size: main.page_now_size, //目前_實際筆數
 		page_now: main.page_now, //目前_頁數
-		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
-		data_item_f_id: "", //父類別ID
-		list_son:{},// 群組-子類別
-		Interval_update30s:"",//30秒一次
+		//data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		//data_item_f_id: "", //父類別ID
+		//list_son:{},// 群組-子類別
+		nb_add:0,//子項目
+		//save data
+		modify_datas :{},
+
 	},
 	//初始化
 	created() {
@@ -190,135 +256,237 @@ customized = new Vue({
 	},
 	//可呼叫方法
 	methods: {
-		setDataTitle(title, html_permission) {
+		setDataTitle(title,documents, html_permission) {
+			//console.log(title);
+			console.log(documents);
 			//標題注入資訊
-			//排序
+			//排序 
+			title = main.orderedSort(title);
+			fixed_cell = 0;
+			for (var i = 0; i < Object.keys(title).length ; i++) {
+				var one_item_header = $("#customized .md_search_example_title .s_title_body").clone(); //複製樣本(header)
+				var key_id = Object.keys(title)[i];
+				var value_name = title[Object.keys(title)[i]].name;
+				var value_size = title[Object.keys(title)[i]].size;
+				var value_write = title[Object.keys(title)[i]].write;
+				var key_name = key_id.split("_h__")[1];
+				//console.log(key_name+" "+value_name);
+				//header
+				one_item_header[0].className = "p-1 ";
+				one_item_header[0].id = key_id;
+				one_item_header[0].children[0].children[0].innerText = value_name;
+				one_item_header.insertBefore("#customized .s_title_last");
+				$("#" + key_id).css("min-width", value_size);
+				$("#" + key_id).css("max-width", value_size);
+				$("#" + key_id).attr('title',value_write == "disabled" ? "disabled" : "");
+				//body
+				var one_item_body = $("#customized .md_search_example_content .s_list_body").clone(); //複製樣本(body)
+				one_item_body[0].className =  key_name+" p-0";
+				//one_item_body[0].children[0].children[0].value = value_name;
+				one_item_body[0].children[0].children[0].name = key_name;
+				one_item_body[0].children[0].children[0].title = (value_write == "disabled" ? "disabled" : "");
+				one_item_body.insertBefore("#customized .s_list_body");
+				
+				//必填欄位(mr_sn)
+				if(key_name=='mr_sn'){
+					var css_must = ' rounded border-1 border-success ';
+					var className = one_item_body[0].children[0].children[0].className;
+					className+=css_must;
+					one_item_body[0].children[0].children[0].className=className;	
+					one_item_body[0].children[0].children[0].placeholder="必填:品件序號";
+				}
+				if(key_name=='md_mu_id'){
+					var css_must = ' rounded border-1 border-dark ';
+					var className = one_item_body[0].children[1].children[0].className;
+					className+=css_must;
+					one_item_body[0].children[1].children[0].className=className;					
+				}
+				if(key_name=='md_check'){
+					var css_must = ' rounded border-1 border-secondary ';
+					var className = one_item_body[0].children[1].children[0].className;
+					className+=css_must;
+					one_item_body[0].children[1].children[0].className=className;					
+				}
+				
+				//特定數字類(input)
+				if(documents[key_name]!=null && documents[key_name]=='number'){
+					$('.'+key_name+' .d_value').attr("type","number");
+					$('.'+key_name+' .d_value').val(1);
+					$('.'+key_name+' .select_value').remove();
+					continue;
+				}
+				
+				//特定選項(select)
+				if(documents[key_name]!=null){
+					console.log(key_name);
+					$('.'+key_name+' .input_value').remove();
+					$('.'+key_name+' .select_value').removeClass('d-none');	
+					$('.'+key_name+' .select_value select').attr('title',(value_write == "disabled" ? "disabled" : ""));
+					$('.'+key_name+' .select_value select').attr('name',key_name);
+					for(var o = 0;o< documents[key_name].length;o++){
+						var option = $('.'+key_name+' .select_value select .def').clone(); //複製樣本(option)
+						option[0].className = "";
+						option[0].value = documents[key_name][o].key;
+						option[0].innerText = documents[key_name][o].value; 
+						option.appendTo('.'+key_name+' .select_value select');
+					}
+				}else{
+					$('.'+key_name+' .select_value').remove();
+				}
+			}
 			/*
-			var title_dp = main.orderedSort(title['header_dp']);
-			for (var i = 0; i < Object.keys(title_dp).length - 1; i++) {
-				var one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_dp)[i];
-				var value_name = title_dp[Object.keys(title_dp)[i]].name;
-				var value_size = title_dp[Object.keys(title_dp)[i]].size;
-				var value_write = title_dp[Object.keys(title_dp)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".dp_search_example_title .s_title_last");
-				$("#dp_excel #" + key_id).css("min-width", value_size);
-				$("#dp_excel #" + key_id).css("max-width", value_size);
-				$("#dp_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+			//結尾
+			var key_id = Object.keys(title)[Object.keys(title).length - 1];
+			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
+			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
+			var value_size = title[Object.keys(title)[Object.keys(title).length - 1]].size;
+			var key_name = key_id.split("_h__")[1];
+			//body
+			var one_item_body = $("#customized .md_search_example_content .s_list_body").clone(); //複製樣本(body)
+			one_item_body[0].className =  key_name+" p-0";
+			//one_item_body[0].children[0].children[0].value = value_name;
+			one_item_body[0].children[0].children[0].name = key_name;
+			one_item_body[0].children[0].children[0].title = (value_write == "disabled" ? "disabled" : "");
+			one_item_body.insertBefore("#customized .s_list_body");
+			//特定選項(select)
+			if(documents[key_name]!=null){
+				console.log(key_name);
+				$('.'+key_name+' .input_value').remove();
+				$('.'+key_name+' .select_value').removeClass('d-none');	
+				$('.'+key_name+' .select_value select').attr('title',(value_write == "disabled" ? "disabled" : ""));
+				$('.'+key_name+' .select_value select').attr('name',key_name);
+				for(var o = 0;o< documents[key_name].length;o++){
+					var option = $('.'+key_name+' .select_value select .def').clone(); //複製樣本(option)
+					option[0].className = "";
+					option[0].value = documents[key_name][o].key;
+					option[0].innerText = documents[key_name][o].value; 
+					option.appendTo('.'+key_name+' .select_value select');
+				}
+			}else{
+				$('.'+key_name+' .select_value').remove();
 			}
 			
-			//結尾
-			var key_id = Object.keys(title_dp)[Object.keys(title_dp).length - 1];
-			var value_name = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].name;
-			var value_write = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].write;
-			var value_size = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].size;
-			$(".dp_search_example_title .s_title_last").attr("id", key_id);
-			$(".dp_search_example_title .s_title_last .title_name").text(value_name);
-			$("#dp_excel #" + key_id).css("min-width", value_size);
-			$("#dp_excel #" + key_id).css("max-width", value_size);
-			$("#dp_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".dp_search_example_title .s_title_body").addClass("d-none");
-			
+			//header
+			$("#customized .s_title_last").attr("id", key_id);
+			$("#customized .s_title_last .title_name").text(value_name);
+			$("#" + key_id).css("min-width", value_size);
+			$("#" + key_id).css("max-width", value_size);
+			$("#" + key_id).attr("title",value_write == "disabled" ? "disabled" : "");
 			*/
+			//功能選項顯示
+			$('#customized .s_function_body .md_list_add').attr("title","nb_example");
+			$('#customized .s_function_body .md_list_copy').addClass("d-none");
+			$("#customized .s_function_body .md_list_del").addClass("d-none");			
+			//關閉範例
+			$("#customized .s_title_last").addClass("d-none");
+			$("#customized .s_list_body").addClass("d-none");
+			$("#customized .s_list_body").addClass("noExl");
+
+			//注入維修表單
+			for(var d= 0;d < documents['md_mu_id'].length;d++){
+				var one_item = $("#md_mu_id .def").clone(); //複製樣本
+				one_item[0].className = "";
+				one_item[0].innerText = documents['md_mu_id'][d]['value'];
+				one_item[0].value = documents['md_mu_id'][d]['key'];
+				one_item.appendTo("#md_mu_id select");
+			}
+			//處理狀態
+			for(var e= 0;e < documents['mo_check'].length;e++){
+				var one_item = $("#mo_check .def").clone(); //複製樣本
+				one_item[0].className = "";
+				one_item[0].innerText = documents['mo_check'][e]['value'];
+				one_item[0].value = documents['mo_check'][e]['key'];
+				one_item.appendTo("#mo_check select");
+			}
+			//限制-處理狀態
+			for(var e= 0;e < documents['md_check_only'].length;e++){
+				var one_item = $("#md_check_only .def").clone(); //複製樣本
+				one_item[0].className = "";
+				one_item[0].innerText = documents['md_check_only'][e]['value'];
+				one_item[0].value = documents['md_check_only'][e]['key'];
+				one_item.appendTo("#md_check_only select");
+			}
+			
+			
+			var mo_address = '美商定誼科技(股)公司台灣分公司 \n'+
+			'3F. No.36 Wuquan 7th Rd. Wugu Dist.,\n'+
+			'New Taipei City 24890 Taiwan (R.O.C.) \n'+
+			'+886-2-22982203';
+			$('#mo_address textarea').val(mo_address);
 			
 		},
 		setDataList(list, list_son, body_type) {
-			
 			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
-			this.data_type = body_type.type;
-			//this.list_son = list_son;
-			console.log(Object.keys(list).length, body_type.type);
-			//console.log(new Date());
-			/*
-			//舊有資料清除
-			if (list.length < 1) {
-				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
-				if (this.page_batch >= 1) {
-					this.page_batch -= 1;
-				}
-				return false;
-			}
-			$(".search_example_list_son tr").remove();
-			$(".search_data_list").remove();
-
-			//ls_dp ==開始== 開啟樣式
-			$(".dp_search_example_list .s_list_body").removeClass("d-none");
-			$(".dp_search_example_content").removeClass("d-none");
+			console.log(list);
+			//this.data_type = body_type.type;
 			
-			var fixed_cell_color = false;
-			var ls_dp = list['bodys_dp'];
+			var customer = list['customized_customer'];//客戶資料
+			var documents = list['customized_orders'];//維修單據資料
+			var customized = list['customized'];//維修單內容
+			
+			//注入 客戶
+			$('#c_c_name input').val(customer['c_c_name']);
+			$('#c_name input').val(customer['c_name']);
+			$('#c_address textarea').val(customer['c_address']);
+			$('#c_tex input').val(customer['c_tex']);
+			$('#c_fax input').val(customer['c_fax']);
+			//注入 單據資料
+			$('#mo_check select').val(documents['mo_check']);
+			$('#mo_id input').val(documents['mo_id']);
+			//Excel 客戶
+			$('#excel_c_n').text(customer['c_c_name']);
+			$('#excel_c').text(customer['c_name']);
+			$('#excel_a').text(customer['c_address']);
+			$('#excel_t').text(customer['c_tex']);
+			$('#excel_f').text(customer['c_fax']);
+			//Excel 維修單
+			$('#excel_mo_id').text(documents['mo_id']);
+			$('#excel_sbt').text($('#mo_address textarea').val());
+			
+			
+			//清除舊資料
+			$(".detail_list").remove();
+			//問題清單
+			var ls_dp = list['customized_detail'];
 			for (var j = 0; j < ls_dp.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
-
-				//排序
 				ls_dp[j] = main.orderedSort(ls_dp[j]);
-				
 				//資料筆數
-				var list_item = $(".dp_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".dp_search_example_list");
-				
+				var list_item = $("#customized .md_search_example_content").clone(); //複製樣本
 				//===每筆 資料欄位===
 				var fixed_cell_nb = 0;
 				var fixed_cell_wh = 1;
-				console.log( );
+				list_item[0].className="detail_list";
+				list_item[0].id = "nb_"+j;
+				//添加標記
+				$(list_item[0]).find('.md_list_add').attr('title',"nb_"+j);
+				$(list_item[0]).find('.md_list_copy').attr('title',"nb_"+j);
+				$(list_item[0]).find('.md_list_del').attr('title',"nb_"+j);
 				
+				$(list_item[0]).find('.md_list_add').addClass('d-none');
+				$(list_item[0]).find('.md_list_copy').removeClass('d-none');
+				$(list_item[0]).find('.md_list_del').removeClass('d-none');
 				for (var i = 0; i < Object.keys(ls_dp[j]).length; i++) {
-					var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_dp[j])[i];
-					var value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
 					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						one_item[0].className = "datalist ";
+					var key = Object.keys(ls_dp[j])[i];
+					var value =ls_dp[j][key];
+					var v_text ='';
+					list_item[0].children[(i+1)].children[0].children[0].value = value;
+					//有可能是選項(select)
+					var b_class = key.split("_b__")[1]; 
+					if($('.md_search_example_content .'+b_class+' select').length>0){
+						v_text = $('.md_search_example_content .'+b_class+' select option[value="'+value+'"]').text();
+						list_item[0].children[(i+1)].children[1].innerText = v_text;
+					}else{
+						list_item[0].children[(i+1)].children[1].innerText = value;						
 					}
-
-					//固定前2格
-					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-						}
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
+					//如果可修改 才修正disabled
+					if(list_item[0].children[(i+1)].children[0].children[0].title!='disabled'){
+						$(list_item[0].children[(i+1)].children[0].children[0]).removeAttr("disabled");						
 					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".dp_search_example_list #" + list_item[0].id + " .s_list_body");
 				}
-				
-				$(".dp_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
+				$("#customized .md_search_example_list").append(list_item);
+				//list_item.append("#customized .md_search_example_list");
 			}
-			//關閉樣式
-			$(".dp_search_example_list .s_list_body").addClass("d-none");
-			$(".dp_search_example_content").addClass("d-none");
-			//ls_dp ==結束==
-			*/
-
 		},
 		setSearch(search) {
 			//查詢注入資訊
@@ -385,38 +553,23 @@ customized = new Vue({
 			});
 
 		},
+		//初始化
 		selectAllInit() {
-			//監聽-同步相同屬性
-			$(document).on("click", "#search_btn", function (event) {
-				console.log("search_btn");
-				//是否每30秒觸發
-				if ($("#search_30s[type=checkbox]").is(":checked")) {
-					console.log("Start_search_30s");
-					clearInterval(customized.Interval_update30s);
-					customized.Interval_update30s = setInterval(customized.update30s, 30000);
-				}else{
-					console.log("Stop_search_30s");
-					clearInterval(customized.Interval_update30s);
-				}
+			
+			//查詢客戶 & 維修單
+			$(document).on("click", "#search_md_btn", function (event) {
+				var search = {};
+				search.c_c_name = 	$('#c_c_name input').val();
+				search.c_name = 	$('#c_name input').val();
+				search.c_address = 	$('#c_address textarea').val();
+				search.c_tex = 		$('#c_tex input').val();
+				search.c_fax = 		$('#c_fax input').val();
+				search.mo_id = 		$('#mo_id input').val();
+				customized.searchSend(search);
 				
-				//回歸
-				customized.page_total = main.page_total; //每次_總筆數
-				customized.page_batch = main.page_batch; //每次_第幾批
-				customized.page_show_size = main.page_show_size; //目前_每分頁顯示數量
-				customized.page_now_size = main.page_now_size; //目前_實際筆數
-				customized.page_now = main.page_now; //目前_頁數
-				customized.searchSend();
 			});
-			
-			$(document).on("click", "#clear_btn", function (event) {
-				console.log("clear_btn");
-				console.log("Stop_search_30s");
-				$("#customized .search_example_finds input").val("");
-				$("#customized .search_example_finds select").val("");
-				clearInterval(customized.Interval_update30s);
-			});
-			$(document).on("click", "#dp_export_btn", function (event) {
-				console.log("dp_export_btn");
+			$(document).on("click", "#md_export_btn", function (event) {
+				console.log("md_export_btn");
 				//更新時間
 				var myDate = new Date();
 				var reportDate =
@@ -424,7 +577,7 @@ customized = new Vue({
 					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dp_excel").table2excel({
+				$("#md_excel").table2excel({
 					// exclude CSS class
 					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
 					preserveColors: false,
@@ -432,79 +585,194 @@ customized = new Vue({
 					exclude_links: true,
 					exclude: ".noExl",
 					name: "Worksheet Name",
-					filename: "MES_Report_maintain_dtr_production_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", "#dwh_export_btn", function (event) {
-				console.log("dwh_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dwh_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_maintain_dtr_working_hours_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", "#dnoe_export_btn", function (event) {
-				console.log("dnoe_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dnoe_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_maintain_dtr_Number_of_employees_" + reportDate, //do not include extension
+					filename: "MES_Report_Maintenance_" + reportDate, //do not include extension
 					fileext: ".xls" // file extension
 				});
 			});
 			
-			
-
+			//清除客戶資料
+			$(document).on("click", "#clear_fi_btn", function (event) {
+				$('#c_c_name input').val("");
+				$('#c_name input').val("");
+				$('#c_address textarea').val("");
+				$('#c_tex input').val("");
+				$('#c_fax input').val("");
+			});
+			//清除維修單
+			$(document).on("click", "#clear_md_btn", function (event) {
+				$('#mo_id input').val("");
+				$('#md_mu_id select').val("");
+				$('#mo_check select').val("");
+			});
+			//清除問題敘述
+			$(document).on("click", "#md_clear_btn", function (event) {
+				$('.detail_list').remove();
+			});
+			//預設分配單位
+			$(document).on("click", "#md_designat_all_btn", function (event) {
+				var md_mu_id =  $("#md_mu_id select").val();
+				$(".detail_list .md_mu_id select").val(md_mu_id).change();
+			});
+			//預設 處理狀態
+			$(document).on("click", "#md_check_all_btn", function (event) {
+				var md_check =  $("#md_check_only select").val();
+				//只有0 1 跟未選 可修改
+				$(".detail_list .md_check select").each(function() {
+					if($(this).val()==null ||$(this).val()==0||$(this).val()==1){
+						if($(this).val()==1 &&(md_check==0 || md_check==null)){
+							console.log("不可倒退");
+						}else{
+							$(this).val(md_check).change();							
+						}
+					}
+				});
+			});
+			//存資料(可能:新增 可能修改)
+			$(document).on("click","#md_save_btn", function (event) {
+				customized.sendSave();
+			});
 			//快速查詢 監聽確認
-			$(document).on("keypress", ".search_true input", function (event) {
+			$(document).on("keypress", "#customized .search_true input", function (event) {
 				if (event.which == 13) {
-					$('#search_btn').trigger('click');
+					$('#search_md_btn').trigger('click');
 				}
+			});
+			//新增監聽
+			$(document).on("click",".md_list_add", function (event) {
+				console.log("md_list_add "+$(event.target).attr('title'));
+				var clone_ex = $('.md_search_example_content').clone();
+				var nb_add = customized.nb_add;
+				clone_ex[0].className ='detail_list';
+				clone_ex[0].id = 'nb_add_'+nb_add;
+				//功能
+				$(clone_ex[0]).find('.md_list_add').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_copy').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_del').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_add').addClass('d-none');
+				$(clone_ex[0]).find('.md_list_copy').removeClass('d-none');
+				$(clone_ex[0]).find('.md_list_del').removeClass('d-none');
+				
+				clone_ex.insertAfter('.md_search_example_content');
+				//可寫入?例遍
+				$("#nb_add_"+nb_add+" td").each(function(){
+					if($(this).find('.d_value').attr('title')=='disabled'){
+						$(this).find('.d_value').attr('disabled','disabled');
+					}else{
+						$(this).find('.d_value').removeAttr('disabled');
+					}
+					//$(this).find('.d_value').val("");
+					//console.log(this);
+				});
+				customized.nb_add++;
+				//添加標記
+				
+			});
+			//複製監聽
+			$(document).on("click",".md_list_copy", function (event) {
+				console.log("md_list_copy "+$(event.target).attr('title'));
+				var clone_ex = $('#'+$(event.target).attr('title')).clone();
+				var nb_add = customized.nb_add;
+				clone_ex[0].className ='detail_list';
+				clone_ex[0].id = 'nb_add_'+nb_add;
+				//功能
+				$(clone_ex[0]).find('.md_list_add').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_copy').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_del').attr('title',"nb_add_"+nb_add);
+				$(clone_ex[0]).find('.md_list_add').addClass('d-none');
+				$(clone_ex[0]).find('.md_list_copy').removeClass('d-none');
+				$(clone_ex[0]).find('.md_list_del').removeClass('d-none');
+				
+				clone_ex.insertAfter('.md_search_example_content');
+				//第一格不可複製
+				$('#nb_add_'+nb_add+' .md_id input').val("");
+				
+				//欄位 例遍-> 可寫入?
+				$("#nb_add_"+nb_add+" td").each(function(){
+					if($(this).find('.d_value').attr('title')=='disabled'){
+						$(this).find('.d_value').attr('disabled','disabled');
+						//$(this).find('.d_value').val("");
+					}else{
+						$(this).find('.d_value').removeAttr('disabled');
+					}
+					//是Select 類型:原始的複製 目標
+					if($(this).find("select").length>0 && $(this).find("select").attr('name')!=null){
+						var tag_class = $(this).find("select").attr('name');
+						var tag_val = $('#'+$(event.target).attr('title') +" ."+tag_class).find(":selected").val();
+						//console.log(tag_class+" "+tag_val);
+						//Status 除外
+						if(tag_class!='md_check'){
+							$(this).find("select").val(tag_val);							
+						}
+					}
+				});
+				customized.nb_add++;
+				
+			});
+			
+			//移除監聽
+			$(document).on("click",".md_list_del", function (event) {
+				console.log("md_list_del "+$(event.target).attr('title'));
+				$("#"+$(event.target).attr('title')).remove();
 			});
 		},
-		//更新30s
-		update30s() {
-			console.log("search_30s");  
-			customized.searchSend();
+		//存檔
+		sendSave() {
+			console.log("sendSave");
+			var modify_order = {};
+			modify_order.c_c_name = 	$('#c_c_name input').val();
+			modify_order.c_name = 		$('#c_name input').val();
+			modify_order.c_address = 	$('#c_address textarea').val();
+			modify_order.c_tex = 		$('#c_tex input').val();
+			modify_order.c_fax = 		$('#c_fax input').val();
+			modify_order.mo_id = 		$('#mo_id input').val();
+			modify_order.mo_check = 	$('#mo_check select').val();
+			
+			var modify_detail=[];
+			////////////
+			for(var c = 0 ;c<$('.detail_list').length;c++){
+				var id = $(".detail_list")[c].id;
+				var modify_one={};
+				for(var c_i =0 ;c_i <($("#"+id+" .d_value").length-2);c_i++){
+					var key = $("#"+id+" .d_value")[c_i].name;
+					var value = $("#"+id+" .d_value")[c_i].value;
+					modify_one[key] = value;
+				}
+				modify_detail.push(modify_one);
+			}
+			this.modify_datas['detail'] = modify_detail;
+			this.modify_datas['order'] = modify_order;
+			console.log(this.modify_datas);
+			
+			var action = "AU";
+			var	s_type = "PUT";
+			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+			var	s_data = {};
+			var req = {};
+			req.action=action;
+			req.user=$('#name').text();
+			req.date=new Date();
+			req.body={};
+			req.body['modify'] = this.modify_datas;
+			req.page_total=this.page_total;
+			req.page_batch=this.page_batch;
+			req.page_now_nb=this.page_now_nb;
+			req.html_body= "";
+			req.call_bk_fn="customized";
+			req.call_bk_vals={};
+			req.call_bk_vals['search']=true;
+			s_data.req_content = req;
+			main.ajaxSend(s_url, s_type, s_data);
 		},
 		//search
-		searchSend() {
+		searchSend(search) {
+			if(search==null){
+				return null;
+			}
 			main.loading(true);
 			//查詢
 			//Ex:body:{search:{b:b,c:c}}
-			var search = {};
-			for (var s = 0; s < $(".search_true").length; s++) {
-				var key = $(".search_true")[s].id.replace("search_", "");
-				var value = $("#" + $(".search_true")[s].id + " .s_value").val();
-				//console.log(key+ " "+value);
-				search[key] = value;
-			}
+			//search = {};
+			
 			//包裝
 			var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
 			var s_type = "POST";
@@ -529,10 +797,10 @@ customized = new Vue({
 		},
 		searchReturn() {
 			main.loading(false);
-			console.log("searchReturn");
+			console.log("searchReturn maintain_dtr");
 			//有可能沒有下一頁
 			if (main.allData.body != null) {
-				this.setDataList(main.allData.body.search,
+				customized.setDataList(main.allData.body,
 					main.allData.body.search_son,
 					main.allData.body_type);				
 			} 
@@ -541,16 +809,29 @@ customized = new Vue({
 	//移除監聽事件
 	beforeDestroy() {
 		console.log("maintain_dtr.html(beforeDestroy)");
-		$(document).off("click", "#clear_btn");
-		$(document).off("click", "#search_btn");
+//		$(document).off("click", "#clear_btn");
+//		$(document).off("click", "#search_btn");
 		$(document).off("click", "#export_btn");
-		$(document).off("click", "#dp_export_btn");
+		$(document).off("click", "#md_export_btn");
 		$(document).off("click", "#dwh_export_btn");
 		$(document).off("click", "#dnoe_export_btn");
 		
-
-		$(document).off("keypress", ".search_true input");
-		clearInterval(customized.Interval_update30s);
+		$(document).off("click", "#search_md_btn");
+		$(document).off("click", "#clear_md_btn");
+		$(document).off("click", "#clear_fi_btn");
+		$(document).off("click", "#md_clear_btn");
+		
+		$(document).off("click", "#md_save_btn");
+		$(document).off("click", "#md_designat_all_btn");
+		$(document).off("click", "#md_check_all_btn");
+		
+		$(document).off("click", ".md_list_add");
+		$(document).off("click", ".md_list_copy");
+		$(document).off("click", ".md_list_del");
+		
+		
+		
+		$(document).off("keypress", "#customized .search_true input");
 	},
 });
 </script>

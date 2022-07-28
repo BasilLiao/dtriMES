@@ -41,8 +41,11 @@ public class WorkstationRepeatService {
 	// private EntityManagerFactory emf;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		// int page = req.getPage_batch();
+		// int p_size = req.getPage_total();
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
 		List<ProductionHeader> prArrayList_old = new ArrayList<ProductionHeader>();
 		// 進行-特定查詢(重工工單)
@@ -85,12 +88,13 @@ public class WorkstationRepeatService {
 			bean.autoMsssage("102");
 			log.error(bean.getError_ms());
 		}
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body,PackageBean resp, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 新建的資料
@@ -176,7 +180,8 @@ public class WorkstationRepeatService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, PackageBean resp, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 預備資料
@@ -366,9 +371,10 @@ public class WorkstationRepeatService {
 		return check;
 	}
 
-	// 還原 資料清單
+	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		// 預備資料
 		List<ProductionHeader> prArrayList = new ArrayList<ProductionHeader>();
@@ -433,8 +439,8 @@ public class WorkstationRepeatService {
 								bodyDao.save(p_old);
 								check = true;
 							}
-						}else {
-							//沒有舊紀錄
+						} else {
+							// 沒有舊紀錄
 							List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
 							if (p_nows != null && p_nows.size() == 1) {
 								bodyDao.delete(p_nows.get(0));

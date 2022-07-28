@@ -40,8 +40,11 @@ public class WorkstationService {
 	private WorkstationProgramDao workpDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<Workstation> workstations = new ArrayList<Workstation>();
 		ArrayList<Workstation> workstations_son = new ArrayList<Workstation>();
 		ArrayList<WorkstationItem> workstationItems = new ArrayList<WorkstationItem>();
@@ -248,19 +251,19 @@ public class WorkstationService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_id", one.getWid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_g_id", one.getWgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_id", one.getWorkstationItem().getWiid());
-			
+
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_name", one.getWorkstationItem().getWipbvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_option", one.getWoption());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly()+"");
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength()+"");
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat()+"");
-			
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust()+"");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly() + "");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength() + "");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat() + "");
+
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust() + "");
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
-			
+
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_name", one.getWsgname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_replace", one.getWreplace());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_check", one.getWpicheck());
@@ -290,19 +293,19 @@ public class WorkstationService {
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_id", one.getWid());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_g_id", one.getWgid());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_id", one.getWorkstationItem().getWiid());
-			
+
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_i_name", one.getWorkstationItem().getWipbvalue());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_option", one.getWoption());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_only", one.getWonly());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_length", one.getWlength());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat());
-			
+
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
-			
+
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_name", one.getWsgname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_replace", one.getWreplace());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pi_check", one.getWpicheck());
@@ -323,12 +326,13 @@ public class WorkstationService {
 
 		// 是否為群組模式? type:[group/general] || 新增群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 子/父類別
@@ -446,7 +450,8 @@ public class WorkstationService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// 子/父類別
@@ -555,7 +560,8 @@ public class WorkstationService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -675,8 +681,8 @@ public class WorkstationService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

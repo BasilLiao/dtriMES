@@ -17,9 +17,10 @@ public interface CustomerDao extends JpaRepository<Customer, Long> {
 	@Query("SELECT c FROM Customer c " //
 			+ "WHERE (:ccname is null or c.ccname LIKE %:ccname% ) and "//
 			+ "(:cname is null or c.cname LIKE %:cname% ) and "//
+			+ "(:cid = 0L or c.cid =:cid ) and "//
 			+ "(:sysstatus = 0 or c.sysstatus = :sysstatus )  "//
 			+ "order by c.sysmdate desc")
-	ArrayList<Customer> findAllByCustomer(String ccname, String cname, Integer sysstatus, Pageable pageable);
+	ArrayList<Customer> findAllByCustomer(Long cid, String ccname, String cname, Integer sysstatus, Pageable pageable);
 
 	ArrayList<Customer> findAllByCid(Long cid);
 

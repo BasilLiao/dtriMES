@@ -23,14 +23,15 @@ import dtri.com.tw.service.PackageService;
 import dtri.com.tw.service.WorkTypeService;
 
 @Controller
-public class WorkTypeController {
-	// 功能
-	final static String SYS_F = "work_type.basil";
+public class WorkTypeController extends AbstractController {
+	public WorkTypeController() {
+		super("work_type.basil");
+	}
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	WorkTypeService workService;
+	WorkTypeService typeService;
 
 	/**
 	 * 訪問
@@ -38,32 +39,28 @@ public class WorkTypeController {
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/work_type.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
-		System.out.println("---controller -access " + SYS_F + " Check");
+		showSYS_CM("access");
+		show(json_object);
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
+		boolean check = false;
 
-		System.out.println(json_object);
-		// 取得-當前用戶資料
-		List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料權限
-			systemGroup = userDetails.getSystemGroup();
-		}
-		// UI限制功能
-		SystemPermission one = new SystemPermission();
-		systemGroup.forEach(p -> {
-			if (p.getSystemPermission().getSpcontrol().equals(SYS_F)) {
-					one.setSppermission(p.getSgpermission());
-			}
-		});
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
+		SystemPermission pern = permissionUI();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = workService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
-		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, resp.permissionToJson(one.getSppermission().split("")));
+		check = typeService.getData(resp, req, user);
+		// Step3.進行判定
+		if (check) {
+			// Step4.包裝回傳
+			resp = packageService.setObjResp(resp, req, resp.permissionToJson(pern.getSppermission().split("")));
+		} else {
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
+			resp = packageService.setObjResp(resp, req, null);
+		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -74,17 +71,27 @@ public class WorkTypeController {
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/work_type.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
-		System.out.println("---controller -search " + SYS_F + " Check");
+		showSYS_CM("search");
+		show(json_object);
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
+		boolean check = false;
 
-		System.out.println(json_object);
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		resp = workService.getData(req.getBody(), req.getPage_batch(), req.getPage_total());
-		// Step3.包裝回傳
-		resp = packageService.setObjResp(resp, req, null);
+		check = typeService.getData(resp, req, user);
+		// Step3.進行判定
+		if (check) {
+			// Step4.包裝回傳
+			resp = packageService.setObjResp(resp, req, null);
+		} else {
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
+			resp = packageService.setObjResp(resp, req, null);
+		}
 		// 回傳-資料
 		return packageService.objToJson(resp);
 	}
@@ -95,36 +102,28 @@ public class WorkTypeController {
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/work_type.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
-		System.out.println("---controller -create " + SYS_F + " Check");
+		showSYS_CM("create");
+		show(json_object);
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
 
-		System.out.println(json_object);
-		// 取得-當前用戶資料
-		SystemUser user = new SystemUser();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料
-			user = userDetails.getSystemUser();
-		}
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = workService.createData(req.getBody(), user);
+		check = typeService.createData(resp, req, user);
 		if (check) {
-			check = workService.save_asData(req.getBody(), user);
+			check = typeService.save_asData(resp, req, user);
 		}
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
 			resp = packageService.setObjResp(resp, req, null);
 		} else {
-			// Step4.包裝回傳
-			req.setCall_bk_vals(new JSONObject().put("search", false));
-			req.setAction("");
-			resp.autoMsssage("100");
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
 			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
@@ -137,33 +136,25 @@ public class WorkTypeController {
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/work_type.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
-		System.out.println("---controller - -modify " + SYS_F + " Check");
+		showSYS_CM("modify");
+		show(json_object);
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
 
-		System.out.println(json_object);
-		// 取得-當前用戶資料
-		SystemUser user = new SystemUser();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			LoginUserDetails userDetails = (LoginUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			// Step1.查詢資料
-			user = userDetails.getSystemUser();
-		}
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
-		check = workService.updateData(req.getBody(), user);
+		// Step2.進行修改
+		check = typeService.updateData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
 			resp = packageService.setObjResp(resp, req, null);
 		} else {
-			// Step4.包裝回傳
-			req.setCall_bk_vals(new JSONObject().put("search", false));
-			req.setAction("");
-			resp.autoMsssage("100");
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
 			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料
@@ -176,26 +167,25 @@ public class WorkTypeController {
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/work_type.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
-		System.out.println("---controller -delete " + SYS_F + " Check");
+		showSYS_CM("delete");
+		show(json_object);
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
 
-		System.out.println(json_object);
-
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
-		check = workService.deleteData(req.getBody());
+		// Step2.進行移除
+		check = typeService.deleteData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
 			resp = packageService.setObjResp(resp, req, null);
 		} else {
-			// Step4.包裝回傳
-			req.setCall_bk_vals(new JSONObject().put("search", false));
-			req.setAction("");
-			resp.autoMsssage("100");
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
 			resp = packageService.setObjResp(resp, req, null);
 		}
 		// 回傳-資料

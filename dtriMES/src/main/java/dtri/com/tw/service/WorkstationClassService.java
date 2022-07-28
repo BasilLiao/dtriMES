@@ -31,8 +31,11 @@ public class WorkstationClassService {
 	private WorkstationDao workstationDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<WorkstationClass> classes = new ArrayList<WorkstationClass>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -109,7 +112,7 @@ public class WorkstationClassService {
 					sysUser.setSutemplate(sysUser.getSutemplate() + "　");
 				}
 				String value = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
-				if(value.indexOf("一般職員") < 0) {
+				if (value.indexOf("一般職員") < 0) {
 					st_val.put((new JSONObject()).put("value", value).put("key", sysUser.getSuid()));
 				}
 			}
@@ -225,12 +228,13 @@ public class WorkstationClassService {
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body,PackageBean reBean, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -277,7 +281,7 @@ public class WorkstationClassService {
 				String wc_p_line = data.getString("wc_p_line");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
-					reBean.autoMsssage("107");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -286,13 +290,15 @@ public class WorkstationClassService {
 			check = true;
 		} catch (Exception e) {
 			System.out.println(e);
+			check = false;
 		}
 		return check;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body,PackageBean reBean, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -347,7 +353,7 @@ public class WorkstationClassService {
 				String wc_p_line = data.getString("wc_p_line");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0) {
-					reBean.autoMsssage("107");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -362,7 +368,8 @@ public class WorkstationClassService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body,PackageBean reBean, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			SystemUser sysUser = new SystemUser();
@@ -384,10 +391,10 @@ public class WorkstationClassService {
 				String wc_w_c_name = lists.get(0).getWcname() + "(" + lists.get(0).getWpbname() + ")";
 				String wc_class = data.getString("wc_class");
 				String wc_p_line = data.getString("wc_p_line");
-				Long wc_id =data.getLong("wc_id");
+				Long wc_id = data.getLong("wc_id");
 				ArrayList<WorkstationClass> arrayList = classDao.findAllBySameClass(wc_class, wc_p_line, wc_w_c_name, null, null);
 				if (arrayList != null && arrayList.size() > 0 && wc_id != arrayList.get(0).getWcid()) {
-					reBean.autoMsssage("107");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -436,8 +443,8 @@ public class WorkstationClassService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

@@ -31,8 +31,11 @@ public class WorkHoursService {
 	private WorkTypeDao workTypeDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		List<WorkHours> workhours = new ArrayList<WorkHours>();
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -167,8 +170,7 @@ public class WorkHoursService {
 		Date s_date = wh_s_date.equals("") ? null : Fm_Time.toDateTime(wh_s_date);
 		Date e_date = wh_e_date.equals("") ? null : Fm_Time.toDateTime(wh_e_date);
 		// workhours = hoursDao.findAll();
-		workhours = hoursDao.findAllByWorkHours(wh_pr_id/* ,wh_account */, wh_do, Integer.parseInt(wh_wt_id), Integer.parseInt(status), s_date,
-				e_date, page_r);
+		workhours = hoursDao.findAllByWorkHours(wh_pr_id/* ,wh_account */, wh_do, Integer.parseInt(wh_wt_id), Integer.parseInt(status), s_date, e_date, page_r);
 		List<String> pr_id = new ArrayList<String>();
 
 		// 避免重複
@@ -212,12 +214,13 @@ public class WorkHoursService {
 		bean.setBody(new JSONObject().put("search", object_bodys));
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(FFS.group_set(FFM.Group_type.group, FFM.Group_createOnly.general));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -328,9 +331,10 @@ public class WorkHoursService {
 		return check;
 	}
 
-	// 另存檔 資料清單
+	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -348,7 +352,8 @@ public class WorkHoursService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			String pr_id = "";
@@ -461,8 +466,8 @@ public class WorkHoursService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

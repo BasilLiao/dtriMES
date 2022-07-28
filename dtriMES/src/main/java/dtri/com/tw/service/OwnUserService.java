@@ -23,13 +23,16 @@ public class OwnUserService {
 	private SystemGroupDao groupDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		// int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		SystemUser systemUsers = new SystemUser();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
-			page = 0;
+			// page = 0;
 			p_size = 100;
 		}
 		// 初次載入需要標頭 / 之後就不用
@@ -93,12 +96,13 @@ public class OwnUserService {
 		object_bodys.put(object_body);
 
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");

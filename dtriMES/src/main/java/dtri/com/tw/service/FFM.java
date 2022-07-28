@@ -18,7 +18,7 @@ public class FFM {
 
 	/** 限制規格-標籤 **/
 	public static enum Tag {
-		INP, TTA, SEL, CHE
+		INP, TTA, SEL, CHE, IMG
 	}
 
 	/** 限制規格-類型 **/
@@ -68,6 +68,10 @@ public class FFM {
 		case "CHE":
 			value = "checkbox";
 			break;
+		case "IMG":
+			value = "img";
+			break;	
+			
 		// Type
 		case "TEXT":
 			value = "text";

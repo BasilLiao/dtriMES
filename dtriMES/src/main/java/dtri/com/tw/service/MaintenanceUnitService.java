@@ -26,8 +26,11 @@ public class MaintenanceUnitService {
 	private SystemUserDao systemUserDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		List<MaintenanceUnit> mUnits = new ArrayList<MaintenanceUnit>();
 		List<MaintenanceUnit> mUnit_sons = new ArrayList<MaintenanceUnit>();
 
@@ -91,9 +94,9 @@ public class MaintenanceUnitService {
 					sysUser.setSutemplate(sysUser.getSutemplate() + "　");
 				}
 				String value = sysUser.getSutemplate() + " | " + sysUser.getSuposition() + " | " + sysUser.getSuname();
-				if(!suposition.equals(sysUser.getSuposition())) {
+				if (!suposition.equals(sysUser.getSuposition())) {
 					suposition = sysUser.getSuposition();
-					st_val.put((new JSONObject()).put("value", "====="+sysUser.getSuposition()+"=======").put("key", ""));
+					st_val.put((new JSONObject()).put("value", "=====" + sysUser.getSuposition() + "=======").put("key", ""));
 				}
 				st_val.put((new JSONObject()).put("value", value).put("key", sysUser.getSuid()));
 			}
@@ -211,12 +214,13 @@ public class MaintenanceUnitService {
 
 		// 是否為群組模式? type:[group/general] || 新增時群組? createOnly:[all/general]
 		bean.setBody_type(new JSONObject("{'type':'group','createOnly':'all'}"));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("create");
@@ -282,7 +286,8 @@ public class MaintenanceUnitService {
 
 	// 另存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("save_as");
@@ -358,7 +363,8 @@ public class MaintenanceUnitService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("modify");
@@ -415,8 +421,8 @@ public class MaintenanceUnitService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");

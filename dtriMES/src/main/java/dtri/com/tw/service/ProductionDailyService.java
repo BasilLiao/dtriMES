@@ -54,8 +54,12 @@ public class ProductionDailyService {
 	private ProductionHeaderDao headerDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		// int page = req.getPage_batch();
+		// int p_size = req.getPage_total();
+
 		ArrayList<ProductionDaily> productionDailys = new ArrayList<ProductionDaily>();
 		ArrayList<Workstation> workstations = new ArrayList<Workstation>();
 		LinkedHashMap<String, ProductionDailyBean> dailybeans = new LinkedHashMap<String, ProductionDailyBean>();
@@ -360,7 +364,7 @@ public class ProductionDailyService {
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal());
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_pr_ok_qty", pdb_val.getPdprokqty());
 			object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
-			
+
 			// 每日總人數
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate());
 			object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + "pd_wc_line", pdb_val.getPdwcline());
@@ -402,19 +406,18 @@ public class ProductionDailyService {
 		bean.setBody(new JSONObject().put("search", all_json));
 
 		updateData();
-		return bean;
+		return true;
 	}
 
-	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
 		boolean check = false;
 		return check;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
 		boolean check = false;
 		return check;
 	}

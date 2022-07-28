@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @see <br>
  *      md_id : 單據項目_(單位)RAM類型:R001-R999/DTR類型:D001-D999/Self類型:S001-S999<br>
  *      ex:RAM0123456789-R001<br>
+ *      md_mo_id : 單據編號 ex:RAM0123456789<br>
  *      md_mr_sn:產品/主板/任何有序號唯一性 SN<br>
  *      md_mu_id:指派單位<br>
  *      md_statement:問題描述<br>
@@ -26,6 +26,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      md_true: 實際問題情況<br>
  *      md_experience: 修理心得<br>
  *      md_svg:圖片資料<br>
+ *      md_check:檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢)
+ *      5=已寄回(結單)<br>
  *      md_finally:修復好的結果 例如:換掉主板<br>
  *      md_u_finally:修復人
  * 
@@ -78,13 +80,14 @@ public class MaintenanceDetail {
 	@Id
 	@Column(name = "md_id")
 	private String mdid;
-	
+
 	@ManyToOne(targetEntity = MaintenanceRegister.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "md_mr_sn")
 	private MaintenanceRegister register;
 
-	@Column(name = "md_mu_id", nullable = false, columnDefinition = "varchar(50)")
-	private Long mdmuid;
+	@ManyToOne(targetEntity = MaintenanceOrder.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "md_mo_id")
+	private MaintenanceOrder order;
 
 	@Column(name = "md_statement", nullable = false, columnDefinition = "varchar(250)")
 	private String mdstatement;
@@ -95,24 +98,62 @@ public class MaintenanceDetail {
 	@Column(name = "md_experience", columnDefinition = "varchar(250)")
 	private String mdexperience;
 
-	@Column(name = "md_svg", nullable = false, columnDefinition = "varchar(50)")
+	@Column(name = "md_svg", columnDefinition = "text default ''")
 	private String mdsvg;
+
+	@Column(name = "mdcheck", columnDefinition = "int default 0")
+	private Integer mdcheck;
 
 	@Column(name = "md_u_finally", columnDefinition = "varchar(30)")
 	private String mdufinally;
 
-	@Column(name = "mdfinally", columnDefinition = "varchar(250)")
+	@Column(name = "md_finally", columnDefinition = "varchar(250)")
 	private String mdfinally;
 
-	@OneToOne(mappedBy = "mdetail")
-	private MaintenanceOrder mOrder;
+	@Column(name = "md_u_qty")
+	private Integer mduqty;
 
-	public MaintenanceOrder getmOrder() {
-		return mOrder;
+	@Column(name = "md_mu_id")
+	private Long mdmuid;
+
+	public Integer getMdcheck() {
+		return mdcheck;
 	}
 
-	public void setmOrder(MaintenanceOrder mOrder) {
-		this.mOrder = mOrder;
+	public void setMdcheck(Integer mdcheck) {
+		this.mdcheck = mdcheck;
+	}
+
+	public Long getMdmuid() {
+		return mdmuid;
+	}
+
+	public void setMdmuid(Long mdmuid) {
+		this.mdmuid = mdmuid;
+	}
+
+	public MaintenanceRegister getRegister() {
+		return register;
+	}
+
+	public void setRegister(MaintenanceRegister register) {
+		this.register = register;
+	}
+
+	public MaintenanceOrder getOrder() {
+		return order;
+	}
+
+	public void setOrder(MaintenanceOrder order) {
+		this.order = order;
+	}
+
+	public Integer getMduqty() {
+		return mduqty;
+	}
+
+	public void setMduqty(Integer mduqty) {
+		this.mduqty = mduqty;
 	}
 
 	public String getMdid() {
@@ -121,14 +162,6 @@ public class MaintenanceDetail {
 
 	public void setMdid(String mdid) {
 		this.mdid = mdid;
-	}
-	
-	public Long getMdmuid() {
-		return mdmuid;
-	}
-
-	public void setMdmuid(Long mdmuid) {
-		this.mdmuid = mdmuid;
 	}
 
 	public String getMdstatement() {

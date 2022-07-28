@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import dtri.com.tw.db.entity.MaintenanceDetail;
 
-public interface MaintenanceDetailDao extends JpaRepository<MaintenanceDetail, Long> {
+public interface MaintenanceDetailDao extends JpaRepository<MaintenanceDetail, String> {
 
 	// 查詢全部
 	ArrayList<MaintenanceDetail> findAll();
+
+	// 移除資料
+	Long deleteByMdid(String mdid);
+
+	ArrayList<MaintenanceDetail> findAllByMdid(String mdid);
 
 }

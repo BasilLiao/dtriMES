@@ -59,6 +59,10 @@ public class PackageBean {
 	public static final String info_work_success22 = "[WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!";
 	public static final String info_work_warning23 = "[WK023] 檢查 此(產品) 規格異常! [Warning]!!";
 
+	public static final String info_Maint_warning01 = "[MT001] 此 (維修單) 已結單/終止/暫停! [Warning]!!";
+	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 分配單位! [Warning]!!";
+	public static final String info_Maint_warning03 = "[MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
+
 	public static final String info_search_warning0 = "[SH000] 查詢 過多筆資料 ,請更正條件! [Warning]!!";
 
 	public static final String info_danger = "[502] The command was executed [ERROR]!!";
@@ -97,6 +101,7 @@ public class PackageBean {
 		this.date = new Date();
 		this.error_ms = "";
 		this.type = "";
+		this.call_bk_vals = new JSONObject();
 	}
 
 	/**
@@ -220,6 +225,18 @@ public class PackageBean {
 		case "SH000":// [SH000] 查詢資料多餘5000 筆資料 ,請更正條件! [Warning]!!
 			this.info = info_search_warning0;
 			break;
+		case "MT001":// [MT000] 此 (維修單) 已結單/終止/暫停! [Warning]!!
+			this.info = info_Maint_warning01;
+			break;
+		case "MT002":// [MT002] 此 (維修單) [維修中] 不可異動! [Warning]!!";
+			this.info = info_Maint_warning02;
+			break;
+		case "MT003":// [MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
+			this.info = info_Maint_warning03;
+			break;
+			
+			
+
 		default:// 不明錯誤
 			this.info = info_danger + info_administrator;
 			this.info_color = info_color_danger;

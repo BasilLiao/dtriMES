@@ -27,8 +27,11 @@ public class SystemUserService {
 	private SystemGroupDao groupDao;
 
 	// 取得當前 資料清單
-	public PackageBean getData(JSONObject body, int page, int p_size, SystemUser user) {
-		PackageBean bean = new PackageBean();
+	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		JSONObject body = req.getBody();
+		int page = req.getPage_batch();
+		int p_size = req.getPage_total();
 		ArrayList<SystemUser> systemUsers = new ArrayList<SystemUser>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -94,7 +97,7 @@ public class SystemUserService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_account", "帳號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.PASS, "", "", FFM.Wri.W_Y, "col-md-1", false, value, "su_password", "密碼"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_position", "單位(部門)"));
-			
+
 			JSONArray values = new JSONArray();
 			values.put((new JSONObject()).put("value", "約聘").put("key", "約聘"));
 			values.put((new JSONObject()).put("value", "助理").put("key", "助理"));
@@ -109,12 +112,12 @@ public class SystemUserService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-3", true, value, "su_email", "Email"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-5", false, value, "sys_note", "備註"));
-			
+
 			values = new JSONArray();
 			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			values.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_Y, "col-md-1", true, values, "sys_status", "狀態"));
-			
+
 			bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
@@ -176,12 +179,13 @@ public class SystemUserService {
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
-		return bean;
+		return true;
 	}
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean createData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		try {
@@ -212,8 +216,8 @@ public class SystemUserService {
 				// 帳號重複
 				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
 				if (oneUser != null) {
-					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
-					reBean.autoMsssage("107");
+					resp.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				} else {
@@ -229,7 +233,8 @@ public class SystemUserService {
 
 	// 存檔 資料清單
 	@Transactional
-	public boolean save_asData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
 		try {
@@ -261,8 +266,8 @@ public class SystemUserService {
 				// 帳號重複
 				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
 				if (userDao.findBySuaccount(sys_c.getSuaccount()) != null) {
-					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
-					reBean.autoMsssage("107");
+					resp.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				} else {
@@ -278,7 +283,8 @@ public class SystemUserService {
 
 	// 更新 資料清單
 	@Transactional
-	public boolean updateData(JSONObject body, PackageBean reBean, SystemUser user) {
+	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			PasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
@@ -290,8 +296,8 @@ public class SystemUserService {
 				// 如果帳號重覆
 				SystemUser oneUser = userDao.findBySuaccount(data.getString("su_account"));
 				if (oneUser != null && data.getLong("su_id") != oneUser.getSuid()) {
-					reBean.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
-					reBean.autoMsssage("107");
+					resp.setError_ms(" 之此帳號 : " + oneUser.getSuaccount() + " ");
+					resp.autoMsssage("107");
 					check = false;
 					return check;
 				}
@@ -327,8 +333,8 @@ public class SystemUserService {
 
 	// 移除 資料清單
 	@Transactional
-	public boolean deleteData(JSONObject body, SystemUser user) {
-
+	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			JSONArray list = body.getJSONArray("delete");
