@@ -149,6 +149,9 @@ public class ForPrinterLabelService {
 				zpl += zpl_end;
 			}
 		}
+		
+		//System.out.println(" ".getBytes().length+"|"+" ".getBytes().length+"|"+"　".getBytes().length);
+		zpl =zpl.replaceAll(" "," ");//取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
 		return zpl;
 	}
 
@@ -186,6 +189,7 @@ public class ForPrinterLabelService {
 			zpl += label_3X2_copy;
 			zpl += zpl_end;
 		}
+		zpl =zpl.replaceAll(" "," ");//取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
 		return zpl;
 	}
 

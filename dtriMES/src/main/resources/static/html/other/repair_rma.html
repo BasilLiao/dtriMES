@@ -19,6 +19,33 @@
 }
 </style>
 <div id="customized">
+	<!-- <div class="shadow mt-0 text-left">
+		<div class="bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-search mr-1"></i>Search product maintenance
+		</div>
+		<div class="row p-0 m-0 search_example_finds">
+			
+			<div class="col-md-2 p-2 search_example_input">
+				<div class="h6 mb-1 s_name">Search1</div>
+				<div class="p-0">
+					<input class="col p-1 border border-dark rounded s_value" type="text" />
+				</div>
+			</div>
+			<div class="col-md-2 p-2 search_example_selsect">
+				<div class="h6 mb-1 s_name">Search2</div>
+				<select class="col-12 custom-select custom-select-sm s_value">
+					<option class="example_select_def" value="" selected>select</option>
+					<option class="example_select_one" value="1">One</option>
+				</select>
+			</div>
+		</div>
+		<div class="row justify-content-end p-0 m-0 search_example_button">
+			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
+				<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
+				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+			</div>
+		</div>
+	</div>-->
 	<!-- 客戶資料 & RAM 單據生成 -->
 	<div class="shadow m-0 row">
 		<div class="col-6 p-0 border border-secondary rounded-top">
@@ -61,12 +88,12 @@
 			</div>
 			<div class="m-0 p-2">
 				<div id="ro_id" class="col row m-0 mt-1 search_true">
-					<div class="col-md-3">DTR NB :</div>
+					<div class="col-md-3">RMA NB :</div>
 					<input class="col-md-9 rounded border-1 border-primary" type="text" value="" placeholder="維修單號 (新增請留白{可自動生成} or 可查詢)">
 				</div>
 				<div id="ro_address" class="col row m-0 mt-1">
 					<div class="col-md-3">Ship back to :</div>
-					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="DTR地址"></textarea>
+					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="RMA地址"></textarea>
 				</div>
 				<div id="ro_check" class="col row m-0 mt-1">
 					<div class="col-md-3">Case closed? :</div>
@@ -129,12 +156,12 @@
 			<table id="rd_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
 					<tr class="d-none">
-						<th colspan="10">.DTR Repair Order</th>
+						<th colspan="10">.RMA Repair Order</th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
 						<th colspan="5">Company Name : <span id="excel_c_n"></span></th>
-						<th colspan="5">DTR NB : <span id="excel_ro_id"></span></th>
+						<th colspan="5">RMA NB : <span id="excel_ro_id"></span></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
@@ -228,7 +255,7 @@ customized = new Vue({
 	},
 	//初始化
 	created() {
-		console.log("repair_dtr.html(created)");
+		console.log("repair_rma.html(created)");
 	},
 	//可呼叫方法
 	methods: {
@@ -491,14 +518,20 @@ customized = new Vue({
 				todayBtn: true,
 				//......可以同上項目代碼自定義設置
 			});
+
 		},
 		//初始化
 		selectAllInit() {
+			
 			//查詢客戶 & 維修單
 			$(document).on("click", "#search_rd_btn", function (event) {
 				var search = {};
-				search.rd_id = 		$('#rd_id input').val();
-				search.rr_id = 		$('#ro_id input').val();
+				search.c_c_name = 	$('#c_c_name input').val();
+				search.c_name = 	$('#c_name input').val();
+				search.c_address = 	$('#c_address textarea').val();
+				search.c_tex = 		$('#c_tex input').val();
+				search.c_fax = 		$('#c_fax input').val();
+				search.ro_id = 		$('#ro_id input').val();
 				customized.searchSend(search);
 				
 			});
@@ -594,6 +627,7 @@ customized = new Vue({
 					}else{
 						$(this).find('.d_value').removeAttr('disabled');
 					}
+					//$(this).find('.d_value').val("");
 					//console.log(this);
 				});
 				customized.nb_add++;
@@ -639,6 +673,7 @@ customized = new Vue({
 					}
 				});
 				customized.nb_add++;
+				
 			});
 			
 			//移除監聽
@@ -731,7 +766,7 @@ customized = new Vue({
 		},
 		searchReturn() {
 			main.loading(false);
-			console.log("searchReturn repair_dtr");
+			console.log("searchReturn repair_rma");
 
 			//有可能沒有下一頁
 			if (main.allData.body != null) {
@@ -756,7 +791,9 @@ customized = new Vue({
 	},
 	//移除監聽事件
 	beforeDestroy() {
-		console.log("repair_dtr.html(beforeDestroy)");
+		console.log("repair_rma.html(beforeDestroy)");
+//		$(document).off("click", "#clear_btn");
+//		$(document).off("click", "#search_btn");
 		$(document).off("click", "#export_btn");
 		$(document).off("click", "#rd_export_btn");
 		$(document).off("click", "#dwh_export_btn");
@@ -774,7 +811,9 @@ customized = new Vue({
 		$(document).off("click", ".rd_list_add");
 		$(document).off("click", ".rd_list_copy");
 		$(document).off("click", ".rd_list_del");
-
+		
+		
+		
 		$(document).off("keypress", "#customized .search_true input");
 	},
 });

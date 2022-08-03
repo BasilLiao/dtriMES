@@ -14,6 +14,9 @@ public interface RepairUnitDao extends JpaRepository<RepairUnit, Long> {
 	// 查詢ID
 	List<RepairUnit> findByRuidOrderBySyssortAsc(Long ruid);
 
+	// 查詢user ID
+	List<RepairUnit> findByRusuidOrderBySyssortAsc(Long rusuid);
+
 	// 查詢G_ID
 	List<RepairUnit> findByRugidOrderBySyssortAsc(Long rugid);
 

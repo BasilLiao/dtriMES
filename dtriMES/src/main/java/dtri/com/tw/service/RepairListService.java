@@ -33,7 +33,7 @@ import dtri.com.tw.db.pgsql.dao.RepairUnitDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
-public class RepairOrderDtrService {
+public class RepairListService {
 	@Autowired
 	private RepairUnitDao unitDao;
 	@Autowired
@@ -58,10 +58,8 @@ public class RepairOrderDtrService {
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
-		// List<MaintenanceOrder> mOrder = new ArrayList<MaintenanceOrder>();
 		List<String> roids = new ArrayList<String>();// 有相關的資料
 		List<RepairOrder> fatherOrder = new ArrayList<RepairOrder>();
-		// List<MaintenanceOrder> mOrder_sons = new ArrayList<MaintenanceOrder>();
 		List<Customer> customers = new ArrayList<Customer>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -371,6 +369,7 @@ public class RepairOrderDtrService {
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
 		JSONObject object_bodys_son = new JSONObject();
+
 		// 父類別物件
 		roids = orderDao.findAllByRepairOrder(//
 				search_ro_id, search_rd_rr_sn, search_rd_check, search_rr_pb_type, //
@@ -1384,7 +1383,7 @@ public class RepairOrderDtrService {
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "120px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "130px", FFM.Wri.W_N));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "130px", FFM.Wri.W_Y));
 			object_header.put("customized_header", customized_header);
 
 			// 維修單-訊息
@@ -1414,18 +1413,19 @@ public class RepairOrderDtrService {
 			object_documents.put("rr_pb_type", s_val);
 			// 處理狀態
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", 1));
+			//s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
+			//s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", 1));
 			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
-			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
-			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
-			s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
+			s_val.put((new JSONObject()).put("value", "轉處理(踢皮球)").put("key", 3));
+			s_val.put((new JSONObject()).put("value", "修不好(報廢)").put("key", 4));
+			//s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
 			object_documents.put("rd_check", s_val);
-			// 處理狀態
+
+			// 產品狀態
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", 1));
-			object_documents.put("rd_check_only", s_val);
+			s_val.put((new JSONObject()).put("value", "待修中").put("key", false));
+			s_val.put((new JSONObject()).put("value", "已修復").put("key", true));
+			object_documents.put("rr_f_ok", s_val);
 
 			// 處理狀態
 			s_val = new JSONArray();

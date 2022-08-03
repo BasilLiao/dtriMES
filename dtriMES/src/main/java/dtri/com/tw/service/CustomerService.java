@@ -28,7 +28,6 @@ public class CustomerService {
 		JSONObject body = req.getBody();
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
-		PackageBean bean = new PackageBean();
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -61,7 +60,7 @@ public class CustomerService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("排序", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t("版本", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t("狀態", "100px", FFM.Wri.W_Y));
-			bean.setHeader(object_header);
+			resp.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_m = new JSONArray();
@@ -82,7 +81,7 @@ public class CustomerService {
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, a_val, "sys_status", "狀態"));
-			bean.setCell_modify(obj_m);
+			resp.setCell_modify(obj_m);
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
@@ -93,7 +92,7 @@ public class CustomerService {
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-2", "sys_status", "狀態", a_val));
-			bean.setCell_searchs(object_searchs);
+			resp.setCell_searchs(object_searchs);
 		} else {
 
 			// 進行-特定查詢
@@ -128,7 +127,7 @@ public class CustomerService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_bodys.put(object_body);
 		});
-		bean.setBody(new JSONObject().put("search", object_bodys));
+		resp.setBody(new JSONObject().put("search", object_bodys));
 		return true;
 	}
 

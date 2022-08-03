@@ -29,11 +29,12 @@ public interface RepairOrderDao extends JpaRepository<RepairOrder, Long> {
 			+ "(cast(:rosramdate as date) is null or  :rosramdate > o.roramdate ) and "// 申請日(起)
 			+ "(cast(:roeramdate as date) is null or  :roeramdate < o.roramdate ) and"// 申請日(終)
 			+ "(cast(:rrspbsysmdate as date) is null or  :rrspbsysmdate > r.rrpbsysmdate ) and "// 生產日期(起)
-			+ "(cast(:rrepbsysmdate as date) is null or  :rrepbsysmdate < r.rrpbsysmdate ) "// 生產日期(終)
+			+ "(cast(:rrepbsysmdate as date) is null or  :rrepbsysmdate < r.rrpbsysmdate ) and "// 生產日期(終)
+			+ "(:rofrom  is null or o.rofrom  = :rofrom ) "// 來源
 			+ " GROUP By o.roid")
 	ArrayList<String> findAllByRepairOrder(//
 			String roid, String rrsn, String rdcheck, String rrpbtype, String rdstatement, //
-			Date rosramdate, Date roeramdate, Date rrspbsysmdate, Date rrepbsysmdate, Pageable pageable);
+			Date rosramdate, Date roeramdate, Date rrspbsysmdate, Date rrepbsysmdate, String rofrom, Pageable pageable);
 
 	@Query("SELECT o FROM RepairOrder o WHERE " //
 			+ "(coalesce(:roid, null) is null or o.roid IN :roid ) order by o.roid desc ") // coalesce 回傳非NULL值

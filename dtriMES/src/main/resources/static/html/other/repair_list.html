@@ -17,88 +17,153 @@
 .fixed_cell {
 	position: sticky;
 }
+
+select {
+	border-width: 2px;
+}
 </style>
 <div id="customized">
-	<!-- 客戶資料 & RAM 單據生成 -->
+	<!-- 維修處理 -->
 	<div class="shadow m-0 row">
-		<div class="col-6 p-0 border border-secondary rounded-top">
+		<div class="col-12 p-0 border border-secondary rounded-top">
 			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
 				<div class="col p-0 pt-1">
-					<i class="bi bi-house mr-1"></i>Customer Information
+					<i class="bi bi-tools mr-1"></i>Repair Information
 				</div>
 			</div>
-			<div class="m-0 p-2">
-				<div id="c_c_name" class="col row m-0 mt-1 search_true">
-					<div class="col-3">Company Name :</div>
-					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="必填:客戶公司 (可查詢)">
+			<div class="row p-0 m-0">
+				<div class="col-md-6 row m-0 p-2 text-left">
+					<div class="col-md-3 p-1 m-0 search_true" id="rr_sn">
+						<div class="col p-0">產品/維修單項目(序號) :</div>
+						<input class="col p-1 rounded border-1 border-primary" type="text" value="" placeholder="刷入產品/維修單項目">
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rr_pb_type">
+						<div class="col p-0">類型 :</div>
+						<select disabled class="col p-1 rounded">
+							<option class="def" value="" selected>select(必填)</option>
+						</select>
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rr_pr_p_model">
+						<div class="col p-0">型號 :</div>
+						<input class="col p-1 rounded" type="text" value="" placeholder="" disabled="disabled" placeholder="301,DT317...">
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rr_v">
+						<div class="col p-0">版本 :</div>
+						<input class="col p-1 rounded" type="text" value="" placeholder="" disabled="disabled" placeholder="料件/產品/主板 版本">
+					</div>
+					<!--  -->
+					<div class="col-md-3 p-1 m-0" id="rr_f_ok">
+						<div class="col p-0">狀態 :</div>
+						<select class="col p-1 rounded">
+							<option class="def" value="" selected>select(必填)</option>
+						</select>
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rd_rc_code">
+						<div class="col p-0">處理代碼(轉) :</div>
+						<input class="col p-1 rounded" type="text" value="" placeholder="尚未支援功能">
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rd_check">
+						<div class="col p-0">處理結果(轉) :</div>
+						<select class="col p-1 rounded">
+							<option class="def" value="" selected>select(必填)</option>
+						</select>
+					</div>
+					<div class="col-md-3 p-1 m-0" id="rd_ru_id">
+						<div class="col p-0">處理單位(轉) :</div>
+						<select class="col p-1 rounded">
+							<option class="def" value="" selected>select(必填)</option>
+						</select>
+					</div>
+
+					<div class="col-md-12 p-1 m-0" id="sys_note">
+						<div class="col p-0">紀錄備註 :</div>
+						<textarea class="col rounded p-1" rows="4" cols="" placeholder="領/退料單/一些資訊(選填)"></textarea>
+					</div>
+					<div class="col-md-12 p-1 m-0" id="rd_svg">
+						<div class="col-md-12 p-0 detail_example_img">
+							<div class="h6 mb-1 detail_name">紀錄圖片 :</div>
+							<div class="p-0 m-0 row">
+								<div class="col-2 rounded p-0 detail_imgs">
+									<p class="save_ms_5pic d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">最多五張圖</p>
+									<p class="save_ms_atta d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">副檔名錯誤</p>
+									<p class="save_ms_bigger d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">檔案太大</p>
+									<p class="save_ms_put m-0 pl-1 small text-success" style="bottom: 0px; z-index: 6; position: absolute;">
+										請放入圖片<br>(限制:2M/5Pic)
+									</p>
+									<input value="" class="col form-control p-1 chose_imgs" type="file" id="" accept=".png" style="height: 100%;" multiple>
+								</div>
+								<div class="col-2">
+									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+									<!--  -->
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+								</div>
+								<div class="col-2">
+									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+									<!--  -->
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+								</div>
+								<div class="col-2">
+									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+									<!--  -->
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+								</div>
+								<div class="col-2">
+									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+									<!--  -->
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+								</div>
+								<div class="col-2">
+									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+									<!--  -->
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+								</div>
+								<!-- value:格式:[檔案名稱+'_'+檔案base64,檔案名稱+'_'+檔案base64,] -->
+								<input alt="img" class="d-none save_value" disabled="disabled" value="[]">
+							</div>
+						</div>
+					</div>
 				</div>
-				<div id="c_name" class="col row m-0 mt-1 search_true">
-					<div class="col-3">Contact :</div>
-					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶聯絡人 (可查詢)">
+				<div class="col-md-6 row m-0 p-2 text-left">
+					<div class="col-md-12 m-0 p-1" id="rd_statement">
+						<div class="col p-0">問題敘述 :</div>
+						<textarea class="col rounded p-1" rows="4" cols="" placeholder="問題敘述(必填)" disabled="disabled" style="height: 95px;"></textarea>
+					</div>
+					<div class="col-md-12 m-0 p-1" id="rd_true">
+						<div class="col p-0">故障原因 :</div>
+						<textarea class="col rounded p-1" rows="4" cols="" placeholder="故障原因(必填)"></textarea>
+					</div>
+					<div class="col-md-12 m-0 p-1" id="rd_experience">
+						<div class="col p-0">維修心得 :</div>
+						<textarea class="col rounded p-1" rows="4" cols="" placeholder="維修心得(選填)"></textarea>
+					</div>
 				</div>
-				<div id="c_address" class="col row m-0 mt-1">
-					<div class="col-3">Address :</div>
-					<textarea class="col-9" rows="3" cols="" placeholder="客戶地址"></textarea>
-				</div>
-				<div id="c_tex" class="col row m-0 mt-1 search_true">
-					<div class="col-3">Tex :</div>
-					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶電話 (可查詢)">
-				</div>
-				<div id="c_fax" class="col row m-0 mt-1">
-					<div class="col-3">Fax :</div>
-					<input class="col-9" type="text" value="" placeholder="客戶傳真">
-				</div>
-				<div id="fi_btn" class="col row m-0 mt-2 justify-content-end">
-					<button id="clear_fi_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
+				<div id="fi_btn" class="col p-1 row m-0 justify-content-end">
+					<div class="col-md-1 p-1 m-0">
+						<button id="search_fi_btn" class="col btn btn-primary btn-sm" type="button">Search</button>
+					</div>
+					<div class="col-md-1 p-1 m-0">
+						<button id="clear_fi_btn" class="col btn btn-warning btn-sm" type="button">Clear</button>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-6 p-0 border border-secondary rounded-top">
-			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
-				<div class="col p-0 pt-1">
-					<i class="bi bi-gear mr-1"></i>Repair documents
-				</div>
+	</div>
+	<!-- 產品資訊 -->
+	<div class="shadow mt-2  border border-secondary rounded-top">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+			<div class="col p-0 pt-1">
+				<i class="bi bi-filter-square mr-1"></i>Project Content
 			</div>
-			<div class="m-0 p-2">
-				<div id="ro_id" class="col row m-0 mt-1 search_true">
-					<div class="col-md-3">DTR NB :</div>
-					<input class="col-md-9 rounded border-1 border-primary" type="text" value="" placeholder="維修單號 (新增請留白{可自動生成} or 可查詢)">
+		</div>
+		<div class="row p-0 m-0">
+			<div class="col-md-12 row m-0 p-2 text-left">
+				<div class="col-md-6 m-0 p-1" id="rd_statement">
+					<div class="col p-0">產品規格 :</div>
+					<textarea class="col rounded p-1 pr_b_item" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div id="ro_address" class="col row m-0 mt-1">
-					<div class="col-md-3">Ship back to :</div>
-					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="DTR地址"></textarea>
-				</div>
-				<div id="ro_check" class="col row m-0 mt-1">
-					<div class="col-md-3">Case closed? :</div>
-					<select class="col-md-9" required="required">
-						<option value="" class="def">請選擇</option>
-					</select>
-				</div>
-				<div id="rd_ru_id" class="col row m-0 mt-1">
-					<div class="col-md-3">To whom :</div>
-					<div class="col-md-6 p-0 pr-2">
-						<select class="col rounded  border-dark" required="required" style="border-width: 2px; height: 100%;">
-							<option value="" class="def">請選擇</option>
-						</select>
-					</div>
-					<div class="col-md-3 p-0">
-						<button id="rd_designat_all_btn" class="col m-0 btn btn-dark btn-sm" type="button">All Def To whom</button>
-					</div>
-				</div>
-				<div id="rd_check_only" class="col row m-0 mt-1">
-					<div class="col-md-3">Status :</div>
-					<div class="col-md-6 p-0 pr-2">
-						<select class="col rounded  border-secondary" required="required" style="border-width: 2px; height: 100%;">
-							<option value="" class="def">請選擇</option>
-						</select>
-					</div>
-					<div class="col-md-3 p-0">
-						<button id="rd_check_all_btn" class="col m-0 btn btn-secondary btn-sm" type="button">All Def Status</button>
-					</div>
-				</div>
-				<div id="rd_btn" class="col row m-0 mt-2 justify-content-end">
-					<button id="search_rd_btn" class="col-md-3 m-0 mr-2 btn btn-primary btn-sm" type="button">Search</button>
-					<button id="clear_rd_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
+				<div class="col-md-6 m-0 p-1" id="rd_true">
+					<div class="col p-0">軟體定義 :</div>
+					<textarea class="col rounded p-1 pr_s_item" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
 			</div>
 		</div>
@@ -108,14 +173,11 @@
 	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
 			<div class="col-4 p-0 pt-1">
-				<i class="bi bi-list-ul mr-1"></i>Repair list
+				<i class="bi bi-list-ul mr-1"></i>Part Repair
 			</div>
 			<div class="col-8 p-0">
 				<div class="row p-0 m-0 justify-content-end">
 					<div class="col-md-2 pt-1">Action:</div>
-					<div class="col-md-2 p-1">
-						<button id="rd_export_btn" class="col m-0 btn btn-info btn-sm" type="button">Export excel</button>
-					</div>
 					<div class="col-md-2 p-1">
 						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
 					</div>
@@ -128,38 +190,6 @@
 		<div class="p-2">
 			<table id="rd_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
-					<tr class="d-none">
-						<th colspan="10">.DTR Repair Order</th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="5">Company Name : <span id="excel_c_n"></span></th>
-						<th colspan="5">DTR NB : <span id="excel_ro_id"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="5">Contact : <span id="excel_c"></span></th>
-						<th colspan="5" rowspan="4">Ship back to : <span id="excel_sbt"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="5" rowspan="2">Address : <span id="excel_a"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="5">Tex : <span id="excel_t"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="5">Fax : <span id="excel_f"></span></th>
-						<th colspan="5">To whom : <span id="excel_tw"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th colspan="10">.</th>
-					</tr>
 					<tr class="">
 						<th class="s_title_body noExl" style="min-width: 100px;">
 							<div class="row p-0 m-0 justify-content-between">
@@ -185,7 +215,7 @@
 					<tr class="noExl rd_search_example_content">
 						<td title="" id="" class="s_function_body noExl"><i class="rd_list_add bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1"></i> <i
 							class="rd_list_copy bi bi-files btn btn-outline-info p-0 pl-1 pr-1"></i> <i class="rd_list_del bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1"></i></td>
-						<td title="" id="" class="s_list_body noExl">
+						<td title="" id="" class="s_list_body ">
 							<div class="input_value">
 								<input type="text" class="d_value col p-1 m-0" disabled="disabled" value="">
 							</div>
@@ -194,9 +224,6 @@
 									<option value="" class="def">請選擇</option>
 								</select>
 							</div>
-						</td>
-						<!-- Excel 匯出用 -->
-						<td title="" id="" class="s_list_exl_body d-none">
 							<div class="text_value d-none"></div>
 						</td>
 					</tr>
@@ -228,7 +255,7 @@ customized = new Vue({
 	},
 	//初始化
 	created() {
-		console.log("repair_dtr.html(created)");
+		console.log("repair_list.html(created)");
 	},
 	//可呼叫方法
 	methods: {
@@ -329,29 +356,36 @@ customized = new Vue({
 				one_item[0].value = documents['rd_ru_id'][d]['key'];
 				one_item.appendTo("#rd_ru_id select");
 			}
+			$("#rd_ru_id select").val("").change();
 			//處理狀態
-			for(var e= 0;e < documents['ro_check'].length;e++){
-				var one_item = $("#ro_check .def").clone(); //複製樣本
+			for(var e= 0;e < documents['rd_check'].length;e++){
+				var one_item = $("#rd_check .def").clone(); //複製樣本
 				one_item[0].className = "";
-				one_item[0].innerText = documents['ro_check'][e]['value'];
-				one_item[0].value = documents['ro_check'][e]['key'];
-				one_item.appendTo("#ro_check select");
+				one_item[0].innerText = documents['rd_check'][e]['value'];
+				one_item[0].value = documents['rd_check'][e]['key'];
+				one_item.appendTo("#rd_check select");
 			}
-			//限制-處理狀態
-			for(var e= 0;e < documents['rd_check_only'].length;e++){
-				var one_item = $("#rd_check_only .def").clone(); //複製樣本
+			$("#rd_check select").val("").change();
+			
+			//產品狀態
+			for(var e= 0;e < documents['rr_f_ok'].length;e++){
+				var one_item = $("#rr_f_ok .def").clone(); //複製樣本
 				one_item[0].className = "";
-				one_item[0].innerText = documents['rd_check_only'][e]['value'];
-				one_item[0].value = documents['rd_check_only'][e]['key'];
-				one_item.appendTo("#rd_check_only select");
+				one_item[0].innerText = documents['rr_f_ok'][e]['value'];
+				one_item[0].value = documents['rr_f_ok'][e]['key'];
+				one_item.appendTo("#rr_f_ok select");
 			}
+			$("#rr_f_ok select").val("").change();
+			//產品類型
+			for(var e= 0;e < documents['rr_pb_type'].length;e++){
+				var one_item = $("#rr_pb_type .def").clone(); //複製樣本
+				one_item[0].className = "";
+				one_item[0].innerText = documents['rr_pb_type'][e]['value'];
+				one_item[0].value = documents['rr_pb_type'][e]['key'];
+				one_item.appendTo("#rr_pb_type select");
+			}
+			$("#rr_pb_type select").val("").change();
 			
-			
-			var ro_address = '美商定誼科技(股)公司台灣分公司 \n'+
-			'3F. No.36 Wuquan 7th Rd. Wugu Dist.,\n'+
-			'New Taipei City 24890 Taiwan (R.O.C.) \n'+
-			'+886-2-22982203';
-			$('#ro_address textarea').val(ro_address);
 			
 		},
 		setDataList(list, list_son, body_type) {
@@ -497,8 +531,12 @@ customized = new Vue({
 			//查詢客戶 & 維修單
 			$(document).on("click", "#search_rd_btn", function (event) {
 				var search = {};
-				search.rd_id = 		$('#rd_id input').val();
-				search.rr_id = 		$('#ro_id input').val();
+				search.c_c_name = 	$('#c_c_name input').val();
+				search.c_name = 	$('#c_name input').val();
+				search.c_address = 	$('#c_address textarea').val();
+				search.c_tex = 		$('#c_tex input').val();
+				search.c_fax = 		$('#c_fax input').val();
+				search.ro_id = 		$('#ro_id input').val();
 				customized.searchSend(search);
 				
 			});
@@ -731,7 +769,7 @@ customized = new Vue({
 		},
 		searchReturn() {
 			main.loading(false);
-			console.log("searchReturn repair_dtr");
+			console.log("searchReturn repair_list");
 
 			//有可能沒有下一頁
 			if (main.allData.body != null) {
@@ -756,7 +794,7 @@ customized = new Vue({
 	},
 	//移除監聽事件
 	beforeDestroy() {
-		console.log("repair_dtr.html(beforeDestroy)");
+		console.log("repair_list.html(beforeDestroy)");
 		$(document).off("click", "#export_btn");
 		$(document).off("click", "#rd_export_btn");
 		$(document).off("click", "#dwh_export_btn");

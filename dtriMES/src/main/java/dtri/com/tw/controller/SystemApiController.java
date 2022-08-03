@@ -39,8 +39,9 @@ public class SystemApiController extends AbstractController {
 		JSONObject obj_return = new JSONObject();
 
 		// Step0.當前用戶資料-UI權限
-		SystemUser user = loginUser().getSystemUser();
-
+		//SystemUser user = loginUser().getSystemUser();
+		SystemUser user = new SystemUser();
+		user.setSuaccount("system");
 		// Step1.解析行為
 		switch (obj.getString("action")) {
 		case "production_create":

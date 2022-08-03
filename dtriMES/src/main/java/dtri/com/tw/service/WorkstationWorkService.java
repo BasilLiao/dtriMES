@@ -65,6 +65,8 @@ public class WorkstationWorkService {
 	private RepairCodeDao codeDao;
 	@Autowired
 	private ProductionTestDao testDao;
+	@Autowired
+	private RepairOrderDtrService orderDtrService;
 
 	@Autowired
 	private FtpService ftpService;
@@ -636,6 +638,11 @@ public class WorkstationWorkService {
 								put("user", user.getSuaccount()).//
 								put("fix_code", list.getString("pb_f_value")).toString();
 						f_code_check = false;
+						// 登記維修項目
+						JSONObject repairOrder = new JSONObject();
+						repairOrder.put("rr_sn", list.getString("pb_b_sn"));
+						repairOrder.put("rd_statement", list.getString("pb_f_value"));
+						orderDtrService.setDataCustomized(repairOrder, user);
 					}
 					// 重複過站[標記]
 					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {

@@ -28,7 +28,7 @@ public class ProductionRecordsService {
 	private ProductionHeaderDao headerDao;
 
 	// 取得當前 資料清單
-	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
+	public boolean getData(PackageBean resp, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
 		int page = req.getPage_batch();
@@ -79,7 +79,7 @@ public class ProductionRecordsService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("PR_排序", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t("PR_版本", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t("PR_狀態", "100px", FFM.Wri.W_Y));
-			bean.setHeader(object_header);
+			resp.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_m = new JSONArray();
@@ -120,7 +120,7 @@ public class ProductionRecordsService {
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "pr_wc_line", "產線"));
-			bean.setCell_modify(obj_m);
+			resp.setCell_modify(obj_m);
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
@@ -134,7 +134,7 @@ public class ProductionRecordsService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_s_sn", "SN區間", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_bom_id", "BOM號", n_val));
 
-			bean.setCell_searchs(object_searchs);
+			resp.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
 			prcname = body.getJSONObject("search").getString("pr_c_name");
@@ -188,7 +188,7 @@ public class ProductionRecordsService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_bodys.put(object_body);
 		});
-		bean.setBody(new JSONObject().put("search", object_bodys));
+		resp.setBody(new JSONObject().put("search", object_bodys));
 		return true;
 	}
 
