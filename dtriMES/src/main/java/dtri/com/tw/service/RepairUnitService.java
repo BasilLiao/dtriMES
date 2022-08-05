@@ -143,14 +143,14 @@ public class RepairUnitService {
 
 		// 查詢子類別?全查?
 		if (ru_su_name != null) {
-			entitys = unitDao.findAllByRepairUnit(0L, ru_g_name, ru_su_name, true, page_r);
+			entitys = unitDao.findAllByRepairUnit(0L, 0L, ru_g_name, ru_su_name, true, page_r);
 			if (entitys.size() > 0) {
-				entitys_sons = unitDao.findAllByRepairUnit(0L, entitys.get(0).getRugname(), null, false, null);
+				entitys_sons = unitDao.findAllByRepairUnit(0L, 0L, entitys.get(0).getRugname(), null, false, null);
 			}
 		} else {
-			entitys = unitDao.findAllByRepairUnit(0L, ru_g_name, null, true, page_r);
+			entitys = unitDao.findAllByRepairUnit(0L, 0L, ru_g_name, null, true, page_r);
 			if (entitys.size() > 0) {
-				entitys_sons = unitDao.findAllByRepairUnit(0L, ru_g_name, null, false, null);
+				entitys_sons = unitDao.findAllByRepairUnit(0L, 0L, ru_g_name, null, false, null);
 			}
 		}
 

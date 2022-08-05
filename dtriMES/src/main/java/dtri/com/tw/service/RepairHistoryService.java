@@ -20,12 +20,8 @@ import dtri.com.tw.db.entity.RepairRegister;
 import dtri.com.tw.db.entity.RepairUnit;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.CustomerDao;
-import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
-import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
-import dtri.com.tw.db.pgsql.dao.RepairCodeDao;
 import dtri.com.tw.db.pgsql.dao.RepairDetailDao;
 import dtri.com.tw.db.pgsql.dao.RepairOrderDao;
-import dtri.com.tw.db.pgsql.dao.RepairRegisterDao;
 import dtri.com.tw.db.pgsql.dao.RepairUnitDao;
 import dtri.com.tw.tools.Fm_Time;
 
@@ -84,7 +80,7 @@ public class RepairHistoryService {
 				/* rd_rr_sn = "品件序號", */ rd_u_qty = "品件數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
 				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
-				rd_svg = "圖片", rd_finally = "修復結果", rd_u_finally = "修復員";
+				rd_svg = "圖片", rd_finally = "修復問題?", rd_u_finally = "修復員";
 		// 維修登記(物件)
 		String rr_sn = "品件(序號)", rr_c_sn = "客戶品件(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
@@ -105,17 +101,17 @@ public class RepairHistoryService {
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
 			// 維修單據
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_id", FFS.h_t(ro_id, "210px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_c_id", FFS.h_t(ro_c_id, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_check", FFS.h_t(ro_check, "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_id", FFS.h_t(ro_id, "210px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_c_id", FFS.h_t(ro_c_id, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_check", FFS.h_t(ro_check, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_from", FFS.h_t(ro_from, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_e_date", FFS.h_t(ro_e_date, "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_s_date", FFS.h_t(ro_s_date, "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_g_date", FFS.h_t(ro_g_date, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_e_date", FFS.h_t(ro_e_date, "180px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_s_date", FFS.h_t(ro_s_date, "180px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_g_date", FFS.h_t(ro_g_date, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ro_ram_date", FFS.h_t(ro_ram_date, "150px", FFM.Wri.W_Y));
 
 			// 維修細節
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "200px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "230px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_finally", FFS.h_t(rd_finally, "150px", FFM.Wri.W_Y));
@@ -177,15 +173,15 @@ public class RepairHistoryService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "系統建立", "", FFM.Wri.W_N, "col-md-12", true, n_val, "rd_id", rd_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1", "1", FFM.Wri.W_Y, "col-md-1", true, n_val, "rd_u_qty", rd_u_qty));
 			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, null, null, true, null);
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
 			}
 			s_val.put((new JSONObject()).put("value", "全單位").put("key", 0));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, s_val, "rd_ru_id", rd_ru_id));
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "修復中").put("key", false));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", true));
+			s_val.put((new JSONObject()).put("value", "未完成").put("key", false));
+			s_val.put((new JSONObject()).put("value", "已解決").put("key", true));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "false", "false", FFM.Wri.W_Y, "col-md-1", true, s_val, "rd_finally", rd_finally));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rd_u_finally", rd_u_finally));
 			s_val = new JSONArray();
@@ -224,8 +220,8 @@ public class RepairHistoryService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "產品", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_pb_type", rr_pb_type));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_v", rr_v));
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "修復品").put("key", true));
-			s_val.put((new JSONObject()).put("value", "故障品").put("key", false));
+			s_val.put((new JSONObject()).put("value", "待修中").put("key", true));
+			s_val.put((new JSONObject()).put("value", "已修復").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "false", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_f_ok", rr_f_ok));
 
 			// 系統
@@ -301,8 +297,9 @@ public class RepairHistoryService {
 		// 查詢子類別?全查?
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
-		// 是否是維修成員?
-		if (unitDao.findByRusuidOrderBySyssortAsc(user.getSuid()).size() != 1 && user.getSuid() != 1L) {
+		// 是否是維修成員 or 管理員?
+		Long suid = user.getSuid();
+		if (unitDao.findByRusuidOrderBySyssortAsc(suid).size() < 1 && suid != 1L) {
 			resp.autoMsssage("MT004");
 			return false;
 		}
@@ -331,7 +328,7 @@ public class RepairHistoryService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", rd_son.getRdid());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", rd_son.getRduqty());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd_son.getRdruid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_finally", rd_son.getRdfinally());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_finally", rd_son.getRdfinally() == null ? false : rd_son.getRdfinally());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd_son.getRdufinally());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd_son.getRdstatement());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd_son.getRdsvg() == null ? "[]" : rd_son.getRdsvg());
@@ -414,7 +411,7 @@ public class RepairHistoryService {
 					rd.getOrder().setSysmuser(user.getSuaccount());
 					// 維修單項目
 					rd.setRdruid(data.getLong("rd_ru_id"));
-					rd.setRdfinally(data.getString("rd_finally"));
+					rd.setRdfinally(data.getBoolean("rd_finally"));
 					rd.setRdufinally(data.getString("rd_u_finally"));
 					rd.setRdcheck(data.getInt("rd_check"));
 					rd.setRdstatement(data.getString("rd_statement"));

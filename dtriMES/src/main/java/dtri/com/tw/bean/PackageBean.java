@@ -62,7 +62,7 @@ public class PackageBean {
 	public static final String info_Maint_warning01 = "[MT001] 此 (維修單) 已結單/終止/暫停! [Warning]!!";
 	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 分配單位! [Warning]!!";
 	public static final String info_Maint_warning03 = "[MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
-	public static final String info_Maint_warning04 = "[MT004] 您非[高級維修單位]成員, 請向 管理者 申請! [Warning]!!";
+	public static final String info_Maint_warning04 = "[MT004] 您非 (維修單位) 成員, 請向 管理者 申請! [Warning]!!";
 
 	public static final String info_search_warning0 = "[SH000] 查詢 過多筆資料 ,請更正條件! [Warning]!!";
 

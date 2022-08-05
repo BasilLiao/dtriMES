@@ -1605,12 +1605,12 @@
             		 var id = (event.currentTarget.id).replace("modify_example_add","modify_really_tr");
             		 console.log(id);
 					//自動觸發+複製All value 至新增
-            		 $( "#create_example_tr .create_example_add" ).trigger( "click" );
+            		 $( "#create_example_tr .create_example_add").trigger( "click" );
             		 for(var cell =0;cell<$("#"+id+" .save_key").length;cell++){
 	            		 var value = $("#"+id+" .save_key .save_value")[cell].value;
 	            		 $("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].value=value
 	            		 
-	            		//僅限於checkbox
+	            		 //僅限於 checkbox 
 						 if ($("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].type=="checkbox" && value=="true"){
 							$("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].checked=true;
 						 }
@@ -1803,7 +1803,7 @@
                 });
               	
               	//如果是群組類型 在自動新增一次
-                if($(".create_really_tr").length==1 && 
+                if($(".create_really_tr").length==1 &&
                 		modify.body_type.type=="group" && 
                 		type_data !="son_data" && modify.body_type.createOnly=="all"){
                 	 $( "#create_example_tr .create_example_add" ).trigger( "click" );
@@ -1813,7 +1813,6 @@
 		//移除監聽事件
 		beforeDestroy() {
 			console.log("modify.html(beforeDestroy)");
-			
 			$(document).off("click", ".big-checkbox");
 			$(document).off("click", "#m_cancel");
 			$(document).off("click", ".create_example_remove");
@@ -1827,8 +1826,6 @@
 			$(document).off("click", ".delete_example_remove");
 			$(document).off("change", ".chose_imgs");
 			$(document).off("click", ".img_listen");
-			
-			
 		}
 	});
 </script>

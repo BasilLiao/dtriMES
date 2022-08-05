@@ -95,6 +95,7 @@
 			//編輯-模板
 			$("#index #modify_tab").load("./html/model/modify.html", function() {
 				modify.setDataTitle(main.allData.cell_modify,main.allData.html_permission);
+				modify.setDataGroupTitle(main.allData.cell_g_modify,main.allData.body_type);
 				modify.setDataTitleDelete(main.allData.header);
 				modify.selectAllInit();
 			});

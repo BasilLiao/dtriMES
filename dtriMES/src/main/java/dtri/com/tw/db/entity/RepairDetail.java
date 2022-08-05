@@ -28,7 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rd_svg:圖片資料<br>
  *      rd_check:檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢)
  *      5=已寄回(結單)<br>
- *      rd_finally:修復好的結果 例如:換掉主板<br>
+ *      rd_finally:true =已解決 /false =尚未解決<br>
  *      rd_u_finally:修復人
  * 
  */
@@ -107,8 +107,8 @@ public class RepairDetail {
 	@Column(name = "rd_u_finally", columnDefinition = "varchar(30)")
 	private String rdufinally;
 
-	@Column(name = "rd_finally", columnDefinition = "varchar(250)")
-	private String rdfinally;
+	@Column(name = "rd_finally", columnDefinition = "default false")
+	private Boolean rdfinally;
 
 	@Column(name = "rd_u_qty")
 	private Integer rduqty;
@@ -260,11 +260,11 @@ public class RepairDetail {
 		this.rdufinally = rdufinally;
 	}
 
-	public String getRdfinally() {
+	public Boolean getRdfinally() {
 		return rdfinally;
 	}
 
-	public void setRdfinally(String rdfinally) {
+	public void setRdfinally(Boolean rdfinally) {
 		this.rdfinally = rdfinally;
 	}
 

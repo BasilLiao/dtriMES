@@ -27,114 +27,127 @@ select {
 	<div class="shadow m-0 row">
 		<div class="col-12 p-0 border border-secondary rounded-top">
 			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
-				<div class="col p-0 pt-1">
+				<div class="col p-0 pt-1 pb-1">
 					<i class="bi bi-tools mr-1"></i>Repair Information
 				</div>
 			</div>
 			<div class="row p-0 m-0">
-				<div class="col-md-6 row m-0 p-2 text-left">
-					<div class="col-md-3 p-1 m-0 search_true" id="rr_sn">
-						<div class="col p-0">產品/維修單項目(序號) :</div>
-						<input class="col p-1 rounded border-1 border-primary" type="text" value="" placeholder="刷入產品/維修單項目">
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rr_pb_type">
-						<div class="col p-0">類型 :</div>
-						<select disabled class="col p-1 rounded">
-							<option class="def" value="" selected>select(必填)</option>
-						</select>
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rr_pr_p_model">
-						<div class="col p-0">型號 :</div>
-						<input class="col p-1 rounded" type="text" value="" placeholder="" disabled="disabled" placeholder="301,DT317...">
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rr_v">
-						<div class="col p-0">版本 :</div>
-						<input class="col p-1 rounded" type="text" value="" placeholder="" disabled="disabled" placeholder="料件/產品/主板 版本">
+				<div class="col-md-6 m-0 p-2 text-left">
+					<div class="col-md-12 p-1 m-0 search_true" id="rd_id">
+						<div class="col p-0">維修單-項目(序號) :</div>
+						<input class="col p-1 rounded border-1 border-primary detail_ri" type="text" value="" placeholder="維修單-項目Ex:DTR1659024000000-D000">
 					</div>
 					<!--  -->
-					<div class="col-md-3 p-1 m-0" id="rr_f_ok">
-						<div class="col p-0">狀態 :</div>
-						<select class="col p-1 rounded">
-							<option class="def" value="" selected>select(必填)</option>
-						</select>
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rd_rc_code">
-						<div class="col p-0">處理代碼(轉) :</div>
-						<input class="col p-1 rounded" type="text" value="" placeholder="尚未支援功能">
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rd_check">
-						<div class="col p-0">處理結果(轉) :</div>
-						<select class="col p-1 rounded">
-							<option class="def" value="" selected>select(必填)</option>
-						</select>
-					</div>
-					<div class="col-md-3 p-1 m-0" id="rd_ru_id">
-						<div class="col p-0">處理單位(轉) :</div>
-						<select class="col p-1 rounded">
-							<option class="def" value="" selected>select(必填)</option>
-						</select>
-					</div>
+					<div class="col-md-12 p-0 m-0 row">
+						<div class="col-md-3 p-1 m-0 search_true" id="rr_sn">
+							<div class="col p-0">產品(序號) :</div>
+							<input class="col p-1 rounded border-1 border-primary detail_ri" type="text" value="" placeholder="產品Ex:58TW32225D227">
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rr_pb_type">
+							<div class="col p-0">物件類型 :</div>
+							<select disabled class="col p-1 rounded detail_ri">
+								<option class="def" value="">select(必填)</option>
+							</select>
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rr_pr_p_model">
+							<div class="col p-0">產品型號 :</div>
+							<input class="col p-1 rounded detail_ri" type="text" value="" disabled="disabled" placeholder="301,DT317...">
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rr_f_ok">
+							<div class="col p-0">產品狀態 :</div>
+							<select disabled class="col p-1 rounded detail_ri">
+								<option class="def" value="">select(必填)</option>
+							</select>
+						</div>
 
+					</div>
+					<!--  -->
+					<div class="col-md-12 p-0 m-0 row">
+						<div class="col-md-3 p-1 m-0" id="rr_v">
+							<div class="col p-0">版本 :</div>
+							<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="料件/產品/主板 版本">
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rd_rc_code">
+							<div class="col p-0">處理代碼(轉) :</div>
+							<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="尚未支援功能">
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rd_check">
+							<div class="col p-0">處理問題(轉) :</div>
+							<select class="col p-1 rounded detail_ri">
+								<option class="def" value="">select(必填)</option>
+							</select>
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rd_ru_id">
+							<div class="col p-0">處理單位(轉) :</div>
+							<select class="col p-1 rounded detail_ri">
+								<option class="def" value="">select(必填)</option>
+							</select>
+						</div>
+					</div>
+					<!--  -->
 					<div class="col-md-12 p-1 m-0" id="sys_note">
 						<div class="col p-0">紀錄備註 :</div>
-						<textarea class="col rounded p-1" rows="4" cols="" placeholder="領/退料單/一些資訊(選填)"></textarea>
+						<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="領/退料單/一些資訊(選填)">
 					</div>
 					<div class="col-md-12 p-1 m-0" id="rd_svg">
-						<div class="col-md-12 p-0 detail_example_img">
-							<div class="h6 mb-1 detail_name">紀錄圖片 :</div>
-							<div class="p-0 m-0 row">
-								<div class="col-2 rounded p-0 detail_imgs">
+						<div class="col-md-12 p-0">
+							<div class="">紀錄圖片 :</div>
+							<div id="c_imgs_list" class="p-0 m-0 row ">
+								<div class="col-2 p-1 rounded p-0 c_detail_imgs">
 									<p class="save_ms_5pic d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">最多五張圖</p>
 									<p class="save_ms_atta d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">副檔名錯誤</p>
 									<p class="save_ms_bigger d-none m-0 pl-1 small text-danger" style="bottom: 0px; z-index: 6; position: absolute;">檔案太大</p>
 									<p class="save_ms_put m-0 pl-1 small text-success" style="bottom: 0px; z-index: 6; position: absolute;">
 										請放入圖片<br>(限制:2M/5Pic)
 									</p>
-									<input value="" class="col form-control p-1 chose_imgs" type="file" id="" accept=".png" style="height: 100%;" multiple>
+									<input value="" class="col form-control p-1 c_chose_imgs" type="file" id="" accept=".png" style="height: 100%;" multiple>
 								</div>
-								<div class="col-2">
-									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+								<div class="col-2 p-1 pr-2 pl-2">
+									<img class="col rounded p-0 pb-1 c_img_listen" alt="" src="./img/imgFrame.png">
 									<!--  -->
-									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded d-none c_file_name" name="" value="檔案名稱?" type="text" disabled="disabled">
 								</div>
-								<div class="col-2">
-									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+								<div class="col-2 p-1 pr-2 pl-2">
+									<img class="col rounded p-0 pb-1 c_img_listen" alt="" src="./img/imgFrame.png">
 									<!--  -->
-									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded d-none c_file_name" name="" value="檔案名稱?" type="text" disabled="disabled">
 								</div>
-								<div class="col-2">
-									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+								<div class="col-2 p-1 pr-2 pl-2">
+									<img class="col rounded p-0 pb-1 c_img_listen" alt="" src="./img/imgFrame.png">
 									<!--  -->
-									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded d-none c_file_name" name="" value="檔案名稱?" type="text" disabled="disabled">
 								</div>
-								<div class="col-2">
-									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+								<div class="col-2 p-1 pr-2 pl-2">
+									<img class="col rounded p-0 pb-1 c_img_listen" alt="" src="./img/imgFrame.png">
 									<!--  -->
-									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded d-none c_file_name" name="" value="檔案名稱?" type="text" disabled="disabled">
 								</div>
-								<div class="col-2">
-									<img class="col rounded p-0 pb-1 img_listen" alt="" src="./img/imgFrame.png">
+								<div class="col-2 p-1 pr-2 pl-2">
+									<img class="col rounded p-0 pb-1 c_img_listen" alt="" src="./img/imgFrame.png">
 									<!--  -->
-									<input class="col p-0 pr-1 pl-1 border border-dark rounded" name="" value="檔案名稱?" type="text" disabled="disabled">
+									<input class="col p-0 pr-1 pl-1 border border-dark rounded d-none c_file_name" name="" value="檔案名稱?" type="text" disabled="disabled">
 								</div>
 								<!-- value:格式:[檔案名稱+'_'+檔案base64,檔案名稱+'_'+檔案base64,] -->
-								<input alt="img" class="d-none save_value" disabled="disabled" value="[]">
+								<input alt="img" class="d-none c_save_value" disabled="disabled" value="[]">
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6 row m-0 p-2 text-left">
-					<div class="col-md-12 m-0 p-1" id="rd_statement">
+				<div class="col-md-6 m-0 p-2 text-left">
+					<div class="col-md-12 m-0 p-1" id="rd_statement" style="height: 135px">
 						<div class="col p-0">問題敘述 :</div>
-						<textarea class="col rounded p-1" rows="4" cols="" placeholder="問題敘述(必填)" disabled="disabled" style="height: 95px;"></textarea>
+						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="問題敘述(必填)" disabled="disabled"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_true">
+					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 135px">
 						<div class="col p-0">故障原因 :</div>
-						<textarea class="col rounded p-1" rows="4" cols="" placeholder="故障原因(必填)"></textarea>
+						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="故障原因(必填)"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_experience">
+					<div class="col-md-12 m-0 p-1" id="rd_experience" style="height: 135px">
 						<div class="col p-0">維修心得 :</div>
-						<textarea class="col rounded p-1" rows="4" cols="" placeholder="維修心得(選填)"></textarea>
+						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="維修心得(選填)"></textarea>
+					</div>
+					<div class="col-md-12 m-0 p-1" id="">
+						<div class="col p-0"></div>
 					</div>
 				</div>
 				<div id="fi_btn" class="col p-1 row m-0 justify-content-end">
@@ -151,43 +164,47 @@ select {
 	<!-- 產品資訊 -->
 	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
-			<div class="col p-0 pt-1">
+			<div class="col p-0 pt-1 pb-1">
 				<i class="bi bi-filter-square mr-1"></i>Project Content
 			</div>
 		</div>
-		<div class="row p-0 m-0">
+		<div id="project_content" class="row p-0 m-0">
 			<div class="col-md-12 row m-0 p-2 text-left">
-				<div class="col-md-6 m-0 p-1" id="rd_statement">
+				<div class="col-md-4 m-0 p-1" id="pr_b_item">
 					<div class="col p-0">產品規格 :</div>
-					<textarea class="col rounded p-1 pr_b_item" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
+					<textarea class="col rounded p-1 detail_ri" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-6 m-0 p-1" id="rd_true">
+				<div class="col-md-4 m-0 p-1" id="pr_s_item">
 					<div class="col p-0">軟體定義 :</div>
-					<textarea class="col rounded p-1 pr_s_item" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
+					<textarea class="col rounded p-1 detail_ri" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+				<div class="col-md-4 m-0 p-1" id="pb_i_item">
+					<div class="col p-0">零件內容 :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- 查詢結果 生產量 -->
+	<!-- 產品/配件 而外登記 -->
 	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-4 p-0 pt-1">
+			<div class="col-6 p-0 pt-1 pb-1">
 				<i class="bi bi-list-ul mr-1"></i>Part Repair
 			</div>
-			<div class="col-8 p-0">
-				<div class="row p-0 m-0 justify-content-end">
-					<div class="col-md-2 pt-1">Action:</div>
-					<div class="col-md-2 p-1">
-						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
-					</div>
-					<div class="col-md-2 p-1">
-						<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
-					</div>
+
+			<div class=" col-6  row p-0 m-0 justify-content-end">
+				<div class="col-md-2 pt-1">Action:</div>
+				<div class="col-md-2 p-1 m-0">
+					<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
+				</div>
+				<div class="col-md-2 p-1 m-0">
+					<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
+
 		</div>
-		<div class="p-2">
+		<div id="part_repair" class="p-2">
 			<table id="rd_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
 					<tr class="">
@@ -391,30 +408,43 @@ customized = new Vue({
 		setDataList(list, list_son, body_type) {
 			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
 			console.log(list);
-			var customer = list['customized_customer'];//客戶資料
-			var documents = list['customized_orders'];//維修單據資料
-			var customized = list['customized'];//維修單內容
+			var documents = list['customized_detail'];//維修單據資料 
 			
-			//注入 客戶
-			$('#c_c_name input').val(customer['c_c_name']);
-			$('#c_name input').val(customer['c_name']);
-			$('#c_address textarea').val(customer['c_address']);
-			$('#c_tex input').val(customer['c_tex']);
-			$('#c_fax input').val(customer['c_fax']);
 			//注入 單據資料
-			$('#ro_check select').val(documents['ro_check']);
-			$('#ro_id input').val(documents['ro_id']);
-			//Excel 客戶
-			$('#excel_c_n').text(customer['c_c_name']);
-			$('#excel_c').text(customer['c_name']);
-			$('#excel_a').text(customer['c_address']);
-			$('#excel_t').text(customer['c_tex']);
-			$('#excel_f').text(customer['c_fax']);
-			//Excel 維修單
-			$('#excel_ro_id').text(documents['ro_id']);
-			$('#excel_sbt').text($('#ro_address textarea').val());
+			$('#rd_ru_id select').val(documents['rd_ru_id']);
+			$('#rd_id input').val(documents['rd_id']);
+			$('#rr_sn input').val(documents['rr_sn']);
+			$('#rr_pb_type select').val(documents['rr_pb_type']);
+			$('#rr_pr_p_model input').val(documents['rr_pr_p_model']);
+			$('#rr_v input').val(documents['rr_v']);
+			$('#rr_f_ok select').val(documents['rr_f_ok']);
+			$('#rd_statement textarea').val(documents['rd_statement']);
+			$('#rd_true textarea').val(documents['rd_true']);
+			$('#rd_experience textarea').val(documents['rd_experience']);
+			$('#pr_b_item textarea').val(documents['pr_b_item']);
+			$('#pr_s_item textarea').val(documents['pr_s_item']);
+			$('#pb_i_item textarea').val(documents['pb_i_item']);
 			
+			$('#rd_svg .c_save_value').val(documents['rd_svg']);
+			//僅限於Img
+			 if (documents['rd_svg']!=null){
+				 var imgs = $("#customized #rd_svg #c_imgs_list")[0];//圖片位置
+				 console.log("img:");
+				 var key_value = JSON.parse(documents['rd_svg']);
+				 for(var j=0;j<key_value.length;j++){
+					 var fileName = key_value[j]['fileName'];
+					 var fileData = key_value[j]['fileData'];
+					 $(imgs.children[(j+1)]).find('input').val(fileName);
+					 $(imgs.children[(j+1)]).find('img').attr('src',fileData);
+					 console.log(fileName);
+				 }
+			 }
 			
+			//如果有資料(上鎖)
+			if(documents['rd_id']!=null){
+				$('#rd_id input').attr("disabled","disabled");
+				$('#rr_sn input').attr("disabled","disabled");
+			}
 			//清除舊資料
 			$(".detail_list").remove();
 			//問題清單
@@ -526,78 +556,48 @@ customized = new Vue({
 				//......可以同上項目代碼自定義設置
 			});
 		},
+		//圖片處理
+		file_reader_img(file,imgs){
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function (e) {
+				//顯示圖片位置
+    			imgs[file.key].children[0].src = reader.result;
+    			imgs[file.key].children[1].value = file.new_name;
+    			//存入參數
+    			var s =  JSON.parse(imgs[6].value);
+    			var fileContent ={};
+    			fileContent.fileName = file.new_name;
+    			fileContent.fileData = reader.result;
+    			s.push(fileContent);
+    			imgs[6].value =JSON.stringify(s);
+    			//console.log(imgs[6].value);
+			};
+			reader.onerror = function (error) {
+				console.log('Error: ', error);
+			};
+		},
 		//初始化
 		selectAllInit() {
 			//查詢客戶 & 維修單
-			$(document).on("click", "#search_rd_btn", function (event) {
+			$(document).on("click", "#search_fi_btn", function (event) {
+				//傳送
 				var search = {};
-				search.c_c_name = 	$('#c_c_name input').val();
-				search.c_name = 	$('#c_name input').val();
-				search.c_address = 	$('#c_address textarea').val();
-				search.c_tex = 		$('#c_tex input').val();
-				search.c_fax = 		$('#c_fax input').val();
-				search.ro_id = 		$('#ro_id input').val();
+				search.rd_id = 	$('#rd_id input').val();
+				search.rr_sn = 	$('#rr_sn input').val();
 				customized.searchSend(search);
-				
-			});
-			$(document).on("click", "#rd_export_btn", function (event) {
-				console.log("rd_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#rd_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Repair_Report_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
 			});
 			
-			//清除客戶資料
+			//清除 維修資訊
 			$(document).on("click", "#clear_fi_btn", function (event) {
-				$('#c_c_name input').val("");
-				$('#c_name input').val("");
-				$('#c_address textarea').val("");
-				$('#c_tex input').val("");
-				$('#c_fax input').val("");
-			});
-			//清除維修單
-			$(document).on("click", "#clear_rd_btn", function (event) {
-				$('#ro_id input').val("");
-				$('#rd_ru_id select').val("");
-				$('#ro_check select').val("");
+				$('.detail_ri').val("");
+				$('#rd_id input').removeAttr("disabled","");
+				$('#rr_sn input').removeAttr("disabled","");
+				$('#rd_svg div img').attr('src','./img/imgFrame.png');
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
-				$('.detail_list').remove();
-			});
-			//預設分配單位
-			$(document).on("click", "#rd_designat_all_btn", function (event) {
-				var rd_ru_id =  $("#rd_ru_id select").val();
-				$(".detail_list .rd_ru_id select").val(rd_ru_id).change();
-			});
-			//預設 處理狀態
-			$(document).on("click", "#rd_check_all_btn", function (event) {
-				var rd_check =  $("#rd_check_only select").val();
-				//只有0 1 跟未選 可修改
-				$(".detail_list .rd_check select").each(function() {
-					if($(this).val()==null ||$(this).val()==0||$(this).val()==1){
-						if($(this).val()==1 &&(rd_check==0 || rd_check==null)){
-							console.log("不可倒退");
-						}else{
-							$(this).val(rd_check).change();							
-						}
-					}
-				});
+				$('.detail_list').remove("");
 			});
 			//存資料(可能:新增 可能修改)
 			$(document).on("click","#rd_save_btn", function (event) {
@@ -606,9 +606,67 @@ customized = new Vue({
 			//快速查詢 監聽確認
 			$(document).on("keypress", "#customized .search_true input", function (event) {
 				if (event.which == 13) {
-					$('#search_rd_btn').trigger('click');
+					$('#search_fi_btn').trigger('click');
 				}
 			});
+			//點擊圖片(預覽)
+			 $(document).on("click", ".c_img_listen", function (event) {
+        		 var image = new Image();
+        	     image.src = event.target.src;
+        		 var w = window.open("");
+        	     w.document.write(image.outerHTML);
+        	     w.document.close();
+        	 });
+        	 //圖片上傳資料
+        	 $(document).on("change", ".c_chose_imgs", function (event) {
+        		 console.log();
+        		 //console.log(event);
+        		 //console.log(event.currentTarget.files);
+        		 var imgs =  $(this).parent().parent()[0].children;
+        		 var imgs_def = $(this).parent().parent()[0];
+        		 var imgs_ms = $(this).parent().parent()[0].children[0];
+
+        		 var files = event.currentTarget.files;
+        		 var file_size = 2000000;//限制2000000 = 2M
+        		 var file_nb = 5;//限制 數量 5張圖
+        		 $(imgs_ms).find('p').addClass("d-none");
+        		 $(imgs_ms).find('.save_ms_put').removeClass("d-none");
+        		 $(imgs_def).find('div img').attr('src','./img/imgFrame.png');
+        		 $(imgs_def).find('div .c_file_name').val('檔案名稱?');
+        		 imgs[6].value='[]';//預設內容
+        		 //檢查機制
+        		 if(files.length <= file_nb){
+        			 for(var i=0;i<files.length;i++){
+        				 var file_one = files[i];
+        				 if(file_one.size > file_size){
+        					 console.log('檔案太大');   
+        					 $(imgs_ms).find('p').addClass("d-none");
+        					 $(imgs_ms).find('.save_ms_bigger').removeClass("d-none");
+        					 event.target.value = null;
+        					 return false;
+        				 }
+        				 if(file_one.type!="image/png"){
+        					 console.log('副檔錯誤');    
+        					 $(imgs_ms).find('p').addClass("d-none");
+        					 $(imgs_ms).find('.save_ms_atta').removeClass("d-none");
+        					 event.target.value = null;
+        					 return false;
+        				 }
+        			 }
+        		 }else{
+        			 console.log('檔案太多');  
+        			 $(imgs_ms).find('p').addClass("d-none");
+					 $(imgs_ms).find('.save_ms_5pic').removeClass("d-none");
+        			 event.target.value = null;
+        			 return false;
+        		 }
+        		 //解析檔案->顯示
+        		 for(var i=0;i<files.length;i++){
+        			 files[i].key = (i+1);
+        			 files[i].new_name = 'MESimg'+(i+1)+'.png';
+        			 customized.file_reader_img(files[i],imgs);
+        		 }
+        	});
 			//新增監聽
 			$(document).on("click",".rd_list_add", function (event) {
 				console.log("rd_list_add "+$(event.target).attr('title'));
@@ -684,19 +742,38 @@ customized = new Vue({
 				console.log("rd_list_del "+$(event.target).attr('title'));
 				$("#"+$(event.target).attr('title')).remove();
 			});
+			//產品資訊 關閉/開啟
+			$(document).on("click", ".bi-filter-square", function (event) {
+				console.log("bi .bi-filter-square");
+				$("#project_content").slideToggle("fast");
+			});
+			//產品資訊 關閉/開啟
+			$(document).on("click", ".bi-list-ul", function (event) {
+				console.log("bi .bi-list-ul");
+				$("#part_repair").slideToggle("fast");
+			});
 		},
 		//存檔
 		sendSave() {
 			console.log("sendSave");
-			var modify_order = {};
-			modify_order.c_c_name = 	$('#c_c_name input').val();
-			modify_order.c_name = 		$('#c_name input').val();
-			modify_order.c_address = 	$('#c_address textarea').val();
-			modify_order.c_tex = 		$('#c_tex input').val();
-			modify_order.c_fax = 		$('#c_fax input').val();
-			modify_order.ro_id = 		$('#ro_id input').val();
-			modify_order.ro_check = 	$('#ro_check select').val();
-			
+			var modify_repair = {};
+
+			modify_repair['rd_ru_id'] =$('#rd_ru_id select').val();
+			modify_repair['rd_id'] =$('#rd_id input').val();
+			modify_repair['rr_sn'] =$('#rr_sn input').val();
+			modify_repair['rr_pb_type'] =$('#rr_pb_type select').val();
+			modify_repair['rr_pr_p_model'] =$('#rr_pr_p_model input').val();
+			modify_repair['rr_v'] =$('#rr_v input').val();
+			modify_repair['rr_f_ok'] =$('#rr_f_ok select').val();
+			modify_repair['rd_statement'] =$('#rd_statement textarea').val();
+			modify_repair['rd_true'] =$('#rd_true textarea').val();
+			modify_repair['rd_experience'] =$('#rd_experience textarea').val();
+			modify_repair['pr_b_item'] =$('#pr_b_item textarea').val();
+			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val();
+			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); 
+			modify_repair['rd_svg'] =$('#rd_svg .c_save_value').val();
+			modify_repair['rd_check'] =$('#rd_check .select').val();
+
 			var modify_detail=[];
 			////////////
 			for(var c = 0 ;c<$('.detail_list').length;c++){
@@ -709,8 +786,8 @@ customized = new Vue({
 				}
 				modify_detail.push(modify_one);
 			}
+			this.modify_datas['repair'] = modify_repair;
 			this.modify_datas['detail'] = modify_detail;
-			this.modify_datas['order'] = modify_order;
 			console.log(this.modify_datas);
 			
 			var action = "S2";
@@ -780,14 +857,11 @@ customized = new Vue({
 			//可能是新建立
 			if(main.allData.call_bk_vals.search){
 				console.log(main.allData.call_bk_vals);
-				$('#ro_id input').val(main.allData.call_bk_vals.ro_id);
+				$('#rd_id input').val(main.allData.call_bk_vals.rd_id);
+				$('#rr_sn input').val(main.allData.call_bk_vals.rr_sn);
 				var search = {};
-				search.c_c_name = 	$('#c_c_name input').val();
-				search.c_name = 	$('#c_name input').val();
-				search.c_address = 	$('#c_address textarea').val();
-				search.c_tex = 		$('#c_tex input').val();
-				search.c_fax = 		$('#c_fax input').val();
-				search.ro_id = 		$('#ro_id input').val();
+				search.rd_id = 	$('#rd_id input').val();
+				search.rr_sn = 	$('#rr_sn input').val();
 				customized.searchSend(search);
 			}
 		},
@@ -795,24 +869,20 @@ customized = new Vue({
 	//移除監聽事件
 	beforeDestroy() {
 		console.log("repair_list.html(beforeDestroy)");
-		$(document).off("click", "#export_btn");
-		$(document).off("click", "#rd_export_btn");
-		$(document).off("click", "#dwh_export_btn");
-		$(document).off("click", "#dnoe_export_btn");
-		
-		$(document).off("click", "#search_rd_btn");
-		$(document).off("click", "#clear_rd_btn");
+		$(document).off("click", "#search_fi_btn");
 		$(document).off("click", "#clear_fi_btn");
-		$(document).off("click", "#rd_clear_btn");
 		
+		$(document).off("click", "#rd_clear_btn");
 		$(document).off("click", "#rd_save_btn");
-		$(document).off("click", "#rd_designat_all_btn");
-		$(document).off("click", "#rd_check_all_btn");
 		
 		$(document).off("click", ".rd_list_add");
 		$(document).off("click", ".rd_list_copy");
 		$(document).off("click", ".rd_list_del");
-
+		$(document).off("click", ".c_img_listen");
+		$(document).off("click", ".bi-filter-square");
+		$(document).off("click", ".bi-list-ul");
+		
+		
 		$(document).off("keypress", "#customized .search_true input");
 	},
 });

@@ -43,9 +43,16 @@ public class Fm_Time {
 	}
 
 	/** 計算:相差多少 小時 **/
-	public static long to_diff(Date dt1, Date dt2) {
+	public static long to_hiff(Date dt1, Date dt2) {
 		long diff = dt1.getTime() - dt2.getTime();
 		TimeUnit time = TimeUnit.HOURS;
+		long diffrence = time.convert(diff, TimeUnit.MILLISECONDS);
+		return diffrence;
+	}
+	/** 計算:相差多少 日 **/
+	public static long to_diff(Date dt1, Date dt2) {
+		long diff = dt1.getTime() - dt2.getTime();
+		TimeUnit time = TimeUnit.DAYS;
 		long diffrence = time.convert(diff, TimeUnit.MILLISECONDS);
 		return diffrence;
 	}

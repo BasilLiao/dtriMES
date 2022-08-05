@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
+import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
 import dtri.com.tw.db.entity.SystemUser;
+import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
 import dtri.com.tw.tools.Fm_Time;
@@ -26,6 +28,8 @@ public class ProductionRecordsService {
 	private ProductionRecordsDao recordsDao;
 	@Autowired
 	private ProductionHeaderDao headerDao;
+	@Autowired
+	private ProductionBodyDao dBodyDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean resp, PackageBean req, SystemUser user) {
@@ -69,11 +73,12 @@ public class ProductionRecordsService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_e_sn", FFS.h_t("PR_產品SN_結束", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_b_sn", FFS.h_t("PR_燒錄SN_開始", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_e_b_sn", FFS.h_t("PR_燒錄SN_結束", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_w_years", FFS.h_t("PR_保固年", "150px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("PR_建立時間", "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("PR_建立人", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("PR_建立人", "110px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t("PR_修改時間", "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t("PR_修改人", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t("PR_修改人", "110px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t("PR_備註", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t("PR_排序", "100px", FFM.Wri.W_Y));
@@ -120,6 +125,8 @@ public class ProductionRecordsService {
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "pr_wc_line", "產線"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "pr_w_years", "保固年"));
+
 			resp.setCell_modify(obj_m);
 
 			// 放入包裝(search)
@@ -177,6 +184,7 @@ public class ProductionRecordsService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_e_sn", one.getPresn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_b_sn", one.getPrsbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_e_b_sn", one.getPrebsn());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_w_years", one.getPrwyears());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -227,9 +235,9 @@ public class ProductionRecordsService {
 				entity.setPrpquantity(data.getInt("pr_p_quantity"));
 				entity.setPrbitem(data.getString("pr_b_item"));
 				entity.setPrsitem(data.getString("pr_s_item"));
+				entity.setPrwyears(data.getInt("pr_w_years"));
 				entity.setSysmuser(user.getSuaccount());
 				entity.setSyscuser(user.getSuaccount());
-
 			}
 			check = true;
 		} catch (Exception e) {
@@ -262,6 +270,7 @@ public class ProductionRecordsService {
 				entity.setPrpquantity(data.getInt("pr_p_quantity"));
 				entity.setPrbitem(data.getString("pr_b_item"));
 				entity.setPrsitem(data.getString("pr_s_item"));
+				entity.setPrwyears(data.getInt("pr_w_years"));
 				entity.setSysmuser(user.getSuaccount());
 				entity.setSyscuser(user.getSuaccount());
 
@@ -309,7 +318,6 @@ public class ProductionRecordsService {
 					entity.setPrbomcid(data.getString("pr_bom_c_id"));
 					entity.setSysmdate(new Date());
 					entity.setSysmuser(user.getSuaccount());
-
 					recordsDao.save(entity);
 				} else {
 					return false;

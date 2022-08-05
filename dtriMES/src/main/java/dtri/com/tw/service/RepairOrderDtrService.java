@@ -97,7 +97,7 @@ public class RepairOrderDtrService {
 				rd_rr_sn = "品件序號", rd_u_qty = "品件數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
 				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
-				rd_svg = "圖片", rd_finally = "修復結果", rd_u_finally = "修復員";
+				rd_svg = "圖片", rd_finally = "修復結果?", rd_u_finally = "修復員";
 		// 維修登記(物件)
 		String /* rr_sn = "品件序號", */ rr_c_sn = "客戶品件(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
@@ -213,7 +213,7 @@ public class RepairOrderDtrService {
 
 			// 單據細節
 			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, null, null, true, null);
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
 			}
@@ -221,13 +221,13 @@ public class RepairOrderDtrService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, s_val, "rd_ru_id", rd_ru_id));
 			// 第二行
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "修復中").put("key", false));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", true));
+			s_val.put((new JSONObject()).put("value", "未完成").put("key", false));
+			s_val.put((new JSONObject()).put("value", "已完成").put("key", true));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "false", "false", FFM.Wri.W_N, "col-md-1", true, s_val, "rd_finally", rd_finally));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rd_u_finally", rd_u_finally));
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "修復品").put("key", true));
-			s_val.put((new JSONObject()).put("value", "故障品").put("key", false));
+			s_val.put((new JSONObject()).put("value", "修復中").put("key", true));
+			s_val.put((new JSONObject()).put("value", "已修復").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "false", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_f_ok", rr_f_ok));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_pr_p_qty", rr_pr_p_qty));
@@ -442,6 +442,7 @@ public class RepairOrderDtrService {
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", x_son.getRdsvg());
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", x_son.getRegister().getRrprid());
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", x_son.getRegister().getRrprpqty());
+				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", x_son.getRegister().getRrfok());
 
 				object_bodys_son.getJSONArray(x_son.getOrder().getRoid() + "").put(object_son);
 			});
@@ -564,7 +565,7 @@ public class RepairOrderDtrService {
 					register.setSyscuser(obj.getSyscuser());
 					registerDao.save(register);
 					// 維修單細節
-					String rd_id = "D" + String.format("%03d", rd_id_nb++);
+					String rd_id = "D" + String.format("%04d", rd_id_nb++);
 					obj_b.setRdid(ro_id + '-' + rd_id);
 					obj_b.setRdstatement(data.getString("rd_statement"));
 					obj_b.setRdruid(rd_ru_id == 0L ? data.getLong("rd_ru_id") : rd_ru_id);
@@ -573,7 +574,7 @@ public class RepairOrderDtrService {
 					obj_b.setRdexperience("");
 					obj_b.setRdsvg(data.getString("rd_svg"));
 					obj_b.setRdcheck(data.getInt("rd_check"));
-					obj_b.setRdfinally("");
+					obj_b.setRdfinally(false);
 					obj_b.setRdufinally("");
 					obj_b.setOrder(obj_h);
 
@@ -705,7 +706,7 @@ public class RepairOrderDtrService {
 					register.setSyscuser(obj.getSyscuser());
 					registerDao.save(register);
 					// 維修單細節
-					String rd_id = "D" + String.format("%03d", rd_id_nb++);
+					String rd_id = "D" + String.format("%04d", rd_id_nb++);
 					obj_b.setRdid(ro_id + '-' + rd_id);
 					obj_b.setRdstatement(data.getString("rd_statement"));
 					obj_b.setRdruid(rd_ru_id == 0L ? data.getLong("rd_ru_id") : rd_ru_id);
@@ -713,7 +714,7 @@ public class RepairOrderDtrService {
 					obj_b.setRdtrue("");
 					obj_b.setRdexperience("");
 					obj_b.setRdsvg(data.getString("rd_svg"));
-					obj_b.setRdfinally("");
+					obj_b.setRdfinally(false);
 					obj_b.setRdufinally("");
 					obj_b.setOrder(obj_h);
 
@@ -854,7 +855,7 @@ public class RepairOrderDtrService {
 						obj_b.setRdtrue("");
 						obj_b.setRdexperience("");
 						obj_b.setRdsvg(data.getString("rd_svg"));
-						obj_b.setRdfinally("");
+						obj_b.setRdfinally(data.getBoolean("rd_finally"));
 						obj_b.setRdufinally("");
 						obj_b.setOrder(obj_h);
 					}
@@ -1073,7 +1074,7 @@ public class RepairOrderDtrService {
 							register.setRrpbsysmdate(Fm_Time.toDateTime(new_deatil.getString("rr_pb_sys_m_date")));
 							register.setRrpbtype(new_deatil.getString("rr_pb_type"));
 							register.setRrv(new_deatil.getString("rr_v"));
-							register.setRrfok(true);
+							register.setRrfok(false);
 							register.setSysnote("");
 							register.setSysstatus(0);
 							register.setSyscdate(mO_one.getSyscdate());
@@ -1083,12 +1084,12 @@ public class RepairOrderDtrService {
 							registerDao.save(register);
 
 							RepairDetail add_detail = new RepairDetail();
-							String rd_id = "D" + String.format("%03d", rd_id_nb++);
+							String rd_id = "D" + String.format("%04d", rd_id_nb++);
 							// 檢查重複?->重複則->下一筆新序號
 							Boolean check_rep = true;
 							while (check_rep) {
 								if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-									rd_id = "D" + String.format("%03d", rd_id_nb++);
+									rd_id = "D" + String.format("%04d", rd_id_nb++);
 								} else {
 									check_rep = false;
 								}
@@ -1101,7 +1102,7 @@ public class RepairOrderDtrService {
 							add_detail.setRdexperience("");
 							add_detail.setRdsvg(null);
 							add_detail.setRdcheck(new_deatil.getInt("rd_check"));
-							add_detail.setRdfinally("");
+							add_detail.setRdfinally(false);
 							add_detail.setRdufinally("");
 							add_detail.setOrder(mO_one);
 							add_detail.setRegister(register);
@@ -1164,7 +1165,7 @@ public class RepairOrderDtrService {
 					register.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 					register.setRrpbtype(data.getString("rr_pb_type"));
 					register.setRrv(data.getString("rr_v"));
-					register.setRrfok(true);
+					register.setRrfok(false);
 					register.setSysnote(obj.getSysnote());
 					register.setSysstatus(obj.getSysstatus());
 					register.setSyscdate(obj.getSyscdate());
@@ -1173,7 +1174,7 @@ public class RepairOrderDtrService {
 					register.setSyscuser(obj.getSyscuser());
 					registerDao.save(register);
 					// 維修單細節
-					String rd_id = "D" + String.format("%03d", rd_id_nb++);
+					String rd_id = "D" + String.format("%04d", rd_id_nb++);
 					obj_b.setRdid(ro_id + '-' + rd_id);
 					obj_b.setRdstatement(data.getString("rd_statement"));
 					obj_b.setRdruid(data.getLong("rd_ru_id"));
@@ -1181,7 +1182,7 @@ public class RepairOrderDtrService {
 					obj_b.setRdtrue("");
 					obj_b.setRdexperience("");
 					obj_b.setRdcheck(data.getInt("rd_check"));
-					obj_b.setRdfinally("");
+					obj_b.setRdfinally(false);
 					obj_b.setRdufinally("");
 					obj_b.setOrder(obj_h);
 
@@ -1306,7 +1307,7 @@ public class RepairOrderDtrService {
 		register.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 		register.setRrpbtype(data.getString("rr_pb_type"));
 		register.setRrv(data.getString("rr_v"));
-		register.setRrfok(true);
+		register.setRrfok(false);
 		register.setSysnote(obj_h.getSysnote());
 		register.setSysstatus(obj_h.getSysstatus());
 		register.setSyscdate(obj_h.getSyscdate());
@@ -1319,10 +1320,10 @@ public class RepairOrderDtrService {
 		// 檢查重複?->重複則->下一筆新序號
 		Boolean check_rep = true;
 		int rd_id_nb = 0;
-		String rd_id = "D000";
+		String rd_id = "D0000";
 		while (check_rep) {
 			if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-				rd_id = "D" + String.format("%03d", rd_id_nb++);
+				rd_id = "D" + String.format("%04d", rd_id_nb++);
 			} else {
 				check_rep = false;
 			}
@@ -1335,7 +1336,7 @@ public class RepairOrderDtrService {
 		obj_b.setRdtrue("");
 		obj_b.setRdexperience("");
 		obj_b.setRdcheck(data.getInt("rd_check"));
-		obj_b.setRdfinally("");
+		obj_b.setRdfinally(false);
 		obj_b.setRdufinally("");
 		obj_b.setOrder(obj_h);
 
@@ -1390,7 +1391,7 @@ public class RepairOrderDtrService {
 			// 維修單-訊息
 			JSONArray s_val = new JSONArray();
 			JSONObject object_documents = new JSONObject();
-			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, null, null, true, null);
+			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				String oneUnit_one = oneUnit.getRugname();
 				s_val.put((new JSONObject()).put("value", oneUnit_one).put("key", oneUnit.getRuid()));

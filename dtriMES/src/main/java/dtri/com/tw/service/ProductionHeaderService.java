@@ -1162,109 +1162,90 @@ public class ProductionHeaderService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-
-				// 查詢重複
+				// 查詢重複-查詢資料?
 				List<ProductionHeader> headers = productionHeaderDao.findAllByPhid(data.getLong("ph_id"));
-				// 查詢資料
 				if (headers.size() != 1) {
 					return check;
 				}
 				// 查詢是否 為已啟動(不可修改)
-				if (headers.get(0).getSysstatus() != 0) {
-					// 但是 如果是 緊急停止 or 暫停 只修改狀態
-					if (headers.get(0).getSysstatus() != 0 && // 不是-> 待命中
-							(data.getInt("sys_status") == 8 || // 暫停中
-									data.getInt("sys_status") == 9 || // 已終止
-									data.getInt("sys_status") == 1 || // 生產中
-									data.getInt("sys_status") == 2)) {// 已完成
-						ProductionHeader one_header = headers.get(0);
-						ProductionRecords one_pecords = one_header.getProductionRecords();
-						one_pecords.setPrwyears(data.getInt("pr_w_years"));
-						one_pecords.setPrbomcid(data.getString("pr_bom_c_id"));
-						one_header.setProductionRecords(one_pecords);
-						// hearder
-						one_header.setSysstatus(data.getInt("sys_status"));
-						one_header.setPhtype(data.getString("ph_type"));
-						one_header.setPhpname(data.getString("ph_p_name"));
-						one_header.setPhpnumber(data.getString("ph_p_number"));
-						one_header.setSysnote(data.getString("sys_note"));
-						// 已經結束
-						if (data.getInt("sys_status") == 2) {
-							one_header.setPhedate(new Date());
-						} else if (data.getInt("sys_status") == 1) {
-							one_header.setPhedate(null);
+				ProductionHeader one_header = headers.get(0);
+				ProductionRecords one_pecords = one_header.getProductionRecords();
+				if (headers.get(0).getSysstatus() != 1 && headers.get(0).getSysstatus() != 2) {
+					// 否:生產中 & 以生產
+					// records
+					one_pecords.setPrbomcid(data.getString("pr_bom_c_id"));
+					one_pecords.setPrcname(data.getString("pr_c_name"));
+					one_pecords.setPrwyears(data.getInt("pr_w_years"));
+					one_pecords.setProrderid(data.getString("pr_order_id"));
+					one_pecords.setPrpmodel(data.getString("pr_p_model"));
+					one_pecords.setPrbomid(data.getString("pr_bom_id"));
+					one_pecords.setPrpokquantity(data.getInt("pr_p_ok_quantity"));
+					one_pecords.setPrcfrom("MES");
+					one_pecords.setSysmuser(user.getSuaccount());
+					one_pecords.setSysmdate(new Date());
+					one_header.setProductionRecords(one_pecords);
 
+					// hearder
+					one_header.setSysstatus(data.getInt("sys_status"));
+					one_header.setPhtype(data.getString("ph_type"));
+					one_header.setPhpnumber(data.getString("ph_p_number"));
+					one_header.setPhwpid(data.getLong("ph_wp_id"));
+					one_header.setPhpname(data.getString("ph_p_name"));
+					one_header.setPhschedule(data.getInt("pr_p_ok_quantity") + "／" + one_pecords.getPrpquantity());
+					one_header.setSysheader(true);
+					one_header.setSysnote(data.getString("sys_note"));
+					one_header.setSyssort(data.getInt("sys_sort"));
+					one_header.setSysver(0);
+					one_header.setSysmuser(user.getSuaccount());
+					one_header.setSysmdate(new Date());
+					// 數量不為0 不可改回/待命狀態[0]
+					if (data.getInt("sys_status") == 0) {
+						if (data.getInt("pr_p_ok_quantity") == 0) {
+							one_header.setSysstatus(data.getInt("sys_status"));
 						}
-						productionHeaderDao.save(one_header);
-						return true;
+					} else {
+						one_header.setSysstatus(data.getInt("sys_status"));
 					}
-					return check;
-				}
+					productionHeaderDao.save(one_header);
 
-				ProductionHeader one_h = headers.get(0);
-				// 工作站資訊
-				JSONObject json_work = new JSONObject();
-				ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
-				for (WorkstationProgram p_one : programs) {
-					ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
-					JSONObject json_one = new JSONObject();
-					json_one.put("name", works.get(0).getWpbname());
-					json_one.put("type", works.get(0).getWcname() + "_N");
-					json_one.put("id", works.get(0).getWid());
-					json_one.put("w_pb_cell", works.get(0).getWpbcell());
-					json_one.put("sort", p_one.getSyssort());
-					json_work.put(works.get(0).getWcname(), json_one);
-				}
-				// 更新sn 過站設定 (不更新SN)
-				JSONObject json_work_d = json_work;
-				List<ProductionBody> pb_s = productionBodyDao.findAllByPbgidOrderByPbsnAsc(one_h.getPhpbgid());
-				pb_s.forEach(s -> {
-					s.setPbschedule(json_work_d.toString());
-				});
-				productionBodyDao.saveAll(pb_s);
-
-				// 規格
-				ProductionRecords pro_r = one_h.getProductionRecords();
-				// pro_r.setPrid(data.getString("ph_pr_id"));
-				pro_r.setPrbomid(data.getString("pr_bom_id"));
-				pro_r.setPrcfrom("MES");
-				pro_r.setPrcname(data.getString("pr_c_name"));
-				pro_r.setPrwyears(data.getInt("pr_w_years"));
-				pro_r.setProrderid(data.getString("pr_order_id"));
-				pro_r.setPrpmodel(data.getString("pr_p_model"));
-				pro_r.setPrbomid(data.getString("pr_bom_id"));
-				pro_r.setPrbomcid(data.getString("pr_bom_c_id"));
-				pro_r.setPrpokquantity(data.getInt("pr_p_ok_quantity"));
-				pro_r.setSysmuser(user.getSuaccount());
-				pro_r.setSysmdate(new Date());
-
-				// header
-				one_h.setPhtype(data.getString("ph_type"));
-				one_h.setPhwpid(data.getLong("ph_wp_id"));
-				one_h.setPhpnumber(data.getString("ph_p_number"));
-				one_h.setPhpname(data.getString("ph_p_name"));
-				one_h.setProductionRecords(pro_r);
-				one_h.setPhschedule(data.getInt("pr_p_ok_quantity") + "／" + pro_r.getPrpquantity());
-				one_h.setSysheader(true);
-				one_h.setSysnote(data.getString("sys_note"));
-				one_h.setSyssort(data.getInt("sys_sort"));
-				one_h.setSysver(0);
-				// 數量不為0 不可改回/待命狀態[0]
-				if (data.getInt("sys_status") == 0) {
-					if (data.getInt("pr_p_ok_quantity") == 0) {
-						one_h.setSysstatus(data.getInt("sys_status"));
+					// 工作站資訊
+					JSONObject json_work = new JSONObject();
+					ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
+					for (WorkstationProgram p_one : programs) {
+						ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
+						JSONObject json_one = new JSONObject();
+						json_one.put("name", works.get(0).getWpbname());
+						json_one.put("type", works.get(0).getWcname() + "_N");
+						json_one.put("id", works.get(0).getWid());
+						json_one.put("w_pb_cell", works.get(0).getWpbcell());
+						json_one.put("sort", p_one.getSyssort());
+						json_work.put(works.get(0).getWcname(), json_one);
 					}
+					// 更新產品 過站設定
+					JSONObject json_work_d = json_work;
+					List<ProductionBody> pb_s = productionBodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
+					pb_s.forEach(s -> {
+						s.setPbschedule(json_work_d.toString());
+						s.setPbwyears(data.getInt("pr_w_years"));
+					});
+					productionBodyDao.saveAll(pb_s);
+					check = true;
 				} else {
-					one_h.setSysstatus(data.getInt("sys_status"));
+					// 是:生產中 & 以生產
+					// 已經結束
+					if (data.getInt("sys_status") == 2) {
+						one_header.setPhedate(new Date());
+					} else if (data.getInt("sys_status") == 1) {
+						one_header.setPhedate(null);
+					}
+					one_header.setSysstatus(data.getInt("sys_status"));
+					productionHeaderDao.save(one_header);
+					check = true;
 				}
-				one_h.setSysmuser(user.getSuaccount());
-				one_h.setSysmdate(new Date());
-				productionHeaderDao.save(one_h);
-
-				check = true;
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			check = false;
 		}
 		return check;
 	}
