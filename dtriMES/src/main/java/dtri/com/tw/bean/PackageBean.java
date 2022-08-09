@@ -60,7 +60,7 @@ public class PackageBean {
 	public static final String info_work_warning23 = "[WK023] 檢查 此(產品) 規格異常! [Warning]!!";
 
 	public static final String info_Maint_warning01 = "[MT001] 此 (維修單) 已結單/終止/暫停! [Warning]!!";
-	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 分配單位! [Warning]!!";
+	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 資料欄位! [Warning]!!";
 	public static final String info_Maint_warning03 = "[MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
 	public static final String info_Maint_warning04 = "[MT004] 您非 (維修單位) 成員, 請向 管理者 申請! [Warning]!!";
 
@@ -229,7 +229,7 @@ public class PackageBean {
 		case "MT001":// [MT000] 此 (維修單) 已結單/終止/暫停! [Warning]!!
 			this.info = info_Maint_warning01;
 			break;
-		case "MT002":// [MT002] 此 (維修單) [維修中] 不可異動! [Warning]!!";
+		case "MT002":// [MT002] 此 (維修單) [維修中] 不可異動 資料欄位! [Warning]!!";
 			this.info = info_Maint_warning02;
 			break;
 		case "MT003":// [MT003] 無此 (維修單) 請再次檢查! [Warning]!!";

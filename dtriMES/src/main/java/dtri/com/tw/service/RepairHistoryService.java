@@ -80,7 +80,7 @@ public class RepairHistoryService {
 				/* rd_rr_sn = "品件序號", */ rd_u_qty = "品件數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
 				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
-				rd_svg = "圖片", rd_finally = "修復問題?", rd_u_finally = "修復員";
+				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
 		String rr_sn = "品件(序號)", rr_c_sn = "客戶品件(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
@@ -114,7 +114,6 @@ public class RepairHistoryService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "230px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_finally", FFS.h_t(rd_finally, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_finally", FFS.h_t(rd_u_finally, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "250px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_svg", FFS.h_t(rd_svg, "150px", FFM.Wri.W_Y));
@@ -179,10 +178,6 @@ public class RepairHistoryService {
 			}
 			s_val.put((new JSONObject()).put("value", "全單位").put("key", 0));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, s_val, "rd_ru_id", rd_ru_id));
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "未完成").put("key", false));
-			s_val.put((new JSONObject()).put("value", "已解決").put("key", true));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "false", "false", FFM.Wri.W_Y, "col-md-1", true, s_val, "rd_finally", rd_finally));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rd_u_finally", rd_u_finally));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
@@ -190,7 +185,6 @@ public class RepairHistoryService {
 			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
 			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
-			s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-2", true, s_val, "rd_check", rd_check));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_statement", rd_statement));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.IMG, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_svg", rd_svg));
@@ -220,8 +214,9 @@ public class RepairHistoryService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "產品", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_pb_type", rr_pb_type));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_v", rr_v));
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "待修中").put("key", true));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", false));
+			s_val.put((new JSONObject()).put("value", "待修中").put("key", 0));
+			s_val.put((new JSONObject()).put("value", "已修復").put("key", 1));
+			s_val.put((new JSONObject()).put("value", "已報廢").put("key", 2));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "false", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_f_ok", rr_f_ok));
 
 			// 系統
@@ -246,7 +241,6 @@ public class RepairHistoryService {
 			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
 			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
-			s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
 			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "rd_check", rd_check, s_val));
 
 			// 維修品登記
@@ -328,7 +322,6 @@ public class RepairHistoryService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", rd_son.getRdid());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", rd_son.getRduqty());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd_son.getRdruid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_finally", rd_son.getRdfinally() == null ? false : rd_son.getRdfinally());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd_son.getRdufinally());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd_son.getRdstatement());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd_son.getRdsvg() == null ? "[]" : rd_son.getRdsvg());
@@ -347,7 +340,7 @@ public class RepairHistoryService {
 						rr_son.getRrpbsysmdate() == null ? "" : Fm_Time.to_y_M_d(rr_son.getRrpbsysmdate()));
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", rr_son.getRrpbtype());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", rr_son.getRrv());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", rr_son.getRrfok() == null ? true : rr_son.getRrfok());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", rr_son.getRrfok() == null ? 0 : rr_son.getRrfok());
 
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -411,7 +404,6 @@ public class RepairHistoryService {
 					rd.getOrder().setSysmuser(user.getSuaccount());
 					// 維修單項目
 					rd.setRdruid(data.getLong("rd_ru_id"));
-					rd.setRdfinally(data.getBoolean("rd_finally"));
 					rd.setRdufinally(data.getString("rd_u_finally"));
 					rd.setRdcheck(data.getInt("rd_check"));
 					rd.setRdstatement(data.getString("rd_statement"));
@@ -427,7 +419,7 @@ public class RepairHistoryService {
 					rd.getRegister().setRrprwyears(data.getInt("rr_pr_w_years"));
 					rd.getRegister().setRrpbtype(data.getString("rr_pb_type"));
 					rd.getRegister().setRrv(data.getString("rr_v"));
-					rd.getRegister().setRrfok(data.getBoolean("rr_f_ok"));
+					rd.getRegister().setRrfok(data.getInt("rr_f_ok"));
 					rd.getRegister().setSysmdate(new Date());
 					rd.getRegister().setSysmuser(user.getSuaccount());
 					detailDao.save(rd);

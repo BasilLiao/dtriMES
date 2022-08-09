@@ -65,7 +65,7 @@
 				</div>
 				<div id="c_address" class="col row m-0 mt-1">
 					<div class="col-3">Address :</div>
-					<textarea class="col-9" rows="3" cols="" placeholder="客戶地址"></textarea>
+					<textarea class="col-9" rows="4" cols="" placeholder="客戶地址"></textarea>
 				</div>
 				<div id="c_tex" class="col row m-0 mt-1 search_true">
 					<div class="col-3">Tex :</div>
@@ -97,7 +97,7 @@
 				</div>
 				<div id="ro_check" class="col row m-0 mt-1">
 					<div class="col-md-3">Case closed? :</div>
-					<select class="col-md-9" required="required">
+					<select class="col-md-9" required="required" style="border-width: 2px; height: 100%;">
 						<option value="" class="def">請選擇</option>
 					</select>
 				</div>
@@ -147,7 +147,7 @@
 						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
 					</div>
 					<div class="col-md-2 p-1">
-						<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
+						<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">All Clear</button>
 					</div>
 				</div>
 			</div>
@@ -573,7 +573,18 @@ customized = new Vue({
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
+				//單據項目
 				$('.detail_list').remove();
+				//單據資料
+				$('#ro_id input').val("");
+				$('#rd_ru_id select').val("");
+				$('#ro_check select').val("");
+				//客戶資料
+				$('#c_c_name input').val("");
+				$('#c_name input').val("");
+				$('#c_address textarea').val("");
+				$('#c_tex input').val("");
+				$('#c_fax input').val("");
 			});
 			//預設分配單位
 			$(document).on("click", "#rd_designat_all_btn", function (event) {

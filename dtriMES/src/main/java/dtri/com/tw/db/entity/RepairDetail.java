@@ -101,14 +101,11 @@ public class RepairDetail {
 	@Column(name = "rd_svg", columnDefinition = "text default ''")
 	private String rdsvg;
 
-	@Column(name = "mdcheck", columnDefinition = "int default 0")
+	@Column(name = "rd_check", columnDefinition = "int default 0")
 	private Integer rdcheck;
 
 	@Column(name = "rd_u_finally", columnDefinition = "varchar(30)")
 	private String rdufinally;
-
-	@Column(name = "rd_finally", columnDefinition = "default false")
-	private Boolean rdfinally;
 
 	@Column(name = "rd_u_qty")
 	private Integer rduqty;
@@ -258,14 +255,6 @@ public class RepairDetail {
 
 	public void setRdufinally(String rdufinally) {
 		this.rdufinally = rdufinally;
-	}
-
-	public Boolean getRdfinally() {
-		return rdfinally;
-	}
-
-	public void setRdfinally(Boolean rdfinally) {
-		this.rdfinally = rdfinally;
 	}
 
 	public Integer getRduqty() {

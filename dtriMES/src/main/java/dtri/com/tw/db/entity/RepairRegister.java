@@ -26,7 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rr_pb_type : 產品類型<br>
  *      rr_expired : 產品過保?<br>
  *      rr_v : 產品/主板/小板 版本<br>
- *      rr_f_ok 修好?false = 壞了/true = 正在處理<br>
+ *      rr_f_ok 修好?1 = 待修中/2 = 以處已/3 = 已報廢<br>
  */
 @Entity
 @Table(name = "repair_register")
@@ -104,8 +104,8 @@ public class RepairRegister {
 	@Column(name = "rr_v", columnDefinition = "varchar(50)")
 	private String rrv;
 
-	@Column(name = "rr_f_ok", nullable = false, columnDefinition = "boolean default false")
-	private Boolean rrfok;
+	@Column(name = "rr_f_ok", nullable = false, columnDefinition = "int default 0")
+	private Integer rrfok;
 
 	@OneToMany(mappedBy = "register", cascade = { CascadeType.ALL })
 	private List<RepairDetail> details;
@@ -190,11 +190,11 @@ public class RepairRegister {
 		this.rrv = rrv;
 	}
 
-	public Boolean getRrfok() {
+	public Integer getRrfok() {
 		return rrfok;
 	}
 
-	public void setRrfok(Boolean rrfok) {
+	public void setRrfok(Integer rrfok) {
 		this.rrfok = rrfok;
 	}
 

@@ -1204,7 +1204,9 @@ public class ProductionHeaderService {
 							one_header.setSysstatus(data.getInt("sys_status"));
 						}
 					} else {
+						one_header.setPhpnumber(data.getString("ph_p_number"));
 						one_header.setSysstatus(data.getInt("sys_status"));
+						one_header.setSysnote(data.getString("sys_note"));
 					}
 					productionHeaderDao.save(one_header);
 

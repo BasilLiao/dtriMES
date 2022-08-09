@@ -25,7 +25,7 @@ select {
 <div id="customized">
 	<!-- 維修處理 -->
 	<div class="shadow m-0 row">
-		<div class="col-12 p-0 border border-secondary rounded-top">
+		<div class="col-12 p-0 rounded-top">
 			<div class="text-left bg-white rounded-top m-0 pl-1 h4">
 				<div class="col p-0 pt-1 pb-1">
 					<i class="bi bi-tools mr-1"></i>Repair Information
@@ -71,15 +71,15 @@ select {
 							<div class="col p-0">處理代碼(轉) :</div>
 							<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="尚未支援功能">
 						</div>
-						<div class="col-md-3 p-1 m-0" id="rd_check">
-							<div class="col p-0">處理問題(轉) :</div>
+						<div class="col-md-3 p-1 m-0" id="rd_ru_id">
+							<div class="col p-0">處理單位(轉) :</div>
 							<select class="col p-1 rounded detail_ri">
 								<option class="def" value="">select(必填)</option>
 							</select>
 						</div>
-						<div class="col-md-3 p-1 m-0" id="rd_ru_id">
-							<div class="col p-0">處理單位(轉) :</div>
-							<select class="col p-1 rounded detail_ri">
+						<div class="col-md-3 p-1 m-0" id="rd_check">
+							<div class="col p-0">處理問題(轉) :</div>
+							<select class="col p-1 rounded border-1 border-success detail_ri">
 								<option class="def" value="">select(必填)</option>
 							</select>
 						</div>
@@ -140,7 +140,7 @@ select {
 					</div>
 					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 135px">
 						<div class="col p-0">故障原因 :</div>
-						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="故障原因(必填)"></textarea>
+						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="4" cols="" placeholder="故障原因(必填) Ex: &#xD 1.面板不亮,更換面板OK &#xD 2.無法開機,更換開機按鈕OK" style="border-width: 2px;"></textarea>
 					</div>
 					<div class="col-md-12 m-0 p-1" id="rd_experience" style="height: 135px">
 						<div class="col p-0">維修心得 :</div>
@@ -168,7 +168,7 @@ select {
 				<i class="bi bi-filter-square mr-1"></i>Project Content
 			</div>
 		</div>
-		<div id="project_content" class="row p-0 m-0">
+		<div id="project_content" class="row p-0 m-0" style="display: none;">
 			<div class="col-md-12 row m-0 p-2 text-left">
 				<div class="col-md-4 m-0 p-1" id="pr_b_item">
 					<div class="col p-0">產品規格 :</div>
@@ -179,7 +179,7 @@ select {
 					<textarea class="col rounded p-1 detail_ri" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
 				<div class="col-md-4 m-0 p-1" id="pb_i_item">
-					<div class="col p-0">零件內容 :</div>
+					<div class="col p-0">登記內容 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="12" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
 			</div>
@@ -199,12 +199,11 @@ select {
 					<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
 				</div>
 				<div class="col-md-2 p-1 m-0">
-					<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
+					<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">All Clear</button>
 				</div>
 			</div>
-
 		</div>
-		<div id="part_repair" class="p-2">
+		<div id="part_repair" class="p-2" style="display: none;">
 			<table id="rd_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
 					<tr class="">
@@ -365,7 +364,7 @@ customized = new Vue({
 			$("#customized .s_list_body").addClass("d-none");
 			$("#customized .s_list_body").addClass("noExl");
 
-			//注入維修表單
+			//(上)注入維修表單
 			for(var d= 0;d < documents['rd_ru_id'].length;d++){
 				var one_item = $("#rd_ru_id .def").clone(); //複製樣本
 				one_item[0].className = "";
@@ -374,17 +373,17 @@ customized = new Vue({
 				one_item.appendTo("#rd_ru_id select");
 			}
 			$("#rd_ru_id select").val("").change();
-			//處理狀態
-			for(var e= 0;e < documents['rd_check'].length;e++){
+			//(上)處理狀態
+			for(var e= 0;e < documents['rd_check_2'].length;e++){
 				var one_item = $("#rd_check .def").clone(); //複製樣本
 				one_item[0].className = "";
-				one_item[0].innerText = documents['rd_check'][e]['value'];
-				one_item[0].value = documents['rd_check'][e]['key'];
+				one_item[0].innerText = documents['rd_check_2'][e]['value'];
+				one_item[0].value = documents['rd_check_2'][e]['key'];
 				one_item.appendTo("#rd_check select");
 			}
 			$("#rd_check select").val("").change();
 			
-			//產品狀態
+			//(上)產品狀態
 			for(var e= 0;e < documents['rr_f_ok'].length;e++){
 				var one_item = $("#rr_f_ok .def").clone(); //複製樣本
 				one_item[0].className = "";
@@ -393,7 +392,7 @@ customized = new Vue({
 				one_item.appendTo("#rr_f_ok select");
 			}
 			$("#rr_f_ok select").val("").change();
-			//產品類型
+			//(上)產品類型 
 			for(var e= 0;e < documents['rr_pb_type'].length;e++){
 				var one_item = $("#rr_pb_type .def").clone(); //複製樣本
 				one_item[0].className = "";
@@ -410,22 +409,30 @@ customized = new Vue({
 			console.log(list);
 			var documents = list['customized_detail'];//維修單據資料 
 			
+			//尚未有資料
+			if(documents==null){
+				return false;
+			}
+			
 			//注入 單據資料
 			$('#rd_ru_id select').val(documents['rd_ru_id']);
 			$('#rd_id input').val(documents['rd_id']);
 			$('#rr_sn input').val(documents['rr_sn']);
 			$('#rr_pb_type select').val(documents['rr_pb_type']);
+			$('#rd_check select').val(documents['rd_check']);
 			$('#rr_pr_p_model input').val(documents['rr_pr_p_model']);
 			$('#rr_v input').val(documents['rr_v']);
 			$('#rr_f_ok select').val(documents['rr_f_ok']);
+			$('#sys_note input').val(documents['sys_note']);
+			
 			$('#rd_statement textarea').val(documents['rd_statement']);
 			$('#rd_true textarea').val(documents['rd_true']);
 			$('#rd_experience textarea').val(documents['rd_experience']);
 			$('#pr_b_item textarea').val(documents['pr_b_item']);
 			$('#pr_s_item textarea').val(documents['pr_s_item']);
 			$('#pb_i_item textarea').val(documents['pb_i_item']);
-			
 			$('#rd_svg .c_save_value').val(documents['rd_svg']);
+			
 			//僅限於Img
 			 if (documents['rd_svg']!=null){
 				 var imgs = $("#customized #rd_svg #c_imgs_list")[0];//圖片位置
@@ -439,6 +446,7 @@ customized = new Vue({
 					 console.log(fileName);
 				 }
 			 }
+		
 			
 			//如果有資料(上鎖)
 			if(documents['rd_id']!=null){
@@ -597,7 +605,18 @@ customized = new Vue({
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
-				$('.detail_list').remove("");
+				//單據項目
+				$('.detail_list').remove();
+				//單據資料
+				$('#ro_id input').val("");
+				$('#rd_ru_id select').val("");
+				$('#ro_check select').val("");
+				//客戶資料
+				$('#c_c_name input').val("");
+				$('#c_name input').val("");
+				$('#c_address textarea').val("");
+				$('#c_tex input').val("");
+				$('#c_fax input').val("");
 			});
 			//存資料(可能:新增 可能修改)
 			$(document).on("click","#rd_save_btn", function (event) {
@@ -765,6 +784,8 @@ customized = new Vue({
 			modify_repair['rr_pr_p_model'] =$('#rr_pr_p_model input').val();
 			modify_repair['rr_v'] =$('#rr_v input').val();
 			modify_repair['rr_f_ok'] =$('#rr_f_ok select').val();
+			
+			modify_repair['sys_note'] =$('#sys_note input').val();
 			modify_repair['rd_statement'] =$('#rd_statement textarea').val();
 			modify_repair['rd_true'] =$('#rd_true textarea').val();
 			modify_repair['rd_experience'] =$('#rd_experience textarea').val();
@@ -772,7 +793,7 @@ customized = new Vue({
 			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val();
 			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); 
 			modify_repair['rd_svg'] =$('#rd_svg .c_save_value').val();
-			modify_repair['rd_check'] =$('#rd_check .select').val();
+			modify_repair['rd_check'] =$('#rd_check select').val();
 
 			var modify_detail=[];
 			////////////

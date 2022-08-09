@@ -112,12 +112,12 @@ public class CustomerService {
 			int ord = 0;
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_id", one.getCid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_c_name", one.getCcname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_name", one.getCname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_address", one.getCaddress());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_tex", one.getCtex());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_fax", one.getCfax());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_name", one.getCname()== null ? "" : one.getCname());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_address", one.getCaddress() == null ? "" : one.getCaddress());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_tex", one.getCtex() == null ? "" : one.getCtex());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "c_fax", one.getCfax() == null ? "" : one.getCfax());
 
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote() == null ? "" : one.getSysnote());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "item_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "item_user", one.getSyscuser());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
