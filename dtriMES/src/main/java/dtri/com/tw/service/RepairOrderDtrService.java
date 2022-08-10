@@ -365,7 +365,7 @@ public class RepairOrderDtrService {
 		// 父類別物件
 		roids = orderDao.findAllByRepairOrder(//
 				search_ro_id, search_rd_rr_sn, search_rd_check, search_rr_pb_type, //
-				search_rd_statement, rosramdate, roeramdate, //
+				search_rd_statement,null, rosramdate, roeramdate, //
 				rrspbsysmdate, rrepbsysmdate, "DTR", page_r);
 
 		// 有沒有資料?
@@ -1077,9 +1077,9 @@ public class RepairOrderDtrService {
 									detailDao.save(old_detail);
 								} else {
 									// 不可修改
-									resp.autoMsssage("MT002");
-									check = false;
-									return check;
+									//resp.autoMsssage("MT002");
+									//check = false;
+									//return check;
 								}
 							} else {
 								RepairDetail add_detail = new RepairDetail();

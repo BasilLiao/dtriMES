@@ -70,6 +70,7 @@ public class RepairListService {
 
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("rdid").descending());
 		String search_rd_id = null;
+		String search_ro_id = null;
 		String search_rd_rr_sn = null;
 
 		// 功能-名稱編譯
@@ -225,7 +226,7 @@ public class RepairListService {
 		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, false, null);
 		rdruid = units.size() >= 1 ? units.get(0).getRugid() : 0L;
 
-		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_rd_id, search_rd_rr_sn, 1, 0, rdruid, page_r);
+		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, 1, 0, rdruid, page_r);
 		// 有沒有資料?
 		if (rds.size() > 0) {
 			rds.forEach(rd -> {
@@ -556,13 +557,21 @@ public class RepairListService {
 								break;
 							}
 						}
+						// 如果都修好? 進行寫入 完成時間
 						if (rd_check) {
-							// 進行寫入 完成時間
 							ros.get(0).setRoedate(new Date());
 							ros.get(0).setSysmdate(new Date());
 							ros.get(0).setSysmuser(user.getSuaccount());
 							orderDao.save(ros.get(0));
 						}
+						// 如果 工作站 程序上 有故障代碼?
+						List<ProductionBody> bodies = bodyDao.findAllByPbbsn(rr.getRrsn());
+						if (bodies.size() == 1) {
+							bodies.get(0).setPbfnote("");
+							bodies.get(0).setPbfvalue("");
+							bodyDao.save(bodies.get(0));
+						}
+
 					}
 					// 轉處理
 					if (order.getInt("rd_check") == 3) {
@@ -634,6 +643,7 @@ public class RepairListService {
 		// 查詢
 		String search_rr_sn = null;// 產品序號
 		String search_rd_id = null;// 維修項目
+		String search_ro_id = null;// 維修單據
 
 		// 維修單據
 		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", rr_c_sn = "P/N(client)", rr_pb_type = "Type", //
@@ -753,7 +763,7 @@ public class RepairListService {
 		Long rugid = units.get(0).getRugid();
 		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
 		if (search_rd_id != null) {
-			details = detailDao.findAllByRdidAndRdruid(search_rd_id, search_rr_sn, 1, 0, rugid, null);
+			details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, 1, 0, rugid, null);
 		}
 
 		if (details.size() >= 1 && (search_rr_sn != null || search_rd_id != null)) {

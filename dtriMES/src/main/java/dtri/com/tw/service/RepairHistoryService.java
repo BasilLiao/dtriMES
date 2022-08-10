@@ -21,7 +21,6 @@ import dtri.com.tw.db.entity.RepairUnit;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.CustomerDao;
 import dtri.com.tw.db.pgsql.dao.RepairDetailDao;
-import dtri.com.tw.db.pgsql.dao.RepairOrderDao;
 import dtri.com.tw.db.pgsql.dao.RepairUnitDao;
 import dtri.com.tw.tools.Fm_Time;
 
@@ -29,8 +28,6 @@ import dtri.com.tw.tools.Fm_Time;
 public class RepairHistoryService {
 	@Autowired
 	private RepairUnitDao unitDao;
-	@Autowired
-	private RepairOrderDao orderDao;
 	@Autowired
 	private RepairDetailDao detailDao;
 	@Autowired
@@ -43,8 +40,7 @@ public class RepairHistoryService {
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
-		List<String> roids = new ArrayList<String>();// 有相關的資料
-		List<RepairOrder> fatherOrder = new ArrayList<RepairOrder>();
+		List<RepairDetail> rdids = new ArrayList<RepairDetail>();// 有相關的資料
 		List<Customer> customers = new ArrayList<Customer>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
@@ -53,10 +49,11 @@ public class RepairHistoryService {
 			p_size = 100;
 		}
 
-		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("roid").descending());
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("rdid").descending());
 		String search_ro_id = null;
 		String search_rr_sn = null;
 		String search_rd_statement = null;
+		String search_rd_u_finally = null;
 
 		String search_rd_check = null;
 		String search_rr_pb_type = null;
@@ -256,7 +253,7 @@ public class RepairHistoryService {
 
 			// 維修單細節
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_statement", rd_statement, n_val));
-
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_u_finally", rd_u_finally, n_val));
 			// 時間區間
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "ro_s_ram_date", ro_ram_date + "(起)", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "ro_e_ram_date", ro_ram_date + "(終)", n_val));
@@ -275,6 +272,8 @@ public class RepairHistoryService {
 			search_rr_pb_type = search_rr_pb_type.equals("") ? null : search_rr_pb_type;
 			search_rd_statement = body.getJSONObject("search").getString("rd_statement");
 			search_rd_statement = search_rd_statement.equals("") ? null : search_rd_statement;
+			search_rd_u_finally = body.getJSONObject("search").getString("rd_u_finally");
+			search_rd_u_finally = search_rd_u_finally.equals("") ? null : search_rd_u_finally;
 
 			search_ro_s_ram_date = body.getJSONObject("search").getString("ro_s_ram_date");
 			search_ro_e_ram_date = body.getJSONObject("search").getString("ro_e_ram_date");
@@ -299,57 +298,55 @@ public class RepairHistoryService {
 		}
 
 		// 父類別物件
-		roids = orderDao.findAllByRepairOrder(//
+		rdids = detailDao.findAllByRepairDetail(//
 				search_ro_id, search_rr_sn, search_rd_check, search_rr_pb_type, //
-				search_rd_statement, rosramdate, roeramdate, //
+				search_rd_statement, search_rd_u_finally, rosramdate, roeramdate, //
 				rrspbsysmdate, rrepbsysmdate, null, page_r);
 
-		fatherOrder = orderDao.findAllByRepairOrder(roids);
-		fatherOrder.forEach(one -> {
+		rdids.forEach(rd -> {
 			// 問題細節
-			one.getDetails().forEach(rd_son -> {
-				JSONObject object_body = new JSONObject();
-				int ord = 0;
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_id", one.getRoid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_c_id", one.getRocid() == null ? "" : one.getRocid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_check", one.getRocheck());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_from", one.getRofrom());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_e_date", one.getRoedate() == null ? "" : Fm_Time.to_y_M_d(one.getRoedate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_s_date", one.getRosdate() == null ? "" : Fm_Time.to_y_M_d(one.getRosdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_g_date", one.getRogdate() == null ? "" : Fm_Time.to_y_M_d(one.getRogdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", one.getRoramdate() == null ? "" : Fm_Time.to_y_M_d(one.getRoramdate()));
+			RepairOrder ro = rd.getOrder();
+			RepairRegister rr = rd.getRegister();
+			JSONObject object_body = new JSONObject();
+			int ord = 0;
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_id", ro.getRoid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_c_id", ro.getRocid() == null ? "" : ro.getRocid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_check", ro.getRocheck());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_from", ro.getRofrom());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_e_date", ro.getRoedate() == null ? "" : Fm_Time.to_y_M_d(ro.getRoedate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_s_date", ro.getRosdate() == null ? "" : Fm_Time.to_y_M_d(ro.getRosdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_g_date", ro.getRogdate() == null ? "" : Fm_Time.to_y_M_d(ro.getRogdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", ro.getRoramdate() == null ? "" : Fm_Time.to_y_M_d(ro.getRoramdate()));
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", rd_son.getRdid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", rd_son.getRduqty());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd_son.getRdruid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd_son.getRdufinally());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd_son.getRdstatement());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd_son.getRdsvg() == null ? "[]" : rd_son.getRdsvg());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd_son.getRdtrue());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd_son.getRdexperience());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", rd.getRdid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", rd.getRduqty());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd.getRdruid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd.getRdufinally());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg() == null ? "[]" : rd.getRdsvg());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 
-				RepairRegister rr_son = rd_son.getRegister();
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", rr_son.getRrsn());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr_son.getRrcsn() == null ? "" : rr_son.getRrcsn());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr_son.getRrprid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", rr_son.getRrprpqty());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr_son.getRrprpmodel() == null ? "" : rr_son.getRrprpmodel());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr_son.getRrexpired());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_w_years", rr_son.getRrprwyears());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date",
-						rr_son.getRrpbsysmdate() == null ? "" : Fm_Time.to_y_M_d(rr_son.getRrpbsysmdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", rr_son.getRrpbtype());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", rr_son.getRrv());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", rr_son.getRrfok() == null ? 0 : rr_son.getRrfok());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", rr.getRrsn());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", rr.getRrprpqty());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel() == null ? "" : rr.getRrprpmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr.getRrexpired());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_w_years", rr.getRrprwyears());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date", rr.getRrpbsysmdate() == null ? "" : Fm_Time.to_y_M_d(rr.getRrpbsysmdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", rr.getRrpbtype());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", rr.getRrv());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", rr.getRrfok() == null ? 0 : rr.getRrfok());
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(one.getSysmdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", one.getSysmuser());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
-				object_bodys.put(object_body);
-			});
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(rd.getSyscdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", rd.getSyscuser());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(rd.getSysmdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", rd.getSysmuser());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", rd.getSysstatus());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", rd.getSysnote());
+			object_bodys.put(object_body);
+
 		});
 		resp.setBody(new JSONObject().put("search", object_bodys));
 		return true;
