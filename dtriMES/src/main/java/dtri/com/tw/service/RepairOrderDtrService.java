@@ -166,8 +166,7 @@ public class RepairOrderDtrService {
 			// FFS.h_t(rr_pb_type, "150px", FFM.Wri.W_N));
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_v", FFS.h_t(rr_v,
 			// "150px", FFM.Wri.W_N));
-			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_f_ok",
-			// FFS.h_t(rr_f_ok, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_f_ok", FFS.h_t(rr_f_ok, "150px", FFM.Wri.W_N));
 
 			bean.setHeader(new JSONObject().put("search_header", object_header));
 
@@ -365,7 +364,7 @@ public class RepairOrderDtrService {
 		// 父類別物件
 		roids = orderDao.findAllByRepairOrder(//
 				search_ro_id, search_rd_rr_sn, search_rd_check, search_rr_pb_type, //
-				search_rd_statement,null, rosramdate, roeramdate, //
+				search_rd_statement, null, rosramdate, roeramdate, //
 				rrspbsysmdate, rrepbsysmdate, "DTR", page_r);
 
 		// 有沒有資料?
@@ -906,9 +905,9 @@ public class RepairOrderDtrService {
 			// 客戶資料
 			String c_c_name = order.getString("c_c_name").equals("") ? null : order.getString("c_c_name");
 			String c_name = order.getString("c_name").equals("") ? null : order.getString("c_name");
-			String c_address = order.getString("c_address");
+			String c_address = order.getString("c_address").equals("") ? null : order.getString("c_address");
 			String c_tex = order.getString("c_tex").equals("") ? null : order.getString("c_tex");
-			String c_fax = order.getString("c_fax");
+			String c_fax = order.getString("c_fax").equals("") ? null : order.getString("c_fax");
 			// 維修單
 			String ro_id = order.getString("ro_id");
 			order.put("ro_check", order.has("ro_check") ? order.getString("ro_check") : "0");
@@ -927,31 +926,42 @@ public class RepairOrderDtrService {
 
 			// 維修單細節-資料
 			for (int ch_d = 0; ch_d < new_detail.length(); ch_d++) {
-				JSONObject data = (JSONObject) new_detail.getJSONObject(ch_d);
+				JSONObject new_data = (JSONObject) new_detail.getJSONObject(ch_d);
 
 				// Step1.帶入 產品資訊
-				List<ProductionBody> bodys = bodyDao.findAllByPbbsn(data.getString("rr_sn"));
-				if (!data.getString("rr_sn").equals("") && bodys.size() == 1) {
+				List<ProductionBody> bodys = bodyDao.findAllByPbbsn(new_data.getString("rr_sn"));
+				if (!new_data.getString("rr_sn").equals("") && bodys.size() == 1) {
 					// Step2.帶入 製令資訊
 					List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 					if (headers.size() == 1) {
-						data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-						data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
-						data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
-						data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
-						data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
+						new_data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
+						new_data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
+						new_data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
+						new_data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
+						new_data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
+						new_data.put("rr_expired", true);
+
+						if (bodys.get(0).getPbwyears() > 0) {// 過期?
+							Long days_now = Fm_Time.to_diff(new Date(), bodys.get(0).getSysmdate());
+							Long days_old = (long) (bodys.get(0).getPbwyears() * 365);
+							if (days_now > days_old) {
+								new_data.put("rr_expired", false);
+							}
+						}
+
 					} else {
 						resp.autoMsssage("WK004");
 						check = false;
 						return check;
 					}
 					// Step3.檢查資訊正確性
-					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
-					data.put("rd_check", data.getString("rd_check").equals("") ? 0 : data.getInt("rd_check"));
-					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
-					data.put("rr_pb_type", data.getString("rr_pb_type").equals("") ? "產品" : data.getString("rr_pb_type"));
-					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
-					new_detail.put(ch_d, data);
+					new_data.put("rr_v", new_data.has("rr_v") ? new_data.getString("rr_v") : "");
+					new_data.put("rd_check", new_data.getString("rd_check").equals("") ? 0 : new_data.getInt("rd_check"));
+					new_data.put("rd_ru_id", new_data.getString("rd_ru_id").equals("") ? 0L : new_data.getLong("rd_ru_id"));
+					new_data.put("rr_pb_type", new_data.getString("rr_pb_type").equals("") ? "產品" : new_data.getString("rr_pb_type"));
+					new_data.put("rd_statement", new_data.getString("rd_statement").equals("") ? //
+							"Something project wrong" : new_data.getString("rd_statement"));
+					new_detail.put(ch_d, new_data);
 				} else {
 					resp.autoMsssage("WK004");
 					check = false;
@@ -979,10 +989,10 @@ public class RepairOrderDtrService {
 			// Step4.客戶 新增/修改?
 			if (customers.size() > 0) {// 修改
 				c_one = customers.get(0);
-				c_one.setCaddress(c_address);
-				c_one.setCname(c_name);
-				c_one.setCfax(c_fax);
-				c_one.setCtex(c_tex);
+				c_one.setCaddress(c_address == null ? c_one.getCaddress() : c_address);
+				c_one.setCname(c_name == null ? c_one.getCname() : c_name);
+				c_one.setCfax(c_fax == null ? c_one.getCfax() : c_fax);
+				c_one.setCtex(c_tex == null ? c_one.getCtex() : c_tex);
 				c_one.setSysmdate(ro_one.getSysmdate());
 				c_one.setSysmuser(ro_one.getSysmuser());
 				customerDao.save(c_one);
@@ -1077,19 +1087,19 @@ public class RepairOrderDtrService {
 									detailDao.save(old_detail);
 								} else {
 									// 不可修改
-									//resp.autoMsssage("MT002");
-									//check = false;
-									//return check;
+									// resp.autoMsssage("MT002");
+									// check = false;
+									// return check;
 								}
 							} else {
 								RepairDetail add_detail = new RepairDetail();
 								int rd_id_nb = 0;
-								String rd_id = "R" + String.format("%04d", rd_id_nb++);
+								String rd_id = "D" + String.format("%04d", rd_id_nb++);
 								// 檢查重複?->重複則->下一筆新序號
 								Boolean check_rep = true;
 								while (check_rep) {
 									if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-										rd_id = "R" + String.format("%04d", rd_id_nb++);
+										rd_id = "D" + String.format("%04d", rd_id_nb++);
 									} else {
 										check_rep = false;
 									}

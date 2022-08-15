@@ -162,8 +162,7 @@ public class RepairOrderRmaService {
 			// FFS.h_t(rr_pb_type, "150px", FFM.Wri.W_N));
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_v", FFS.h_t(rr_v,
 			// "150px", FFM.Wri.W_N));
-			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_f_ok",
-			// FFS.h_t(rr_f_ok, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_f_ok", FFS.h_t(rr_f_ok, "150px", FFM.Wri.W_N));
 
 			bean.setHeader(new JSONObject().put("search_header", object_header));
 
@@ -925,9 +924,9 @@ public class RepairOrderRmaService {
 			// 客戶資料
 			String c_c_name = order.getString("c_c_name").equals("") ? null : order.getString("c_c_name");
 			String c_name = order.getString("c_name").equals("") ? null : order.getString("c_name");
-			String c_address = order.getString("c_address");
+			String c_address = order.getString("c_address").equals("") ? null : order.getString("c_address");
 			String c_tex = order.getString("c_tex").equals("") ? null : order.getString("c_tex");
-			String c_fax = order.getString("c_fax");
+			String c_fax = order.getString("c_fax").equals("") ? null : order.getString("c_fax");
 			// 維修單
 			String ro_id = order.getString("ro_id");
 			order.put("ro_check", order.has("ro_check") ? order.getString("ro_check") : "0");
@@ -945,6 +944,7 @@ public class RepairOrderRmaService {
 			}
 			// 客戶資料不完善 or 沒填寫資料
 			if (c_c_name == null || c_name == null || c_address == null || new_detail.length() == 0) {
+				resp.autoMsssage("MT005");
 				return false;
 			}
 			// 維修單細節-資料
@@ -1014,10 +1014,10 @@ public class RepairOrderRmaService {
 			// Step4.客戶 新增/修改?
 			if (customers.size() > 0) {// 修改
 				c_one = customers.get(0);
-				c_one.setCaddress(c_address);
-				c_one.setCname(c_name);
-				c_one.setCfax(c_fax);
-				c_one.setCtex(c_tex);
+				c_one.setCaddress(c_address == null ? c_one.getCaddress() : c_address);
+				c_one.setCname(c_name == null ? c_one.getCname() : c_name);
+				c_one.setCfax(c_fax == null ? c_one.getCfax() : c_fax);
+				c_one.setCtex(c_tex == null ? c_one.getCtex() : c_tex);
 				c_one.setSysmdate(ro_one.getSysmdate());
 				c_one.setSysmuser(ro_one.getSysmuser());
 				customerDao.save(c_one);
@@ -1111,9 +1111,9 @@ public class RepairOrderRmaService {
 									detailDao.save(old_detail);
 								} else {
 									// 不可修改
-									//resp.autoMsssage("MT002");
-									//check = false;
-									//return check;
+									// resp.autoMsssage("MT002");
+									// check = false;
+									// return check;
 								}
 							} else {
 								RepairDetail add_detail = new RepairDetail();

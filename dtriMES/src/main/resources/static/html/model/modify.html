@@ -538,7 +538,7 @@
 			setDataGroupTitle(title,body_type){
 				//標題群組注入資訊(Modify)
 				this.body_type = body_type;
-				this.modify_g_datas = title;
+				this.modify_g_datas = (title==null?this.modify_g_datas:title);
 				console.log(this.modify_g_datas);
 			},
 			setDataTitleUpdate(title){

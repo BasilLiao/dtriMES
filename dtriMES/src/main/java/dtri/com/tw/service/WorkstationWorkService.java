@@ -157,7 +157,7 @@ public class WorkstationWorkService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_c_name", "訂購客戶"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "目前／全部(總數)"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "本工作站(通過數量)"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "正常／故障(過站數)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_workstation", "工作站(狀態)"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_dt", "PLT_Log上傳時間"));
@@ -234,7 +234,9 @@ public class WorkstationWorkService {
 						if (pb_all.size() == 1) {
 							// 計算 此工作站完成數
 							List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "" + wpcname + "_Y");
+							List<String> wk_fix = pbDao.findPbbsnPbscheduleFixList(pb_all.get(0).getPbgid(), "" + wpcname + "_N");
 							int all_nb = wk_schedules.size();
+							int all_nb_bad = wk_fix.size();
 							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
 							// 如果是A521 有舊的SN (要排除已經繼承)
 							if (pb_b_sn_old != null && pb_old_sn.indexOf(pb_b_sn_old) < 0) {
@@ -293,7 +295,7 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_quantity",
 										one.getProductionRecords().getPrpokquantity() + "／" + one.getProductionRecords().getPrpquantity());
 
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb);
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb+"／"+all_nb_bad);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt", pb_l_dt);

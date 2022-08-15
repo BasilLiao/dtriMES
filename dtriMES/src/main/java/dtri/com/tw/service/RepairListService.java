@@ -75,7 +75,7 @@ public class RepairListService {
 
 		// 功能-名稱編譯
 		// 維修細節
-		String rd_id = "維修(子序號)", /* rd_ro_id = "維修單", */ //
+		String rd_id = "維修項目(序號)", /* rd_ro_id = "維修單", */ //
 				rd_rr_sn = "品件序號", rd_u_qty = "品件數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
 				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
@@ -107,8 +107,8 @@ public class RepairListService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "250px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_svg", FFS.h_t(rd_svg, "150px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_experience", FFS.h_t(rd_experience, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "300px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_experience", FFS.h_t(rd_experience, "300px", FFM.Wri.W_N));
 
 			// 產品資料
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
@@ -205,8 +205,8 @@ public class RepairListService {
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
 			// 維修單細節
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_rr_sn", rd_rr_sn, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_id", rd_id, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_rr_sn", rd_rr_sn, n_val));
 
 			bean.setCell_searchs(object_searchs);
 		} else {
@@ -369,6 +369,7 @@ public class RepairListService {
 			// 維修單-項目
 			if (order.has("rd_id") && !order.getString("rd_id").equals("")) {
 				if (order.getString("rd_check").equals("") || order.getString("rd_true").equals("")) {
+					resp.autoMsssage("MT005");
 					return check;
 				}
 			}
@@ -400,9 +401,17 @@ public class RepairListService {
 					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
 					details.put(ch_d, data);
 				} else {
-					resp.autoMsssage("WK004");
-					check = false;
-					return check;
+					data.put("rr_pr_id", "");
+					data.put("rr_pr_p_qty", 0);
+					data.put("rr_pr_w_years", 0);
+					data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(new Date()));
+					
+					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
+					data.put("rd_check", data.getString("rd_check").equals("") ? 1 : data.getInt("rd_check"));
+					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
+					data.put("rr_pb_type", data.getString("rr_pb_type").equals("") ? "產品" : data.getString("rr_pb_type"));
+					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
+					details.put(ch_d, data);
 				}
 			}
 
@@ -621,6 +630,7 @@ public class RepairListService {
 				}
 			}
 			JSONObject cb = req.getCall_bk_vals();
+			cb.put("search", false);
 			cb.put("rr_sn", order.getString("rr_sn"));
 			cb.put("rd_id", order.getString("rd_id"));
 			req.setCall_bk_vals(cb);
@@ -698,7 +708,7 @@ public class RepairListService {
 			// s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
 			s_val.put((new JSONObject()).put("value", "待處理(未修)").put("key", 1));
 			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
-			s_val.put((new JSONObject()).put("value", "轉處理(踢皮球)").put("key", 3));
+			s_val.put((new JSONObject()).put("value", "轉處理(踢球)").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好(報廢)").put("key", 4));
 			// s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
 			object_documents.put("rd_check_2", s_val);
@@ -762,10 +772,8 @@ public class RepairListService {
 		// Step2.所屬的[維修人員]產品 or 維修單項目?
 		Long rugid = units.get(0).getRugid();
 		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
-		if (search_rd_id != null) {
-			details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, 1, 0, rugid, null);
-		}
 
+		details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, 1, 0, rugid, null);
 		if (details.size() >= 1 && (search_rr_sn != null || search_rd_id != null)) {
 			// 有相關資料帶出第一筆資料
 			RepairDetail rd = details.get(0);

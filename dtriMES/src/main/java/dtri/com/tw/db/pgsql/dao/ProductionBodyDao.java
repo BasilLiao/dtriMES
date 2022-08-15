@@ -30,8 +30,7 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 
 	// 查詢燒錄 SN重複
 	List<ProductionBody> findAllByPbbsn(String pbbsn);
-	
-	
+
 	// 查詢燒錄_Like+是舊的SN
 	List<ProductionBody> findAllByPbbsnLike(String old_sn);
 
@@ -63,6 +62,14 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			+ "(b.pbschedule LIKE %:pbschedule% ) "// coalesce 回傳非NULL值
 			+ " order by b.pbsn asc")
 	List<String> findPbbsnPbscheduleList(Long pbgid, String pbschedule);
+
+	// 查詢SN群組 故障數
+	@Query(value = "SELECT b.pbbsn FROM ProductionBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbfvalue LIKE %:pbfvalue% ) and "//
+			+ "(b.pbfvalue !='' and b.pbfvalue is not null ) "// coalesce 回傳非NULL值
+			+ " order by b.pbsn asc")
+	List<String> findPbbsnPbscheduleFixList(Long pbgid, String pbfvalue);
 
 	// 查詢SN群組(此工單 ->產品完成[總數])
 	@Query(value = "SELECT b.pbcheck FROM ProductionBody b WHERE "//

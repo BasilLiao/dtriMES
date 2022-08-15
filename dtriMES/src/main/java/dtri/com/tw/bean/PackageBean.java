@@ -63,6 +63,7 @@ public class PackageBean {
 	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 資料欄位! [Warning]!!";
 	public static final String info_Maint_warning03 = "[MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
 	public static final String info_Maint_warning04 = "[MT004] 您非 (維修單位) 成員, 請向 管理者 申請! [Warning]!!";
+	public static final String info_Maint_warning05 = "[MT005] 此 (維修單) 資料填寫不完善 請再次檢查! [Warning]!!";
 
 	public static final String info_search_warning0 = "[SH000] 查詢 過多筆資料 ,請更正條件! [Warning]!!";
 
@@ -238,8 +239,10 @@ public class PackageBean {
 		case "MT004":// [MT004] 您非 高級維修單位成員, 請向 管理者 申請! [Warning]!!";
 			this.info = info_Maint_warning04;
 			break;
-			
-			
+		case "MT005":// [MT005] 此 (維修單) 資料填寫不完善 請再次檢查! [Warning]";
+			this.info = info_Maint_warning05;
+			break;
+
 		default:// 不明錯誤
 			this.info = info_danger + info_administrator;
 			this.info_color = info_color_danger;
