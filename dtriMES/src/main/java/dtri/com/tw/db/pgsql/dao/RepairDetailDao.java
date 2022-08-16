@@ -24,12 +24,14 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
 			+ "(:rdid is null or d.rdid LIKE %:rdid%) and "//
 			+ "(:rrsn is null or r.rrsn LIKE %:rrsn%) and "//
+			+ "(:rrpbtype is null or r.rrpbtype  = :rrpbtype) and"//
 			+ "(:rdcheck = 0 or d.rdcheck  = :rdcheck) and"//
 			+ "(o.rocheck  = :rocheck) and"//
 			+ "(:roid is null or o.roid LIKE %:roid%) and "//
 			+ "(:rdruid = 0L or (d.rdruid  = :rdruid or d.rdruid=0L)) "//
 			+ "order by d.rdid asc")
-	ArrayList<RepairDetail> findAllByRdidAndRdruid(String roid, String rdid, String rrsn, int rdcheck, int rocheck, Long rdruid, Pageable pageable);
+	ArrayList<RepairDetail> findAllByRdidAndRdruid(String roid, String rdid, String rrsn, String rrpbtype, int rdcheck, int rocheck, Long rdruid,
+			Pageable pageable);
 
 	// 場內維修 特定查詢
 	// 查詢 檢核

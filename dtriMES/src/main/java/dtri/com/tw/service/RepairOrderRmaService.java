@@ -1254,11 +1254,11 @@ public class RepairOrderRmaService {
 			JSONObject customized_header = new JSONObject();
 			int ord = 0;
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "80px", FFM.Wri.W_N));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "100px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "400px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "120px", FFM.Wri.W_Y));
@@ -1366,7 +1366,10 @@ public class RepairOrderRmaService {
 			object_body.put("customized_customer", object_customer);
 		}
 		// 維修單
-		ArrayList<RepairOrder> orders = orderDao.findAllByRoid(search_ro_id);
+		ArrayList<RepairOrder> orders = new ArrayList<RepairOrder>();
+		if (search_ro_id != null) {
+			orders = orderDao.findAllByRoid(search_ro_id);
+		}
 		if (orders.size() >= 1) {
 			object_order.put("ro_id", orders.get(0).getRoid());
 			object_order.put("ro_check", orders.get(0).getRocheck());

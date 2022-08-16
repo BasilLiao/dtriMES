@@ -96,8 +96,8 @@ public class RepairOrder {
 	@Column(name = "ro_ram_date", columnDefinition = "TIMESTAMP default now()")
 	private Date roramdate;
 
-	@OrderBy("rdid ASC")
 	@OneToMany(mappedBy = "order", orphanRemoval = true)
+	@OrderBy("register asc , rdstatement asc")
 	private List<RepairDetail> details;
 
 	public List<RepairDetail> getDetails() {

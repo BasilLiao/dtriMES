@@ -724,8 +724,8 @@ public class ProductionHeaderService {
 							pro_b.setSysver(0);
 							pro_b.setPbgid(id_b_g);
 							pro_b.setSysheader(false);
-							pro_b.setPbsn(pbsn_list.getString(i));
-							pro_b.setPbbsn(pbsn_list.getString(i));
+							pro_b.setPbsn(pbsn_list.getString(i).replaceAll(" ", ""));
+							pro_b.setPbbsn(pbsn_list.getString(i).replaceAll(" ", ""));
 							pro_b.setPbcheck(false);
 							pro_b.setPbusefulsn(0);
 							pro_b.setPbwyears(data.getInt("pr_w_years"));

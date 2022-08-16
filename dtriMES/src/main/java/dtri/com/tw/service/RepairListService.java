@@ -72,6 +72,7 @@ public class RepairListService {
 		String search_rd_id = null;
 		String search_ro_id = null;
 		String search_rd_rr_sn = null;
+		String search_rr_pb_type = "產品";
 
 		// 功能-名稱編譯
 		// 維修細節
@@ -208,6 +209,16 @@ public class RepairListService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_id", rd_id, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_rr_sn", rd_rr_sn, n_val));
 
+			s_val = new JSONArray();
+			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
+			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
+			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
+			s_val.put((new JSONObject()).put("value", "小板").put("key", "小板"));
+			s_val.put((new JSONObject()).put("value", "零件").put("key", "零件"));
+			s_val.put((new JSONObject()).put("value", "軟體").put("key", "軟體"));
+			s_val.put((new JSONObject()).put("value", "其他").put("key", "其他"));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "rr_pb_type", rr_pb_type, s_val));
+
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
@@ -215,6 +226,8 @@ public class RepairListService {
 			search_rd_rr_sn = search_rd_rr_sn.equals("") ? null : search_rd_rr_sn;
 			search_rd_id = body.getJSONObject("search").getString("rd_id");
 			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
+			search_rr_pb_type = body.getJSONObject("search").getString("rr_pb_type");
+			search_rr_pb_type = search_rr_pb_type.equals("") ? null : search_rr_pb_type;
 		}
 
 		// 查詢子類別?全查?
@@ -226,7 +239,7 @@ public class RepairListService {
 		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, false, null);
 		rdruid = units.size() >= 1 ? units.get(0).getRugid() : 0L;
 
-		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, 1, 0, rdruid, page_r);
+		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, search_rr_pb_type, 1, 0, rdruid, page_r);
 		// 有沒有資料?
 		if (rds.size() > 0) {
 			rds.forEach(rd -> {
@@ -405,7 +418,7 @@ public class RepairListService {
 					data.put("rr_pr_p_qty", 0);
 					data.put("rr_pr_w_years", 0);
 					data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(new Date()));
-					
+
 					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
 					data.put("rd_check", data.getString("rd_check").equals("") ? 1 : data.getInt("rd_check"));
 					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
@@ -773,7 +786,7 @@ public class RepairListService {
 		Long rugid = units.get(0).getRugid();
 		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
 
-		details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, 1, 0, rugid, null);
+		details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, null, 1, 0, rugid, null);
 		if (details.size() >= 1 && (search_rr_sn != null || search_rd_id != null)) {
 			// 有相關資料帶出第一筆資料
 			RepairDetail rd = details.get(0);

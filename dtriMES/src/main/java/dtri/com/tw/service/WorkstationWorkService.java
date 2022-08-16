@@ -513,14 +513,14 @@ public class WorkstationWorkService {
 					String pbgid = body_one_now.getPbgid().toString();
 					String phgid = wpicheck_pr.get(0).getHeader().getPhpbgid().toString();
 					if (wpicheck_pr.size() == 1 && !pbgid.equals(phgid)) {
-						log.warn("WK004:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK004:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK004");
 						return false;
 					}
 
 					// ========Step0. 是否原先有故障代碼 ========
 					if (!list.getString("pb_f_value").equals("") && body_one_now.getPbfvalue() != null && !body_one_now.getPbfvalue().equals("")) {
-						log.warn("WK019:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK019:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK019");
 						return false;
 					}
@@ -550,7 +550,7 @@ public class WorkstationWorkService {
 								old_sn.put(list.getString("pb_old_sn") + "_old_" + old_sn.length());
 								body_map_now.put("setPboldsn", new JSONObject().put("value", old_sn.toString()).put("type", String.class));
 							} else {
-								log.warn("WK009:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+								log.info("WK009:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK009");
 								return false;
 							}
@@ -587,7 +587,7 @@ public class WorkstationWorkService {
 								return false;
 							}
 						} else {
-							log.warn("WK008:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+							log.info("WK008:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 							bean.autoMsssage("WK008");
 							return false;
 						}
@@ -596,13 +596,13 @@ public class WorkstationWorkService {
 					// ========Step2.[檢核階段-初步] ========
 					// Step2-1.[檢核階段] 製令單有問題?
 					if (check_sn.size() == 0) {
-						log.warn("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK003");
 						return false;
 					}
 					// Step2-2.[檢核階段-初步] 沒有此工作站?
 					if (!pbschedule.has(list.getString("w_c_name"))) {
-						log.warn("WK001:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK001:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK001");
 						return false;
 					}
@@ -618,7 +618,7 @@ public class WorkstationWorkService {
 							// 如果有 [前置站] 沒完成,跳錯誤 還別沒刷(除了自己)
 							if (!key_schedule.equals(list.getString("w_c_name"))) {
 								if (type.equals(key_schedule + "_N") && sort_check > sort) {
-									log.warn("WK005:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+									log.info("WK005:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 									bean.autoMsssage("WK005");
 									return false;
 								}
@@ -720,7 +720,7 @@ public class WorkstationWorkService {
 									// Step4-3.[檢核階段-進階] 檢查 避免小卡 輸入主SN序號
 									for (String pbbsn : check_sn) {
 										if (pbbsn.equals(body_value)) {
-											log.warn("WK010:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+											log.info("WK010:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK010");
 											return false;
 										}
@@ -752,7 +752,7 @@ public class WorkstationWorkService {
 
 										// Step4-6.[檢核階段-進階] 必填欄位?
 										if (wk.getWmust() == 1 && body_value.equals("")) {
-											log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+											log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.setError_ms("此[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
 											bean.autoMsssage("WK014");
 											return false;
@@ -763,7 +763,7 @@ public class WorkstationWorkService {
 
 											// Step4-8.[檢核階段-進階] 是否有要檢查 長度
 											if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
-												log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+												log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 												bean.setError_ms("此[" + title_name + "]SN: " + body_value + " 長度不正確,指定:[" + wk.getWlength() + "] 位數");
 												bean.autoMsssage("WK014");
 												return false;
@@ -788,7 +788,7 @@ public class WorkstationWorkService {
 
 												}
 												if (!check) {
-													log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+													log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 													bean.setError_ms("此[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 													bean.autoMsssage("WK014");
 													return false;
@@ -822,7 +822,7 @@ public class WorkstationWorkService {
 												@SuppressWarnings("unchecked")
 												List<String> pbid_obj = query.getResultList();
 												if (pbid_obj.size() > 0) {// 有重複
-													log.warn("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+													log.info("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 													bean.setError_ms(
 															"此[" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: " + pbid_obj.get(0) + " 使用中 ");
 													bean.autoMsssage("WK011");
@@ -854,7 +854,7 @@ public class WorkstationWorkService {
 								}
 							}
 							if (wpi_check_fail) {
-								log.warn("WK017:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+								log.info("WK017:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK017");
 								return false;
 							}
@@ -892,7 +892,7 @@ public class WorkstationWorkService {
 							list_log = ftpService.getLogPLT(ftpClient, ftp, user.getSuaccount(), searchName, plt_file_classify);
 							// Step5-1. FTP檢查[] SIZE
 							if (list_log.length() < 1 || !list_log.has("pb_l_size") || list_log.getInt("pb_l_size") < 10) {
-								log.warn("WK007:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+								log.info("WK007:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 								bean.autoMsssage("WK007");
 								return false;
 							}
@@ -944,7 +944,7 @@ public class WorkstationWorkService {
 
 														// Step6-5.[檢核階段-進階] 必填欄位?
 														if (wk.getWmust() == 1 && body_value.equals("")) {
-															log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+															log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 															bean.setError_ms("此 PLT_LOG[" + title_name + "] SN: " + body_value + " 為[必填欄位] ");
 															bean.autoMsssage("WK014");
 															return false;
@@ -955,7 +955,7 @@ public class WorkstationWorkService {
 
 															// Step6-7.[檢核階段-進階] 是否有要檢查 長度
 															if (wk.getWlength() > 0 && body_value.length() != wk.getWlength()) {
-																log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+																log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																bean.setError_ms("此 PLT_LOG[" + title_name + "]SN: " + body_value + " 長度不正確,指定:["
 																		+ wk.getWlength() + "] 位數");
 																bean.autoMsssage("WK014");
@@ -980,7 +980,7 @@ public class WorkstationWorkService {
 																	break;
 																}
 																if (!check) {
-																	log.warn("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+																	log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																	bean.setError_ms(
 																			"此 PLT_LOG[" + title_name + "] SN: [" + body_value + "] 格式錯誤, " + error + " ");
 																	bean.autoMsssage("WK014");
@@ -1015,7 +1015,7 @@ public class WorkstationWorkService {
 																@SuppressWarnings("unchecked")
 																List<String> pbid_obj = query.getResultList();
 																if (pbid_obj.size() > 0) {// 有重複
-																	log.warn("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+																	log.info("WK011:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 																	bean.setError_ms("此 PLT_LOG [" + title_name + " SN]: " + body_value + " , 已經被[產品/燒錄 SN]: "
 																			+ pbid_obj.get(0) + " 使用中 ");
 																	bean.autoMsssage("WK011");
@@ -1047,14 +1047,14 @@ public class WorkstationWorkService {
 											}
 										}
 										if (wpi_check_fail) {
-											log.warn("WK018:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+											log.info("WK018:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK018");
 											return false;
 										}
 										// Step6-12.[檢核階段-進階] PLT 亂碼檢核
 										// System.out.print(list_log.getString("pb_l_text").indexOf('\u0000'));
 										if (list_log.getString("pb_l_text").indexOf('\u0000') != -1) {
-											log.warn("WK015:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+											log.info("WK015:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 											bean.autoMsssage("WK015");
 											return false;
 										}
@@ -1084,7 +1084,7 @@ public class WorkstationWorkService {
 							if (list_log.getJSONArray("pb_l_files").length() > 0) {
 								Boolean check_move = ftpService.logPLT_Archive(ftpClient, ftp, list_log.getJSONArray("pb_l_files"));
 								if (!check_move) {
-									log.warn("WK012:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+									log.info("WK012:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 									bean.autoMsssage("WK012");
 									return false;
 								}
@@ -1198,10 +1198,10 @@ public class WorkstationWorkService {
 					pbDao.save(body_one_old);
 					// true = 一般過站/false = 重複過站 = ?
 					if (set_replace) {
-						log.warn("WK020:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK020:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK020");
 					} else {
-						log.warn("WK021:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+						log.info("WK021:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK021");
 					}
 					// ======== Step10. PLT產品測試更新[ProductionTest] ========
@@ -1252,7 +1252,7 @@ public class WorkstationWorkService {
 					pDailyService.setData(newDaily, user);
 
 				} else {
-					log.warn("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
+					log.trace("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 					bean.autoMsssage("WK003");
 					return false;
 				}

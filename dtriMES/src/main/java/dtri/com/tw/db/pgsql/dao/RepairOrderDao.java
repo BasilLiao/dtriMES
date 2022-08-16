@@ -16,11 +16,14 @@ public interface RepairOrderDao extends JpaRepository<RepairOrder, Long> {
 	ArrayList<RepairOrder> findAll();
 
 	// 查詢特定ID
+	@Query("SELECT o FROM RepairOrder o LEFT join o.details d join d.register r WHERE "//
+			+ "(:roid     is null or o.roid =:roid ) "// 維修單
+			+ "ORDER By o.roid asc")
 	ArrayList<RepairOrder> findAllByRoid(String roid);
 
 	// 場內維修 特定查詢(只有 維修單據)
 	// 查詢 檢核
-	@Query("SELECT o.roid FROM RepairOrder o LEFT join o.details d  join d.register r  WHERE "//
+	@Query("SELECT o.roid FROM RepairOrder o LEFT join o.details d join d.register r WHERE "//
 			+ "(:roid     is null or o.roid LIKE %:roid% ) and "// 維修單
 			+ "(:rrsn     is null or r.rrsn LIKE %:rrsn% ) and "// 產品序號
 			+ "(:rdcheck  is null or d.rdcheck  = :rdcheck ) and "// 檢核狀態
@@ -36,7 +39,6 @@ public interface RepairOrderDao extends JpaRepository<RepairOrder, Long> {
 	ArrayList<String> findAllByRepairOrder(//
 			String roid, String rrsn, String rdcheck, String rrpbtype, String rdstatement, String rdufinally, //
 			Date rosramdate, Date roeramdate, Date rrspbsysmdate, Date rrepbsysmdate, String rofrom, Pageable pageable);
-
 
 	@Query("SELECT o FROM RepairOrder o WHERE " //
 			+ "(coalesce(:roid, null) is null or o.roid IN :roid ) order by o.roid desc ") // coalesce 回傳非NULL值

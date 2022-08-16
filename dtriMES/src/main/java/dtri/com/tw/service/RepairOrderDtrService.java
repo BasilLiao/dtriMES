@@ -930,6 +930,9 @@ public class RepairOrderDtrService {
 
 				// Step1.帶入 產品資訊
 				List<ProductionBody> bodys = bodyDao.findAllByPbbsn(new_data.getString("rr_sn"));
+				if (new_data.getString("rd_id").indexOf("S") >= 0) {
+					continue;
+				}
 				if (!new_data.getString("rr_sn").equals("") && bodys.size() == 1) {
 					// Step2.帶入 製令資訊
 					List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
@@ -1375,8 +1378,9 @@ public class RepairOrderDtrService {
 		Long rocid = 0L;
 
 		// 維修單據
-		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", rr_c_sn = "P/N(client)", rr_pb_type = "Type", //
-				rd_statement = "Failure Description", rd_u_qty = "Qty", rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";
+		String rd_id = "No.", rr_pr_id = "Order", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", //
+				rr_c_sn = "P/N(client)", rr_pb_type = "Type", rd_statement = "Failure Description", //
+				rd_u_qty = "Qty", rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";//
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -1385,6 +1389,7 @@ public class RepairOrderDtrService {
 			JSONObject customized_header = new JSONObject();
 			int ord = 0;
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "80px", FFM.Wri.W_N));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "150px", FFM.Wri.W_N));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "100px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
@@ -1392,7 +1397,7 @@ public class RepairOrderDtrService {
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "120px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "100px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "130px", FFM.Wri.W_N));
 			object_header.put("customized_header", customized_header);
 
@@ -1423,16 +1428,16 @@ public class RepairOrderDtrService {
 			object_documents.put("rr_pb_type", s_val);
 			// 處理狀態
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", 1));
+			s_val.put((new JSONObject()).put("value", "已登記(暫定)").put("key", 0));
+			s_val.put((new JSONObject()).put("value", "已檢核(送修)").put("key", 1));
 			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
 			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
 			object_documents.put("rd_check", s_val);
 			// 處理狀態
 			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", 1));
+			s_val.put((new JSONObject()).put("value", "已登記(暫定)").put("key", 0));
+			s_val.put((new JSONObject()).put("value", "已檢核(送修)").put("key", 1));
 			object_documents.put("rd_check_only", s_val);
 
 			// 處理狀態
@@ -1498,7 +1503,10 @@ public class RepairOrderDtrService {
 			object_body.put("customized_customer", object_customer);
 		}
 		// 維修單
-		ArrayList<RepairOrder> orders = orderDao.findAllByRoid(search_ro_id);
+		ArrayList<RepairOrder> orders = new ArrayList<RepairOrder>();
+		if (search_ro_id != null) {
+			orders = orderDao.findAllByRoid(search_ro_id);
+		}
 		if (orders.size() >= 1) {
 			object_order.put("ro_id", orders.get(0).getRoid());
 			object_order.put("ro_check", orders.get(0).getRocheck());
@@ -1506,6 +1514,7 @@ public class RepairOrderDtrService {
 				int ord = 0;
 				JSONObject obj = new JSONObject();
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", details.getRdid().split("-")[1]);
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", details.getRegister().getRrprid());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", details.getRegister().getRrprpmodel());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", details.getRegister().getRrsn());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", details.getRegister().getRrcsn());
