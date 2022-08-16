@@ -1434,7 +1434,7 @@ public class RepairOrderDtrService {
 			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
 			object_documents.put("rd_check", s_val);
-			// 處理狀態
+			// 處理狀態 
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "已登記(暫定)").put("key", 0));
 			s_val.put((new JSONObject()).put("value", "已檢核(送修)").put("key", 1));
