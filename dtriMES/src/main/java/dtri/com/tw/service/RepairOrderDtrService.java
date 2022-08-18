@@ -1247,7 +1247,7 @@ public class RepairOrderDtrService {
 			data.put("rr_c_sn", data.has("rr_c_sn") ? data.getString("rr_c_sn") : "");
 			data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
 			data.put("rr_pb_type", data.has("rr_pb_type") ? data.getString("rr_pb_type") : "產品");
-			data.put("rd_check", data.has("rd_check") ? data.getInt("rd_check") : 0);
+			data.put("rd_check", data.has("rd_check") ? data.getInt("rd_check") : 1);
 			data.put("rd_ru_id", data.has("rd_ru_id") ? data.getLong("rd_ru_id") : 0L);
 			data.put("rd_u_qty", data.has("rd_u_qty") ? data.getInt("rd_u_qty") : 1);
 
@@ -1380,7 +1380,8 @@ public class RepairOrderDtrService {
 		// 維修單據
 		String rd_id = "No.", rr_pr_id = "Order", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", //
 				rr_c_sn = "P/N(client)", rr_pb_type = "Type", rd_statement = "Failure Description", //
-				rd_u_qty = "Qty", rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";//
+				rd_true = "Cause of issue", rd_solve = "Solution", rd_u_qty = "Qty", //
+				rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";//
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -1395,6 +1396,8 @@ public class RepairOrderDtrService {
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "350px", FFM.Wri.W_N));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_solve", FFS.h_t(rd_solve, "350px", FFM.Wri.W_N));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "100px", FFM.Wri.W_Y));
@@ -1434,7 +1437,7 @@ public class RepairOrderDtrService {
 			s_val.put((new JSONObject()).put("value", "轉處理").put("key", 3));
 			s_val.put((new JSONObject()).put("value", "修不好").put("key", 4));
 			object_documents.put("rd_check", s_val);
-			// 處理狀態 
+			// 處理狀態
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "已登記(暫定)").put("key", 0));
 			s_val.put((new JSONObject()).put("value", "已檢核(送修)").put("key", 1));
@@ -1520,6 +1523,8 @@ public class RepairOrderDtrService {
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", details.getRegister().getRrcsn());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", details.getRegister().getRrpbtype());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", details.getRdstatement());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", details.getRdtrue());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", details.getRdsolve());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", details.getRduqty());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", details.getRegister().getRrexpired());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", details.getRdruid());

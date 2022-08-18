@@ -79,7 +79,7 @@ public class RepairListService {
 		String rd_id = "維修項目(序號)", /* rd_ro_id = "維修單", */ //
 				rd_rr_sn = "品件序號", rd_u_qty = "品件數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
-				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
+				rd_true = "實際問題", rd_solve = "解決問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
 				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
 		String /* rr_sn = "品件序號", */ rr_c_sn = "客戶品件(序號)", //
@@ -109,6 +109,7 @@ public class RepairListService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "250px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_svg", FFS.h_t(rd_svg, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "300px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_solve", FFS.h_t(rd_solve, "300px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_experience", FFS.h_t(rd_experience, "300px", FFM.Wri.W_N));
 
 			// 產品資料
@@ -199,6 +200,7 @@ public class RepairListService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "rd_statement", rd_statement));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_true", rd_true));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_solve", rd_true));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.IMG, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_svg", rd_svg));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_experience", rd_experience));
 			bean.setCell_modify(obj_m);
@@ -256,6 +258,7 @@ public class RepairListService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn());
@@ -332,6 +335,7 @@ public class RepairListService {
 					obj_b.setRdexperience(data.getString("rd_experience"));
 					obj_b.setRdstatement(data.getString("rd_statement"));
 					obj_b.setRdtrue(data.getString("rd_true"));
+					obj_b.setRdsolve(data.getString("rd_solve"));
 					obj_b.setRdsvg(data.getString("rd_svg"));
 					obj_b.setSysmdate(new Date());
 					obj_b.setSysmuser(user.getSuaccount());
@@ -381,7 +385,7 @@ public class RepairListService {
 			// ====[資料檢核]====
 			// 維修單-項目
 			if (order.has("rd_id") && !order.getString("rd_id").equals("")) {
-				if (order.getString("rd_check").equals("") || order.getString("rd_true").equals("")) {
+				if (order.getString("rd_check").equals("") || order.getString("rd_true").equals("") || order.getString("rd_solve").equals("")) {
 					resp.autoMsssage("MT005");
 					return check;
 				}
@@ -538,6 +542,7 @@ public class RepairListService {
 					rd.setRdufinally(user.getSuaccount());
 					rd.setRdstatement(order.getString("rd_statement"));
 					rd.setRdtrue(order.getString("rd_true"));
+					rd.setRdsolve(order.getString("rd_solve"));
 					rd.setRdexperience(order.getString("rd_experience"));
 					rd.setRdcheck(order.getInt("rd_check"));
 					rd.setRdsvg(order.getString("rd_svg"));
@@ -802,6 +807,7 @@ public class RepairListService {
 			object_detail.put("rd_svg", rd.getRdsvg());
 			object_detail.put("rd_statement", rd.getRdstatement());
 			object_detail.put("rd_true", rd.getRdtrue());
+			object_detail.put("rd_solve", rd.getRdsolve());
 			object_detail.put("rd_experience", rd.getRdexperience());
 
 			// 如果有:產品規格

@@ -134,17 +134,21 @@ select {
 					</div>
 				</div>
 				<div class="col-md-6 m-0 p-2 text-left">
-					<div class="col-md-12 m-0 p-1" id="rd_statement" style="height: 135px">
+					<div class="col-md-12 m-0 p-1" id="rd_statement" style="height: 65px">
 						<div class="col p-0">問題敘述 :</div>
-						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="問題敘述(必填)" disabled="disabled"></textarea>
+						<textarea class="col rounded p-1 detail_ri" rows="1" cols="" placeholder="問題敘述(必填)" disabled="disabled"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 135px">
+					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 115px">
 						<div class="col p-0">故障原因 :</div>
-						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="4" cols="" placeholder="故障原因(必填) Ex: &#xD 1.面板不亮,更換面板OK &#xD 2.無法開機,更換開機按鈕OK" style="border-width: 2px;"></textarea>
+						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="3" cols="" placeholder="故障原因(必填) Ex: &#xD 1.面板不亮 &#xD 2.無法開機" style="border-width: 2px;"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_experience" style="height: 135px">
+					<div class="col-md-12 m-0 p-1" id="rd_solve" style="height: 115px">
+						<div class="col p-0">解決問題 :</div>
+						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="3" cols="" placeholder="解決問題(必填) Ex: &#xD 1.更換面板OK &#xD 2.更換開機按鈕OK" style="border-width: 2px;"></textarea>
+					</div>
+					<div class="col-md-12 m-0 p-1" id="rd_experience" style="height: 115px">
 						<div class="col p-0">備註事項 :</div>
-						<textarea class="col rounded p-1 detail_ri" rows="4" cols="" placeholder="備註事項(選填)Ex: &#xD 1.電烙鐵得加溫至400度 ,會比較好弄"></textarea>
+						<textarea class="col rounded p-1 detail_ri" rows="3" cols="" placeholder="備註事項(選填)Ex: &#xD 1.電烙鐵得加溫至400度 ,會比較好弄"></textarea>
 					</div>
 					<div class="col-md-12 m-0 p-1" id="">
 						<div class="col p-0"></div>
@@ -427,6 +431,7 @@ customized = new Vue({
 			
 			$('#rd_statement textarea').val(documents['rd_statement']);
 			$('#rd_true textarea').val(documents['rd_true']);
+			$('#rd_solve textarea').val(documents['rd_solve']);
 			$('#rd_experience textarea').val(documents['rd_experience']);
 			$('#pr_b_item textarea').val(documents['pr_b_item']);
 			$('#pr_s_item textarea').val(documents['pr_s_item']);
@@ -789,6 +794,7 @@ customized = new Vue({
 			modify_repair['sys_note'] =$('#sys_note input').val();
 			modify_repair['rd_statement'] =$('#rd_statement textarea').val();
 			modify_repair['rd_true'] =$('#rd_true textarea').val();
+			modify_repair['rd_solve'] =$('#rd_solve textarea').val();
 			modify_repair['rd_experience'] =$('#rd_experience textarea').val();
 			modify_repair['pr_b_item'] =$('#pr_b_item textarea').val();
 			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val();

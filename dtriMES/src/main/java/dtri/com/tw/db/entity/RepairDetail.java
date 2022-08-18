@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rd_statement:問題描述<br>
  *      rd_u_qty:單位 數量<br>
  *      rd_true: 實際問題情況<br>
+ *      rd_solve: 解決方案<br>
  *      rd_experience: 修理心得<br>
  *      rd_svg:圖片資料<br>
  *      rd_check:檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢)
@@ -94,6 +95,9 @@ public class RepairDetail {
 
 	@Column(name = "rd_true", columnDefinition = "varchar(250)")
 	private String rdtrue;
+	
+	@Column(name = "rd_solve", columnDefinition = "varchar(250)")
+	private String rdsolve;
 
 	@Column(name = "rd_experience", columnDefinition = "varchar(250)")
 	private String rdexperience;
@@ -271,6 +275,14 @@ public class RepairDetail {
 
 	public void setRdruid(Long rdruid) {
 		this.rdruid = rdruid;
+	}
+
+	public String getRdsolve() {
+		return rdsolve;
+	}
+
+	public void setRdsolve(String rdsolve) {
+		this.rdsolve = rdsolve;
 	}
 
 }
