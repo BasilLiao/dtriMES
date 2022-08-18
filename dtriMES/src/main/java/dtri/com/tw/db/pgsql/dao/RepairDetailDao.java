@@ -42,10 +42,10 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 			+ "(:rrsn     is null or r.rrsn LIKE %:rrsn% ) and "// 產品序號
 			+ "(:rdcheck  is null or d.rdcheck  = :rdcheck ) and "// 檢核狀態
 			+ "(:rrpbtype is null or r.rrpbtype = :rrpbtype ) and "// 產品類型
-			+ "(cast(:rosramdate as date) is null or  :rosramdate > o.roramdate ) and "// 申請日(起)
-			+ "(cast(:roeramdate as date) is null or  :roeramdate < o.roramdate ) and"// 申請日(終)
-			+ "(cast(:rrspbsysmdate as date) is null or  :rrspbsysmdate > r.rrpbsysmdate ) and "// 生產日期(起)
-			+ "(cast(:rrepbsysmdate as date) is null or  :rrepbsysmdate < r.rrpbsysmdate ) and "// 生產日期(終)
+			+ "(cast(:rosramdate as date) is null or  :rosramdate <= o.roramdate ) and "// 申請日(起)
+			+ "(cast(:roeramdate as date) is null or  :roeramdate >= o.roramdate ) and"// 申請日(終)
+			+ "(cast(:rrspbsysmdate as date) is null or  :rrspbsysmdate <= r.rrpbsysmdate ) and "// 生產日期(起)
+			+ "(cast(:rrepbsysmdate as date) is null or  :rrepbsysmdate >= r.rrpbsysmdate ) and "// 生產日期(終)
 			+ "(:rofrom  is null or o.rofrom  = :rofrom ) ") // 來源
 	ArrayList<RepairDetail> findAllByRepairDetail(//
 			String roid, String rrsn, String rdcheck, String rrpbtype, String rdstatement, String rdufinally, //

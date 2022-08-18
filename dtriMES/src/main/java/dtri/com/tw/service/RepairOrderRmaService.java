@@ -90,12 +90,12 @@ public class RepairOrderRmaService {
 				ro_e_date = "完成日", ro_s_date = "寄出日", ro_g_date = "收到日", ro_ram_date = "申請日";
 		// 維修細節
 		String rd_id = "維修(子序號)", /* rd_ro_id = "維修單", */ //
-				rd_rr_sn = "品件序號", rd_u_qty = "品件數量", //
+				rd_rr_sn = "產品序號", rd_u_qty = "數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
 				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
 				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
-		String /* rr_sn = "品件序號", */ rr_c_sn = "客戶品件(序號)", //
+		String /* rr_sn = "產品序號", */ rr_c_sn = "客戶品件(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
 				rr_pr_p_model = "品件型號", rr_pr_w_years = "保固年份", //
 				rr_pb_sys_m_date = "生產日期", rr_pb_type = "品件類型", //

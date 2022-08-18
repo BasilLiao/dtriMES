@@ -159,6 +159,9 @@ select {
 						<button id="search_fi_btn" class="col btn btn-primary btn-sm" type="button">Search</button>
 					</div>
 					<div class="col-md-1 p-1 m-0">
+						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
+					</div>
+					<div class="col-md-1 p-1 m-0">
 						<button id="clear_fi_btn" class="col btn btn-warning btn-sm" type="button">Clear</button>
 					</div>
 				</div>
@@ -199,9 +202,7 @@ select {
 
 			<div class=" col-6  row p-0 m-0 justify-content-end">
 				<div class="col-md-2 pt-1">Action:</div>
-				<div class="col-md-2 p-1 m-0">
-					<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
-				</div>
+
 				<div class="col-md-2 p-1 m-0">
 					<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">All Clear</button>
 				</div>
@@ -322,7 +323,7 @@ customized = new Vue({
 				if(key_name=='rr_sn'){
 					var css_must = ' rounded border-1 border-success ';
 					one_item_body.find(".input_value input").addClass(css_must);
-					one_item_body.find(".input_value input").attr("placeholder","必填:品件序號");
+					one_item_body.find(".input_value input").attr("placeholder","必填:產品序號");
 				}
 				if(key_name=='rd_ru_id'){
 					var css_must = ' rounded border-1 border-dark ';
@@ -439,8 +440,8 @@ customized = new Vue({
 			$('#rd_svg .c_save_value').val(documents['rd_svg']);
 			
 			//僅限於Img
-			 if (documents['rd_svg']!=null){
-				 var imgs = $("#customized #rd_svg #c_imgs_list")[0];//圖片位置
+			 if (documents['rd_svg']!=null && documents['rd_svg']!=""){
+				 var imgs = $("#customized #rd_svg #c_imgs_list")[0];//圖片位置 
 				 console.log("img:");
 				 var key_value = JSON.parse(documents['rd_svg']);
 				 for(var j=0;j<key_value.length;j++){
@@ -610,18 +611,7 @@ customized = new Vue({
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
-				//單據項目
-				$('.detail_list').remove();
-				//單據資料
-				$('#ro_id input').val("");
-				$('#rd_ru_id select').val("");
-				$('#ro_check select').val("");
-				//客戶資料
-				$('#c_c_name input').val("");
-				$('#c_name input').val("");
-				$('#c_address textarea').val("");
-				$('#c_tex input').val("");
-				$('#c_fax input').val("");
+				customized.removeAll();
 			});
 			//存資料(可能:新增 可能修改)
 			$(document).on("click","#rd_save_btn", function (event) {
@@ -777,6 +767,20 @@ customized = new Vue({
 				$("#part_repair").slideToggle("fast");
 			});
 		},
+		//清除所有資訊
+		removeAll(){
+			//單據項目
+			$('.detail_list').remove();
+			//單據資料
+			$('#ro_id input').val("");
+			$('#rd_ru_id select').val("");
+			$('#ro_check select').val("");
+			//表單資料
+			$('.detail_ri').val("");
+			$('#rd_id input').removeAttr("disabled","");
+			$('#rr_sn input').removeAttr("disabled","");
+			$('#rd_svg div img').attr('src','./img/imgFrame.png');
+		},
 		//存檔
 		sendSave() {
 			main.loading(true);
@@ -832,7 +836,7 @@ customized = new Vue({
 			req.page_batch=this.page_batch;
 			req.page_now_nb=this.page_now_nb;
 			req.html_body= "";
-			req.call_bk_fn="customized";
+			req.call_bk_fn="customized_save";
 			req.call_bk_vals={};
 			req.call_bk_vals['search']=true;
 			s_data.req_content = req;
@@ -891,6 +895,13 @@ customized = new Vue({
 				search.rd_id = 	$('#rd_id input').val();
 				search.rr_sn = 	$('#rr_sn input').val();
 				customized.searchSend(search);
+			}
+		},
+		saveReturn(){
+			main.loading(false);
+			console.log("saveReturn repair_list");
+			if(main.allData.info_color=="success"){
+				this.removeAll();
 			}
 		},
 	},

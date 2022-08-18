@@ -24,6 +24,7 @@ import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.entity.Workstation;
 import dtri.com.tw.db.entity.WorkstationClass;
 import dtri.com.tw.db.entity.WorkstationProgram;
+import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductiondailyDao;
 import dtri.com.tw.db.pgsql.dao.SystemUserDao;
@@ -53,6 +54,9 @@ public class ProductionDailyService {
 	@Autowired
 	private ProductionHeaderDao headerDao;
 
+	@Autowired
+	private ProductionBodyDao bodyDao;
+
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
@@ -76,8 +80,8 @@ public class ProductionDailyService {
 		// 功能-名稱編譯
 		String pd_wc_class = "班別", sys_m_date = "時間", //
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
-				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_pr_ok_qty = "累計完成", pd_t_qty = "日完成數", //
-				pd_w_names = "各站作業員工(清單)", sys_note = "備註";
+				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_pr_bad_qty = "待修數", //
+				pd_pr_ok_qty = "累計完成", pd_t_qty = "日完成數", pd_w_names = "各站作業員工(清單)", sys_note = "備註";
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -99,6 +103,8 @@ public class ProductionDailyService {
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_bad_qty", FFS.h_t(pd_pr_bad_qty, "110px", FFM.Wri.W_Y));
+
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
@@ -288,6 +294,13 @@ public class ProductionDailyService {
 					dailyBean.setPdwcclass(pdOne.getPdwcclass());
 					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
 					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
+					//待修數量
+					ProductionRecords rds = new ProductionRecords();
+					rds.setPrid(pdOne.getPdprid());
+					List<ProductionHeader> hds = headerDao.findAllByProductionRecords(rds);
+
+					int fixNb = bodyDao.findPbbsnPbscheduleFixList(hds.get(0).getPhpbgid(), "_N").size();
+					dailyBean.setPdprbadqty(fixNb + "");
 					// 如果是最後一站
 					int tqty = 0;
 					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
@@ -352,6 +365,7 @@ public class ProductionDailyService {
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_ok_qty", pdb_val.getPdprokqty());
+			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_pr_bad_qty", pdb_val.getPdprbadqty());
 			object_dp_one.put(FFS.ord((ord_dp += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
 
 			// 每日總工時

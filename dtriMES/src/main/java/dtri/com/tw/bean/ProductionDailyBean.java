@@ -1,7 +1,5 @@
 package dtri.com.tw.bean;
 
-import java.util.Date;
-
 import org.json.JSONArray;
 
 /**
@@ -22,7 +20,9 @@ public class ProductionDailyBean {
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
 	private String pdprtotal;//工單 總數量
-	private String pdprokqty;//工單 目前數量
+	private String pdprokqty;//工單 目前好數量
+	private String pdprbadqty;//工單 目前壞掉數量
+	
 	private String pdtqty;
 	private Double pdttime;// 總時間
 
@@ -120,6 +120,14 @@ public class ProductionDailyBean {
 
 	public void setPdprokqty(String pdprokqty) {
 		this.pdprokqty = pdprokqty;
+	}
+
+	public String getPdprbadqty() {
+		return pdprbadqty;
+	}
+
+	public void setPdprbadqty(String pdprbadqty) {
+		this.pdprbadqty = pdprbadqty;
 	}
 
 }
