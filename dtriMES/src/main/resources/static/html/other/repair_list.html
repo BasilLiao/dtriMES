@@ -420,6 +420,7 @@ customized = new Vue({
 			}
 			
 			//注入 單據資料
+			$('#rr_sn input').focus();
 			$('#rd_ru_id select').val(documents['rd_ru_id']);
 			$('#rd_id input').val(documents['rd_id']);
 			$('#rr_sn input').val(documents['rr_sn']);
@@ -431,7 +432,11 @@ customized = new Vue({
 			$('#sys_note input').val(documents['sys_note']);
 			
 			$('#rd_statement textarea').val(documents['rd_statement']);
-			$('#rd_true textarea').val(documents['rd_true']);
+			if(documents['rd_true']==null || documents['rd_true']==""){
+				$('#rd_true textarea').val(documents['rd_statement']);
+			}else{
+				$('#rd_true textarea').val(documents['rd_true']);				
+			}
 			$('#rd_solve textarea').val(documents['rd_solve']);
 			$('#rd_experience textarea').val(documents['rd_experience']);
 			$('#pr_b_item textarea').val(documents['pr_b_item']);
@@ -608,6 +613,7 @@ customized = new Vue({
 				$('#rd_id input').removeAttr("disabled","");
 				$('#rr_sn input').removeAttr("disabled","");
 				$('#rd_svg div img').attr('src','./img/imgFrame.png');
+				$('#rr_sn input').focus();
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
@@ -780,6 +786,7 @@ customized = new Vue({
 			$('#rd_id input').removeAttr("disabled","");
 			$('#rr_sn input').removeAttr("disabled","");
 			$('#rd_svg div img').attr('src','./img/imgFrame.png');
+			$('#rr_sn input').focus();
 		},
 		//存檔
 		sendSave() {

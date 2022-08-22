@@ -74,16 +74,16 @@ public class RepairHistoryService {
 				ro_e_date = "完成日", ro_s_date = "寄出日", ro_g_date = "收到日", ro_ram_date = "申請日";
 		// 維修細節
 		String rd_id = "維修項目(序號)", /* rd_ro_id = "維修單", */ //
-				/* rd_rr_sn = "產品序號", */ rd_u_qty = "品件數量", //
+				/* rd_rr_sn = "產品序號", */ rd_u_qty = "產品數量", //
 				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
-				rd_true = "實際問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
+				rd_true = "故障原因", rd_solve = "解決問題", rd_experience = "備註事項", rd_check = "檢核狀態", //
 				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
-		String rr_sn = "品件(序號)", rr_c_sn = "客戶品件(序號)", //
+		String rr_sn = "產品(序號)", rr_c_sn = "客戶產品(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
-				rr_pr_p_model = "品件型號", rr_pr_w_years = "保固年份", //
-				rr_pb_sys_m_date = "生產日期", rr_pb_type = "品件類型", //
-				rr_v = "版本號", rr_f_ok = "品件狀態", rr_expired = "保固內?";
+				rr_pr_p_model = "產品型號", rr_pr_w_years = "保固年份", //
+				rr_pb_sys_m_date = "生產日期", rr_pb_type = "產品類型", //
+				rr_v = "版本號", rr_f_ok = "產品狀態", rr_expired = "保固內?";
 
 		// 固定-名稱編譯
 		String sys_c_date = "建立時間", sys_c_user = "建立人", sys_m_date = "修改時間", sys_m_user = "修改人", //
@@ -114,7 +114,9 @@ public class RepairHistoryService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_finally", FFS.h_t(rd_u_finally, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "300px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "300px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_solve", FFS.h_t(rd_solve, "300px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_experience", FFS.h_t(rd_experience, "300px", FFM.Wri.W_Y));
+
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_svg", FFS.h_t(rd_svg, "150px", FFM.Wri.W_Y));
 
 			// 產品資料
@@ -186,6 +188,7 @@ public class RepairHistoryService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_statement", rd_statement));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.IMG, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_svg", rd_svg));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_true", rd_true));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_solve", rd_solve));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_experience", rd_experience));
 
 			// 產品(品件)
@@ -323,6 +326,7 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd.getRdufinally());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve() == null ? "" : rd.getRdsvg());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg() == null ? "[]" : rd.getRdsvg());
 
@@ -405,6 +409,7 @@ public class RepairHistoryService {
 					rd.setRdstatement(data.getString("rd_statement"));
 					rd.setRdsvg(data.getString("rd_svg"));
 					rd.setRdtrue(data.getString("rd_true"));
+					rd.setRdexperience(data.getString("rd_solve"));
 					rd.setRdexperience(data.getString("rd_experience"));
 					rd.setSysmdate(new Date());
 					rd.setSysmuser(user.getSuaccount());

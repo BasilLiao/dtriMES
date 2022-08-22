@@ -1274,14 +1274,27 @@ public class RepairOrderDtrService {
 			return check;
 		}
 
-		// 維修單自動生成
+		// 維修單-自動生成
 		Date today = new Date();
 		String yyyy_MM_dd_HH_mm_ss = Fm_Time.to_y_M_d(today) + " 00:00:00";
 		Date todayStr = Fm_Time.toDateTime(yyyy_MM_dd_HH_mm_ss);// 今日起始
 		String ro_id = "DTR" + todayStr.getTime();
 		ArrayList<RepairOrder> orders = orderDao.findAllByRoid(ro_id);
-		// 客戶資料(工廠資訊)自動生成
+		//維修項目-自動生成
+		Boolean check_rep = true;
+		int rd_id_nb = 0;
+		String rd_id = "D0000";
+		// 檢查重複?->重複則->下一筆新序號
+		while (check_rep) {
+			if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
+				rd_id = "D" + String.format("%04d", rd_id_nb++);
+			} else {
+				check_rep = false;
+			}
+		}
+		// 客戶資料(工廠資訊)-自動生成
 		ArrayList<Customer> customers = customerDao.findAllByCustomer(0L, "美商定誼", null, 0, null);
+		
 
 		// 共用
 		RepairOrder obj_h = new RepairOrder();// 維修單資料-共用
@@ -1300,13 +1313,13 @@ public class RepairOrderDtrService {
 			obj_h.setRoramdate(new Date());
 			obj_h.setDetails(null);
 			obj_h.setSysheader(true);
-			orderDao.save(obj_h);
+			//orderDao.save(obj_h);
 		} else {
+			orders.get(0).getDetails().clear();
 			obj_h = orders.get(0);
 			obj_h.setSysmdate(new Date());
 			obj_h.setSysmuser(user.getSuaccount());
 		}
-
 		// 維修產品登記
 		RepairRegister register = new RepairRegister();
 		register.setRrsn(data.getString("rr_sn"));
@@ -1327,19 +1340,8 @@ public class RepairOrderDtrService {
 		register.setSysmuser(obj_h.getSysmuser());
 		register.setSyscuser(obj_h.getSyscuser());
 		registerDao.save(register);
-
+		
 		// 維修單細節
-		// 檢查重複?->重複則->下一筆新序號
-		Boolean check_rep = true;
-		int rd_id_nb = 0;
-		String rd_id = "D0000";
-		while (check_rep) {
-			if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-				rd_id = "D" + String.format("%04d", rd_id_nb++);
-			} else {
-				check_rep = false;
-			}
-		}
 		RepairDetail obj_b = new RepairDetail();// 維修問題清單
 		obj_b.setRdid(ro_id + '-' + rd_id);
 		obj_b.setRdstatement(data.getString("rd_statement"));
@@ -1347,6 +1349,7 @@ public class RepairOrderDtrService {
 		obj_b.setRduqty(data.getInt("rd_u_qty"));
 		obj_b.setRdtrue("");
 		obj_b.setRdexperience("");
+		obj_b.setRdsolve("");
 		obj_b.setRdcheck(data.getInt("rd_check"));
 		obj_b.setRdufinally("");
 		obj_b.setOrder(obj_h);
@@ -1360,7 +1363,6 @@ public class RepairOrderDtrService {
 		obj_b.setSysheader(false);
 		obj_b.setRegister(register);
 		detailDao.save(obj_b);
-
 		return true;
 	}
 

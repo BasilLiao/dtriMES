@@ -82,11 +82,11 @@ public class RepairListService {
 				rd_true = "實際問題", rd_solve = "解決問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
 				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
-		String /* rr_sn = "產品序號", */ rr_c_sn = "客戶品件(序號)", //
+		String /* rr_sn = "產品序號", */ rr_c_sn = "客戶產品(序號)", //
 				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
-				rr_pr_p_model = "品件型號", rr_pr_w_years = "保固年份", //
-				rr_pb_sys_m_date = "生產日期", rr_pb_type = "品件類型", //
-				rr_v = "版本號", rr_f_ok = "品件狀態", rr_expired = "保固內?";
+				rr_pr_p_model = "產品型號", rr_pr_w_years = "保固年份", //
+				rr_pb_sys_m_date = "生產日期", rr_pb_type = "產品類型", //
+				rr_v = "版本號", rr_f_ok = "產品狀態", rr_expired = "保固內?";
 
 		// 固定-名稱編譯
 		String sys_c_date = "建立時間", sys_c_user = "建立人", sys_m_date = "修改時間", sys_m_user = "修改人", //
@@ -258,10 +258,10 @@ public class RepairListService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve()== null ? "" : rd.getRdsolve());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", rr.getRrprpqty());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel());
@@ -555,6 +555,8 @@ public class RepairListService {
 
 					// 已處理(尚未選)
 					if (order.getInt("rd_check") == 1) {
+						resp.autoMsssage("MT005");
+						check = false;
 						return check;
 					}
 					// 已處理(修復)

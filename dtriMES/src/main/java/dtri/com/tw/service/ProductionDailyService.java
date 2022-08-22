@@ -90,6 +90,7 @@ public class ProductionDailyService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			JSONObject object_dp = new JSONObject();
+			JSONObject object_dp_all = new JSONObject();
 			JSONObject object_dwh = new JSONObject();
 			JSONObject object_dnoe = new JSONObject();
 
@@ -111,6 +112,23 @@ public class ProductionDailyService {
 					object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
 			}
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
+
+			// 總數量累計_header_dp
+			int ord_dp_all = 0;
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_line", FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_class", FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_p_model", FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
+			for (Workstation w_one : workstations) {
+				if (w_one.getWgid() != 0)
+					object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + w_one.getWcname(), FFS.h_t(w_one.getWpbname(), "80px", FFM.Wri.W_Y));
+			}
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
 			// 總工時
 			int ord_dwh = 0;
@@ -149,6 +167,7 @@ public class ProductionDailyService {
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names", FFS.h_t(pd_w_names, "550px", FFM.Wri.W_Y));
 
 			object_header.put("header_dp", object_dp);
+			object_header.put("header_dp_all", object_dp_all);
 			object_header.put("header_dwh", object_dwh);
 			object_header.put("header_dnoe", object_dnoe);
 			bean.setHeader(object_header);
@@ -294,7 +313,7 @@ public class ProductionDailyService {
 					dailyBean.setPdwcclass(pdOne.getPdwcclass());
 					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
 					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
-					//待修數量
+					// 待修數量
 					ProductionRecords rds = new ProductionRecords();
 					rds.setPrid(pdOne.getPdprid());
 					List<ProductionHeader> hds = headerDao.findAllByProductionRecords(rds);

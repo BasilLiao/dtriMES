@@ -262,7 +262,8 @@ search = new Vue({
 			this.list_son = list_son;
 			console.log(list.length, body_type.type);
 			//console.log(new Date());
-			//舊有資料清除
+			
+			//可能 初次載入就沒資料
 			if (list.length < 1) {
 				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
 				if (this.page_batch >= 1) {
@@ -270,6 +271,7 @@ search = new Vue({
 				}
 				return false;
 			}
+			//舊有資料清除
 			$("#search .search_example_list_son tr").remove();
 			$("#search .search_data_list").remove();
 
@@ -650,23 +652,29 @@ search = new Vue({
 		searchReturn() {
 			main.loading(false);
 			console.log("searchReturn");
-			//有可能沒有下一頁
+			//如果 資料包裝有-> body
 			if (main.allData.body != null) {
-				this.setDataList(main.allData.body.search,
-					main.allData.body.search_son,
-					main.allData.body_type);
-
-				if (main.allData.cell_refresh != null) {
-					console.log(main.allData.cell_refresh);
-					//編輯-模板更新
-					modify.setDataTitleUpdate(main.allData.cell_refresh);
-					//modify.setDataTitleDelete(main.allData.header);
-					//modify.selectAllInit();
+				//可能 body->沒有資料
+				if (main.allData.body.search.length < 1) {
+					t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+					//回歸上一次分頁
+					this.pageChangeCheck(true);
+					return false;
+				}else{
+					//body->有資料
+					this.setDataList(main.allData.body.search,
+						main.allData.body.search_son,
+						main.allData.body_type);
+	
+					if (main.allData.cell_refresh != null) {
+						console.log(main.allData.cell_refresh);
+						//編輯-模板更新
+						modify.setDataTitleUpdate(main.allData.cell_refresh);
+					}					
 				}
 			} else {
+				//回歸上一次分頁
 				this.pageChangeCheck(true);
-				//$(".search_example_finds input").val("");
-				//$(".search_example_finds select").val("");
 			}
 		},
 		//v====[分頁功能]====v
