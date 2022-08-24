@@ -52,10 +52,11 @@ public class RepairHistoryService {
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("rdid").descending());
 		String search_ro_id = null;
 		String search_rr_sn = null;
+		String search_rr_pr_id = null;
 		String search_rd_statement = null;
 		String search_rd_u_finally = null;
 
-		String search_rd_check = null;
+		String search_rd_check = "-1";
 		String search_rr_pb_type = null;
 
 		Date rosramdate = null;
@@ -234,6 +235,7 @@ public class RepairHistoryService {
 			// 維修單
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ro_id", ro_id, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rr_sn", rr_sn, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rr_pr_id", rr_pr_id, n_val));
 
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
@@ -267,8 +269,10 @@ public class RepairHistoryService {
 			// 進行-特定查詢
 			search_ro_id = body.getJSONObject("search").getString("ro_id");
 			search_ro_id = search_ro_id.equals("") ? null : search_ro_id;
+			search_rr_pr_id = body.getJSONObject("search").getString("rr_pr_id");
+			search_rr_pr_id = search_rr_pr_id.equals("") ? null : search_rr_pr_id;
 			search_rd_check = body.getJSONObject("search").getString("rd_check");
-			search_rd_check = search_rd_check.equals("") ? null : search_rd_check;
+			search_rd_check = search_rd_check.equals("") ? "-1" : search_rd_check;
 			search_rr_sn = body.getJSONObject("search").getString("rr_sn");
 			search_rr_sn = search_rr_sn.equals("") ? null : search_rr_sn;
 			search_rr_pb_type = body.getJSONObject("search").getString("rr_pb_type");
@@ -299,9 +303,9 @@ public class RepairHistoryService {
 			return false;
 		}
 
-		// 父類別物件
+		// 查詢
 		rdids = detailDao.findAllByRepairDetail(//
-				search_ro_id, search_rr_sn, search_rd_check, search_rr_pb_type, //
+				search_ro_id, search_rr_sn, search_rr_pr_id, Integer.parseInt(search_rd_check), search_rr_pb_type, //
 				search_rd_statement, search_rd_u_finally, rosramdate, roeramdate, //
 				rrspbsysmdate, rrepbsysmdate, null, page_r);
 
@@ -326,7 +330,7 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd.getRdufinally());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve() == null ? "" : rd.getRdsvg());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve() == null ? "" : rd.getRdsolve());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg() == null ? "[]" : rd.getRdsvg());
 

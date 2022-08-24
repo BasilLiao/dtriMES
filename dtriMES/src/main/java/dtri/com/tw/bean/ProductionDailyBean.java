@@ -1,6 +1,7 @@
 package dtri.com.tw.bean;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * 呈現報告
@@ -17,14 +18,33 @@ public class ProductionDailyBean {
 	private String pdwcclass;// 班別
 	private String pdprid;// 工單
 	private JSONArray pdwpbname;// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
+	private JSONObject pdphpbschedule;// 工作站累計數
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
-	private String pdprtotal;//工單 總數量
-	private String pdprokqty;//工單 目前好數量
-	private String pdprbadqty;//工單 目前壞掉數量
-	
+	private String pdprtotal;// 工單 總數量
+	private String pdprokqty;// 工單 累計好數量
+	private String pdprbadqty;// 工單 累計壞掉數量
+	private String pdpryield;// 工單 良率比
+	private String pdbadqty;// 工單 目前壞掉數量
+
 	private String pdtqty;
 	private Double pdttime;// 總時間
+
+	public String getPdprbadqty() {
+		return pdprbadqty;
+	}
+
+	public void setPdprbadqty(String pdprbadqty) {
+		this.pdprbadqty = pdprbadqty;
+	}
+
+	public String getPdpryield() {
+		return pdpryield;
+	}
+
+	public void setPdpryield(String pdpryield) {
+		this.pdpryield = pdpryield;
+	}
 
 	public String getSysmdate() {
 		return sysmdate;
@@ -89,7 +109,7 @@ public class ProductionDailyBean {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getPdtqty() {
 		return pdtqty;
 	}
@@ -122,12 +142,20 @@ public class ProductionDailyBean {
 		this.pdprokqty = pdprokqty;
 	}
 
-	public String getPdprbadqty() {
-		return pdprbadqty;
+	public String getPdbadqty() {
+		return pdbadqty;
 	}
 
-	public void setPdprbadqty(String pdprbadqty) {
-		this.pdprbadqty = pdprbadqty;
+	public void setPdbadqty(String pdbadqty) {
+		this.pdbadqty = pdbadqty;
+	}
+
+	public JSONObject getPdphpbschedule() {
+		return pdphpbschedule;
+	}
+
+	public void setPdphpbschedule(JSONObject pdphpbschedule) {
+		this.pdphpbschedule = pdphpbschedule;
 	}
 
 }

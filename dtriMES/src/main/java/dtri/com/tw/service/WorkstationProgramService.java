@@ -57,6 +57,7 @@ public class WorkstationProgramService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_g_id", FFS.h_t("群組[ID]", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_name", FFS.h_t("流程序[名稱]", "250px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_c_name", FFS.h_t("流程序[代碼]", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_c_n_yield", FFS.h_t("良率計算 工作站[代碼]", "200px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_w_g_id", FFS.h_t("工作站[ID]", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_pb_name", FFS.h_t("工作站[名稱]", "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_c_name", FFS.h_t("工作站[代碼]", "150px", FFM.Wri.W_N));
@@ -83,6 +84,7 @@ public class WorkstationProgramService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "wp_g_id", "群組ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_name", "流程序[名稱]"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "wp_c_name", "流程序[代碼]"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_c_n_yield", "良率計算 工作站[代碼]"));
 
 			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, PageRequest.of(0, 999));
 			workstations.forEach(w -> {
@@ -107,12 +109,12 @@ public class WorkstationProgramService {
 
 			// 放入群主指定 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_g_m = new JSONArray();
-
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_S, "col-md-1", "sys_sort", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "wp_w_g_id", ""));
 
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "wp_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-1", "wp_c_name", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-1", "wp_c_n_yield", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_N, "col-md-1", "w_c_name", ""));
 
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_N, "col-md-1", "sys_sort", ""));
@@ -161,6 +163,7 @@ public class WorkstationProgramService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_g_id", one.getWpgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_name", one.getWpname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_c_name", one.getWpcname());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_c_n_yield", one.getWpcnyield() == null ? "" : one.getWpcnyield());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_w_g_id", one.getWpwgid());
 			Workstation work = workstationDao.findAllByWgidOrderBySyssortAsc(one.getWpwgid()).get(0);
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", work.getWpbname());
@@ -190,6 +193,7 @@ public class WorkstationProgramService {
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_g_id", one.getWpgid());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_name", one.getWpname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_c_name", one.getWpcname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_c_n_yield", one.getWpcnyield() == null ? "" : one.getWpcnyield());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wp_w_g_id", one.getWpwgid());
 			Workstation work = workstationDao.findAllByWgidOrderBySyssortAsc(one.getWpwgid()).get(0);
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", work.getWpbname());
@@ -239,6 +243,7 @@ public class WorkstationProgramService {
 					sys_wp_f = new WorkstationProgram();
 					Long wpgid = programDao.getWorkstation_program_g_seq();
 					sys_wp_f.setWpgid(wpgid);
+					sys_wp_f.setWpcnyield(data.getString("wp_c_n_yield"));
 					sys_wp_f.setWpcname(data.getString("wp_c_name"));
 					sys_wp_f.setWpname(data.getString("wp_name"));
 					sys_wp_f.setWpwgid(0l);
@@ -256,6 +261,7 @@ public class WorkstationProgramService {
 					}
 					// 子
 					sys_wp = new WorkstationProgram();
+					sys_wp.setWpcnyield(sys_wp_f.getWpcnyield());
 					sys_wp.setWpcname(sys_wp_f.getWpcname());
 					sys_wp.setWpname(sys_wp_f.getWpname());
 					sys_wp.setWpgid(sys_wp_f.getWpgid());
@@ -303,6 +309,7 @@ public class WorkstationProgramService {
 					sys_wp_f = new WorkstationProgram();
 					Long wpgid = programDao.getWorkstation_program_g_seq();
 					sys_wp_f.setWpgid(wpgid);
+					sys_wp_f.setWpcnyield(data.getString("wp_c_n_yield"));
 					sys_wp_f.setWpcname(data.getString("wp_c_name"));
 					sys_wp_f.setWpname(data.getString("wp_name"));
 					sys_wp_f.setWpwgid(0l);
@@ -316,6 +323,7 @@ public class WorkstationProgramService {
 				} else {
 					// 子
 					sys_wp = new WorkstationProgram();
+					sys_wp.setWpcnyield(sys_wp_f.getWpcnyield());
 					sys_wp.setWpcname(sys_wp_f.getWpcname());
 					sys_wp.setWpname(sys_wp_f.getWpname());
 					sys_wp.setWpgid(sys_wp_f.getWpgid());
@@ -358,9 +366,10 @@ public class WorkstationProgramService {
 					}
 					sys_p_f = new WorkstationProgram();
 					sys_p_f.setWpid(data.getLong("wp_id"));
-					sys_p_f.setWpname(data.getString("wp_name"));
 					sys_p_f.setWpgid(data.getLong("wp_g_id"));
+					sys_p_f.setWpname(data.getString("wp_name"));
 					sys_p_f.setWpcname(data.getString("wp_c_name"));
+					sys_p_f.setWpcnyield(data.getString("wp_c_n_yield"));
 					sys_p_f.setWpwgid(0l);
 					sys_p_f.setSysnote("");
 					sys_p_f.setSyssort(0);
@@ -375,6 +384,7 @@ public class WorkstationProgramService {
 					sys_p_s.forEach(wp -> {
 						wp.setWpname(data.getString("wp_name"));
 						wp.setWpcname(data.getString("wp_c_name"));
+						wp.setWpcnyield(data.getString("wp_c_n_yield"));
 					});
 					programDao.saveAll(sys_p_s);
 				} else {
@@ -383,6 +393,7 @@ public class WorkstationProgramService {
 					sys_p.setWpgid(sys_p_f.getWpgid());
 					sys_p.setWpname(sys_p_f.getWpname());
 					sys_p.setWpcname(sys_p_f.getWpcname());
+					sys_p.setWpcnyield(sys_p_f.getWpcnyield());
 					sys_p.setWpwgid(data.getLong("wp_w_g_id"));
 					sys_p.setSysnote("");
 					sys_p.setSyssort(data.getInt("sys_sort"));

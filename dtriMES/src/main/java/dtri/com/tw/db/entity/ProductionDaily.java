@@ -147,6 +147,64 @@ public class ProductionDaily {
 	@Column(name = "pd_pr_okqty", columnDefinition = "int default 0")
 	private Integer pdprokqty;
 
+	@Column(name = "pd_pr_bad_qty", columnDefinition = "int default 0")
+	private Integer pdprbadqty;
+
+	@Column(name = "pd_pr_yield", columnDefinition = "varchar(50)")
+	private String pdpryield;
+
+	@Column(name = "pd_tt_qty", columnDefinition = "int default 0")
+	private Integer pdttqty;
+
+	@Column(name = "pd_tt_bad_qty", columnDefinition = "int default 0")
+	private Integer pdttbadqty;
+
+	@Column(name = "pd_tt_yield", columnDefinition = "varchar(50)")
+	private String pdttyield;
+
+	@Column(name = "pd_ph_pb_schedule", columnDefinition = "text default ''")
+	private String pdphpbschedule;
+
+	public Integer getPdprbadqty() {
+		return pdprbadqty;
+	}
+
+	public void setPdprbadqty(Integer pdprbadqty) {
+		this.pdprbadqty = pdprbadqty;
+	}
+
+	public String getPdpryield() {
+		return pdpryield;
+	}
+
+	public void setPdpryield(String pdpryield) {
+		this.pdpryield = pdpryield;
+	}
+
+	public Integer getPdttqty() {
+		return pdttqty;
+	}
+
+	public void setPdttqty(Integer pdttqty) {
+		this.pdttqty = pdttqty;
+	}
+
+	public Integer getPdttbadqty() {
+		return pdttbadqty;
+	}
+
+	public void setPdttbadqty(Integer pdttbadqty) {
+		this.pdttbadqty = pdttbadqty;
+	}
+
+	public String getPdttyield() {
+		return pdttyield;
+	}
+
+	public void setPdttyield(String pdttyield) {
+		this.pdttyield = pdttyield;
+	}
+
 	public Date getSyscdate() {
 		return syscdate;
 	}
@@ -387,6 +445,14 @@ public class ProductionDaily {
 				+ ", pdwcclass=" + pdwcclass + ", pdwnames=" + pdwnames + ", pdwaccounts=" + pdwaccounts + ", pdlsuid=" + pdlsuid + ", pdlname=" + pdlname
 				+ ", pdwcname=" + pdwcname + ", pdwpbname=" + pdwpbname + ", pdprid=" + pdprid + ", pdprpmodel=" + pdprpmodel + ", pdprbomid=" + pdprbomid
 				+ ", pdpbbsn=" + pdpbbsn + ", pdprtotal=" + pdprtotal + ", pdprokqty=" + pdprokqty + "]";
+	}
+
+	public String getPdphpbschedule() {
+		return pdphpbschedule;
+	}
+
+	public void setPdphpbschedule(String pdphpbschedule) {
+		this.pdphpbschedule = pdphpbschedule;
 	}
 
 }

@@ -31,6 +31,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      wp_name : 工作程序名稱<br>
  *      wp_w_g_id : 工作站(群組)<br>
  *      wp_c_name :2維代號(選擇工作流程)<br>
+ *      wp_c_n_yield : 工作程序指定統計良率<br>
  * 
  * 
  **/
@@ -96,6 +97,10 @@ public class WorkstationProgram {
 
 	@Column(name = "wp_c_name", nullable = false, columnDefinition = "varchar(50)")
 	private String wpcname;
+	
+	@Column(name = "wp_c_n_yield", columnDefinition = "varchar(50)")
+	private String wpcnyield;
+	
 
 	public Boolean getSysheader() {
 		return sysheader;
@@ -207,5 +212,13 @@ public class WorkstationProgram {
 
 	public void setWpcname(String wpcname) {
 		this.wpcname = wpcname;
+	}
+
+	public String getWpcnyield() {
+		return wpcnyield;
+	}
+
+	public void setWpcnyield(String wpcnyield) {
+		this.wpcnyield = wpcnyield;
 	}
 }

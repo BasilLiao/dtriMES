@@ -13,6 +13,8 @@ public interface RepairRegisterDao extends JpaRepository<RepairRegister, String>
 
 	ArrayList<RepairRegister> findAllByRrsn(String rrsn);
 
+	ArrayList<RepairRegister> findAllByRrprid(String rrprid);
+
 	// 移除資料
 	Long deleteByDetails(String details);
 

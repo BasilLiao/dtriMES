@@ -295,7 +295,7 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_quantity",
 										one.getProductionRecords().getPrpokquantity() + "／" + one.getProductionRecords().getPrpquantity());
 
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb+"／"+all_nb_bad);
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb + "／" + all_nb_bad);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt", pb_l_dt);
@@ -1249,6 +1249,7 @@ public class WorkstationWorkService {
 					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
 					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱
 					newDaily.setPdwaccounts(list.getString("w_c_us_name")); // 工作站人員
+					newDaily.setPdphpbschedule(p_header.getPhpbschedule());// 進度資料
 					pDailyService.setData(newDaily, user);
 
 				} else {
