@@ -504,7 +504,7 @@ public class WorkstationWorkService {
 					// Method set_method = null;
 					Method get_method = null;
 					boolean check_fn = true;// 是否完成此 品製成
-					boolean f_code_check = true;// 是否需要 維修
+					boolean f_code_check = true;// 是否需要 維修 (true = 不用修 /false=要修)
 					String f_code = "";// 維修代號
 					String w_c_name = "";// 工作站
 					Boolean set_replace = true;// 重複過站?true=重複過站/ false = 沒重複過站
@@ -566,8 +566,6 @@ public class WorkstationWorkService {
 									if (body_value == null) {
 										body_value = "";
 									}
-									// set_method = body_one.getClass().getMethod(set_name, String.class);
-									// set_method.invoke(body_one, body_value);
 									body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 								}
 								body_map_now.put("setPblpath", new JSONObject().put("value", body_one_old.getPblpath()).put("type", String.class));
@@ -576,10 +574,6 @@ public class WorkstationWorkService {
 								body_map_now.put("setPbldt", new JSONObject().put(//
 										"value", body_one_old.getPbldt() == null ? "isNull" : body_one_old.getPbldt()).put("type", Date.class));
 
-								// body_one.setPblpath(body_one_old.getPblpath());
-								// body_one.setPblsize(body_one_old.getPblsize());
-								// body_one.setPbltext(body_one_old.getPbltext());
-								// body_one.setPbldt(body_one_old.getPbldt());
 							} catch (Exception e) {
 								log.error(e.toString());
 								e.printStackTrace();
@@ -631,7 +625,7 @@ public class WorkstationWorkService {
 					}
 
 					// ========Step3.錯誤代碼 ->有則不通過 但可存檔========
-					if (!list.has("pb_f_value") || list.getString("pb_f_value").equals("")) {
+					if (list.getString("pb_f_value").equals("")) {
 						w_c_name = list.getString("w_c_name") + "_Y";
 					} else {
 						w_c_name = list.getString("w_c_name") + "_N";
@@ -713,7 +707,6 @@ public class WorkstationWorkService {
 									String set_name = cell_name.replace("pb_value", "setPbvalue");
 									String get_name = cell_name.replace("pb_value", "getPbvalue");
 									get_method = title_body.getClass().getMethod(get_name);
-									// set_method = body_one.getClass().getMethod(set_name, String.class);
 									// 取得方法名稱->取出自定義 欄位名稱
 									String title_name = (String) get_method.invoke(title_body);
 
@@ -785,7 +778,6 @@ public class WorkstationWorkService {
 													check = body_value.matches("^[0-9]*$");
 													error = "只能輸入[0-9]";
 													break;
-
 												}
 												if (!check) {
 													log.info("WK014:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
@@ -832,9 +824,6 @@ public class WorkstationWorkService {
 										}
 									}
 									body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
-									// set_method.invoke(body_one, body_value);
-								} else {
-
 								}
 							}
 
@@ -858,7 +847,6 @@ public class WorkstationWorkService {
 								bean.autoMsssage("WK017");
 								return false;
 							}
-
 						} catch (NoSuchMethodException e) {
 							log.error(e.toString());
 							e.printStackTrace();
@@ -915,7 +903,6 @@ public class WorkstationWorkService {
 												String set_name = "setPbvalue" + String.format("%02d", j + 1);
 												String cell_name = "pb_value" + String.format("%02d", j + 1);
 												// Step6-1. 取得方法名稱->取出自定義 欄位名稱
-												// set_method = body_one.getClass().getMethod(set_name, String.class);
 												get_method = title_body.getClass().getMethod(get_name);
 												String title_name = (String) get_method.invoke(title_body);
 
@@ -1024,8 +1011,6 @@ public class WorkstationWorkService {
 															}
 														}
 													}
-
-													// set_method.invoke(body_one, body_value);
 													body_map_now.put(set_name, new JSONObject().put("value", body_value).put("type", String.class));
 												}
 											}
@@ -1058,19 +1043,13 @@ public class WorkstationWorkService {
 											bean.autoMsssage("WK015");
 											return false;
 										}
-										body_map_now.put("setPblpath",
-												new JSONObject().put("value", list_log.getString("pb_l_path")).put("type", String.class));
-										body_map_now.put("setPblsize",
-												new JSONObject().put("value", list_log.getInt("pb_l_size") + "").put("type", String.class));
-										body_map_now.put("setPbltext",
-												new JSONObject().put("value", ""/* list_log.getString("pb_l_text") */).put("type", String.class));
-										body_map_now.put("setPbldt",
-												new JSONObject().put("value", Fm_Time.toDateTime(list_log.getString("pb_l_dt"))).put("type", Date.class));
-
-//								body_one.setPbltext(list_log.getString("pb_l_text"));
-//								body_one.setPblpath(list_log.getString("pb_l_path"));
-//								body_one.setPbldt(Fm_Time.toDateTime(list_log.getString("pb_l_dt")));
-//								body_one.setPblsize(list_log.getInt("pb_l_size") + "");
+										String pb_l_path = list_log.getString("pb_l_path");
+										int pb_l_size = list_log.getInt("pb_l_size");
+										Date pb_l_dt = Fm_Time.toDateTime(list_log.getString("pb_l_dt"));
+										body_map_now.put("setPblpath", new JSONObject().put("value", pb_l_path).put("type", String.class));
+										body_map_now.put("setPblsize", new JSONObject().put("value", pb_l_size + "").put("type", String.class));
+										body_map_now.put("setPbltext", new JSONObject().put("value", "").put("type", String.class));
+										body_map_now.put("setPbldt", new JSONObject().put("value", pb_l_dt).put("type", Date.class));
 									}
 								} catch (Exception e) {
 									log.error(e.toString());
@@ -1136,7 +1115,6 @@ public class WorkstationWorkService {
 							} else {
 								set_method.invoke(body_one_now, json_v.get("value"));
 							}
-
 						} catch (Exception e) {
 							log.error(e.toString());
 							e.printStackTrace();
@@ -1239,18 +1217,25 @@ public class WorkstationWorkService {
 					// ======== Step11. 製令單+規格更新[Productiondaily] ========
 					log.info("Step10. 製令單+規格更新[Productiondaily]" + body_one_now.getPbbsn());
 					ProductionDaily newDaily = new ProductionDaily();
+
+					// 是指定的工作站-登記測試次數統計
+					Boolean pdttqty = false;
+					if (programs.get(0).getWpcnyield().equals(list.getString("w_c_name"))) {
+						pdttqty = true;
+					}
 					newDaily.setPdpbbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
 					newDaily.setPdprbomid(p_records.getPrbomid()); // 產品BOM
 					newDaily.setPdprtotal(p_records.getPrpquantity()); // 製令單 生產總數
 					newDaily.setPdprokqty(p_records.getPrpokquantity());// 製令單 目前進度
+					newDaily.setPdttbadqty(f_code_check?0:1);//是否有維修代碼 有=1/無=0
 					newDaily.setPdwcline(p_records.getPrwcline()); // 生產產線
 					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
 					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱
 					newDaily.setPdwaccounts(list.getString("w_c_us_name")); // 工作站人員
 					newDaily.setPdphpbschedule(p_header.getPhpbschedule());// 進度資料
-					pDailyService.setData(newDaily, user);
+					pDailyService.setData(newDaily, user, pdttqty);
 
 				} else {
 					log.trace("WK003:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));

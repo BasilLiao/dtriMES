@@ -22,7 +22,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	font-size: 14px;
-	line-height: 14px;
+	line-height: 15px;
 }
 </style>
 <div id="workstation" class="text-left shadow">
@@ -219,7 +219,7 @@
 						</td>
 						<td colspan="2" rowspan="100" class="p-0 border-dark border">
 							<!-- 維修條碼_類型(浮動) -->
-							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 280px; overflow: auto;">
+							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 290px; overflow: auto;">
 								<!-- 浮動上下 -->
 								<div class="bg-white fixed-top shadow border border-primary rounded " style="top: 32%; left: auto; right: 35px; width: 140px;">
 									<div class="col-12 p-1">
@@ -259,7 +259,7 @@
 									</div>
 								</div>
 							</div> <!-- 維修條碼_項目(浮動) -->
-							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 300px; overflow: auto;">
+							<div id="fix_i_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 305px; overflow: auto;">
 								<div class="col-12 row m-0 p-0">
 									<div class="col-12 m-0 p-1 h4" style="height: 56px;">
 										代碼:<i id="fix-item"></i>
@@ -270,8 +270,21 @@
 									<div class="row m-0 p-1 bg-light">
 										<div id="barcode_BC014" class="m-0 pl-4 col-12"></div>
 										<div id="BC014" title="" class="barcode_action fix_i_css btn btn-light p-0 border-0 pt-1 pb-1 font-weight-bold">XXX[BC014]</div>
-										<textarea id="fix_i_textarea" rows="7" cols="" class="p-1 col-12 d-none"></textarea>
+										<textarea id="fix_i_textarea" rows="2" cols="" class="p-1 col-12 d-none"></textarea>
+										<div id="fix_i_ex" class="m-0 p-0 col-12 text-left d-none">
+											<div>可能[故障碼]:</div>
+											<div id="fix_i_ex_value" class="bg-white" style="min-height: 100px;"></div>
+										</div>
 									</div>
+								</div>
+							</div>
+							<div id="use_explain" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 160px; overflow: auto;">
+								<div class="col-12 row m-0 p-0">
+									<div class="col-12 m-0 p-1 h4" style="height: 36px;">移動說明</div>
+									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ↑ : 往上移動</div>
+									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ↓ : 往下移動</div>
+									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + → : 檢查資訊</div>
+									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ← : 清除欄位</div>
 								</div>
 							</div>
 						</td>
@@ -972,6 +985,31 @@
    		this.create_barcode("barcode_BC021","BC021","code39",22);
    		this.create_barcode("barcode_BC022","BC022","code39",22);
    		
+   		//監聽資訊-尋找是否有類似值
+   		$(document).on("input","#fix_i_textarea_zzzz", function() {
+			console.log($(this).val()); 
+			//console.log(workstation.fix_type);
+			var search_fix="";
+			//故障-類別
+			var p = workstation.fix_type;
+			if($(this).val()!=""){
+				for (var key_p in p) {
+				    if (p.hasOwnProperty(key_p)) {
+				        //console.log(key_p + " -> " + p[key]);
+				        //故障-項目
+				     	var k= p[key_p]['item'];
+					     for (var key_k in k) {
+				 		    if (k.hasOwnProperty(key_k) && k[key_k].indexOf($(this).val())>=0) {
+				 		        //console.log(key_k + " -> " + k[key_k]);
+				 		       	search_fix+=(key_k + " -> " + k[key_k]+"<br> ");
+				 		    }
+				 		}
+				    }
+				}
+			}
+			$("#fix_i_ex_value").html(search_fix);
+   		});
+   		
    		//barcode_open 顯示 ?
    		$(document).on("click", ".pn__op", function (event){
    		    console.log(event.currentTarget.id);
@@ -1004,6 +1042,7 @@
    		$(document).on("click", "#fix_open", function (event) {
    		    console.log("fix_open");
    		    $("#fix_t_open").toggle("fast");
+   		 	$("#use_explain").toggle("fast");
    		 	$(".fix_open").toggle("fast");
    		    //如果顯示則關閉
    		    if($("#fix_i_open").css('display')!='none'){
@@ -1018,34 +1057,46 @@
    			$("#send_command_btn" ).trigger( "click" );   		    	
    		    
    		});
-   		$(document).on("keyup", function (event) {
-   		    //上移
-   		    if(event.which==38){
-	   		    console.log("keyup:"+event.which );
-   		    	$('#m_order').val('BC001');
-   		    	workstation.send_command();
+   		//17 = Ctrl 上=38 下=40 左 = 39 右37
+   		var map = {17: false, 37: false, 38: false,39: false,40: false};
+   		$(document).on("keydown", function (e) {
+   			if (e.which in map) {
+   				//console.log("keydown:"+e.which);
+   				map[e.which] = true;
+   	   		 	//右移 清除
+   	   			if(map[17] && map[37]){
+   	   			 	console.log("keydown:"+e.which);
+   	   				$('#m_order').val('BC005');
+   	   				workstation.send_command();
+   			    }
+   			 	//上移
+   	   		    if(map[17] && map[38]){
+   		   		    console.log("keydown:"+e.which);
+   	   		    	$('#m_order').val('BC001');
+   	   		    	workstation.send_command();
+   	   		    }
+   	   		 	//左移 檢查
+   	   			if(map[17] && map[39]){
+   	   			 	console.log("keydown:"+e.which);
+   	   				$('#m_order').val('BC003');
+   	   				workstation.send_command();
+   			    }
+   	   		    //下移
+   	   			if(map[17] && map[40]){
+   	   			 	console.log("keydown:"+e.which);
+   	   				$('#m_order').val('BC002');
+   	   				workstation.send_command();
+   			    }
+   			}
+   		})
+   		$(document).on("keyup", function (e) {
+   		    if (e.which in map) {
+	   			//console.log("keyup:"+e.which);
+   		        map[e.which] = false;
    		    }
-   		    //下移
-   			if(event.which==40){
-   			 	console.log("keyup:"+event.which );
-   				$('#m_order').val('BC002');
-   				workstation.send_command();
-		    }
-   		 //又移 清除
-   			if(event.which==37){
-   			 	console.log("keyup:"+event.which );
-   				$('#m_order').val('BC005');
-   				workstation.send_command();
-		    }
-   		 //左移 檢查
-   			if(event.which==39){
-   			 	console.log("keyup:"+event.which );
-   				$('#m_order').val('BC003');
-   				workstation.send_command();
-		    }
    		});
+   		
    		main.loading(false);
-   
    	},
    	//可呼叫方法
    	methods : {
@@ -1442,11 +1493,11 @@
    					break;
    				case "BC018":
    					//項目
-   					if(workstation.fix_i_open -300 <=0){
+   					if(workstation.fix_i_open -305 <=0){
    						workstation.fix_i_open = 0;
    						$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
    					}else{
-	   					workstation.fix_i_open -=300; 
+	   					workstation.fix_i_open -=305; 
 	   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
    					}
    				 	workstation.clearOrder();
@@ -1454,11 +1505,11 @@
    					break;
    				case "BC019":
    					//原始位置+預設高度+下次移動高度 最大值
-   					if($("#fix_i_open").scrollTop() +300+300 >=$("#fix_i_open").prop("scrollHeight")){
-   						workstation.fix_i_open=$("#fix_i_open").prop("scrollHeight")-300;
+   					if($("#fix_i_open").scrollTop() +305+305 >=$("#fix_i_open").prop("scrollHeight")){
+   						workstation.fix_i_open=$("#fix_i_open").prop("scrollHeight")-305;
    						$("#fix_i_open").animate({ scrollTop: (workstation.fix_i_open) }, 'fast'); 
    					}else{
-	   					workstation.fix_i_open +=300; 
+	   					workstation.fix_i_open +=305; 
 	   					$("#fix_i_open").animate({ scrollTop: workstation.fix_i_open }, 'fast'); 
    					}
    					console.log("目前位置:"+$("#fix_i_open").scrollTop());
@@ -1558,6 +1609,7 @@
 							//建立新code
 							workstation.create_barcode('barcode_'+key_id,key_id,"code39",22);
 							//console.log(fix_t_example);
+							$("#fix_i_ex").addClass("d-none");
 						}
    					}else{
    						//自訂維修
@@ -1580,7 +1632,9 @@
 						fix_t_example.insertBefore("#fix_i_example");
 						//建立新code
 						workstation.create_barcode('barcode_'+key_id,key_id,"code39",22);
+						$("#fix_i_ex").removeClass("d-none");
    					}
+   					
 					$("#fix_i_example").addClass('d-none');
 					workstation.fix_code_type=code;
 					workstation.clearOrder();
@@ -2226,6 +2280,8 @@
    		$(document).off("click", ".barcode_action");
    		$(document).off("click", ".pn__cl");
    		$(document).off("click", ".pn__op");
+   		$(document).off("input", "#fix_i_textarea_zzzz");
+   		$(document).off("keydown");
    		$(document).off("keyup");
    		
    		t_alert.sound_warning = false;

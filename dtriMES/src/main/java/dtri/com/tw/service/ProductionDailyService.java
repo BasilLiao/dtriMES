@@ -85,8 +85,8 @@ public class ProductionDailyService {
 		String pd_wc_class = "班別", sys_m_date = "時間", //
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
 				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_bad_qty = "待修數", //
-				pd_tt_qty = "測試數", pd_tt_bad_qty = "測試故障數", pd_tt_yield = "測試數良率", //
-				pd_pr_ok_qty = "生產完成數", pd_pr_bad_qty = "生產故障數", pd_pr_yield = "生產數良率", //
+				pd_tt_qty = "測試數", pd_tt_bad_qty = "測試故障數", pd_tt_yield = "測試數(不良率)", //
+				pd_pr_ok_qty = "生產完成數", pd_pr_bad_qty = "生產故障數", pd_pr_yield = "生產數(不良率)", //
 				pd_t_qty = "日完成數", pd_w_names = "各站作業員工(清單)", sys_note = "備註";
 
 		// 初次載入需要標頭 / 之後就不用
@@ -112,7 +112,6 @@ public class ProductionDailyService {
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_bad_qty", FFS.h_t(pd_bad_qty, "110px", FFM.Wri.W_Y));
-
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
@@ -149,10 +148,10 @@ public class ProductionDailyService {
 
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_qty", FFS.h_t(pd_tt_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_bad_qty", FFS.h_t(pd_tt_bad_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_yield", FFS.h_t(pd_tt_yield, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_yield", FFS.h_t(pd_tt_yield, "150px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_bad_qty", FFS.h_t(pd_pr_bad_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_yield", FFS.h_t(pd_pr_yield, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_yield", FFS.h_t(pd_pr_yield, "150px", FFM.Wri.W_Y));
 
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
@@ -283,7 +282,12 @@ public class ProductionDailyService {
 			pbwcnameLast = workstationDao.findAllByWgidOrderBySyssortAsc(wpwgid).get(0).getWcname();
 
 			// 把同一個工作站 的 倒出來
-			int pdprokqty = 0;// 取最大值
+			int pdprokqty = 0;// [產品]取最大值
+			int pdprbadqty = 0;
+			String pdpryield = "0";
+			int pdttqty = 0;// [測試]取最大值
+			int pdttbadqty = 0;
+			String pdttyield = "0";
 			for (ProductionDaily pdOne : productionDailys) {
 				// 同一天+同一條產線+同一班別+同一張工單
 				String key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + pdOne.getPdwcline() + pdOne.getPdwcclass() + pdOne.getPdprid();
@@ -320,13 +324,20 @@ public class ProductionDailyService {
 								dailyBean.setPdtqty(tqty + "");
 							}
 							// 同一日的最大完成數量
-							if (pdOne.getPdprokqty() > pdprokqty) {
+							if (pdOne.getPdprokqty() >= pdprokqty) {
 								pdprokqty = pdOne.getPdprokqty();
+								pdprbadqty = pdOne.getPdprbadqty();
+								pdpryield = pdOne.getPdpryield();
+								pdttqty = pdOne.getPdttqty();
+								pdttbadqty = pdOne.getPdttbadqty();
+								pdttyield = pdOne.getPdttyield();
 							}
 							dailyBean.setPdprokqty(pdprokqty + "");
-							dailyBean.setPdprbadqty(pdOne.getPdprbadqty() + "");
-							dailyBean.setPdpryield(pdOne.getPdpryield() + "");
-
+							dailyBean.setPdprbadqty(pdprbadqty + "");
+							dailyBean.setPdpryield(pdpryield);
+							dailyBean.setPdttqty(pdttqty + "");
+							dailyBean.setPdttbadqty(pdttbadqty + "");
+							dailyBean.setPdttyield(pdttyield);
 							break;
 						}
 					}
@@ -363,12 +374,20 @@ public class ProductionDailyService {
 						tqty = pdOne.getPdtqty();
 					}
 					// 同一日的最大完成數量
-					if (pdOne.getPdprokqty() > pdprokqty) {
+					if (pdOne.getPdprokqty() >= pdprokqty) {
 						pdprokqty = pdOne.getPdprokqty();
+						pdprbadqty = pdOne.getPdprbadqty();
+						pdpryield = pdOne.getPdpryield();
+						pdttqty = pdOne.getPdttqty();
+						pdttbadqty = pdOne.getPdttbadqty();
+						pdttyield = pdOne.getPdttyield();
 					}
 					dailyBean.setPdprokqty(pdprokqty + "");
-					dailyBean.setPdprbadqty(pdOne.getPdprbadqty() + "");
-					dailyBean.setPdpryield(pdOne.getPdpryield() + "");
+					dailyBean.setPdprbadqty(pdprbadqty + "");
+					dailyBean.setPdpryield(pdpryield);
+					dailyBean.setPdttqty(pdttqty + "");
+					dailyBean.setPdttbadqty(pdttbadqty + "");
+					dailyBean.setPdttyield(pdttyield);
 					dailyBean.setPdtqty(tqty + "");
 
 					// 工作站[統計]
@@ -449,9 +468,9 @@ public class ProductionDailyService {
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal());
 
-			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_qty", "");
-			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_bad_qty", "");
-			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_yield", "");
+			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_qty", pdb_val.getPdttqty());
+			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_bad_qty", pdb_val.getPdttbadqty());
+			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_yield", pdb_val.getPdttyield());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_ok_qty", pdb_val.getPdprokqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bad_qty", pdb_val.getPdprbadqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_yield", pdb_val.getPdpryield());
@@ -598,10 +617,8 @@ public class ProductionDailyService {
 
 	// 登記入每日報表
 	@Transactional
-	public PackageBean setData(ProductionDaily newDaily, SystemUser user) {
-		// Boolean check = false;
+	public PackageBean setData(ProductionDaily newDaily, SystemUser user, Boolean pd_test) {
 		PackageBean bean = new PackageBean();
-
 		// Step0.檢查必要值
 		if (newDaily.getPdpbbsn() != null && !newDaily.getPdpbbsn().equals("") && // 產品SN號
 				newDaily.getPdprid() != null && !newDaily.getPdprid().equals("") && // 製令單號
@@ -615,147 +632,212 @@ public class ProductionDailyService {
 				newDaily.getPdwaccounts() != null && !newDaily.getPdwaccounts().equals("") // 工作站人員
 		) {
 			log.info("Step1.登記入每日報表[ProductionDaily]" + newDaily.toString());
-			String n_wcclass = null;
-			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];
-			Boolean n_wcg = null;
-			List<String> n_pdwaccounts = new ArrayList<String>();
+			String w_cclass = null;// 班別?
+			Boolean w_cgroup = null;// 單人/多人模式?
+			String n_time = (Fm_Time.to_yMd_Hm(new Date()).split(" "))[1];// 年月日
+			Boolean need_create = false;// 是否新增?
+			List<String> pd_accounts = new ArrayList<String>();// 需要登記的人
 			ArrayList<WorkstationClass> classes = new ArrayList<WorkstationClass>();
 			ArrayList<ProductionDaily> oldDailySn = new ArrayList<ProductionDaily>();
-			n_pdwaccounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
-			classes = classDao.findAllBySameClass(//
-					null, newDaily.getPdwcline(), //
+			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
+			ProductionDaily oldDaily = new ProductionDaily();
+			ProductionDaily saveDaily = new ProductionDaily();
+			DecimalFormat df_yield = new DecimalFormat("###.##");
+
+			// Step0.[取出] 工作站的作業員 & 班別 & 以前有登記過的SN產品
+			pd_accounts = Arrays.asList(newDaily.getPdwaccounts().split("_"));
+			classes = classDao.findAllBySameClass(null, newDaily.getPdwcline(), //
 					(newDaily.getPdwcname() + "(" + newDaily.getPdwpbname() + ")"), n_time, null);
 			oldDailySn = dailyDao.findAllByPdpridAndPdpbbsnLikeAndPdwcname(newDaily.getPdprid(), "%" + newDaily.getPdpbbsn() + "%", newDaily.getPdwcname());
 
-			ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
-			ProductionDaily oldDaily = new ProductionDaily();
+			// Step1.[檢查] 設置內是否有此工作站資料 && (工單+SN是配對的)
+			if (classes != null && classes.size() > 0) {
 
-			// Step1. 檢查 設置內是否有此工作站資料 && 不重複SN && (工單+SN是配對的)
-			if (classes != null && classes.size() > 0 && oldDailySn.size() == 0) {
+				// Step2.[取出] 設定工作模式 [群組/個人]
+				WorkstationClass w_class = classes.get(0);
+				w_cclass = w_class.getWcclass();
+				w_cgroup = w_class.getWcgroup();// true = 群組/ false = 單人
 
-				// Step2. 取出 設定工作模式 [群組/個人]
-				WorkstationClass wClass = classes.get(0);
-				n_wcclass = wClass.getWcclass();
-				n_wcg = wClass.getWcgroup();// true = 群組/ false = 單人
-
-				// 取出此工單 是否有 維修資料
+				// Step3.[取出] 此工單 是否有 維修資料
 				int pr_bad_qty = registerDao.findAllByRrprid(newDaily.getPdprid()).size();
 
-				// Step3. 今日登記過的 工單+產品+產線+工作站 未結單 工單資訊
+				// Step4.[取出] 今日登記過的 工單+產品+產線+工作站 未結單 工單資訊
 				oldDailys = dailyDao.findAllByProductionDailyCheck(//
-						newDaily.getPdprid(), newDaily.getPdprbomid(), newDaily.getPdwcline(), n_wcclass, newDaily.getPdwcname(), null, //
-						Fm_Time.to_y_M_d(new Date()), 0);
+						newDaily.getPdprid(), newDaily.getPdprbomid(), newDaily.getPdwcline(), //
+						w_cclass, newDaily.getPdwcname(), null, Fm_Time.to_y_M_d(new Date()), 0);
 
-				Boolean need_create = false;
-				// Step4 如果 有舊的[今日資料]?
+				// Step5 如果 有舊的[今日資料]?
 				if (oldDailys != null && oldDailys.size() > 0) {
 					need_create = true;
 					oldDaily = oldDailys.get(0);
-					// Step4-1. 如果 [群組模式] + [不同批人]?
-					if (n_wcg && !oldDaily.getPdwaccounts().equals(newDaily.getPdwaccounts())) {
+					// 如果 [群組模式] + ([不同批人]=新建)
+					if (w_cgroup && !oldDaily.getPdwaccounts().equals(newDaily.getPdwaccounts())) {
 						need_create = false;
 					}
 				}
 
-				// Step5.新建 or 更新
-				if (need_create) {
-					// Step5-1. True群組? False單人?
-					if (n_wcg) {
-						// 同張工單 + 同一批人 + 時段一致->[更新] && 添加新 產品SN
-						JSONObject o_pdpbbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdpbbsn.getJSONArray("list")).put(newDaily.getPdpbbsn());
-						log.info("登記入每日報表[ProductionDaily]模式?:" + n_wcg + " 登記入的 Pdpbbsn :" + newDaily.getPdpbbsn());
-						o_pdpbbsn.put("list", o_pdprpbsns);
-						oldDaily.setPdpbbsn(o_pdpbbsn + "");
-						oldDaily.setPdtqty(o_pdprpbsns.length());
-						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
-						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
-						oldDaily.setSysmuser(user.getSuaccount());
-						oldDaily.setPdprokqty(newDaily.getPdprokqty());
-						oldDaily.setPdprbadqty(pr_bad_qty);
-						// 百分比計算
-						DecimalFormat df = new DecimalFormat("###.##");
-						double yield = 100;
-						if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
-							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
-							if (yield > 100) {
-								yield = 100;
+				// Step6.[登記] 唯一SN 每日工作站 登記數量
+				if (oldDailySn.size() == 0) {
+					// 新建 or 更新
+					if (need_create) {
+						// [修改]新工單 每日生產紀錄
+						log.info("登記入每日報表[ProductionDaily]模式?:" + w_cgroup + " 登記入的 Pdpbbsn :" + newDaily.getPdpbbsn());
+						// 產品資訊登記
+						JSONObject pd_pbbsn = new JSONObject(oldDaily.getPdpbbsn());
+						JSONArray pd_pbbsns = (pd_pbbsn.getJSONArray("list")).put(newDaily.getPdpbbsn());
+						pd_pbbsn.put("list", pd_pbbsns);
+						// Step7.[模式]: True群組? False單人?
+						if (w_cgroup) {
+							// Step7-1.[多人群組] 同一批人
+							oldDaily.setPdpbbsn(pd_pbbsn + "");
+							oldDaily.setPdtqty(pd_pbbsns.length());
+							oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+							oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+							oldDaily.setSysmuser(user.getSuaccount());
+							oldDaily.setPdprokqty(newDaily.getPdprokqty());// 完成數
+							oldDaily.setPdphpbschedule(newDaily.getPdphpbschedule());
+						} else {
+							// Step7-2.[單人]-只取第一人 [代號]
+							// [取得] 新資料-使用者
+							String pd_acc_one = pd_accounts.get(0);
+							ArrayList<String> accounts = new ArrayList<String>();
+							accounts.add(pd_acc_one);
+							ArrayList<String> su_name = userDao.readAccounts(accounts);
+							// [取得] 舊資料-使用者
+							JSONObject wname_list = new JSONObject(oldDaily.getPdwnames());
+							JSONArray wnames = wname_list.getJSONArray("list");
+							// Step7-3.[判斷]有沒有新使用者
+							if (!oldDaily.getPdwaccounts().contains(pd_acc_one)) {
+								// 有可能沒有中文
+								wnames.put(su_name.size() == 1 ? su_name.get(0) : pd_acc_one);
+								oldDaily.setPdwnames(new JSONObject().put("list", wnames).toString());
+								oldDaily.setPdwaccounts(oldDaily.getPdwaccounts() + "_" + pd_acc_one);
 							}
+							oldDaily.setPdpbbsn(pd_pbbsn + "");
+							oldDaily.setPdtqty(pd_pbbsns.length());
+							oldDaily.setPdtsu(wnames.length());// 人數
+							oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+							oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+							oldDaily.setSysmuser(user.getSuaccount());
+							oldDaily.setPdprokqty(newDaily.getPdprokqty());
+							oldDaily.setPdphpbschedule(newDaily.getPdphpbschedule());
 						}
-						oldDaily.setPdpryield(df.format(yield) + "%");
-						oldDaily.setPdphpbschedule(newDaily.getPdphpbschedule());
-						log.info("登記入每日報表[ProductionDaily] 模式?:" + n_wcg + " 更新?:" + oldDaily.toString());
-						dailyDao.save(oldDaily);
+						saveDaily = oldDaily;
+						log.info("登記入每日報表[ProductionDaily] 模式?:" + w_cgroup + " 更新?:" + oldDaily.toString());
 					} else {
-						// Step5-2 單人
-						// 只取第一人[代號]
-						String n_one = n_pdwaccounts.get(0);
-						ArrayList<String> n_accs = new ArrayList<String>();
-						n_accs.add(n_one);
-						// 得使用者[中文]
-						ArrayList<String> su_name = userDao.readAccounts(n_accs);
-						// 取得使用者
-						JSONObject wname_list = new JSONObject(oldDaily.getPdwnames());
-						JSONArray wnames = wname_list.getJSONArray("list");
-						// 有沒有新使用者
-						if (!oldDaily.getPdwaccounts().contains(n_one)) {
-							// 有可能沒有中文
-							wnames.put(su_name.size() == 1 ? su_name.get(0) : n_one);
-							oldDaily.setPdwnames(new JSONObject().put("list", wnames).toString());
-							oldDaily.setPdwaccounts(oldDaily.getPdwaccounts() + "_" + n_one);
-						}
-						JSONObject o_pdprpbsn = new JSONObject(oldDaily.getPdpbbsn());
-						JSONArray o_pdprpbsns = (o_pdprpbsn.getJSONArray("list")).put(newDaily.getPdpbbsn());
-						log.info("登記入每日報表[ProductionDaily]模式?:" + n_wcg + " 登記入的 Pdpbbsn :" + newDaily.getPdpbbsn());
-						o_pdprpbsn.put("list", o_pdprpbsns);
-						oldDaily.setPdpbbsn(o_pdprpbsn + "");
-						oldDaily.setPdtqty(o_pdprpbsns.length());
-						oldDaily.setPdtsu(wnames.length());// 人數
-						oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
-						oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
-						oldDaily.setSysmuser(user.getSuaccount());
-						oldDaily.setPdprokqty(newDaily.getPdprokqty());
-						oldDaily.setPdprbadqty(pr_bad_qty);
-						// 百分比計算
-						DecimalFormat df = new DecimalFormat("###.##");
-						double yield = 100;
-						if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
-							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
-							if (yield > 100) {
-								yield = 100;
-							}
-						}
-						oldDaily.setPdpryield(df.format(yield) + "%");
-						oldDaily.setPdphpbschedule(newDaily.getPdphpbschedule());
-						log.info("登記入每日報表[ProductionDaily] 模式?:" + n_wcg + " 更新?:" + oldDaily.toString());
-						dailyDao.save(oldDaily);
+						// Step8. [新增]新工單 每日生產紀錄->新建立 && 添加新 產品SN
+						ArrayList<String> su_name = userDao.readAccounts(pd_accounts);
+						JSONObject wnames = new JSONObject();
+						wnames.put("list", new JSONArray(su_name));
+						newDaily.setPdwnames(wnames.toString());
+						newDaily.setPdtsu(pd_accounts.size());// 人數
+						newDaily.setPdwcclass(w_cclass);// 班別
+						newDaily.setPdttime("0.0");// 工時
+						newDaily.setPdtqty(0);// 日完成數 初始數量
+						newDaily.setPdwaccounts(newDaily.getPdwaccounts());// 登記的作業員帳號(s)
+						newDaily.setSyscdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+						newDaily.setSyscuser(user.getSuaccount());
+						newDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+						newDaily.setSysmuser(user.getSuaccount());
+						newDaily.setSysstatus(0);
+						newDaily.setPdstime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+						newDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
+						newDaily.setPdlsuid(w_class.getWclsuid());
+						newDaily.setPdlname(userDao.findAllBySuid(w_class.getWclsuid()).get(0).getSuname());
+						JSONArray o_pdprpbsns = new JSONArray().put(newDaily.getPdpbbsn());// 產品登記
+						newDaily.setPdpbbsn(new JSONObject().put("list", o_pdprpbsns) + "");
+						log.info("登記入每日報表[ProductionDaily] 新建?:" + newDaily.toString());
+						saveDaily = newDaily;
 					}
-				} else {
-					// Step4 添加新工單 每日生產紀錄->新建立 && 添加新 產品SN
-					ArrayList<String> su_name = userDao.readAccounts(n_pdwaccounts);
+					// Step8.[登記] 不良率(產品數)
+					double yield = 0;
+					if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
+						yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
+						yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+					} else if (newDaily.getPdprokqty() == 0 && pr_bad_qty > 0) {
+						yield = 100;// 還沒生產就不良
+					}
+
+					saveDaily.setPdpryield(df_yield.format(yield) + "%");
+					saveDaily.setPdprbadqty(pr_bad_qty);
+
+					// Step9.[登記] 不良率(測試數)
+					yield = 0;
+					if (pd_test && need_create) {
+						// [有舊資料]
+						saveDaily.setPdttqty(oldDaily.getPdttqty() + 1);
+						saveDaily.setPdttbadqty(oldDaily.getPdttbadqty() + newDaily.getPdttbadqty());
+						if (saveDaily.getPdttbadqty() > 0 && saveDaily.getPdttqty() > 0) {
+							yield = ((double) saveDaily.getPdttbadqty() * 100) / saveDaily.getPdttqty();
+							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+						}
+						saveDaily.setPdttyield(df_yield.format(yield) + "%");
+					} else if (pd_test && !need_create) {
+						// [新資資料]
+						saveDaily.setPdttqty(1);
+						saveDaily.setPdttbadqty(newDaily.getPdttbadqty());
+						if (saveDaily.getPdttbadqty() > 0 && saveDaily.getPdttqty() > 0) {
+							yield = ((double) saveDaily.getPdttbadqty() * 100) / saveDaily.getPdttqty();
+							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+						}
+						saveDaily.setPdttyield(df_yield.format(yield) + "%");
+					}
+					dailyDao.save(saveDaily);
+				} else if (pd_test && oldDailys.size() == 0) {
+					// Step10.[登記] 不良率(測試數) && [無舊資料] && [重複SN]
+					ArrayList<String> su_name = userDao.readAccounts(pd_accounts);
 					JSONObject wnames = new JSONObject();
 					wnames.put("list", new JSONArray(su_name));
 					newDaily.setPdwnames(wnames.toString());
-					newDaily.setPdtsu(n_pdwaccounts.size());// 人數
-					newDaily.setPdwcclass(n_wcclass);// 班別
+					newDaily.setPdtsu(pd_accounts.size());// 人數
+					newDaily.setPdwcclass(w_cclass);// 班別
 					newDaily.setPdttime("0.0");// 工時
-					newDaily.setPdtqty(1);// 初始數量
+					newDaily.setPdtqty(0);// 日完成數 初始數量
 					newDaily.setPdwaccounts(newDaily.getPdwaccounts());// 登記的作業員帳號(s)
 					newDaily.setSyscdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setSyscuser(user.getSuaccount());
 					newDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setSysmuser(user.getSuaccount());
 					newDaily.setSysstatus(0);
-
 					newDaily.setPdstime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 					newDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
-					newDaily.setPdlsuid(wClass.getWclsuid());
-					newDaily.setPdlname(userDao.findAllBySuid(wClass.getWclsuid()).get(0).getSuname());
-
-					JSONArray o_pdprpbsns = new JSONArray().put(newDaily.getPdpbbsn());// 產品登記
-					newDaily.setPdpbbsn(new JSONObject().put("list", o_pdprpbsns) + "");
+					newDaily.setPdlsuid(w_class.getWclsuid());
+					newDaily.setPdlname(userDao.findAllBySuid(w_class.getWclsuid()).get(0).getSuname());
+					newDaily.setPdpbbsn(new JSONObject().put("list", new JSONArray()) + "");// 產品登記
 					log.info("登記入每日報表[ProductionDaily] 新建?:" + newDaily.toString());
-					dailyDao.save(newDaily);
+					saveDaily = newDaily;
+					double yield = 0;
+					saveDaily.setPdttqty(1);
+					saveDaily.setPdttbadqty(newDaily.getPdttbadqty());
+					if (saveDaily.getPdttbadqty() > 0 && saveDaily.getPdttqty() > 0) {
+						yield = ((double) saveDaily.getPdttbadqty() * 100) / saveDaily.getPdttqty();
+						yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+					}
+					saveDaily.setPdttyield(df_yield.format(yield) + "%");
+					// Step8.[登記] 不良率(產品數)
+					yield = 0;
+					if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
+						yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
+						yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+					} else if (newDaily.getPdprokqty() == 0 && pr_bad_qty > 0) {
+						yield = 100;// 還沒生產就不良
+					}
+
+					saveDaily.setPdpryield(df_yield.format(yield) + "%");
+					saveDaily.setPdprbadqty(pr_bad_qty);
+					dailyDao.save(saveDaily);
+				} else if (pd_test && oldDailys.size() > 0) {
+					// Step11.[登記] 不良率(測試數) && [有舊資料]
+					double yield = 0;
+					saveDaily = oldDaily;
+					saveDaily.setPdttqty(oldDaily.getPdttqty() + 1);
+					saveDaily.setPdttbadqty(oldDaily.getPdttbadqty() + newDaily.getPdttbadqty());
+					if (saveDaily.getPdttbadqty() > 0 && saveDaily.getPdttqty() > 0) {
+						yield = ((double) saveDaily.getPdttbadqty() * 100) / saveDaily.getPdttqty();
+						yield = yield > 100 ? yield = 100 : yield;// 不可超過100
+					}
+					saveDaily.setPdttyield(df_yield.format(yield) + "%");
+					dailyDao.save(saveDaily);
 				}
 			}
 		}

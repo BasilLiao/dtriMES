@@ -1257,9 +1257,9 @@ public class RepairOrderDtrService {
 
 				// 解析故障原因
 				if (!data.getString("rd_statement").equals("")) {
-					String rds = data.getString("rd_statement");
-					String rds_char = "";
-					for (String part : rds.split("_")) {
+					String rds_code = data.getString("rd_statement");
+					String rds_char = "";// 轉換成文字
+					for (String part : rds_code.split("_")) {
 						ArrayList<RepairCode> rcs = codeDao.findAllByRcvalue(part);
 						if (rcs.size() == 1) {
 							rds_char += rcs.get(0).getRcname() + "_";
@@ -1268,6 +1268,7 @@ public class RepairOrderDtrService {
 						}
 					}
 					data.put("rd_statement", rds_char);
+					data.put("rd_code", rds_code);
 				} else {
 					data.put("rd_statement", "Something project wrong");
 				}
@@ -1283,11 +1284,11 @@ public class RepairOrderDtrService {
 			String yyyy_MM_dd_HH_mm_ss = Fm_Time.to_y_M_d(today) + " 00:00:00";
 			Date todayStr = Fm_Time.toDateTime(yyyy_MM_dd_HH_mm_ss);// 今日起始
 			String ro_id = "DTR" + todayStr.getTime();
-			ArrayList<RepairOrder> orders = orderDao.findAllByRoid(ro_id);
+
 			// 維修項目-自動生成
 			Boolean check_rep = true;
-			int rd_id_nb = 0;
 			String rd_id = "D0000";
+			int rd_id_nb = 0;
 			// 檢查重複?->重複則->下一筆新序號
 			while (check_rep) {
 				if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
@@ -1296,76 +1297,85 @@ public class RepairOrderDtrService {
 					check_rep = false;
 				}
 			}
-			// 客戶資料(工廠資訊)-自動生成
+			// [讀取]客戶資料(工廠資訊)-自動生成(注意 第一筆資料定要是自家公司)
 			ArrayList<Customer> customers = customerDao.findAllByCustomer(0L, "美商定誼", null, 0, null);
-
-			// 共用
-			RepairOrder obj_h = new RepairOrder();// 維修單資料-共用
-			obj_h.setSysnote("");
-			obj_h.setSysstatus(0);
-			obj_h.setSyscdate(new Date());
-			obj_h.setSysmdate(new Date());
-			obj_h.setSysmuser(user.getSuaccount());
-			obj_h.setSyscuser(user.getSuaccount());
+			// [讀取]訂單
+			ArrayList<RepairOrder> ros = orderDao.findAllByRoid(ro_id);
+			// [讀取]產品
+			ArrayList<RepairRegister> rrs = registerDao.findAllByRrsn(data.getString("rr_sn"));
+			// 維修單資料
+			RepairOrder ro = new RepairOrder();
 			// 今日[尚未]建立
-			if (orders.size() == 0) {
-				obj_h.setRoid(ro_id);
-				obj_h.setRocid(customers.get(0).getCid());
-				obj_h.setRocheck(0);
-				obj_h.setRofrom("DTR");
-				obj_h.setRoramdate(new Date());
-				obj_h.setDetails(null);
-				obj_h.setSysheader(true);
-				orderDao.save(obj_h);
+			if (ros.size() == 0) {
+				ro.setRoid(ro_id);
+				ro.setRocid(customers.get(0).getCid());
+				ro.setRocheck(0);
+				ro.setRofrom("DTR");
+				ro.setRoramdate(new Date());
+				ro.setDetails(null);
+				ro.setSysheader(true);
+				ro.setSysnote("");
+				ro.setSysstatus(0);
+				ro.setSyscdate(new Date());
+				ro.setSysmdate(new Date());
+				ro.setSysmuser(user.getSuaccount());
+				ro.setSyscuser(user.getSuaccount());
+				orderDao.save(ro);
 			} else {
-				orders.get(0).getDetails().clear();
-				obj_h = orders.get(0);
-				obj_h.setSysmdate(new Date());
-				obj_h.setSysmuser(user.getSuaccount());
+				ro.setRoid(ros.get(0).getRoid());
+				ro.setSysmdate(new Date());
+				ro.setSysmuser(user.getSuaccount());
 			}
 			// 維修產品登記
-			RepairRegister register = new RepairRegister();
-			register.setRrsn(data.getString("rr_sn"));
-			register.setRrcsn(data.getString("rr_c_sn"));
-			register.setRrprid(data.getString("rr_pr_id"));
-			register.setRrprpqty(data.getInt("rr_pr_p_qty"));
-			register.setRrprpmodel(data.getString("rr_pr_p_model"));
-			register.setRrexpired(true);// rr_pr_w_years
-			register.setRrprwyears(data.getInt("rr_pr_w_years"));
-			register.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
-			register.setRrpbtype(data.getString("rr_pb_type"));
-			register.setRrv(data.getString("rr_v"));
-			register.setRrfok(0);
-			register.setSysnote(obj_h.getSysnote());
-			register.setSysstatus(obj_h.getSysstatus());
-			register.setSyscdate(obj_h.getSyscdate());
-			register.setSysmdate(obj_h.getSysmdate());
-			register.setSysmuser(obj_h.getSysmuser());
-			register.setSyscuser(obj_h.getSyscuser());
-			registerDao.save(register);
+			RepairRegister rr = new RepairRegister();
+			if (rrs.size() == 0) {
+				rr.setRrsn(data.getString("rr_sn"));
+				rr.setRrcsn(data.getString("rr_c_sn"));
+				rr.setRrprid(data.getString("rr_pr_id"));
+				rr.setRrprpqty(data.getInt("rr_pr_p_qty"));
+				rr.setRrprpmodel(data.getString("rr_pr_p_model"));
+				rr.setRrexpired(true);// rr_pr_w_years
+				rr.setRrprwyears(data.getInt("rr_pr_w_years"));
+				rr.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
+				rr.setRrpbtype(data.getString("rr_pb_type"));
+				rr.setRrv(data.getString("rr_v"));
+				rr.setRrfok(0);
+				rr.setSysnote("");
+				rr.setSysstatus(0);
+				rr.setSyscdate(new Date());
+				rr.setSysmdate(new Date());
+				rr.setSysmuser(user.getSuaccount());
+				rr.setSyscuser(user.getSuaccount());
+				registerDao.save(rr);
+			} else {
+				rr.setRrsn(rrs.get(0).getRrsn());
+				rr.setSysmdate(new Date());
+				rr.setSysmuser(user.getSuaccount());
+			}
 
 			// 維修單細節
-			RepairDetail obj_b = new RepairDetail();// 維修問題清單
-			obj_b.setRdid(ro_id + '-' + rd_id);
-			obj_b.setRdstatement(data.getString("rd_statement"));
-			obj_b.setRdruid(data.getLong("rd_ru_id"));
-			obj_b.setRduqty(data.getInt("rd_u_qty"));
-			obj_b.setRdtrue("");
-			obj_b.setRdexperience("");
-			obj_b.setRdsolve("");
-			obj_b.setRdcheck(data.getInt("rd_check"));
-			obj_b.setRdufinally("");
-			obj_b.setOrder(obj_h);
+			RepairDetail rd = new RepairDetail();// 維修問題清單
+			rd.setRdid(ro_id + '-' + rd_id);
+			rd.setRdstatement(data.getString("rd_statement"));
+			rd.setRdrcvalue(data.getString("rd_code"));
+			rd.setRdruid(data.getLong("rd_ru_id"));
+			rd.setRduqty(data.getInt("rd_u_qty"));
+			rd.setRdtrue("");
+			rd.setRdexperience("");
+			rd.setRdsolve("");
+			rd.setRdcheck(data.getInt("rd_check"));
+			rd.setRdufinally("");
+			rd.setOrder(ro);
 
-			obj_b.setSysnote(obj_h.getSysnote());
-			obj_b.setSysstatus(obj_h.getSysstatus());
-			obj_b.setSyscdate(obj_h.getSyscdate());
-			obj_b.setSysmdate(obj_h.getSysmdate());
-			obj_b.setSysmuser(obj_h.getSysmuser());
-			obj_b.setSyscuser(obj_h.getSyscuser());
-			obj_b.setSysheader(false);
-			obj_b.setRegister(register);
-			detailDao.save(obj_b);
+			rd.setSysnote("");
+			rd.setSysstatus(0);
+			rd.setSyscdate(new Date());
+			rd.setSysmdate(new Date());
+			rd.setSysmuser(user.getSuaccount());
+			rd.setSyscuser(user.getSuaccount());
+			rd.setSysheader(false);
+			rd.setRegister(rr);
+			detailDao.save(rd);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1388,10 +1398,10 @@ public class RepairOrderDtrService {
 		Long rocid = 0L;
 
 		// 維修單據
-		String rd_id = "No.", rr_pr_id = "Order", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", //
-				rr_c_sn = "P/N(client)", rr_pb_type = "Type", rd_statement = "Failure Description", //
-				rd_true = "Cause of issue", rd_solve = "Solution", rd_u_qty = "Qty", //
-				rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";//
+		String rd_id = "No.", rr_pr_id = "Order", rr_pr_p_model = "Model", rr_sn = "S/N(DTR)", //
+				rr_c_sn = "S/N(client)", rr_pb_type = "Type", rd_rc_code = "Err code", rd_statement = "Failure description", //
+				rd_true = "Cause of issue", rd_solve = "Solution", rd_u_finally = "User", rd_u_qty = "Qty", //
+				rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status", rd_type = "Issue type";//
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -1405,9 +1415,13 @@ public class RepairOrderDtrService {
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_rc_code", FFS.h_t(rd_rc_code, "100px", FFM.Wri.W_N));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_type", FFS.h_t(rd_type, "150px", FFM.Wri.W_N));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "350px", FFM.Wri.W_N));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_solve", FFS.h_t(rd_solve, "350px", FFM.Wri.W_N));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_finally", FFS.h_t(rd_u_finally, "90px", FFM.Wri.W_N));
+
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "100px", FFM.Wri.W_Y));
@@ -1532,9 +1546,12 @@ public class RepairOrderDtrService {
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", details.getRegister().getRrsn());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", details.getRegister().getRrcsn());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", details.getRegister().getRrpbtype());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rc_code", details.getRdrcvalue());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", details.getRdstatement());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_type", details.getRdtype());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", details.getRdtrue());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", details.getRdsolve());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", details.getRdufinally());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", details.getRduqty());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", details.getRegister().getRrexpired());
 				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", details.getRdruid());

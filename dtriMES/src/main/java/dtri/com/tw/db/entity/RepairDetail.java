@@ -23,6 +23,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rd_ru_id:指派單位<br>
  *      rd_statement:問題描述<br>
  *      rd_u_qty:單位 數量<br>
+ *      rd_type :問題類型<br>
+ *      rd_rc_value:故障代碼<br>
  *      rd_true: 實際問題情況<br>
  *      rd_solve: 解決方案<br>
  *      rd_experience: 修理心得<br>
@@ -95,7 +97,7 @@ public class RepairDetail {
 
 	@Column(name = "rd_true", columnDefinition = "varchar(250)")
 	private String rdtrue;
-	
+
 	@Column(name = "rd_solve", columnDefinition = "varchar(250)")
 	private String rdsolve;
 
@@ -116,6 +118,12 @@ public class RepairDetail {
 
 	@Column(name = "rd_ru_id")
 	private Long rdruid;
+
+	@Column(name = "rd_type", columnDefinition = "varchar(30)")
+	private String rdtype;
+
+	@Column(name = "rd_rc_value", columnDefinition = "varchar(30)")
+	private String rdrcvalue;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -283,6 +291,22 @@ public class RepairDetail {
 
 	public void setRdsolve(String rdsolve) {
 		this.rdsolve = rdsolve;
+	}
+
+	public String getRdtype() {
+		return rdtype;
+	}
+
+	public void setRdtype(String rdtype) {
+		this.rdtype = rdtype;
+	}
+
+	public String getRdrcvalue() {
+		return rdrcvalue;
+	}
+
+	public void setRdrcvalue(String rdrcvalue) {
+		this.rdrcvalue = rdrcvalue;
 	}
 
 }

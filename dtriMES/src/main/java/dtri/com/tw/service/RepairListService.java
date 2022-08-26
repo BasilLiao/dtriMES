@@ -258,7 +258,7 @@ public class RepairListService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve()== null ? "" : rd.getRdsolve());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve() == null ? "" : rd.getRdsolve());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
@@ -384,11 +384,9 @@ public class RepairListService {
 
 			// ====[資料檢核]====
 			// 維修單-項目
-			if (!order.has("rd_id") || order.getString("rd_id").equals("")) {
-				resp.autoMsssage("MT005");
-				return check;
-			}
-			if (order.getString("rd_check").equals("") || order.getString("rd_true").equals("") || order.getString("rd_solve").equals("")) {
+			if (order.getString("rd_type").equals("") || order.getString("rd_check").equals("") || //
+					order.getString("rd_true").equals("") || order.getString("rd_solve").equals("") || //
+					!order.has("rd_id") || order.getString("rd_id").equals("")) {
 				resp.autoMsssage("MT005");
 				return check;
 			}
@@ -427,6 +425,8 @@ public class RepairListService {
 
 					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
 					data.put("rd_check", data.getString("rd_check").equals("") ? 1 : data.getInt("rd_check"));
+					data.put("rd_type", data.getString("rd_type").equals("") ? "無法判定" : data.getString("rd_type"));
+
 					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
 					data.put("rr_pb_type", data.getString("rr_pb_type").equals("") ? "產品" : data.getString("rr_pb_type"));
 					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
@@ -547,6 +547,7 @@ public class RepairListService {
 					rd.setRdsolve(order.getString("rd_solve"));
 					rd.setRdexperience(order.getString("rd_experience"));
 					rd.setRdcheck(order.getInt("rd_check"));
+					rd.setRdtype(order.getString("rd_type"));
 					rd.setRdsvg(order.getString("rd_svg"));
 					rd.setRegister(rr);
 					rd.setSysmdate(new Date());
@@ -743,6 +744,14 @@ public class RepairListService {
 			s_val.put((new JSONObject()).put("value", "修不好(報廢)").put("key", 4));
 			// s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
 			object_documents.put("rd_check", s_val);
+			// 處理狀態
+			s_val = new JSONArray();
+			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
+			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
+			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));
+			s_val.put((new JSONObject()).put("value", "外包").put("key", "外包"));
+			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
+			object_documents.put("rd_type", s_val);
 
 			// 產品狀態
 			s_val = new JSONArray();

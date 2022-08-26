@@ -22,13 +22,42 @@ public class ProductionDailyBean {
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
 	private String pdprtotal;// 工單 總數量
-	private String pdprokqty;// 工單 累計好數量
-	private String pdprbadqty;// 工單 累計壞掉數量
-	private String pdpryield;// 工單 良率比
 	private String pdbadqty;// 工單 目前壞掉數量
+
+	private String pdprokqty;// 工單 [累計]產品數 好數量
+	private String pdprbadqty;// 工單 [累計]產品數 壞掉數量
+	private String pdpryield;// 工單 [累計]產品數 良率比
+
+	private String pdttqty;// 工單 [當日]測試數 好數量
+	private String pdttbadqty;// 工單 [當日]測試數 壞掉數量
+	private String pdttyield;// 工單 [當日]測試數 良率比
 
 	private String pdtqty;
 	private Double pdttime;// 總時間
+
+	public String getPdttqty() {
+		return pdttqty;
+	}
+
+	public void setPdttqty(String pdttqty) {
+		this.pdttqty = pdttqty;
+	}
+
+	public String getPdttbadqty() {
+		return pdttbadqty;
+	}
+
+	public void setPdttbadqty(String pdttbadqty) {
+		this.pdttbadqty = pdttbadqty;
+	}
+
+	public String getPdttyield() {
+		return pdttyield;
+	}
+
+	public void setPdttyield(String pdttyield) {
+		this.pdttyield = pdttyield;
+	}
 
 	public String getPdprbadqty() {
 		return pdprbadqty;

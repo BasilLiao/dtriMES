@@ -1244,8 +1244,9 @@ public class RepairOrderRmaService {
 		Long rocid = 0L;
 
 		// 維修單據
-		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "P/N(RMA)", rr_c_sn = "P/N(client)", rr_pb_type = "Type", //
-				rd_statement = "Failure Description", rd_u_qty = "Qty", rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";
+		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "S/N(RMA)", rr_c_sn = "P/N(client)", //
+				rr_pb_type = "Type", rd_statement = "Failure Description", rd_u_qty = "Qty", //
+				rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {

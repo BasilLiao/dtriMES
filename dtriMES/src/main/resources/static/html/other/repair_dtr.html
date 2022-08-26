@@ -37,25 +37,25 @@
 			<div class="m-0 p-2">
 				<div id="c_c_name" class="col row m-0 mt-1 search_true">
 					<div class="col-3">Company Name :</div>
-					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="必填:客戶公司 (可查詢)">
+					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="必填:客戶公司 (可查詢)" disabled="disabled">
 				</div>
-				<div id="c_name" class="col row m-0 mt-1 search_true">
+				<div id="c_name" class="col row m-0 mt-1 search_true d-none">
 					<div class="col-3">Contact :</div>
 					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶聯絡人 (可查詢)">
 				</div>
-				<div id="c_address" class="col row m-0 mt-1">
+				<div id="c_address" class="col row m-0 mt-1  d-none">
 					<div class="col-3">Address :</div>
 					<textarea class="col-9" rows="3" cols="" placeholder="客戶地址"></textarea>
 				</div>
-				<div id="c_tex" class="col row m-0 mt-1 search_true">
+				<div id="c_tex" class="col row m-0 mt-1 search_true  d-none">
 					<div class="col-3">Tex :</div>
 					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶電話 (可查詢)">
 				</div>
-				<div id="c_fax" class="col row m-0 mt-1">
+				<div id="c_fax" class="col row m-0 mt-1  d-none">
 					<div class="col-3">Fax :</div>
 					<input class="col-9" type="text" value="" placeholder="客戶傳真">
 				</div>
-				<div id="fi_btn" class="col row m-0 mt-2 justify-content-end">
+				<div id="fi_btn" class="col row m-0 mt-2 justify-content-end  d-none">
 					<button id="clear_fi_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
@@ -71,17 +71,17 @@
 					<div class="col-md-3">DTR NB :</div>
 					<input class="col-md-9 rounded border-1 border-primary" type="text" value="" placeholder="維修單號 (新增請留白{可自動生成} or 可查詢)">
 				</div>
-				<div id="ro_address" class="col row m-0 mt-1">
+				<div id="ro_address" class="col row m-0 mt-1 d-none">
 					<div class="col-md-3">Ship back to :</div>
 					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="DTR地址"></textarea>
 				</div>
-				<div id="ro_check" class="col row m-0 mt-1">
+				<div id="ro_check" class="col row m-0 mt-1 d-none">
 					<div class="col-md-3">Case closed? :</div>
 					<select class="col-md-9" required="required">
 						<option value="" class="def">請選擇</option>
 					</select>
 				</div>
-				<div id="rd_ru_id" class="col row m-0 mt-1">
+				<div id="rd_ru_id" class="col row m-0 mt-1 d-none">
 					<div class="col-md-3">To whom :</div>
 					<div class="col-md-6 p-0 pr-2">
 						<select class="col rounded  border-dark" required="required" style="border-width: 2px; height: 100%;">
@@ -92,7 +92,7 @@
 						<button id="rd_designat_all_btn" class="col m-0 btn btn-dark btn-sm" type="button">All Def To whom</button>
 					</div>
 				</div>
-				<div id="rd_check_only" class="col row m-0 mt-1">
+				<div id="rd_check_only" class="col row m-0 mt-1 d-none">
 					<div class="col-md-3">Status :</div>
 					<div class="col-md-6 p-0 pr-2">
 						<select class="col rounded  border-secondary" required="required" style="border-width: 2px; height: 100%;">
@@ -137,32 +137,6 @@
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
 					<tr class="d-none">
 						<th colspan="13">.DTR Repair Order</th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="6">Company Name : <span id="excel_c_n"></span></th>
-						<th colspan="7">DTR NB : <span id="excel_ro_id"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="6">Contact : <span id="excel_c"></span></th>
-						<th colspan="7" rowspan="4">Ship back to : <span id="excel_sbt"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="6" rowspan="2">Address : <span id="excel_a"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="6">Tex : <span id="excel_t"></span></th>
-					</tr>
-					<tr class="d-none">
-						<th class="noExl">_</th>
-						<th colspan="6">Fax : <span id="excel_f"></span></th>
-						<th colspan="7">To whom : <span id="excel_tw"></span></th>
 					</tr>
 					<tr class="d-none">
 						<th colspan="13">.</th>

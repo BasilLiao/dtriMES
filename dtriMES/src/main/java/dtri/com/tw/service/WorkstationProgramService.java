@@ -57,7 +57,7 @@ public class WorkstationProgramService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_g_id", FFS.h_t("群組[ID]", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_name", FFS.h_t("流程序[名稱]", "250px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_c_name", FFS.h_t("流程序[代碼]", "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_c_n_yield", FFS.h_t("良率計算 工作站[代碼]", "200px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_c_n_yield", FFS.h_t("測試計數 工作站[代碼]", "200px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wp_w_g_id", FFS.h_t("工作站[ID]", "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_pb_name", FFS.h_t("工作站[名稱]", "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "w_c_name", FFS.h_t("工作站[代碼]", "150px", FFM.Wri.W_N));
@@ -84,7 +84,7 @@ public class WorkstationProgramService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "wp_g_id", "群組ID"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_name", "流程序[名稱]"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "wp_c_name", "流程序[代碼]"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_c_n_yield", "良率計算 工作站[代碼]"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "wp_c_n_yield", "測試計數 工作站[代碼]"));
 
 			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, PageRequest.of(0, 999));
 			workstations.forEach(w -> {

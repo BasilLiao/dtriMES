@@ -85,9 +85,17 @@ select {
 						</div>
 					</div>
 					<!--  -->
-					<div class="col-md-12 p-1 m-0" id="sys_note">
-						<div class="col p-0">備註單據 :</div>
-						<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="領/退料單/一些資訊(選填)">
+					<div class="col-md-12 p-0 m-0 row">
+						<div class="col-md-9 p-1 m-0" id="sys_note">
+							<div class="col p-0">備註單據 :</div>
+							<input class="col p-1 rounded detail_ri" type="text" value="" placeholder="領/退料單/一些資訊(選填)">
+						</div>
+						<div class="col-md-3 p-1 m-0" id="rd_type">
+							<div class="col p-0">故障類型 :</div>
+							<select class="col p-1 rounded border-1 border-success detail_ri">
+								<option class="def" value="">select(必填)</option>
+							</select>
+						</div>
 					</div>
 					<div class="col-md-12 p-1 m-0" id="rd_svg">
 						<div class="col-md-12 p-0">
@@ -378,6 +386,15 @@ customized = new Vue({
 				one_item.appendTo("#rd_ru_id select");
 			}
 			$("#rd_ru_id select").val("").change();
+			//(上)注入故障類型
+			for(var d= 0;d < documents['rd_type'].length;d++){
+				var one_item = $("#rd_type .def").clone(); //複製樣本
+				one_item[0].className = "";
+				one_item[0].innerText = documents['rd_type'][d]['value'];
+				one_item[0].value = documents['rd_type'][d]['key'];
+				one_item.appendTo("#rd_type select");
+			}
+			$("#rd_type select").val("").change();
 			//(上)處理狀態
 			for(var e= 0;e < documents['rd_check_2'].length;e++){
 				var one_item = $("#rd_check .def").clone(); //複製樣本
@@ -812,6 +829,8 @@ customized = new Vue({
 			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); 
 			modify_repair['rd_svg'] =$('#rd_svg .c_save_value').val();
 			modify_repair['rd_check'] =$('#rd_check select').val();
+			modify_repair['rd_type'] =$('#rd_type select').val();
+			
 
 			var modify_detail=[];
 			////////////
