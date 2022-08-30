@@ -19,33 +19,6 @@
 }
 </style>
 <div id="customized">
-	<!-- <div class="shadow mt-0 text-left">
-		<div class="bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-search mr-1"></i>Search product maintenance
-		</div>
-		<div class="row p-0 m-0 search_example_finds">
-			
-			<div class="col-md-2 p-2 search_example_input">
-				<div class="h6 mb-1 s_name">Search1</div>
-				<div class="p-0">
-					<input class="col p-1 border border-dark rounded s_value" type="text" />
-				</div>
-			</div>
-			<div class="col-md-2 p-2 search_example_selsect">
-				<div class="h6 mb-1 s_name">Search2</div>
-				<select class="col-12 custom-select custom-select-sm s_value">
-					<option class="example_select_def" value="" selected>select</option>
-					<option class="example_select_one" value="1">One</option>
-				</select>
-			</div>
-		</div>
-		<div class="row justify-content-end p-0 m-0 search_example_button">
-			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
-				<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
-				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
-			</div>
-		</div>
-	</div>-->
 	<!-- 客戶資料 & RAM 單據生成 -->
 	<div class="shadow m-0 row">
 		<div class="col-6 p-0 border border-secondary rounded-top">
@@ -65,10 +38,10 @@
 				</div>
 				<div id="c_address" class="col row m-0 mt-1">
 					<div class="col-3">Address :</div>
-					<textarea class="col-9" rows="4" cols="" placeholder="客戶地址"></textarea>
+					<textarea class="col-9" rows="2" cols="" placeholder="客戶地址"></textarea>
 				</div>
 				<div id="c_tex" class="col row m-0 mt-1 search_true">
-					<div class="col-3">Tex :</div>
+					<div class="col-3">Tel :</div>
 					<input class="col-9 rounded border-1 border-primary" type="text" value="" placeholder="客戶電話 (可查詢)">
 				</div>
 				<div id="c_fax" class="col row m-0 mt-1">
@@ -88,12 +61,12 @@
 			</div>
 			<div class="m-0 p-2">
 				<div id="ro_id" class="col row m-0 mt-1 search_true">
-					<div class="col-md-3">RMA NB :</div>
+					<div class="col-md-3">RMA No. :</div>
 					<input class="col-md-9 rounded border-1 border-primary" type="text" value="" placeholder="維修單號 (新增請留白{可自動生成} or 可查詢)">
 				</div>
 				<div id="ro_address" class="col row m-0 mt-1">
 					<div class="col-md-3">Ship back to :</div>
-					<textarea disabled="disabled" class="col-md-9" rows="4" cols="" placeholder="RMA地址"></textarea>
+					<textarea disabled="disabled" class="col-md-9" rows="2" cols="" placeholder="RMA地址"></textarea>
 				</div>
 				<div id="ro_check" class="col row m-0 mt-1">
 					<div class="col-md-3">Case closed? :</div>
@@ -134,10 +107,10 @@
 	<!-- 查詢結果 生產量 -->
 	<div class="shadow mt-2  border border-secondary rounded-top">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
-			<div class="col-4 p-0 pt-1">
+			<div class="col-6 p-0 pt-1">
 				<i class="bi bi-list-ul mr-1"></i>Repair list
 			</div>
-			<div class="col-8 p-0">
+			<div class="col-6 p-0">
 				<div class="row p-0 m-0 justify-content-end">
 					<div class="col-md-2 pt-1">Action:</div>
 					<div class="col-md-2 p-1">
@@ -147,7 +120,10 @@
 						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
 					</div>
 					<div class="col-md-2 p-1">
-						<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">All Clear</button>
+						<button id="rd_clear_list_btn" class="col m-0 btn btn-warning btn-sm" type="button">List Clear</button>
+					</div>
+					<div class="col-md-2 p-1">
+						<button id="rd_clear_btn" class="col m-0 btn btn-danger btn-sm" type="button">All Clear</button>
 					</div>
 				</div>
 			</div>
@@ -156,41 +132,61 @@
 			<table id="rd_excel" class="table table-sm table-hover table-striped table-bordered table-responsive m-0" style="min-height: 450px;">
 				<thead class="thead bg-dark table-dark rd_search_example_title text-left" style="white-space: nowrap;">
 					<tr class="d-none">
-						<th colspan="10">.RMA Repair Order</th>
+						<th class="noExl">_</th>
+						<th colspan="10"><h2>RMA Request Form</h2></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
-						<th colspan="5">Company Name : <span id="excel_c_n"></span></th>
-						<th colspan="5">RMA NB : <span id="excel_ro_id"></span></th>
+						<th colspan="2"><b>Company Name :</b></th>
+						<th colspan="3"><span id="excel_c_n"></span></th>
+						<th colspan="1"><b>RMA No. :</b></th>
+						<th colspan="4"><span id="excel_ro_id"></span></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
-						<th colspan="5">Contact : <span id="excel_c"></span></th>
-						<th colspan="5" rowspan="4">Ship back to : <span id="excel_sbt"></span></th>
+						<th colspan="2"><b>Contact :</b></th>
+						<th colspan="3"><span id="excel_c"></span></th>
+						<th colspan="1" rowspan="1"><b>Ship back to :</b></th>
+						<th colspan="4" rowspan="4"><span id="excel_sbt"> DT Research, Inc. Taiwan Branch <br /> 1F. No.36 Wuquan 7th Rd. Wugu Dist. <br /> New Taipei City 24890 Taiwan (R.O.C.). <br /> +886-2-22982203
+						</span></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
-						<th colspan="5" rowspan="2">Address : <span id="excel_a"></span></th>
+						<th colspan="2" rowspan="1"><b>Address :</b></th>
+						<th colspan="3" rowspan="2"><span id="excel_a"></span></th>
+						<th colspan="1" rowspan="3"></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
+						<th colspan="2" class=""></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
-						<th colspan="5">Tex : <span id="excel_t"></span></th>
+						<th colspan="2"><b>Tel :</b></th>
+						<th colspan="3"><span id="excel_t"></span></th>
 					</tr>
 					<tr class="d-none">
 						<th class="noExl">_</th>
-						<th colspan="5">Fax : <span id="excel_f"></span></th>
-						<th colspan="5">To whom : <span id="excel_tw"></span></th>
+						<th colspan="2"><b>Fax :</b></th>
+						<th colspan="3"><span id="excel_f"></span></th>
+						<th colspan="1"><b>To whom :</b></th>
+						<th colspan="4"><span id="excel_tw"></span></th>
 					</tr>
 					<tr class="d-none">
-						<th colspan="10">.</th>
+						<th class="noExl">_</th>
+						<th colspan="10"></th>
+					</tr>
+					<tr class="d-none">
+						<th class="noExl">_</th>
+						<th colspan="3">*[Note]Type is : motherboard/product/other</th>
+						<th colspan="7"></th>
 					</tr>
 					<tr class="">
 						<th class="s_title_body noExl" style="min-width: 100px;">
 							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">Function</div>
+								<div class="title_name">
+									<b>Function</b>
+								</div>
 								<div class="title_order">
 									<i class="bi bi-sort-alpha-down "></i>
 									<!-- 分 -->
@@ -230,6 +226,26 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
+	<!-- 匯入維修 -->
+	<div class="shadow mt-2  border border-secondary rounded-top">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
+			<div class="col-6 p-0 pt-1">
+				<i class="bi bi-cloud-arrow-up mr-1"></i>Repair import
+			</div>
+			<div class="col-6 p-0">
+				<div class="row p-0 m-0 justify-content-end">
+					<div class="col-md-2 pt-1">Action:</div>
+					<div class="col-md-6 p-1">
+						<input class="col m-0 h5" type="file" id="excel_file" accept=".xlsx" />
+					</div>
+					<div class="col-md-2 p-1">
+						<button id="rd_clear_file_btn" class="col m-0 btn btn-warning btn-sm" type="button">File Clear</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="p-0"></div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -277,11 +293,17 @@ customized = new Vue({
 				//header
 				one_item_header[0].className = "p-1 ";
 				one_item_header[0].id = key_id;
-				one_item_header[0].children[0].children[0].innerText = value_name;
+				one_item_header[0].children[0].children[0].children[0].innerText = value_name;
 				one_item_header.insertBefore("#customized .s_title_last");
 				$("#" + key_id).css("min-width", value_size);
 				$("#" + key_id).css("max-width", value_size);
 				$("#" + key_id).attr('title',value_write == "disabled" ? "disabled" : "");
+				//特定不要Excel輸出
+				if(key_name=='rr_expired' ||key_name=='rd_ru_id' ||key_name=='rd_check'){
+					$("#" + key_id).addClass('noExl');
+				}
+				
+				
 				//body
 				var one_item_exl_body = $("#customized .rd_search_example_content .s_list_exl_body").clone(); //複製樣本(body)
 				one_item_exl_body = $(one_item_exl_body[0]);
@@ -289,6 +311,10 @@ customized = new Vue({
 				one_item_exl_body.insertBefore("#customized .s_list_body");
 				one_item_exl_body.addClass(key_name+"_exl");
 				one_item_exl_body.insertBefore("#customized .s_list_body");
+				//特定不要Excel輸出
+				if(key_name=='rr_expired' ||key_name=='rd_ru_id' ||key_name=='rd_check'){
+					$("." + key_name+"_exl").addClass('noExl');
+				}
 				
 				var one_item_body = $("#customized .rd_search_example_content .s_list_body").clone(); //複製樣本(body)
 				one_item_body = $(one_item_body[0]);
@@ -374,10 +400,8 @@ customized = new Vue({
 			}
 			
 			
-			var ro_address = '美商定誼科技(股)公司台灣分公司 \n'+
-			'1F. No.36 Wuquan 7th Rd. Wugu Dist.,\n'+
-			'New Taipei City 24890 Taiwan (R.O.C.) \n'+
-			'+886-2-22982203';
+			var ro_address = '美商定誼科技台灣分(股)公司 '+'1F. No.36 Wuquan 7th Rd. Wugu Dist.,\n'+
+			'New Taipei City 24890 Taiwan (R.O.C.) '+'+886-2-22982203';
 			$('#ro_address textarea').val(ro_address);
 			
 		},
@@ -405,7 +429,7 @@ customized = new Vue({
 			$('#excel_f').text(customer['c_fax']);
 			//Excel 維修單
 			$('#excel_ro_id').text(documents['ro_id']);
-			$('#excel_sbt').text($('#ro_address textarea').val());
+			//$('#excel_sbt').text($('#ro_address textarea').val());
 			
 			
 			//清除舊資料
@@ -544,16 +568,17 @@ customized = new Vue({
 					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+				var ro_id = $("#ro_id input").val()==""?"RMA":$("#ro_id input").val();
+				//var c_c_name = $("#c_c_name input").val()==""?reportDate:$("#c_c_name input").val();
 				$("#rd_excel").table2excel({
 					// exclude CSS class
 					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
 					exclude: ".noExl",
 					name: "Worksheet Name",
-					filename: "MES_Repair_Report_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
+					filename: "MES_" + ro_id+".xlsx", //do not include extension
+					exclude_img: true,
+					exclude_links: true,
+					exclude_inputs: true,
 				});
 			});
 			
@@ -564,12 +589,27 @@ customized = new Vue({
 				$('#c_address textarea').val("");
 				$('#c_tex input').val("");
 				$('#c_fax input').val("");
+				
+				$('#excel_c_n').text("");
+				$('#excel_c ').text("");
+				$('#excel_a').text("");
+				$('#excel_t').text("");
+				$('#excel_f').text("");
 			});
 			//清除維修單
 			$(document).on("click", "#clear_rd_btn", function (event) {
 				$('#ro_id input').val("");
 				$('#rd_ru_id select').val("");
 				$('#ro_check select').val("");
+				$('#excel_ro_id').text("");
+				
+				
+			});
+			
+			//清除檔案
+			$(document).on("click", "#rd_clear_file_btn", function (event) {
+				$("#excel_file").val("");				
+				
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
@@ -585,6 +625,20 @@ customized = new Vue({
 				$('#c_address textarea').val("");
 				$('#c_tex input').val("");
 				$('#c_fax input').val("");
+				//Excel 資訊
+				$('#excel_ro_id').text("");
+				$('#excel_c_n').text("");
+				$('#excel_c ').text("");
+				$('#excel_a').text("");
+				$('#excel_t').text("");
+				$('#excel_f').text("");
+				//清除檔案
+				$("#excel_file").val("");	
+			});
+			//清除問題敘述
+			$(document).on("click", "#rd_clear_list_btn", function (event) {
+				//單據項目
+				$('.detail_list').remove();
 			});
 			//預設分配單位
 			$(document).on("click", "#rd_designat_all_btn", function (event) {
@@ -605,6 +659,85 @@ customized = new Vue({
 					}
 				});
 			});
+			//檔案上傳資料
+			$(document).on("change", "#excel_file", function (event) {
+				//https://www.c-sharpcorner.com/article/reading-a-excel-file-using-html5-jquery/
+				console.log("change excel_file");
+				var xlsxflag = false; /*Flag for checking whether excel is .xls format or .xlsx format*/  
+				var files = event.currentTarget.files[0];
+				if(files!=null){
+					if (files.type.indexOf(".xlsx") > 0) {  
+					    xlsxflag = true;  
+					}
+					var reader = new FileReader();  
+					reader.onload = function (e) {
+						var data = e.target.result;   
+						var workbook = XLSX.read(data, { type: 'binary' });
+						var sheet_name_list = workbook.SheetNames;
+						sheet_name_list.forEach(function (y) {
+							console.log(workbook.Sheets[y]);
+							var sheet = workbook.Sheets[y];
+							
+							sheet['C2'] = (sheet['C2']==null?{v:""}:sheet['C2']);//客戶公司
+							sheet['C3'] = (sheet['C3']==null?{v:""}:sheet['C3']);//客戶名稱
+							sheet['C4'] = (sheet['C4']==null?{v:""}:sheet['C4']);//客戶地址
+							sheet['C6'] = (sheet['C6']==null?{v:""}:sheet['C6']);//客戶電話
+							sheet['C7'] = (sheet['C7']==null?{v:""}:sheet['C7']);//客戶傳真
+							sheet['G2'] = (sheet['G2']==null?{v:""}:sheet['G2']);//RMA 單號
+							
+							//[客戶]資料
+							$("#c_c_name input").val(sheet['C2']['v']);//客戶公司
+							$("#c_name input").val(sheet['C3']['v']);//客戶名稱
+							$("#c_address textarea").val(sheet['C4']['v']);//客戶地址
+							$("#c_tex input").val(sheet['C6']['v']);//客戶電話
+							$("#c_fax input").val(sheet['C7']['v']);//客戶傳真
+							$("#ro_id input").val(sheet['G2']['v']);//RMA 單號
+							
+							//[維修單]資料
+							var check_have = true;
+							var check_nb = 11;
+							while(check_have){
+								if(sheet['F'+check_nb] && sheet['F'+check_nb]['v']!=""){
+									sheet['A'+check_nb] = (sheet['A'+check_nb]==null?{v:""}:sheet['A'+check_nb]);//流水序號
+									sheet['B'+check_nb] = (sheet['B'+check_nb]==null?{v:""}:sheet['B'+check_nb]);//產品型號
+									sheet['C'+check_nb] = (sheet['C'+check_nb]==null?{v:""}:sheet['C'+check_nb]);//產品序號
+									sheet['D'+check_nb] = (sheet['D'+check_nb]==null?{v:""}:sheet['D'+check_nb]);//客戶產品序號
+									sheet['E'+check_nb] = (sheet['E'+check_nb]==null?{v:""}:sheet['E'+check_nb]);//產品類型
+									if(sheet['E'+check_nb]['v']=='motherboard'){sheet['E'+check_nb]['v'] = '主板';
+									}else if(sheet['E'+check_nb]['v']=='product'){sheet['E'+check_nb]['v'] = '產品';
+									}else if(sheet['E'+check_nb]['v']=='other'){sheet['E'+check_nb]['v'] = '其他';
+									}
+									sheet['F'+check_nb] = (sheet['F'+check_nb]==null?{v:""}:sheet['F'+check_nb]);//問題敘述
+									sheet['G'+check_nb] = (sheet['G'+check_nb]==null?{v:""}:sheet['G'+check_nb]);//問題數量
+									sheet['H'+check_nb] = (sheet['H'+check_nb]==null?{v:""}:sheet['H'+check_nb]);//保固?
+
+									//新增筆數
+									customized.addItems(false);
+									//console.log(sheet['F'+check_nb]);
+									var dl_target = $('.rd_search_example_list .detail_list')[check_nb-11];
+									$(dl_target).find('.rd_id input').val(sheet['A'+check_nb]['v']);
+									$(dl_target).find('.rr_pr_p_model input').val(sheet['B'+check_nb]['v']);
+									$(dl_target).find('.rr_sn input').val(sheet['C'+check_nb]['v']);
+									$(dl_target).find('.rr_c_sn input').val(sheet['D'+check_nb]['v']);
+									$(dl_target).find('.rr_pb_type select').val(sheet['E'+check_nb]['v']);
+									$(dl_target).find('.rd_statement input').val(sheet['F'+check_nb]['v']);
+									$(dl_target).find('.rd_u_qty input').val(sheet['G'+check_nb]['v']);
+								}else{
+									check_have = false;
+								}
+								check_nb+=1;
+							}
+						}); 
+					}
+						
+					/*If excel file is .xlsx extension than creates a Array Buffer from excel*/  
+					if (xlsxflag) {
+		                 reader.readAsArrayBuffer($("#excel_file")[0].files[0]);  
+		            }else {  
+		                 reader.readAsBinaryString($("#excel_file")[0].files[0]);  
+		            }
+				}
+			});
 			//存資料(可能:新增 可能修改)
 			$(document).on("click","#rd_save_btn", function (event) {
 				customized.sendSave();
@@ -618,32 +751,8 @@ customized = new Vue({
 			//新增監聽
 			$(document).on("click",".rd_list_add", function (event) {
 				console.log("rd_list_add "+$(event.target).attr('title'));
-				var clone_ex = $('.rd_search_example_content').clone();
-				var nb_add = customized.nb_add;
-				clone_ex[0].className ='detail_list';
-				clone_ex[0].id = 'nb_add_'+nb_add;
-				//功能
-				$(clone_ex[0]).find('.rd_list_add').attr('title',"nb_add_"+nb_add);
-				$(clone_ex[0]).find('.rd_list_copy').attr('title',"nb_add_"+nb_add);
-				$(clone_ex[0]).find('.rd_list_del').attr('title',"nb_add_"+nb_add);
-				$(clone_ex[0]).find('.rd_list_add').addClass('d-none');
-				$(clone_ex[0]).find('.rd_list_copy').removeClass('d-none');
-				$(clone_ex[0]).find('.rd_list_del').removeClass('d-none');
-				
-				clone_ex.insertAfter('.rd_search_example_content');
-				//可寫入?例遍
-				$("#nb_add_"+nb_add+" td").each(function(){
-					if($(this).find('.d_value').attr('title')=='disabled'){
-						$(this).find('.d_value').attr('disabled','disabled');
-					}else{
-						$(this).find('.d_value').removeAttr('disabled');
-					}
-					//$(this).find('.d_value').val("");
-					//console.log(this);
-				});
-				customized.nb_add++;
-				//添加標記
-				
+				customized.addItems(true);
+
 			});
 			//複製監聽
 			$(document).on("click",".rd_list_copy", function (event) {
@@ -693,9 +802,42 @@ customized = new Vue({
 				$("#"+$(event.target).attr('title')).remove();
 			});
 		},
+		//複製
+		addItems(add_After){
+			var clone_ex = $('.rd_search_example_content').clone();
+			var nb_add = customized.nb_add;
+			clone_ex[0].className ='detail_list';
+			clone_ex[0].id = 'nb_add_'+nb_add;
+			//功能
+			$(clone_ex[0]).find('.rd_list_add').attr('title',"nb_add_"+nb_add);
+			$(clone_ex[0]).find('.rd_list_copy').attr('title',"nb_add_"+nb_add);
+			$(clone_ex[0]).find('.rd_list_del').attr('title',"nb_add_"+nb_add);
+			$(clone_ex[0]).find('.rd_list_add').addClass('d-none');
+			$(clone_ex[0]).find('.rd_list_copy').removeClass('d-none');
+			$(clone_ex[0]).find('.rd_list_del').removeClass('d-none');
+			
+			if(add_After){
+				clone_ex.insertAfter('.rd_search_example_content');				
+			}else{
+				clone_ex.appendTo('.rd_search_example_list');			
+			}
+			//可寫入?例遍
+			$("#nb_add_"+nb_add+" td").each(function(){
+				if($(this).find('.d_value').attr('title')=='disabled'){
+					$(this).find('.d_value').attr('disabled','disabled');
+				}else{
+					$(this).find('.d_value').removeAttr('disabled');
+				}
+				//$(this).find('.d_value').val("");
+				//console.log(this);
+			});
+			customized.nb_add++;
+			//添加標記
+		},
 		//存檔
 		sendSave() {
 			console.log("sendSave");
+			main.loading(true);
 			var modify_order = {};
 			modify_order.c_c_name = 	$('#c_c_name input').val();
 			modify_order.c_name = 		$('#c_name input').val();
@@ -814,7 +956,10 @@ customized = new Vue({
 		$(document).off("click", "#clear_rd_btn");
 		$(document).off("click", "#clear_fi_btn");
 		$(document).off("click", "#rd_clear_btn");
-		
+		$(document).off("click", "#rd_clear_file_btn");
+		$(document).off("click", "#rd_clear_list_btn");
+			
+		$(document).off("change", "#excel_file");
 		$(document).off("click", "#rd_save_btn");
 		$(document).off("click", "#rd_designat_all_btn");
 		$(document).off("click", "#rd_check_all_btn");

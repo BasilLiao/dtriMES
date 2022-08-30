@@ -97,7 +97,7 @@ public class RepairOrder {
 	private Date roramdate;
 
 	@OneToMany(mappedBy = "order", orphanRemoval = true)
-	@OrderBy("register asc , rdstatement asc")
+	//@OrderBy("register asc , rdstatement asc")
 	private List<RepairDetail> details;
 
 	public List<RepairDetail> getDetails() {

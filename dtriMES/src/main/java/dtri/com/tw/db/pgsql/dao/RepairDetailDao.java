@@ -33,6 +33,12 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 	ArrayList<RepairDetail> findAllByRdidAndRdruid(String roid, String rdid, String rrsn, String rrpbtype, int rdcheck, int rocheck, Long rdruid,
 			Pageable pageable);
 
+	// 排序
+	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
+			+ "(:roid is null or o.roid LIKE %:roid%) "//
+			+ "order by d.rdstatement asc, r.rrprpmodel asc")
+	ArrayList<RepairDetail> findAllOrderRrdstatementAndModel(String roid);
+
 	// 場內維修 特定查詢
 	// 查詢 檢核
 	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o  WHERE "//

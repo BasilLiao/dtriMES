@@ -1531,31 +1531,33 @@ public class RepairOrderDtrService {
 		}
 		// 維修單
 		ArrayList<RepairOrder> orders = new ArrayList<RepairOrder>();
+		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
 		if (search_ro_id != null) {
-			orders = orderDao.findAllByRoid(search_ro_id);
+			details = detailDao.findAllOrderRrdstatementAndModel(search_ro_id);
+			//orders = orderDao.findAllByRoidOrderByRdid(search_ro_id);
 		}
-		if (orders.size() >= 1) {
-			object_order.put("ro_id", orders.get(0).getRoid());
-			object_order.put("ro_check", orders.get(0).getRocheck());
-			orders.get(0).getDetails().forEach(details -> {
+		if (details.size() >= 1) {
+			object_order.put("ro_id", details.get(0).getOrder().getRoid());
+			object_order.put("ro_check", details.get(0).getOrder().getRocheck());
+			details.forEach(dls -> {
 				int ord = 0;
 				JSONObject obj = new JSONObject();
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", details.getRdid().split("-")[1]);
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", details.getRegister().getRrprid());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", details.getRegister().getRrprpmodel());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", details.getRegister().getRrsn());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", details.getRegister().getRrcsn());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", details.getRegister().getRrpbtype());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rc_code", details.getRdrcvalue());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", details.getRdstatement());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_type", details.getRdtype());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", details.getRdtrue());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", details.getRdsolve());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", details.getRdufinally());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", details.getRduqty());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", details.getRegister().getRrexpired());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", details.getRdruid());
-				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_check", details.getRdcheck());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", dls.getRdid().split("-")[1]);
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", dls.getRegister().getRrprid());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", dls.getRegister().getRrprpmodel());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", dls.getRegister().getRrsn());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", dls.getRegister().getRrcsn());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", dls.getRegister().getRrpbtype());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rc_code", dls.getRdrcvalue());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", dls.getRdstatement());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_type", dls.getRdtype());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", dls.getRdtrue());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", dls.getRdsolve());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", dls.getRdufinally());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", dls.getRduqty());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", dls.getRegister().getRrexpired());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", dls.getRdruid());
+				obj.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_check", dls.getRdcheck());
 				object_detail.put(obj);
 			});
 		}

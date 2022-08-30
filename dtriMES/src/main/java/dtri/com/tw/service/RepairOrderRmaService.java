@@ -943,7 +943,13 @@ public class RepairOrderRmaService {
 				roids.add("");
 			}
 			// 客戶資料不完善 or 沒填寫資料
-			if (c_c_name == null || c_name == null || c_address == null || new_detail.length() == 0) {
+			if (c_c_name == null || c_name == null ) {
+				c_c_name = "Your company name.";
+				c_name = "Your name.";
+				c_address = "Your address.";
+				c_tex  = "Your tel.";
+			}
+				if( new_detail.length() == 0) {
 				resp.autoMsssage("MT005");
 				return false;
 			}
@@ -1164,8 +1170,22 @@ public class RepairOrderRmaService {
 				obj_ro.setSyscuser(user.getSuaccount());
 
 				// Order 維修單頭- 存入資料(間戳記)
-				ro_id = "RMA" + new Date().getTime();
+				String[] ro_yymms = Fm_Time.to_y_M_d(new Date()).split("-");
+				ro_id = "RMA" + ro_yymms[0] + ro_yymms[1];
+				String ro_nb = "000";
+				int ro_id_nb = 0;
+				// 檢查重複?->重複則->下一筆新序號
+				Boolean check_rep = true;
+				while (check_rep) {
+					if (orderDao.findAllByRoid(ro_id + ro_nb).size() > 0) {
+						ro_nb = String.format("%03d", ro_id_nb++);
+					} else {
+						check_rep = false;
+					}
+				}
+				ro_id = ro_id + ro_nb;
 				obj_ro = new RepairOrder();
+				
 				// 維修單資料
 				obj_ro.setRoid(ro_id);
 				obj_ro.setRocid(customers.get(0).getCid());
@@ -1244,7 +1264,7 @@ public class RepairOrderRmaService {
 		Long rocid = 0L;
 
 		// 維修單據
-		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "S/N(RMA)", rr_c_sn = "P/N(client)", //
+		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "S/N", rr_c_sn = "P/N", //
 				rr_pb_type = "Type", rd_statement = "Failure Description", rd_u_qty = "Qty", //
 				rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";
 
@@ -1259,7 +1279,7 @@ public class RepairOrderRmaService {
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "400px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "120px", FFM.Wri.W_Y));
