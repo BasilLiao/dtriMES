@@ -80,7 +80,7 @@ public class WorkstationRepeatService {
 			}
 
 			bean.setBody(new JSONObject().put("search", new JSONObject().//
-					put("phpnumber_total", prArrayList.get(0).getProductionRecords().getPrpquantity()).//
+					put("phpnumber_total", prArrayList.get(0).getPhpqty()).//
 					put("phpnumber_register", bodies.size()).//
 					put("m_old_order", m_old_order).//
 					put("check", true)));//
@@ -157,7 +157,7 @@ public class WorkstationRepeatService {
 
 					pro_b.setPbcheck(false);
 					pro_b.setPbusefulsn(0);
-					pro_b.setPbwyears(pro_h.getProductionRecords().getPrwyears());
+					pro_b.setPbwyears(pro_h.getPhwyears());
 					pro_b.setSysstatus(0);
 					pro_b.setSyssort(0);
 					pro_b.setPblpath("");
@@ -300,7 +300,7 @@ public class WorkstationRepeatService {
 
 				pro_b_one.setPbcheck(false);
 				pro_b_one.setPbposition(pro_b_one_old.getPbposition());
-				pro_b_one.setPbwyears(pro_h.getProductionRecords().getPrwyears());
+				pro_b_one.setPbwyears(pro_h.getPhwyears());
 				pro_b_one.setPbschedule(json_work.toString());
 
 				pro_b_one.setPblpath(pro_b_one_old.getPblpath());

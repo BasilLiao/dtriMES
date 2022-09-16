@@ -17,21 +17,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @author Basil
  * @see 系統設定<br>
  *      pr_id : 工單序號ID<br>
- *      pr_order_id : 訂單編號<br>
- *      pr_c_name : 客戶名稱<br>
- *      pr_p_quantity : 生產數量<br>
  *      pr_p_model : 產品型號<br>
  *      pr_bom_id : BOM料號<br>
  *      pr_bom_c_id : 客戶BOM料號<br>
- *      pr_c_from : 單據來源<br>
  *      pr_b_item : 規格定義{"名稱1":"內容1","名稱2":"內容2"}<br>
  *      pr_s_item : 軟體定義{"名稱1":"內容1","名稱2":"內容2"}<br>
  *      pr_s_sn : 產品序號 開始 EX:xxxxxx 01YW12042J044-<br>
  *      pr_e_sn : 產品序號 結束 EX: xxxxxx 01YW12042J050<br>
  *      pr_s_b_sn : 燒錄序號 開始 EX:xxxxxx 01YW12042J044-<br>
  *      pr_e_b_sn : 燒錄序號 結束 EX:xxxxxx 01YW12042J044-<br>
- *      pr_w_years : 保固<br>
- *      pr_wc_line : 產線<br>
  * 
  */
 @Entity
@@ -81,43 +75,17 @@ public class ProductionRecords {
 	// 功能項目
 	@Id
 	// 因為是文字 故無用 自動累加
-	// @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-	// "production_records_seq")
-	// @SequenceGenerator(name = "production_records_seq", sequenceName =
-	// "production_records_seq", allocationSize = 1)
 	@Column(name = "pr_id")
 	private String prid;
-
-	@Column(name = "pr_order_id", nullable = false, columnDefinition = "varchar(60) default ''")
-	private String prorderid;
-
-	@Column(name = "pr_c_name", nullable = false, columnDefinition = "varchar(60) default ''")
-	private String prcname;
-
-	@Column(name = "pr_p_quantity", nullable = false, columnDefinition = "int default 0")
-	private Integer prpquantity;
-
-	@Column(name = "pr_p_ok_quantity", columnDefinition = "int default 0")
-	private Integer prpokquantity;
-
-	@Column(name = "pr_h_ok_quantity", columnDefinition = "int default 0")
-	private Integer prhokquantity;
 
 	@Column(name = "pr_p_model", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prpmodel;
 
 	@Column(name = "pr_bom_id", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prbomid;
-	
+
 	@Column(name = "pr_bom_c_id", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prbomcid;
-
-	// @Column(name = "pr_v_motherboard", nullable = false, columnDefinition =
-	// "varchar(50) default ''")
-	// private String prvmotherboard;
-
-	@Column(name = "pr_c_from", nullable = false, columnDefinition = "varchar(50) default ''")
-	private String prcfrom;
 
 	@Column(name = "pr_b_item", nullable = false, columnDefinition = "text default ''")
 	private String prbitem;
@@ -130,32 +98,18 @@ public class ProductionRecords {
 
 	@Column(name = "pr_e_sn", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String presn;
-	
+
 	@Column(name = "pr_s_b_sn", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prsbsn;
 
 	@Column(name = "pr_e_b_sn", nullable = false, columnDefinition = "varchar(50) default ''")
-	private String prebsn;	
+	private String prebsn;
 
-	@Column(name = "pr_w_years", columnDefinition = "int default 0")
-	private Integer prwyears;
-	
-	@Column(name = "pr_wc_line", columnDefinition = "varchar(50) default ''")
-	private String prwcline;
-	
 	@OneToOne(mappedBy = "productionRecords")
 	private ProductionHeader header;
 
 	@OneToMany(mappedBy = "productionRecords")
 	private List<WorkHours> workHours;
-
-	public Integer getPrpokquantity() {
-		return prpokquantity;
-	}
-
-	public void setPrpokquantity(Integer prpokquantity) {
-		this.prpokquantity = prpokquantity;
-	}
 
 	public String getPrsbsn() {
 		return prsbsn;
@@ -269,30 +223,6 @@ public class ProductionRecords {
 		this.prid = prid;
 	}
 
-	public String getProrderid() {
-		return prorderid;
-	}
-
-	public void setProrderid(String prorderid) {
-		this.prorderid = prorderid;
-	}
-
-	public String getPrcname() {
-		return prcname;
-	}
-
-	public void setPrcname(String prcname) {
-		this.prcname = prcname;
-	}
-
-	public Integer getPrpquantity() {
-		return prpquantity;
-	}
-
-	public void setPrpquantity(Integer prpquantity) {
-		this.prpquantity = prpquantity;
-	}
-
 	public String getPrpmodel() {
 		return prpmodel;
 	}
@@ -307,14 +237,6 @@ public class ProductionRecords {
 
 	public void setPrbomid(String prbomid) {
 		this.prbomid = prbomid;
-	}
-
-	public String getPrcfrom() {
-		return prcfrom;
-	}
-
-	public void setPrcfrom(String prcfrom) {
-		this.prcfrom = prcfrom;
 	}
 
 	public String getPrbitem() {
@@ -349,30 +271,6 @@ public class ProductionRecords {
 		this.presn = presn;
 	}
 
-	public Integer getPrwyears() {
-		return prwyears;
-	}
-
-	public void setPrwyears(Integer prwyears) {
-		this.prwyears = prwyears;
-	}
-
-	public Integer getPrhokquantity() {
-		return prhokquantity;
-	}
-
-	public void setPrhokquantity(Integer prhokquantity) {
-		this.prhokquantity = prhokquantity;
-	}
-
-	public String getPrwcline() {
-		return prwcline;
-	}
-
-	public void setPrwcline(String prwcline) {
-		this.prwcline = prwcline;
-	}
-
 	public String getPrbomcid() {
 		return prbomcid;
 	}
@@ -380,5 +278,5 @@ public class ProductionRecords {
 	public void setPrbomcid(String prbomcid) {
 		this.prbomcid = prbomcid;
 	}
-	
+
 }

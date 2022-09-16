@@ -96,8 +96,8 @@ public class RepairOrderRmaService {
 				rd_svg = "圖片", rd_u_finally = "修復員";
 		// 維修登記(物件)
 		String /* rr_sn = "產品序號", */ rr_c_sn = "客戶品件(序號)", //
-				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
-				rr_pr_p_model = "品件型號", rr_pr_w_years = "保固年份", //
+				rr_pr_id = "製令單", rr_ph_p_qty = "製令數量", //
+				rr_pr_p_model = "品件型號", rr_ph_w_years = "保固年份", //
 				rr_pb_sys_m_date = "生產日期", rr_pb_type = "品件類型", //
 				rr_v = "版本號", rr_f_ok = "品件狀態", rr_expired = "保固內?";
 
@@ -150,12 +150,12 @@ public class RepairOrderRmaService {
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn",
 			// FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "150px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_qty", FFS.h_t(rr_pr_p_qty, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_p_qty", FFS.h_t(rr_ph_p_qty, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "150px", FFM.Wri.W_N));
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired",
 			// FFS.h_t(rr_expired, "150px", FFM.Wri.W_N));
-			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_w_years",
-			// FFS.h_t(rr_pr_w_years, "150px", FFM.Wri.W_N));
+			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_w_years",
+			// FFS.h_t(rr_ph_w_years, "150px", FFM.Wri.W_N));
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_sys_m_date",
 			// FFS.h_t(rr_pb_sys_m_date, "150px", FFM.Wri.W_N));
 			// object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type",
@@ -219,7 +219,7 @@ public class RepairOrderRmaService {
 			s_val.put((new JSONObject()).put("value", "已報廢").put("key", 2));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_f_ok", rr_f_ok));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_pr_p_qty", rr_pr_p_qty));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_ph_p_qty", rr_ph_p_qty));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
 
 			// 產品或是物件 登記資訊
@@ -228,7 +228,7 @@ public class RepairOrderRmaService {
 			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
 			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "true", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_expired", rr_expired));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pr_w_years", rr_pr_w_years));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_ph_w_years", rr_ph_w_years));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
@@ -278,11 +278,11 @@ public class RepairOrderRmaService {
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rd_u_finally", ""));
 
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pr_id", ""));
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pr_p_qty", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_ph_p_qty", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pr_p_model", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_c_sn", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_expired", ""));
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pr_w_years", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_ph_w_years", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pb_sys_m_date", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_pb_type", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "rr_v", ""));
@@ -426,7 +426,7 @@ public class RepairOrderRmaService {
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", x_son.getRdstatement());
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", x_son.getRdtrue());
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", x_son.getRegister().getRrprid());
-				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", x_son.getRegister().getRrprpqty());
+				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_p_qty", x_son.getRegister().getRrphpqty());
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", x_son.getRegister().getRrprpmodel());
 
 				object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", x_son.getRegister().getRrfok());
@@ -451,7 +451,7 @@ public class RepairOrderRmaService {
 			JSONArray list = body.getJSONArray("create");
 			JSONArray list_chok = new JSONArray();
 			// 群組 統一資料用
-			Long rd_id_nb = 0L;
+			int rd_id_nb = 1;
 			Long rd_ru_id = 0L;// 指派單位
 			String ro_id = "";
 			RepairOrder obj_h = new RepairOrder();// 維修單資料
@@ -473,8 +473,8 @@ public class RepairOrderRmaService {
 						List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 						if (headers.size() == 1) {
 							data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-							data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
-							data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
+							data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
+							data.put("rr_ph_w_years", headers.get(0).getPhwyears());
 							data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
 							data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
 							data.put("rr_expired", true);
@@ -493,8 +493,8 @@ public class RepairOrderRmaService {
 					} else {
 						data.put("rr_expired", true);
 						data.put("rr_pr_id", "");
-						data.put("rr_pr_p_qty", 0);
-						data.put("rr_pr_w_years", data.getInt("rr_pr_w_years"));
+						data.put("rr_ph_p_qty", 0);
+						data.put("rr_ph_w_years", data.getInt("rr_ph_w_years"));
 						data.put("rr_pr_p_model", data.getString("rr_pr_p_model"));
 						data.put("rr_pb_sys_m_date", "null");// 產品製造日期 = 產品最後修改時間
 					}
@@ -548,10 +548,10 @@ public class RepairOrderRmaService {
 					register.setRrsn(data.getString("rd_rr_sn"));
 					register.setRrcsn(data.getString("rr_c_sn"));
 					register.setRrprid(data.getString("rr_pr_id"));
-					register.setRrprpqty(data.getInt("rr_pr_p_qty"));
+					register.setRrphpqty(data.getInt("rr_ph_p_qty"));
 					register.setRrprpmodel(data.getString("rr_pr_p_model"));
-					register.setRrexpired(true);// rr_pr_w_years
-					register.setRrprwyears(data.getInt("rr_pr_w_years"));
+					register.setRrexpired(true);// rr_ph_w_years
+					register.setRrphwyears(data.getInt("rr_ph_w_years"));
 					register.setRrpbsysmdate(data.getString("rr_pb_sys_m_date").equals("null") ? null : Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 					register.setRrpbtype(data.getString("rr_pb_type"));
 					register.setRrv(data.getString("rr_v"));
@@ -585,7 +585,6 @@ public class RepairOrderRmaService {
 					obj_b.setSysheader(false);
 					obj_b.setRegister(register);
 					detailDao.save(obj_b);
-
 				}
 			}
 			check = true;
@@ -605,7 +604,7 @@ public class RepairOrderRmaService {
 			JSONArray list = body.getJSONArray("save_as");
 			JSONArray list_check = new JSONArray();
 			// 群組 統一資料用
-			Long rd_id_nb = 0L;
+			int rd_id_nb = 0;
 			Long rd_ru_id = 0L;// 指派單位
 			String ro_id = "";
 			RepairOrder obj_h = new RepairOrder();// 維修單資料
@@ -627,8 +626,8 @@ public class RepairOrderRmaService {
 						List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 						if (headers.size() == 1) {
 							data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-							data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
-							data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
+							data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
+							data.put("rr_ph_w_years", headers.get(0).getPhwyears());
 							data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
 							data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));
 							// 產品製造日期 = 產品最後修改時間
@@ -639,8 +638,8 @@ public class RepairOrderRmaService {
 						}
 					} else {
 						data.put("rr_pr_id", "");
-						data.put("rr_pr_p_qty", 0);
-						data.put("rr_pr_w_years", data.getInt("rr_pr_w_years"));
+						data.put("rr_ph_p_qty", 0);
+						data.put("rr_ph_w_years", data.getInt("rr_ph_w_years"));
 						data.put("rr_pr_p_model", data.getString("rr_pr_p_model"));
 						data.put("rr_pb_sys_m_date", "null");// 產品製造日期 = 產品最後修改時間
 					}
@@ -694,10 +693,10 @@ public class RepairOrderRmaService {
 					register.setRrsn(data.getString("rd_rr_sn"));
 					register.setRrcsn(data.getString("rr_c_sn"));
 					register.setRrprid(data.getString("rr_pr_id"));
-					register.setRrprpqty(data.getInt("rr_pr_p_qty"));
+					register.setRrphpqty(data.getInt("rr_ph_p_qty"));
 					register.setRrprpmodel(data.getString("rr_pr_p_model"));
-					register.setRrexpired(true);// rr_pr_w_years
-					register.setRrprwyears(data.getInt("rr_pr_w_years"));
+					register.setRrexpired(true);// rr_ph_w_years
+					register.setRrphwyears(data.getInt("rr_ph_w_years"));
 					register.setRrpbsysmdate(data.getString("rr_pb_sys_m_date").equals("null") ? null : Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 					register.setRrpbtype(data.getString("rr_pb_type"));
 					register.setRrv(data.getString("rr_v"));
@@ -765,8 +764,8 @@ public class RepairOrderRmaService {
 						List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 						if (headers.size() == 1) {
 							data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-							data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
-							data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
+							data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
+							data.put("rr_ph_w_years", headers.get(0).getPhwyears());
 							data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
 							data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));
 							// 產品製造日期 = 產品最後修改時間
@@ -776,8 +775,8 @@ public class RepairOrderRmaService {
 					} else {
 						// 如果沒系統資料
 						data.put("rr_pr_id", "");
-						data.put("rr_pr_p_qty", 0);
-						data.put("rr_pr_w_years", data.getInt("rr_pr_w_years"));
+						data.put("rr_ph_p_qty", 0);
+						data.put("rr_ph_w_years", data.getInt("rr_ph_w_years"));
 						data.put("rr_pr_p_model", data.getString("rr_pr_p_model"));
 						data.put("rr_pb_sys_m_date", "null");// 產品製造日期 = 產品最後修改時間
 					}
@@ -835,10 +834,10 @@ public class RepairOrderRmaService {
 						register.setRrsn(data.getString("rd_rr_sn"));
 						register.setRrcsn(data.getString("rr_c_sn"));
 						register.setRrprid(data.getString("rr_pr_id"));
-						register.setRrprpqty(data.getInt("rr_pr_p_qty"));
+						register.setRrphpqty(data.getInt("rr_ph_p_qty"));
 						register.setRrprpmodel(data.getString("rr_pr_p_model"));
-						register.setRrexpired(true);// rr_pr_w_years
-						register.setRrprwyears(data.getInt("rr_pr_w_years"));
+						register.setRrexpired(true);// rr_ph_w_years
+						register.setRrphwyears(data.getInt("rr_ph_w_years"));
 						register.setRrpbsysmdate(
 								data.getString("rr_pb_sys_m_date").equals("null") ? null : Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 						register.setRrpbtype(data.getString("rr_pb_type"));
@@ -943,13 +942,13 @@ public class RepairOrderRmaService {
 				roids.add("");
 			}
 			// 客戶資料不完善 or 沒填寫資料
-			if (c_c_name == null || c_name == null ) {
+			if (c_c_name == null || c_name == null) {
 				c_c_name = "Your company name.";
 				c_name = "Your name.";
 				c_address = "Your address.";
-				c_tex  = "Your tel.";
+				c_tex = "Your tel.";
 			}
-				if( new_detail.length() == 0) {
+			if (new_detail.length() == 0) {
 				resp.autoMsssage("MT005");
 				return false;
 			}
@@ -963,8 +962,8 @@ public class RepairOrderRmaService {
 					List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 					if (headers.size() == 1) {
 						new_data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-						new_data.put("rr_pr_p_qty", headers.get(0).getProductionRecords().getPrpquantity());
-						new_data.put("rr_pr_w_years", headers.get(0).getProductionRecords().getPrwyears());
+						new_data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
+						new_data.put("rr_ph_w_years", headers.get(0).getPhwyears());
 						new_data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
 						new_data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
 						new_data.put("rr_expired", true);
@@ -985,8 +984,8 @@ public class RepairOrderRmaService {
 					new_data.put("rr_expired", new_data.getString("rr_expired").equals("") ? //
 							true : new_data.getBoolean("rr_expired"));
 					new_data.put("rr_pr_id", "");
-					new_data.put("rr_pr_p_qty", 0);
-					new_data.put("rr_pr_w_years", 0);
+					new_data.put("rr_ph_p_qty", 0);
+					new_data.put("rr_ph_w_years", 0);
 					new_data.put("rr_pb_sys_m_date", "null");// 產品製造日期 = 產品最後修改時間
 				}
 				// Step3.檢查資訊正確性
@@ -1085,10 +1084,10 @@ public class RepairOrderRmaService {
 								register.setRrsn(new_deatil.getString("rr_sn"));
 								register.setRrcsn(new_deatil.getString("rr_c_sn"));
 								register.setRrprid(new_deatil.getString("rr_pr_id"));
-								register.setRrprpqty(new_deatil.getInt("rr_pr_p_qty"));
+								register.setRrphpqty(new_deatil.getInt("rr_ph_p_qty"));
 								register.setRrprpmodel(new_deatil.getString("rr_pr_p_model"));
-								register.setRrexpired(new_deatil.getBoolean("rr_expired"));// rr_pr_w_years
-								register.setRrprwyears(new_deatil.getInt("rr_pr_w_years"));
+								register.setRrexpired(new_deatil.getBoolean("rr_expired"));// rr_ph_w_years
+								register.setRrphwyears(new_deatil.getInt("rr_ph_w_years"));
 								register.setRrpbsysmdate(new_deatil.getString("rr_pb_sys_m_date").equals("null") ? null
 										: Fm_Time.toDateTime(new_deatil.getString("rr_pb_sys_m_date")));
 								register.setRrpbtype(new_deatil.getString("rr_pb_type"));
@@ -1123,7 +1122,7 @@ public class RepairOrderRmaService {
 								}
 							} else {
 								RepairDetail add_detail = new RepairDetail();
-								int rd_id_nb = 0;
+								int rd_id_nb = 1;
 								String rd_id = "R" + String.format("%04d", rd_id_nb++);
 								// 檢查重複?->重複則->下一筆新序號
 								Boolean check_rep = true;
@@ -1156,7 +1155,7 @@ public class RepairOrderRmaService {
 				}
 			} else {
 				// 5-3.維修單-新增
-				int rd_id_nb = 0;
+				int rd_id_nb = 1;
 				customers = customerDao.findAllByCustomer(0L, c_c_name, null, 0, null);
 				ro_one.setRocid(customers.get(0).getCid());
 				RepairOrder obj_ro = new RepairOrder();// 維修單資料
@@ -1185,7 +1184,7 @@ public class RepairOrderRmaService {
 				}
 				ro_id = ro_id + ro_nb;
 				obj_ro = new RepairOrder();
-				
+
 				// 維修單資料
 				obj_ro.setRoid(ro_id);
 				obj_ro.setRocid(customers.get(0).getCid());
@@ -1203,10 +1202,10 @@ public class RepairOrderRmaService {
 					rr.setRrsn(data.getString("rr_sn"));
 					rr.setRrcsn(data.getString("rr_c_sn"));
 					rr.setRrprid(data.getString("rr_pr_id"));
-					rr.setRrprpqty(data.getInt("rr_pr_p_qty"));
+					rr.setRrphpqty(data.getInt("rr_ph_p_qty"));
 					rr.setRrprpmodel(data.getString("rr_pr_p_model"));
-					rr.setRrexpired(data.getBoolean("rr_expired"));// rr_pr_w_years
-					rr.setRrprwyears(data.getInt("rr_pr_w_years"));
+					rr.setRrexpired(data.getBoolean("rr_expired"));// rr_ph_w_years
+					rr.setRrphwyears(data.getInt("rr_ph_w_years"));
 					rr.setRrpbsysmdate(data.getString("rr_pb_sys_m_date").equals("null") ? null : Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
 					rr.setRrpbtype(data.getString("rr_pb_type"));
 					rr.setRrv(data.getString("rr_v"));

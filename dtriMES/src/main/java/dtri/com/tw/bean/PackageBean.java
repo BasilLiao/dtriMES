@@ -58,6 +58,7 @@ public class PackageBean {
 	public static final String info_work_success21 = "[WK021] 存檔 此(產品/燒錄 序號) 已 重複過站!!";
 	public static final String info_work_success22 = "[WK022] 檢查 此(產品/燒錄 序號) 已 重複過站!!";
 	public static final String info_work_warning23 = "[WK023] 檢查 此(產品) 規格異常! [Warning]!!";
+	public static final String info_work_warning24 = "[WK024] 檢查 此(作業人) 查無此 作業員編號 請檢察! [Warning]!!";
 
 	public static final String info_Maint_warning01 = "[MT001] 此 (維修單) 已結單/終止/暫停! [Warning]!!";
 	public static final String info_Maint_warning02 = "[MT002] 此 (維修單) [維修中] 不可異動 資料欄位! [Warning]!!";
@@ -219,6 +220,9 @@ public class PackageBean {
 			break;
 		case "WK023":// [WK023] 檢查 此(產品) 規格異常! [Warning]!!
 			this.info = info_work_warning23;
+			break;
+		case "WK024":// [WK024] 檢查 此(作業人) 查無此 作業員編號 請檢察! [Warning]!!
+			this.info = info_work_warning24;
 			break;
 
 		case "WK000":// 無此[工作站],請檢查[工作站]! [Warning]!!"

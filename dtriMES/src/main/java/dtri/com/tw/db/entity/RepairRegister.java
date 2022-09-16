@@ -19,9 +19,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rr_sn : ID(產品SN號)[產品/主板/有序號的]1:多[維修細節]<br>
  *      rr_c_sn : 客戶產品SN號<br>
  *      rr_pr_id : 製令單號<br>
- *      rr_pr_p_qty : 製令單 數量<br>
+ *      rr_ph_p_qty : 製令單 數量<br>
  *      rr_pr_p_model : 產品型號<br>
- *      rr_pr_w_years : 產品保故<br>
+ *      rr_ph_w_years : 產品保故<br>
  *      rr_pb_sys_m_date : 產品製造日<br>
  *      rr_pb_type : 產品類型<br>
  *      rr_expired : 產品過保?<br>
@@ -83,14 +83,14 @@ public class RepairRegister {
 	@Column(name = "rr_pr_id", columnDefinition = "varchar(50)")
 	private String rrprid;
 
-	@Column(name = "rr_pr_p_qty")
-	private Integer rrprpqty;
+	@Column(name = "rr_ph_p_qty")
+	private Integer rrphpqty;
 
 	@Column(name = "rr_pr_p_model")
 	private String rrprpmodel;
 
-	@Column(name = "rr_pr_w_years", columnDefinition = "int default 0")
-	private Integer rrprwyears;
+	@Column(name = "rr_ph_w_years", columnDefinition = "int default 0")
+	private Integer rrphwyears;
 
 	@Column(name = "rr_expired", nullable = false, columnDefinition = "boolean default false")
 	private Boolean rrexpired;
@@ -134,12 +134,12 @@ public class RepairRegister {
 		this.rrprid = rrprid;
 	}
 
-	public Integer getRrprpqty() {
-		return rrprpqty;
+	public Integer getRrphpqty() {
+		return rrphpqty;
 	}
 
-	public void setRrprpqty(Integer rrprpqty) {
-		this.rrprpqty = rrprpqty;
+	public void setRrphpqty(Integer rrphpqty) {
+		this.rrphpqty = rrphpqty;
 	}
 
 	public String getRrprpmodel() {
@@ -150,12 +150,12 @@ public class RepairRegister {
 		this.rrprpmodel = rrprpmodel;
 	}
 
-	public Integer getRrprwyears() {
-		return rrprwyears;
+	public Integer getRrphwyears() {
+		return rrphwyears;
 	}
 
-	public void setRrprwyears(Integer rrprwyears) {
-		this.rrprwyears = rrprwyears;
+	public void setRrphwyears(Integer rrphwyears) {
+		this.rrphwyears = rrphwyears;
 	}
 
 	public Boolean getRrexpired() {

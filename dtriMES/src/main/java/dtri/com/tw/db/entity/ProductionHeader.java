@@ -24,11 +24,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      ph_pr_type : 類型-製令工單<br>
  *      ph_pb_id : 關聯-SN清單<br>
  *      ph_pb_g_id :關聯群組-SN清單<br>
- *      ph_p_name:(客戶)產品名稱/產品批次驗證序號(product name/part name) ph_wpro_id : 工作站<br>
+ *      ph_p_name:(客戶)產品名稱/產品批次驗證序號(product name/part name) <br>
+ *      ph_wpro_id : 工作站<br>
  *      ph_s_date : 開始製成 <br>
  *      ph_e_date : 結束製成 <br>
  *      ph_schedule : 進度{A站:{A1項目:Y,A2項目:N},{B站:{...},...}}<br>
- * 		ph_pb_schedule :進度{A站:50,B站:20,...}}<br>
+ *      ph_pb_schedule :進度{A站:50,B站:20,...}}<br>
+ *      <br>
+ *      ph_order_id="訂單編號"<br>
+ *      ph_c_name = "客戶名稱"<br>
+ *      ph_c_from(單據來源)<br>
+ *      ph_p_qty = "預計生產數"<br>
+ *      ph_p_ok_qty = "生產完成數"<br>
+ *      ph_p_a_ok_qty = "加工完成數"<br>
+ *      ph_e_s_date = "預計出貨日"<br>
+ *      ph_wc_line : 產線<br>
  */
 @Entity
 @Table(name = "production_header")
@@ -113,6 +123,98 @@ public class ProductionHeader {
 
 	@Column(name = "ph_pb_schedule", columnDefinition = "varchar(200)")
 	private String phpbschedule;
+
+	// 20220902轉移
+	@Column(name = "ph_order_id", nullable = false, columnDefinition = "varchar(60) default ''")
+	private String phorderid;
+
+	@Column(name = "ph_c_name", nullable = false, columnDefinition = "varchar(60) default ''")
+	private String phcname;
+
+	@Column(name = "ph_p_qty", nullable = false, columnDefinition = "int default 0")
+	private Integer phpqty;
+
+	@Column(name = "ph_p_ok_qty", columnDefinition = "int default 0")
+	private Integer phpokqty;
+
+	@Column(name = "ph_p_a_ok_qty", columnDefinition = "int default 0")
+	private Integer phpaokqty;
+
+	@Column(name = "ph_c_from", nullable = false, columnDefinition = "varchar(50) default ''")
+	private String phcfrom;
+
+	@Column(name = "ph_e_s_date", columnDefinition = "varchar(50)  default ''")
+	private String phesdate;
+
+	@Column(name = "ph_w_years", columnDefinition = "int default 0")
+	private Integer phwyears;
+
+	@Column(name = "ph_wc_line", columnDefinition = "varchar(50) default ''")
+	private String phwcline;
+
+	public Integer getPhwyears() {
+		return phwyears;
+	}
+
+	public void setPhwyears(Integer phwyears) {
+		this.phwyears = phwyears;
+	}
+
+	public String getPhesdate() {
+		return phesdate;
+	}
+
+	public void setPhesdate(String phesdate) {
+		this.phesdate = phesdate;
+	}
+
+	public String getPhorderid() {
+		return phorderid;
+	}
+
+	public void setPhorderid(String phorderid) {
+		this.phorderid = phorderid;
+	}
+
+	public String getPhcname() {
+		return phcname;
+	}
+
+	public void setPhcname(String phcname) {
+		this.phcname = phcname;
+	}
+
+	public Integer getPhpqty() {
+		return phpqty;
+	}
+
+	public void setPhpqty(Integer phpqty) {
+		this.phpqty = phpqty;
+	}
+
+	public Integer getPhpokqty() {
+		return phpokqty;
+	}
+
+	public void setPhpokqty(Integer phpokqty) {
+		this.phpokqty = phpokqty;
+	}
+
+	public Integer getPhpaokqty() {
+		return phpaokqty;
+	}
+
+	public void setPhpaokqty(Integer phpaokqty) {
+		this.phpaokqty = phpaokqty;
+	}
+
+	public String getPhcfrom() {
+		return phcfrom;
+	}
+
+	public void setPhcfrom(String phcfrom) {
+		this.phcfrom = phcfrom;
+	}
 
 	public String getPhpnumber() {
 		return phpnumber;
@@ -272,6 +374,14 @@ public class ProductionHeader {
 
 	public void setPhpbschedule(String phpbschedule) {
 		this.phpbschedule = phpbschedule;
+	}
+
+	public String getPhwcline() {
+		return phwcline;
+	}
+
+	public void setPhwcline(String phwcline) {
+		this.phwcline = phwcline;
 	}
 
 }

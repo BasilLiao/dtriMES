@@ -987,7 +987,7 @@
    		
    		//監聽資訊-尋找是否有類似值
    		$(document).on("input","#fix_i_textarea_zzzz", function() {
-			console.log($(this).val()); 
+			//console.log($(this).val()); 
 			//console.log(workstation.fix_type);
 			var search_fix="";
 			//故障-類別
@@ -999,7 +999,7 @@
 				        //故障-項目
 				     	var k= p[key_p]['item'];
 					     for (var key_k in k) {
-				 		    if (k.hasOwnProperty(key_k) && k[key_k].indexOf($(this).val())>=0) {
+				 		    if (k.hasOwnProperty(key_k) && (k[key_k].toLowerCase()).indexOf($(this).val().toLowerCase())>=0) {
 				 		        //console.log(key_k + " -> " + k[key_k]);
 				 		       	search_fix+=(key_k + " -> " + k[key_k]+"<br> ");
 				 		    }

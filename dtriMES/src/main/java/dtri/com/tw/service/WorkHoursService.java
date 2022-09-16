@@ -23,6 +23,14 @@ import dtri.com.tw.db.pgsql.dao.WorkHoursDao;
 import dtri.com.tw.db.pgsql.dao.WorkTypeDao;
 import dtri.com.tw.tools.Fm_Time;
 
+/**
+ * 
+ * 
+ * 
+ * !!!!!!!!!!!!!!!!!!工時登記 因 資料異動 尚未完成!!!!!!!!!!!!!!!!!!
+ * 
+ * 
+ * */
 @Service
 public class WorkHoursService {
 	@Autowired
@@ -69,7 +77,7 @@ public class WorkHoursService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wh_do", FFS.h_t("工作內容", "350px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wh_nb", FFS.h_t("已完成", "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_quantity", FFS.h_t("需完成", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_p_qty", FFS.h_t("需完成", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wh_account", FFS.h_t("作業人員", "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wh_s_date", FFS.h_t("開始時間", "180px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "wh_e_date", FFS.h_t("結束時間", "180px", FFM.Wri.W_N));
@@ -100,7 +108,7 @@ public class WorkHoursService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "wh_s_date", "時間(始)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "wh_e_date", "時間(結)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "wh_nb", "完成數量"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "pr_p_quantity", "總數"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "ph_p_qty", "總數"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "wh_account", "作業人員"));
 
@@ -122,7 +130,7 @@ public class WorkHoursService {
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-1", "wh_wt_id", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_S, "col-md-1", "wh_pr_id", ""));
 
-			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_S, "col-md-1", "pr_p_quantity", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_S, "col-md-1", "ph_p_qty", ""));
 
 			bean.setCell_g_modify(obj_g_m);
 
@@ -195,7 +203,7 @@ public class WorkHoursService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_do", one.getWhdo());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_nb", one.getWhnb());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_quantity", one.getProductionRecords().getPrpquantity());
+			//object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_ph_p_qty", one.get());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_account", one.getWhaccount());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_s_date", one.getWhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getWhsdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_e_date", one.getWhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getWhedate()));
@@ -254,13 +262,13 @@ public class WorkHoursService {
 					total_tw += workHours.getWhnb();
 				}
 				total_tw += data.getInt("wh_nb");
-				if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
-					return false;
-				}
+//				if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
+//					return false;
+//				}
 				// 檢核數量
-				if (data.getInt("wh_nb") > check_wts.get(0).getProductionRecords().getPrpquantity()) {
-					return false;
-				}
+//				if (data.getInt("wh_nb") > check_wts.get(0).getProductionRecords().getPrpquantity()) {
+//					return false;
+//				}
 
 				// 檢核使用者
 				/*
@@ -386,13 +394,13 @@ public class WorkHoursService {
 							total_tw += workHours.getWhnb();
 						}
 					}
-					if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
-						return false;
-					}
+//					if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
+//						return false;
+//					}
 					// 檢核數量
-					if (data.getInt("wh_nb") > check_wts.get(0).getProductionRecords().getPrpquantity()) {
-						return false;
-					}
+//					if (data.getInt("wh_nb") > check_wts.get(0).getProductionRecords().getPrpquantity()) {
+//						return false;
+//					}
 
 					// 檢核使用者
 					/*

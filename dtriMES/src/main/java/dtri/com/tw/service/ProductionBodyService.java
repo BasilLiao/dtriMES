@@ -1,6 +1,5 @@
 package dtri.com.tw.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class ProductionBodyService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_sn", FFS.h_t("SN_(身分/產品)", "160px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_old_sn", FFS.h_t("SN_(身分/產品)[舊]", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_model", FFS.h_t("產品型號", "160px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_order_id", FFS.h_t("訂單號", "160px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_order_id", FFS.h_t("訂單號", "160px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t("BOM(公司)", "160px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_c_id", FFS.h_t("BOM(客戶)", "160px", FFM.Wri.W_Y));
 
@@ -442,7 +441,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_sn", one.getPbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", productionHeader.getProductionRecords().getPrpmodel());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_order_id", productionHeader.getProductionRecords().getProrderid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_order_id", productionHeader.getPhorderid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", productionHeader.getProductionRecords().getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", productionHeader.getProductionRecords().getPrbomcid());
 
@@ -609,7 +608,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_old_sn", one.getPboldsn() == null ? "" : one.getPboldsn());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", productionHeader.getProductionRecords().getPrpmodel());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_order_id", productionHeader.getProductionRecords().getProrderid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_order_id", productionHeader.getPhorderid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", productionHeader.getProductionRecords().getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", productionHeader.getProductionRecords().getPrbomcid());
 

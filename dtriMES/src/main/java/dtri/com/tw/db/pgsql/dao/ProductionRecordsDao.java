@@ -16,14 +16,13 @@ public interface ProductionRecordsDao extends JpaRepository<ProductionRecords, L
 
 	// 查詢一部分
 	@Query("SELECT c FROM ProductionRecords c "//
-			+ "WHERE (:prcname is null or c.prcname LIKE %:prcname% ) and "//
-			+ "(:prorderid is null or c.prid LIKE %:prorderid% ) and "//
-			+ "(:prbomid is null or c.prbomid LIKE %:prbomid% ) and "//
+			+ "WHERE (:prbomid is null or c.prbomid LIKE %:prbomid% ) and "//
 			+ "(:prssn is null or :prssn BETWEEN c.prssn  AND c.presn) and "//
 			+ "( c.sysstatus = :sysstatus ) "//
 			+ "order by c.sysmdate desc")
-	ArrayList<ProductionRecords> findAllByRecords(@Param("prcname") String prcname, @Param("prorderid") String prorderid,
-			@Param("prbomid") String prbomid, @Param("prssn") String prssn, @Param("sysstatus") Integer sysstatus, Pageable pageable);
+	ArrayList<ProductionRecords> findAllByRecords(//
+			@Param("prbomid") String prbomid, @Param("prssn") String prssn, //
+			@Param("sysstatus") Integer sysstatus, Pageable pageable);
 
 	// 查詢是否重複 製令
 	ArrayList<ProductionRecords> findAllByPrid(String prid, Pageable pageable);

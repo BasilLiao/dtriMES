@@ -81,8 +81,8 @@ public class RepairHistoryService {
 				rd_svg = "圖片", rd_u_finally = "修復員", rd_type = "故障類型";
 		// 維修登記(物件)
 		String rr_sn = "產品(序號)", rr_c_sn = "客戶產品(序號)", //
-				rr_pr_id = "製令單", rr_pr_p_qty = "製令數量", //
-				rr_pr_p_model = "產品型號", rr_pr_w_years = "保固年份", //
+				rr_pr_id = "製令單", rr_ph_p_qty = "製令數量", //
+				rr_pr_p_model = "產品型號", rr_ph_w_years = "保固年份", //
 				rr_pb_sys_m_date = "生產日期", rr_pb_type = "產品類型", //
 				rr_v = "版本號", rr_f_ok = "產品狀態", rr_expired = "保固內?";
 
@@ -125,10 +125,10 @@ public class RepairHistoryService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "200px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "200px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_qty", FFS.h_t(rr_pr_p_qty, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_p_qty", FFS.h_t(rr_ph_p_qty, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_w_years", FFS.h_t(rr_pr_w_years, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_w_years", FFS.h_t(rr_ph_w_years, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_sys_m_date", FFS.h_t(rr_pb_sys_m_date, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_v", FFS.h_t(rr_v, "150px", FFM.Wri.W_Y));
@@ -199,13 +199,13 @@ public class RepairHistoryService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", true, n_val, "rr_sn", rr_sn));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rr_c_sn", rr_c_sn));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_pr_p_qty", rr_pr_p_qty));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_ph_p_qty", rr_ph_p_qty));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
 			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "true", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_expired", rr_expired));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "rr_pr_w_years", rr_pr_w_years));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "rr_ph_w_years", rr_ph_w_years));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
@@ -341,10 +341,10 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_sn", rr.getRrsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_qty", rr.getRrprpqty());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_p_qty", rr.getRrphpqty());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel() == null ? "" : rr.getRrprpmodel());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr.getRrexpired());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_w_years", rr.getRrprwyears());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", rr.getRrphwyears());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date", rr.getRrpbsysmdate() == null ? "" : Fm_Time.to_y_M_d(rr.getRrpbsysmdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", rr.getRrpbtype());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", rr.getRrv());
@@ -425,7 +425,7 @@ public class RepairHistoryService {
 					rd.getRegister().setRrcsn(data.getString("rr_c_sn"));
 					rd.getRegister().setRrprpmodel(data.getString("rr_pr_p_model"));
 					rd.getRegister().setRrexpired(data.getBoolean("rr_expired"));
-					rd.getRegister().setRrprwyears(data.getInt("rr_pr_w_years"));
+					rd.getRegister().setRrphwyears(data.getInt("rr_ph_w_years"));
 					rd.getRegister().setRrpbtype(data.getString("rr_pb_type"));
 					rd.getRegister().setRrv(data.getString("rr_v"));
 					rd.getRegister().setRrfok(data.getInt("rr_f_ok"));

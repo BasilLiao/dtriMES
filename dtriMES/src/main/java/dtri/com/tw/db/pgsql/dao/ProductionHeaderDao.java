@@ -21,24 +21,12 @@ public interface ProductionHeaderDao extends JpaRepository<ProductionHeader, Lon
 	// 查詢最新一筆的製令單關聯
 	ProductionHeader findTopByPhpbgidOrderBySysmdateDesc(Long phpbgid);
 
-//
-//	// 查詢一部分_Header+Body
-//	@Query("SELECT h FROM ProductionHeader h WHERE "//
-//			+ "(:phmodel is null or h.phmodel LIKE %:phmodel% ) and "//
-//			+ "(:phprid is null or h.phprid LIKE %:phprid% ) and "//
-//			+ "( h.sysstatus = :sysstatus ) and "//
-//			+ "(coalesce(:pbphid, null) is null or h.phid IN :pbphid ) and "//coalesce 回傳非NULL值
-//			+ "(h.phid != 0) "
-//			+ " order by h.sysmdate desc ")
-//	List<ProductionHeader> findAllByProductionHeaderAndProductionBody(@Param("phmodel") String phmodel, @Param("phprid") String phprid,
-//			@Param("sysstatus") Integer sysstatus,@Param("pbphid")List<Integer> pbphid, Pageable pageable);
-//	
 	// 查詢一部分_ProductionHeader+ProductionRecords
 	@Query("SELECT h FROM ProductionHeader h join h.productionRecords r  WHERE "//
 			+ "(:prpmodel is null or r.prpmodel LIKE %:prpmodel% ) and "//
 			+ "(:phprid is null or r.prid LIKE %:phprid% ) and "//
-			+ "(:prorderid is null or r.prorderid LIKE %:prorderid% ) and "//
-			+ "(:prcname is null or r.prcname LIKE %:prcname% ) and "//
+			+ "(:phorderid is null or h.phorderid LIKE %:phorderid% ) and "//
+			+ "(:phcname is null or h.phcname LIKE %:phcname% ) and "//
 			+ "(:prbomid is null or r.prbomid LIKE %:prbomid% ) and "//
 			+ "(:prbitem is null or r.prbitem LIKE %:prbitem% ) and "//
 			+ "(:prsitem is null or r.prsitem LIKE %:prsitem% ) and "//
@@ -52,9 +40,10 @@ public interface ProductionHeaderDao extends JpaRepository<ProductionHeader, Lon
 	List<ProductionHeader> findAllByProductionHeader(//
 			@Param("prpmodel") String prpmodel, @Param("phprid") String phprid, //
 			@Param("sysstatus") Integer sysstatus, @Param("phpbgid") List<Long> phpbgid, //
-			@Param("prorderid") String pr_order_id, @Param("prcname") String pr_c_name, //
-			@Param("prbomid") String pr_bom_id, @Param("prbitem") String pr_b_item, @Param("prsitem") String pr_s_item, //
-			@Param("phssdate") Date phssdate, @Param("phsedate") Date phsedate, @Param("sysmdate") Date sys_m_date, Pageable pageable);
+			@Param("phorderid") String phorder_id, @Param("phcname") String phcname, //
+			@Param("prbomid") String prbom_id, @Param("prbitem") String prbitem, //
+			@Param("prsitem") String prsitem, @Param("phssdate") Date phssdate, //
+			@Param("phsedate") Date phsedate, @Param("sysmdate") Date sys_m_date, Pageable pageable);
 
 	// 取得當筆ID
 	@Query(value = "SELECT CURRVAL('production_header_seq')", nativeQuery = true)

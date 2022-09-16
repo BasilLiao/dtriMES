@@ -3,6 +3,7 @@ package dtri.com.tw.service;
 import java.lang.reflect.Method;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -44,6 +45,7 @@ import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
 import dtri.com.tw.db.pgsql.dao.ProductionTestDao;
 import dtri.com.tw.db.pgsql.dao.SystemConfigDao;
+import dtri.com.tw.db.pgsql.dao.SystemUserDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
 import dtri.com.tw.tools.Fm_Time;
@@ -67,6 +69,9 @@ public class WorkstationWorkService {
 	private ProductionTestDao testDao;
 	@Autowired
 	private RepairOrderDtrService orderDtrService;
+
+	@Autowired
+	private SystemUserDao userDao;
 
 	@Autowired
 	private FtpService ftpService;
@@ -153,10 +158,10 @@ public class WorkstationWorkService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_name", "產品名(號)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_model", "產品型號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_bom_id", "BOM料號"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_order_id", "訂單編號"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_order_id", "訂單編號"));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_c_name", "訂購客戶"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_quantity", "目前／全部(總數)"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_c_name", "訂購客戶"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_p_qty", "目前／全部(總數)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "wk_quantity", "正常／故障(過站數)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_workstation", "工作站(狀態)"));
 
@@ -247,7 +252,7 @@ public class WorkstationWorkService {
 									return false;
 								}
 								// 不可繼承自己工單
-								pr_old = prDao.findAllByRecords(null, null, null, pb_b_sn_old, 0, null);
+								pr_old = prDao.findAllByRecords(null, pb_b_sn_old, 0, null);
 								if (pr_old != null && pr_old.size() > 0 && pr_old.get(0).getPrid().equals(ph_pr_id)) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_2");
@@ -289,11 +294,10 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_name", one.getPhpname());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_model", one.getProductionRecords().getPrpmodel());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_bom_id", one.getProductionRecords().getPrbomid());
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_order_id", one.getProductionRecords().getProrderid());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_order_id", one.getPhorderid());
 
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_c_name", one.getProductionRecords().getPrcname());
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_quantity",
-										one.getProductionRecords().getPrpokquantity() + "／" + one.getProductionRecords().getPrpquantity());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_c_name", one.getPhcname());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_p_qty", one.getPhpokqty() + "／" + one.getPhpqty());
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "wk_quantity", all_nb + "／" + all_nb_bad);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_workstation", pb_w);
@@ -478,6 +482,14 @@ public class WorkstationWorkService {
 					? body.getJSONObject("modify").getBoolean("plt_file_classify")//
 					: false;
 			// System.out.println(list);
+			// [檢核階段-初步] 檢查是否有此人
+			List<String> pd_accounts = new ArrayList<String>();// 需要登記的人
+			pd_accounts = Arrays.asList(list.getString("w_c_us_name").split("_"));
+			ArrayList<String> su_name = userDao.readAccounts(pd_accounts);
+			if (pd_accounts.size() != su_name.size()) {
+				bean.autoMsssage("WK024");
+				return false;
+			}
 
 			// [檢核階段-初步] SN 燒錄必須要
 			if (!list.get("pb_b_sn").equals("")) {
@@ -1138,9 +1150,9 @@ public class WorkstationWorkService {
 
 					// 規格
 					p_records = p_header.getProductionRecords();
-					p_records.setPrpokquantity(finish);
+					p_header.setPhpokqty(finish);
 					p_header.setSysstatus(1);
-					p_header.setPhschedule(p_records.getPrpokquantity() + "／" + p_records.getPrpquantity());
+					p_header.setPhschedule(p_header.getPhpokqty() + "／" + p_header.getPhpqty());
 					p_header.setProductionRecords(p_records);
 					p_header.setSysmdate(new Date());
 					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
@@ -1165,8 +1177,8 @@ public class WorkstationWorkService {
 					}
 
 					// 此製令已完成(完成數/目標數)量
-					int f_nb = p_records.getPrpokquantity();
-					int e_nb = p_records.getPrpquantity();
+					int f_nb = p_header.getPhpokqty();
+					int e_nb = p_header.getPhpqty();
 					if (check_end && (f_nb == e_nb)) {
 						p_header.setSysstatus(2);
 						p_header.setPhedate(new Date());
@@ -1220,17 +1232,17 @@ public class WorkstationWorkService {
 
 					// 是指定的工作站-登記測試次數統計
 					Boolean pdttqty = false;
-					if (programs.get(0).getWpcnyield().equals(list.getString("w_c_name"))) {
+					if (programs.get(0).getWpcnyield() != null && programs.get(0).getWpcnyield().equals(list.getString("w_c_name"))) {
 						pdttqty = true;
 					}
 					newDaily.setPdpbbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號
 					newDaily.setPdprbomid(p_records.getPrbomid()); // 產品BOM
-					newDaily.setPdprtotal(p_records.getPrpquantity()); // 製令單 生產總數
-					newDaily.setPdprokqty(p_records.getPrpokquantity());// 製令單 目前進度
-					newDaily.setPdttbadqty(f_code_check?0:1);//是否有維修代碼 有=1/無=0
-					newDaily.setPdwcline(p_records.getPrwcline()); // 生產產線
+					newDaily.setPdprtotal(p_header.getPhpqty()); // 製令單 生產總數
+					newDaily.setPdprokqty(p_header.getPhpokqty());// 製令單 目前進度
+					newDaily.setPdttbadqty(f_code_check ? 0 : 1);// 是否有維修代碼 有=1/無=0
+					newDaily.setPdwcline(p_header.getPhwcline()); // 生產產線
 					newDaily.setPdwcname(list.getString("w_c_name")); // 工作站代號
 					newDaily.setPdwpbname(wkDao.findAllByWcname(list.getString("w_c_name"), null).get(0).getWpbname()); // 工作站名稱
 					newDaily.setPdwaccounts(list.getString("w_c_us_name")); // 工作站人員
