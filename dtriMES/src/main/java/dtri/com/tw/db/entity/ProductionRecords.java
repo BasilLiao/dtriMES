@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @author Basil
  * @see 系統設定<br>
  *      pr_id : 工單序號ID<br>
+ *      pr_p_v : 產品版本<br>
  *      pr_p_model : 產品型號<br>
  *      pr_bom_id : BOM料號<br>
  *      pr_bom_c_id : 客戶BOM料號<br>
@@ -77,6 +78,9 @@ public class ProductionRecords {
 	// 因為是文字 故無用 自動累加
 	@Column(name = "pr_id")
 	private String prid;
+
+	@Column(name = "pr_p_v", columnDefinition = "varchar(20) default ''")
+	private String prpv;
 
 	@Column(name = "pr_p_model", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prpmodel;
@@ -277,6 +281,14 @@ public class ProductionRecords {
 
 	public void setPrbomcid(String prbomcid) {
 		this.prbomcid = prbomcid;
+	}
+
+	public String getPrpv() {
+		return prpv;
+	}
+
+	public void setPrpv(String prpv) {
+		this.prpv = prpv;
 	}
 
 }

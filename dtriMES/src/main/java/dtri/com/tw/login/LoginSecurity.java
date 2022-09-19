@@ -239,7 +239,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, repair_history + ".AC").hasAuthority(actionRole(repair_history, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, repair_history + ".AU").hasAuthority(actionRole(repair_history, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, repair_history + ".AD").hasAuthority(actionRole(repair_history, "AD"))// (移除)
-				
+				.antMatchers(HttpMethod.POST, repair_history + ".RT").hasAuthority(actionRole(repair_history, "RT"))// (報告)
+
 				// ----請求-repair_list-(訪問) ----
 				.antMatchers(HttpMethod.POST, repair_list).hasAuthority(actionRole(repair_list, ""))//
 				.antMatchers(HttpMethod.POST, repair_list + ".AR").hasAuthority(actionRole(repair_list, "AR"))// (查詢)

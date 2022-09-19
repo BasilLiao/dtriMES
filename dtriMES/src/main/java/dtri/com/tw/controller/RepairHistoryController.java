@@ -170,7 +170,38 @@ public class RepairHistoryController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = historyService.deleteData(resp,req, user);
+		check = historyService.deleteData(resp, req, user);
+		// Step3.進行判定
+		if (check) {
+			// Step4.包裝回傳
+			resp = packageService.setObjResp(resp, req, null);
+		} else {
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
+			resp = packageService.setObjResp(resp, req, null);
+		}
+		// 回傳-資料
+		return packageService.objToJson(resp);
+	}
+
+	/**
+	 * 查詢 Reprot
+	 */
+	@ResponseBody
+	@RequestMapping(value = { "/ajax/repair_history.basil.RT" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	public String report(@RequestBody String json_object) {
+		showSYS_CM("report");
+		show(json_object);
+		PackageBean req = new PackageBean();
+		PackageBean resp = new PackageBean();
+		boolean check = false;
+
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
+		// Step1.包裝解析
+		req = packageService.jsonToObj(new JSONObject(json_object));
+		// Step2.進行查詢
+		check = historyService.getReportData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

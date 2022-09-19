@@ -102,7 +102,7 @@ public class ProductionHeaderService {
 				ph_e_s_date = "預計出貨日", ph_p_qty = "預計生產數", ph_p_ok_qty = "生產完成數", ph_p_a_ok_qty = "加工完成數", //
 				ph_order_id = "訂單編號", ph_c_name = "客戶名稱", ph_c_from = "單據來源", ph_w_years = "保固(年)", ph_wc_line = "生產線";
 		// 製令單規格
-		String pr_bom_id = "BOM料號(公司)", pr_bom_c_id = "BOM料號(客戶)", pr_p_model = "產品型號", //
+		String pr_bom_id = "BOM料號(公司)", pr_bom_c_id = "BOM料號(客戶)", pr_p_model = "產品型號", pr_p_v = "產品版本", //
 				pr_b_item = "規格定義", pr_s_item = "軟體定義", //
 				pr_s_sn = "產品序號(開始)", pr_e_sn = "產品序號(結束)", pr_s_b_sn = "燒錄序號(開始)", pr_e_b_sn = "燒錄序號(結束)";
 		// 固定-名稱編譯
@@ -147,6 +147,7 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_c_id", FFS.h_t(pr_bom_c_id, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_model", FFS.h_t(pr_p_model, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_model", FFS.h_t(pr_p_v, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_b_item", FFS.h_t(pr_b_item, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_item", FFS.h_t(pr_s_item, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_sn", FFS.h_t(pr_s_sn, "150px", FFM.Wri.W_Y));
@@ -213,6 +214,8 @@ public class ProductionHeaderService {
 			// 規格-ProductionRecords
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "====產品規格====", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pr", ""));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pr_p_model", pr_p_model));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pr_p_v", pr_p_v));
+
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pr_bom_id", pr_bom_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "pr_bom_c_id", pr_bom_c_id));
 			// 流水號
@@ -382,7 +385,7 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_number", one.getPhpnumber() == null ? "" : one.getPhpnumber());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_name", one.getPhpname() == null ? "" : one.getPhpname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_wp_id", one.getPhwpid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_s_e_id", one.getPhesdate() == null ? "" : one.getPhesdate());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_s_date", one.getPhesdate() == null ? "" : one.getPhesdate());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_s_date", one.getPhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhsdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_date", one.getPhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhedate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_qty", one.getPhpqty());
@@ -413,6 +416,7 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", one.getProductionRecords().getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", one.getProductionRecords().getPrbomcid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_model", one.getProductionRecords().getPrpmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_p_v", one.getProductionRecords().getPrpv());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_b_item", one.getProductionRecords().getPrbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_item", one.getProductionRecords().getPrsitem());
@@ -607,6 +611,7 @@ public class ProductionHeaderService {
 					pro_r.setPrid(data.getString("ph_pr_id").toUpperCase());
 					pro_r.setPrbomid(data.getString("pr_bom_id"));
 					pro_r.setPrbomcid(data.has("pr_bom_c_id") ? data.getString("pr_bom_c_id") : "");
+					pro_r.setPrpv(data.getString("pr_p_v"));
 					pro_r.setPrpmodel(data.getString("pr_p_model"));
 					pro_r.setPrbitem(data.get("pr_b_item").toString());
 					pro_r.setPrsitem(data.get("pr_s_item").toString());
@@ -657,7 +662,7 @@ public class ProductionHeaderService {
 					pro_h.setPhpaokqty(0);
 					pro_h.setPhwyears(data.getInt("ph_w_years"));
 					pro_h.setPhesdate(data.getString("ph_e_s_date"));
-					pro_h.setPhwcline(data.getString("ph_wl_id"));
+					pro_h.setPhwcline(data.getString("ph_wc_line"));
 					productionHeaderDao.save(pro_h);
 					productionBodyDao.saveAll(pro_bs);
 
@@ -881,6 +886,7 @@ public class ProductionHeaderService {
 					pro_r.setPrid(data.getString("ph_pr_id").toUpperCase());
 					pro_r.setPrbomid(data.getString("pr_bom_id"));
 					pro_r.setPrbomcid(data.has("pr_bom_c_id") ? data.getString("pr_bom_c_id") : "");
+					pro_r.setPrpv(data.getString("pr_p_v"));
 					pro_r.setPrpmodel(data.getString("pr_p_model"));
 					pro_r.setPrbitem("");
 					pro_r.setPrsitem("");
@@ -1038,6 +1044,7 @@ public class ProductionHeaderService {
 					// records
 					one_pecords.setPrbomcid(data.getString("pr_bom_c_id"));
 					one_pecords.setPrpmodel(data.getString("pr_p_model"));
+					one_pecords.setPrpv(data.getString("pr_p_v"));
 					one_pecords.setPrbomid(data.getString("pr_bom_id"));
 					one_pecords.setSysmuser(user.getSuaccount());
 					one_pecords.setSysmdate(new Date());

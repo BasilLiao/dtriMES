@@ -38,7 +38,7 @@ select {
 							<div class="col p-0">維修單-項目(序號) :</div>
 							<input class="col p-1 rounded border-1 border-primary detail_ri" type="text" value="" placeholder="維修單-項目Ex:DTR1659024000000-D000">
 						</div>
-						<div class="col-md-2 p-1 m-0 search_true" id="rd_id">
+						<div class="col-md-2 p-1 m-0 search_true" id="ph_esdate">
 							<div class="col p-0">預計出貨 :</div>
 							<input class="col p-1 rounded border-1 border-primary detail_ri" type="text" value="" placeholder="1998-01-02" disabled="disabled">
 						</div>
@@ -482,6 +482,8 @@ customized = new Vue({
 			$('#rr_v input').val(documents['rr_v']);
 			$('#rr_f_ok select').val(documents['rr_f_ok']);
 			$('#sys_note input').val(documents['sys_note']);
+			$('#ph_esdate input').val(documents['ph_esdate']);
+			
 			
 			$('#rd_statement textarea').val(documents['rd_statement']);
 			if(documents['rd_true']==null || documents['rd_true']==""){

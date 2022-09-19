@@ -496,6 +496,7 @@ analysis = new Vue({
 					key_id = null, report_item_one = null, i = 0, rep_i_one = "",ii = 0; /*有效欄位*/
 					for (i = 0; i < key_length; i++) {		
 						//資料
+						console.log(Object.keys(list[j])[i]);
 						key_id = (Object.keys(list[j])[i]).split("_b__")[1];/*Ex:"01_b__pr_id"*/
 						value_name = list[j][Object.keys(list[j])[i]];
 						/*取得Report位置 : 如果*/

@@ -848,6 +848,7 @@ public class RepairListService {
 				if (pr.size() == 1) {
 					object_detail.put("pr_b_item", pr.get(0).getPrbitem().replaceAll("},", "}, \n"));// 硬體
 					object_detail.put("pr_s_item", pr.get(0).getPrsitem().replaceAll("},", "}, \n"));// 軟體
+					object_detail.put("ph_esdate", pr.get(0).getHeader().getPhesdate()); // 預計出貨日
 				}
 			}
 			// 如果有:有零件
