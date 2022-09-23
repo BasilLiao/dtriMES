@@ -25,6 +25,7 @@ public class ProductionDailyBean {
 	private String pdbadqty;// 工單 目前壞掉數量
 
 	private String pdprokqty;// 工單 [累計]產品數 好數量
+	private String pdprttokqty;// 工單 [累計]產品測試數 好數量
 	private String pdprbadqty;// 工單 [累計]產品數 壞掉數量
 	private String pdpryield;// 工單 [累計]產品數 良率比
 
@@ -185,6 +186,14 @@ public class ProductionDailyBean {
 
 	public void setPdphpbschedule(JSONObject pdphpbschedule) {
 		this.pdphpbschedule = pdphpbschedule;
+	}
+
+	public String getPdprttokqty() {
+		return pdprttokqty;
+	}
+
+	public void setPdprttokqty(String pdprttokqty) {
+		this.pdprttokqty = pdprttokqty;
 	}
 
 }

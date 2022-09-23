@@ -36,8 +36,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pdprpmodel = 產品型號<br>
  *      pdprbomid = 產品BOM<br>
  *      pdprtotal = 總數量<br>
- *      pdprpokqty = (完成累計)總數量<br>
+ *      pdprokqty = (完成累計)總數量<br>
+ *      pdprbadqty = 生產故障數<br>
+ *      pdpryield = 生產良率<br>
+ *      pdprttokqty = 生產測試通過數<br>
+ *      pdttqty = 測試(次數)<br>
+ *      pdttbadqty = 測試故障(次數)<br>
+ *      pdttyield = 測試(次數)良率<br>
+ *      pdphpbschedule = 每日 工作站累計數<br>
  *      pdpbbsn = 登記產品SN (json)<br>
+ * 
+ * 
  */
 @Entity
 @Table(name = "production_daily")
@@ -144,7 +153,7 @@ public class ProductionDaily {
 	@Column(name = "pd_pr_total", columnDefinition = "int default 0")
 	private Integer pdprtotal;
 
-	@Column(name = "pd_pr_okqty", columnDefinition = "int default 0")
+	@Column(name = "pd_pr_ok_qty", columnDefinition = "int default 0")
 	private Integer pdprokqty;
 
 	@Column(name = "pd_pr_bad_qty", columnDefinition = "int default 0")
@@ -152,6 +161,9 @@ public class ProductionDaily {
 
 	@Column(name = "pd_pr_yield", columnDefinition = "varchar(50)")
 	private String pdpryield;
+
+	@Column(name = "pd_pr_tt_ok_qty", columnDefinition = "int default 0")
+	private Integer pdprttokqty;
 
 	@Column(name = "pd_tt_qty", columnDefinition = "int default 0")
 	private Integer pdttqty;
@@ -453,6 +465,14 @@ public class ProductionDaily {
 
 	public void setPdphpbschedule(String pdphpbschedule) {
 		this.pdphpbschedule = pdphpbschedule;
+	}
+
+	public Integer getPdprttokqty() {
+		return pdprttokqty;
+	}
+
+	public void setPdprttokqty(Integer pdprttokqty) {
+		this.pdprttokqty = pdprttokqty;
 	}
 
 }

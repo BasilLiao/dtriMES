@@ -41,6 +41,7 @@ public class ProductionRecordsService {
 			p_size = 100;
 		}
 		PageRequest pageable = PageRequest.of(page, p_size, Sort.by("prid").descending());
+		String prid = null;
 		String prssn = null;
 		String prbomid = null;
 		String sysstatus = "0";
@@ -114,6 +115,9 @@ public class ProductionRecordsService {
 			resp.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
+			prid = body.getJSONObject("search").getString("pr_id");
+			prid = prid.equals("") ? null : prid;
+
 			prssn = body.getJSONObject("search").getString("pr_s_sn");
 			prssn = prssn.equals("") ? null : prssn;
 
@@ -123,7 +127,7 @@ public class ProductionRecordsService {
 			sysstatus = body.getJSONObject("search").getString("sys_status");
 			sysstatus = sysstatus.equals("") ? "0" : sysstatus;
 		}
-		productionRecords = recordsDao.findAllByRecords(prbomid, prssn, Integer.parseInt(sysstatus), pageable);
+		productionRecords = recordsDao.findAllByRecords(prid, prbomid, prssn, Integer.parseInt(sysstatus), pageable);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();

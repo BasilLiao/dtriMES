@@ -85,8 +85,8 @@ public class ProductionDailyService {
 		String pd_wc_class = "班別", sys_m_date = "時間", //
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
 				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_bad_qty = "待修數", //
-				pd_tt_qty = "測試數", pd_tt_bad_qty = "測試故障數", pd_tt_yield = "測試數(不良率)", //
-				pd_pr_ok_qty = "生產完成數", pd_pr_bad_qty = "生產故障數", pd_pr_yield = "生產數(不良率)", //
+				pd_tt_qty = "測試次數", pd_tt_bad_qty = "故障次數", pd_tt_yield = "測試次數(不良率)", //
+				pd_pr_ok_qty = "完成總數",pd_pr_tt_ok_qty = "測試完成總數", pd_pr_bad_qty = "測試故障總數", pd_pr_yield = "測試總數(不良率)", //
 				pd_t_qty = "日完成數", pd_w_names = "各站作業員工(清單)", sys_note = "備註";
 
 		// 初次載入需要標頭 / 之後就不用
@@ -149,7 +149,7 @@ public class ProductionDailyService {
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_qty", FFS.h_t(pd_tt_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_bad_qty", FFS.h_t(pd_tt_bad_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_yield", FFS.h_t(pd_tt_yield, "150px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_ok_qty", FFS.h_t(pd_pr_ok_qty, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_tt_ok_qty", FFS.h_t(pd_pr_tt_ok_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_bad_qty", FFS.h_t(pd_pr_bad_qty, "130px", FFM.Wri.W_Y));
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_yield", FFS.h_t(pd_pr_yield, "150px", FFM.Wri.W_Y));
 
@@ -283,6 +283,7 @@ public class ProductionDailyService {
 
 			// 把同一個工作站 的 倒出來
 			int pdprokqty = 0;// [產品]取最大值
+			int pdprttokqty = 0;//[產品測試]取最大直
 			int pdprbadqty = 0;
 			String pdpryield = "0";
 			int pdttqty = 0;// [測試]取最大值
@@ -325,6 +326,7 @@ public class ProductionDailyService {
 							}
 							// 同一日的最大完成數量
 							if (pdOne.getPdprokqty() >= pdprokqty) {
+								pdprttokqty = pdOne.getPdprttokqty();
 								pdprokqty = pdOne.getPdprokqty();
 								pdprbadqty = pdOne.getPdprbadqty();
 								pdpryield = pdOne.getPdpryield();
@@ -332,6 +334,7 @@ public class ProductionDailyService {
 								pdttbadqty = pdOne.getPdttbadqty();
 								pdttyield = pdOne.getPdttyield();
 							}
+							dailyBean.setPdprttokqty(pdprttokqty + "");
 							dailyBean.setPdprokqty(pdprokqty + "");
 							dailyBean.setPdprbadqty(pdprbadqty + "");
 							dailyBean.setPdpryield(pdpryield);
@@ -376,6 +379,7 @@ public class ProductionDailyService {
 					// 同一日的最大完成數量
 					if (pdOne.getPdprokqty() >= pdprokqty) {
 						pdprokqty = pdOne.getPdprokqty();
+						pdprttokqty = pdOne.getPdprttokqty();
 						pdprbadqty = pdOne.getPdprbadqty();
 						pdpryield = pdOne.getPdpryield();
 						pdttqty = pdOne.getPdttqty();
@@ -383,6 +387,7 @@ public class ProductionDailyService {
 						pdttyield = pdOne.getPdttyield();
 					}
 					dailyBean.setPdprokqty(pdprokqty + "");
+					dailyBean.setPdprttokqty(pdprttokqty + "");
 					dailyBean.setPdprbadqty(pdprbadqty + "");
 					dailyBean.setPdpryield(pdpryield);
 					dailyBean.setPdttqty(pdttqty + "");
@@ -471,7 +476,7 @@ public class ProductionDailyService {
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_qty", pdb_val.getPdttqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_bad_qty", pdb_val.getPdttbadqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_yield", pdb_val.getPdttyield());
-			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_ok_qty", pdb_val.getPdprokqty());
+			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_tt_ok_qty", pdb_val.getPdprttokqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bad_qty", pdb_val.getPdprbadqty());
 			object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_yield", pdb_val.getPdpryield());
 
@@ -696,7 +701,7 @@ public class ProductionDailyService {
 								oldDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								oldDaily.setSysmdate(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 								oldDaily.setSysmuser(user.getSuaccount());
-								oldDaily.setPdprokqty(newDaily.getPdprokqty());// 完成數
+								oldDaily.setPdprokqty(newDaily.getPdprokqty());// 指定-測試完成數
 								oldDaily.setPdphpbschedule(newDaily.getPdphpbschedule());
 							} else {
 								// Step7-2.[單人]-只取第一人 [代號]
@@ -737,6 +742,7 @@ public class ProductionDailyService {
 							newDaily.setPdttime("0.0");// 工時
 							newDaily.setPdtqty(0);// 日完成數 初始數量
 							newDaily.setPdttqty(0);
+							newDaily.setPdprttokqty(0);
 							newDaily.setPdttyield("0%");
 							newDaily.setPdpryield("0%");
 							newDaily.setPdwaccounts(newDaily.getPdwaccounts());// 登記的作業員帳號(s)
@@ -757,11 +763,14 @@ public class ProductionDailyService {
 
 						// Step8.[登記] 不良率(產品數)
 						double yield = 0;
-						if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
-							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
+						if (newDaily.getPdprttokqty() > 0 && pr_bad_qty > 0) {
+							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprttokqty();
 							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
-						} else if (newDaily.getPdprokqty() == 0 && pr_bad_qty > 0) {
+							saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
+
+						} else if (newDaily.getPdprttokqty() == 0 && pr_bad_qty > 0) {
 							yield = 100;// 還沒生產就不良
+							saveDaily.setPdprttokqty(pr_bad_qty);
 						}
 						saveDaily.setPdpryield(df_yield.format(yield) + "%");
 						saveDaily.setPdprbadqty(pr_bad_qty);
@@ -822,11 +831,13 @@ public class ProductionDailyService {
 						saveDaily.setPdttyield(df_yield.format(yield) + "%");
 						// Step8.[登記] 不良率(產品數)
 						yield = 0;
-						if (newDaily.getPdprokqty() > 0 && pr_bad_qty > 0) {
-							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprokqty();
+						if (newDaily.getPdprttokqty() > 0 && pr_bad_qty > 0) {
+							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprttokqty();
 							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
-						} else if (newDaily.getPdprokqty() == 0 && pr_bad_qty > 0) {
+							saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
+						} else if (newDaily.getPdprttokqty() == 0 && pr_bad_qty > 0) {
 							yield = 100;// 還沒生產就不良
+							saveDaily.setPdprttokqty(pr_bad_qty);
 						}
 						saveDaily.setPdpryield(df_yield.format(yield) + "%");
 						saveDaily.setPdprbadqty(pr_bad_qty);

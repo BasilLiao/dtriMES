@@ -252,7 +252,7 @@ public class WorkstationWorkService {
 									return false;
 								}
 								// 不可繼承自己工單
-								pr_old = prDao.findAllByRecords(null, pb_b_sn_old, 0, null);
+								pr_old = prDao.findAllByRecords(null,null, pb_b_sn_old, 0, null);
 								if (pr_old != null && pr_old.size() > 0 && pr_old.get(0).getPrid().equals(ph_pr_id)) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_2");
@@ -1232,9 +1232,12 @@ public class WorkstationWorkService {
 
 					// 是指定的工作站-登記測試次數統計
 					Boolean pdttqty = false;
+					newDaily.setPdprttokqty(0);
 					if (programs.get(0).getWpcnyield() != null && programs.get(0).getWpcnyield().equals(list.getString("w_c_name"))) {
 						pdttqty = true;
+						newDaily.setPdprttokqty(wk_schedules.size());					
 					}
+					
 					newDaily.setPdpbbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號

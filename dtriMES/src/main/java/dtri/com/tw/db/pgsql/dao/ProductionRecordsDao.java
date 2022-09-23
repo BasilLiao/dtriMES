@@ -17,10 +17,12 @@ public interface ProductionRecordsDao extends JpaRepository<ProductionRecords, L
 	// 查詢一部分
 	@Query("SELECT c FROM ProductionRecords c "//
 			+ "WHERE (:prbomid is null or c.prbomid LIKE %:prbomid% ) and "//
+			+ "(:prid is null or c.prid LIKE %:prid%) and "//
 			+ "(:prssn is null or :prssn BETWEEN c.prssn  AND c.presn) and "//
 			+ "( c.sysstatus = :sysstatus ) "//
 			+ "order by c.sysmdate desc")
 	ArrayList<ProductionRecords> findAllByRecords(//
+			@Param("prid") String prid,//
 			@Param("prbomid") String prbomid, @Param("prssn") String prssn, //
 			@Param("sysstatus") Integer sysstatus, Pageable pageable);
 
