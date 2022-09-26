@@ -252,7 +252,7 @@ public class WorkstationWorkService {
 									return false;
 								}
 								// 不可繼承自己工單
-								pr_old = prDao.findAllByRecords(null,null, pb_b_sn_old, 0, null);
+								pr_old = prDao.findAllByRecords(null, null, pb_b_sn_old, 0, null);
 								if (pr_old != null && pr_old.size() > 0 && pr_old.get(0).getPrid().equals(ph_pr_id)) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_2");
@@ -1159,6 +1159,7 @@ public class WorkstationWorkService {
 					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
 					List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + list.getString("w_c_name") + "_Y");
 
+					// 記錄-每站過站數
 					if (p_header.getPhpbschedule() != null && !p_header.getPhpbschedule().equals("")) {
 						JSONObject phpbs = new JSONObject(p_header.getPhpbschedule());
 						phpbs.put(list.getString("w_c_name"), wk_schedules.size());
@@ -1230,14 +1231,18 @@ public class WorkstationWorkService {
 					log.info("Step10. 製令單+規格更新[Productiondaily]" + body_one_now.getPbbsn());
 					ProductionDaily newDaily = new ProductionDaily();
 
-					// 是指定的工作站-登記測試次數統計
+					// 指定的工作站-登記測試次數統計
 					Boolean pdttqty = false;
-					newDaily.setPdprttokqty(0);
 					if (programs.get(0).getWpcnyield() != null && programs.get(0).getWpcnyield().equals(list.getString("w_c_name"))) {
 						pdttqty = true;
-						newDaily.setPdprttokqty(wk_schedules.size());					
 					}
-					
+					JSONObject phpbs = new JSONObject(p_header.getPhpbschedule());
+					int pdprttokqty = 0;
+					if (phpbs.has(programs.get(0).getWpcnyield())) {
+						pdprttokqty = phpbs.getInt(programs.get(0).getWpcnyield());
+					}
+					newDaily.setPdprttokqty(pdprttokqty);
+
 					newDaily.setPdpbbsn(body_one_now.getPbbsn());// 產品SN號
 					newDaily.setPdprid(p_records.getPrid()); // 製令單號
 					newDaily.setPdprpmodel(p_records.getPrpmodel()); // 產品型號

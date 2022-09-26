@@ -1040,6 +1040,29 @@ public class ProductionHeaderService {
 				ProductionHeader one_header = headers.get(0);
 				ProductionRecords one_pecords = one_header.getProductionRecords();
 				if (headers.get(0).getSysstatus() != 1 && headers.get(0).getSysstatus() != 2) {
+					// 工作站資訊 (不同 工作站程序時 才作重製)
+					if (one_header.getPhwpid() != data.getLong("ph_wp_id")) {
+						JSONObject json_work = new JSONObject();
+						ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
+						for (WorkstationProgram p_one : programs) {
+							ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
+							JSONObject json_one = new JSONObject();
+							json_one.put("name", works.get(0).getWpbname());
+							json_one.put("type", works.get(0).getWcname() + "_N");
+							json_one.put("id", works.get(0).getWid());
+							json_one.put("w_pb_cell", works.get(0).getWpbcell());
+							json_one.put("sort", p_one.getSyssort());
+							json_work.put(works.get(0).getWcname(), json_one);
+						}
+						// 更新產品 過站設定
+						JSONObject json_work_d = json_work;
+						List<ProductionBody> pb_s = productionBodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
+						pb_s.forEach(s -> {
+							s.setPbschedule(json_work_d.toString());
+							s.setPbwyears(data.getInt("ph_w_years"));
+						});
+						productionBodyDao.saveAll(pb_s);
+					}
 					// 否:生產中 & 以生產
 					// records
 					one_pecords.setPrbomcid(data.getString("pr_bom_c_id"));
@@ -1096,27 +1119,6 @@ public class ProductionHeaderService {
 					}
 					productionHeaderDao.save(one_header);
 
-					// 工作站資訊
-					JSONObject json_work = new JSONObject();
-					ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
-					for (WorkstationProgram p_one : programs) {
-						ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
-						JSONObject json_one = new JSONObject();
-						json_one.put("name", works.get(0).getWpbname());
-						json_one.put("type", works.get(0).getWcname() + "_N");
-						json_one.put("id", works.get(0).getWid());
-						json_one.put("w_pb_cell", works.get(0).getWpbcell());
-						json_one.put("sort", p_one.getSyssort());
-						json_work.put(works.get(0).getWcname(), json_one);
-					}
-					// 更新產品 過站設定
-					JSONObject json_work_d = json_work;
-					List<ProductionBody> pb_s = productionBodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
-					pb_s.forEach(s -> {
-						s.setPbschedule(json_work_d.toString());
-						s.setPbwyears(data.getInt("ph_w_years"));
-					});
-					productionBodyDao.saveAll(pb_s);
 					check = true;
 				} else {
 					// 是:生產中 & 以生產

@@ -742,7 +742,6 @@ public class ProductionDailyService {
 							newDaily.setPdttime("0.0");// 工時
 							newDaily.setPdtqty(0);// 日完成數 初始數量
 							newDaily.setPdttqty(0);
-							newDaily.setPdprttokqty(0);
 							newDaily.setPdttyield("0%");
 							newDaily.setPdpryield("0%");
 							newDaily.setPdwaccounts(newDaily.getPdwaccounts());// 登記的作業員帳號(s)
@@ -766,12 +765,12 @@ public class ProductionDailyService {
 						if (newDaily.getPdprttokqty() > 0 && pr_bad_qty > 0) {
 							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprttokqty();
 							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
-							saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
 
 						} else if (newDaily.getPdprttokqty() == 0 && pr_bad_qty > 0) {
 							yield = 100;// 還沒生產就不良
 							saveDaily.setPdprttokqty(pr_bad_qty);
 						}
+						saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
 						saveDaily.setPdpryield(df_yield.format(yield) + "%");
 						saveDaily.setPdprbadqty(pr_bad_qty);
 
@@ -834,11 +833,11 @@ public class ProductionDailyService {
 						if (newDaily.getPdprttokqty() > 0 && pr_bad_qty > 0) {
 							yield = ((double) pr_bad_qty * 100) / newDaily.getPdprttokqty();
 							yield = yield > 100 ? yield = 100 : yield;// 不可超過100
-							saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
 						} else if (newDaily.getPdprttokqty() == 0 && pr_bad_qty > 0) {
 							yield = 100;// 還沒生產就不良
 							saveDaily.setPdprttokqty(pr_bad_qty);
 						}
+						saveDaily.setPdprttokqty(newDaily.getPdprttokqty());
 						saveDaily.setPdpryield(df_yield.format(yield) + "%");
 						saveDaily.setPdprbadqty(pr_bad_qty);
 						dailyDao.save(saveDaily);
