@@ -86,7 +86,7 @@ public class ProductionDailyService {
 				pd_wc_line = "產線", pr_bom_id = "BOM號", pd_pr_id = "工單號", //
 				pd_pr_p_model = "產品型號", pd_pr_total = "工單總數", pd_bad_qty = "待修數", //
 				pd_tt_qty = "測試次數", pd_tt_bad_qty = "故障次數", pd_tt_yield = "測試次數(不良率)", //
-				pd_pr_ok_qty = "完成總數",pd_pr_tt_ok_qty = "測試完成總數", pd_pr_bad_qty = "測試故障總數", pd_pr_yield = "測試總數(不良率)", //
+				pd_pr_ok_qty = "完成總數", pd_pr_tt_ok_qty = "測試完成總數", pd_pr_bad_qty = "測試故障總數", pd_pr_yield = "測試總數(不良率)", //
 				pd_t_qty = "日完成數", pd_w_names = "各站作業員工(清單)", sys_note = "備註";
 
 		// 初次載入需要標頭 / 之後就不用
@@ -283,7 +283,7 @@ public class ProductionDailyService {
 
 			// 把同一個工作站 的 倒出來
 			int pdprokqty = 0;// [產品]取最大值
-			int pdprttokqty = 0;//[產品測試]取最大直
+			int pdprttokqty = 0;// [產品測試]取最大直
 			int pdprbadqty = 0;
 			String pdpryield = "0";
 			int pdttqty = 0;// [測試]取最大值
@@ -330,6 +330,9 @@ public class ProductionDailyService {
 								pdprokqty = pdOne.getPdprokqty();
 								pdprbadqty = pdOne.getPdprbadqty();
 								pdpryield = pdOne.getPdpryield();
+							}
+							// 同一天測試次數最大
+							if (pdOne.getPdttqty() > 0 && pdOne.getPdttqty() >= pdttqty) {
 								pdttqty = pdOne.getPdttqty();
 								pdttbadqty = pdOne.getPdttbadqty();
 								pdttyield = pdOne.getPdttyield();
@@ -346,7 +349,11 @@ public class ProductionDailyService {
 					}
 				} else {
 					// 如果不同[新建]
+					dailyBean = new ProductionDailyBean();
 					pdprokqty = 0;
+					pdttqty = 0;
+					pdttbadqty = 0;
+					pdttyield = "0%";
 					dailyBean.setId(pdOne.getPdid());
 					dailyBean.setSysmdate(Fm_Time.to_y_M_d(pdOne.getSysmdate()));
 					dailyBean.setPdprbomid(pdOne.getPdprbomid());
@@ -382,10 +389,15 @@ public class ProductionDailyService {
 						pdprttokqty = pdOne.getPdprttokqty();
 						pdprbadqty = pdOne.getPdprbadqty();
 						pdpryield = pdOne.getPdpryield();
+					}
+					// 同一天測試次數最大
+					System.out.println(Fm_Time.to_yMd(pdOne.getSyscdate()) + " " + pdOne.getPdttqty());
+					if (pdOne.getPdttqty() > 0 && pdOne.getPdttqty() >= pdttqty) {
 						pdttqty = pdOne.getPdttqty();
 						pdttbadqty = pdOne.getPdttbadqty();
 						pdttyield = pdOne.getPdttyield();
 					}
+
 					dailyBean.setPdprokqty(pdprokqty + "");
 					dailyBean.setPdprttokqty(pdprttokqty + "");
 					dailyBean.setPdprbadqty(pdprbadqty + "");

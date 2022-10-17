@@ -569,12 +569,16 @@ public class WorkstationService {
 			String w_pb_value = "";
 			String w_pb_cell = "";
 			String wc_name = "";
+			Long w_g_id = 0L;
+			String w_c_name = "";
 			Boolean w_replace = true;
 			Method method;
 			List<SystemGroup> systemGroup = new ArrayList<SystemGroup>();
 			// 物件轉換
+			ArrayList<Workstation> workstations_save = new ArrayList<Workstation>();
 			for (Object one : list) {
 				JSONObject data = (JSONObject) one;
+				sys_t = new Workstation();
 				sys_t.setWid(data.getLong("w_id"));
 
 				// 父類別
@@ -589,15 +593,9 @@ public class WorkstationService {
 						w_pb_value = (String) method.invoke(body_one);
 						w_replace = data.getBoolean("w_replace");
 						w_pb_cell = data.getString("w_pb_cell");
-					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-					} catch (SecurityException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
+						w_g_id = data.getLong("w_g_id");
+						w_c_name = data.getString("w_c_name");
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
@@ -616,9 +614,8 @@ public class WorkstationService {
 					sys_ti_f.setWiid(0l);
 					sys_t.setWorkstationItem(sys_ti_f);
 					sys_t.setWoption(0);
-					sys_t.setWgid(data.getLong("w_g_id"));
-					sys_t.setWcname(data.getString("w_c_name"));
-					sys_t.setWpbcell(data.getString("w_pb_cell"));
+					sys_t.setWgid(w_g_id);
+					sys_t.setWcname(w_c_name);
 					sys_t.setWpbname(w_pb_value);
 					sys_t.setWpbcell(w_pb_cell);
 					sys_t.setWreplace(w_replace);
@@ -632,6 +629,7 @@ public class WorkstationService {
 
 					// 更新每一筆資料
 					ArrayList<Workstation> workstations = workstationDao.findAllByWgidOrderBySyssortAsc(data.getLong("w_g_id"));
+
 					for (Workstation w : workstations) {
 						w.setWcname(data.getString("w_c_name"));
 						w.setWpbname(w_pb_value);
@@ -640,8 +638,8 @@ public class WorkstationService {
 						w.setWsgname(systemGroup.get(0).getSgname());
 						w.setSysmuser(user.getSuaccount());
 						w.setSyscuser(user.getSuaccount());
+						workstations_save.add(w);
 					}
-					workstationDao.saveAll(workstations);
 					wc_name = data.getString("w_c_name");
 				} else {
 					// 子類別
@@ -655,6 +653,8 @@ public class WorkstationService {
 					sys_t.setWmust(data.has("w_must") ? data.getInt("w_must") : 0);
 					sys_t.setWorkstationItem(sys_ti);
 					sys_t.setSysheader(false);
+					sys_t.setWgid(w_g_id);
+					sys_t.setWcname(w_c_name);
 					sys_t.setWpbname(w_pb_value);
 					sys_t.setWpbcell(w_pb_cell);
 					sys_t.setWreplace(w_replace);
@@ -665,9 +665,11 @@ public class WorkstationService {
 					sys_t.setSysmuser(user.getSuaccount());
 					sys_t.setSyscuser(user.getSuaccount());
 					sys_t.setSyssort(data.getInt("sys_sort"));
-					workstationDao.save(sys_t);
+					workstations_save.add(sys_t);
+					// workstationDao.save(sys_t);
 				}
 			}
+			workstationDao.saveAll(workstations_save);
 			// 有更新才正確
 			if (list.length() > 0) {
 				check = true;

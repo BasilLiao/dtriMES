@@ -604,7 +604,7 @@ public class RepairOrderRmaService {
 			JSONArray list = body.getJSONArray("save_as");
 			JSONArray list_check = new JSONArray();
 			// 群組 統一資料用
-			int rd_id_nb = 0;
+			int rd_id_nb = 1;
 			Long rd_ru_id = 0L;// 指派單位
 			String ro_id = "";
 			RepairOrder obj_h = new RepairOrder();// 維修單資料
@@ -1171,8 +1171,8 @@ public class RepairOrderRmaService {
 				// Order 維修單頭- 存入資料(間戳記)
 				String[] ro_yymms = Fm_Time.to_y_M_d(new Date()).split("-");
 				ro_id = "RMA" + ro_yymms[0] + ro_yymms[1];
-				String ro_nb = "000";
-				int ro_id_nb = 0;
+				String ro_nb = "001";
+				int ro_id_nb = 1;
 				// 檢查重複?->重複則->下一筆新序號
 				Boolean check_rep = true;
 				while (check_rep) {
