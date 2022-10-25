@@ -156,7 +156,7 @@ public class RepairListService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, s_val, "rd_check", rd_check));
 
 			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
 			}
@@ -238,7 +238,7 @@ public class RepairListService {
 
 		// 物件
 		Long rdruid = 0L;
-		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, false, null);
+		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, null, false, null);
 		rdruid = units.size() >= 1 ? units.get(0).getRugid() : 0L;
 
 		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, search_rr_pb_type, 1, 0, rdruid, page_r);
@@ -723,7 +723,7 @@ public class RepairListService {
 			JSONArray s_val = new JSONArray();
 			JSONObject object_documents = new JSONObject();
 			// 維修單位
-			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				String oneUnit_one = oneUnit.getRugname();
 				s_val.put((new JSONObject()).put("value", oneUnit_one).put("key", oneUnit.getRuid()));
@@ -811,7 +811,7 @@ public class RepairListService {
 
 		// Step1.維修人員?
 		Long rdruid = user.getSuid();
-		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, rdruid, null, null, false, null);
+		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, rdruid, null, null, null, false, null);
 		if (units.size() == 0) {
 			resp.autoMsssage("MT004");
 			return false;

@@ -15,8 +15,8 @@ import dtri.com.tw.service.PackageService;
 import dtri.com.tw.service.RepairListService;
 
 @Controller
-public class RepairListListController extends AbstractController {
-	public RepairListListController() {
+public class RepairListController extends AbstractController {
+	public RepairListController() {
 		super("repair_list.basil");// 功能
 	}
 

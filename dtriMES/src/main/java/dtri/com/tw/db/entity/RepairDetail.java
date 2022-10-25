@@ -32,7 +32,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rd_check:檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢)
  *      5=已寄回(結單)<br>
  *      rd_finally:true =已解決 /false =尚未解決<br>
- *      rd_u_finally:修復人
+ *      rd_u_finally:修復人<br>
+ *      rd_f_analyst:(優先)故障分析對象<br>
  * 
  */
 @Entity
@@ -124,6 +125,9 @@ public class RepairDetail {
 
 	@Column(name = "rd_rc_value", columnDefinition = "varchar(30)")
 	private String rdrcvalue;
+	
+	@Column(name = "rd_f_analyst", columnDefinition = "varchar(50) default ''")
+	private String rdfanalyst;
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -307,6 +311,14 @@ public class RepairDetail {
 
 	public void setRdrcvalue(String rdrcvalue) {
 		this.rdrcvalue = rdrcvalue;
+	}
+
+	public String getRdfanalyst() {
+		return rdfanalyst;
+	}
+
+	public void setRdfanalyst(String rdfanalyst) {
+		this.rdfanalyst = rdfanalyst;
 	}
 
 }

@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rc_g_id : 群組ID<br>
  *      rc_g_name : 群組名稱<br>
  *      rc_value : 設定參數<br>
+ *      rc_f_analyst:(優先)故障分對象<br>
  */
 @Entity
 @Table(name = "repair_code")
@@ -84,6 +85,10 @@ public class RepairCode {
 
 	@Column(name = "rc_value", nullable = false, columnDefinition = "varchar(50)")
 	private String rcvalue;
+	
+	@Column(name = "rc_f_analyst", columnDefinition = "varchar(50) default ''")
+	private String rcfanalyst;
+	
 
 	public Date getSyscdate() {
 		return syscdate;
@@ -195,5 +200,13 @@ public class RepairCode {
 
 	public void setRcvalue(String rcvalue) {
 		this.rcvalue = rcvalue;
+	}
+
+	public String getRcfanalyst() {
+		return rcfanalyst;
+	}
+
+	public void setRcfanalyst(String rcfanalyst) {
+		this.rcfanalyst = rcfanalyst;
 	}
 }

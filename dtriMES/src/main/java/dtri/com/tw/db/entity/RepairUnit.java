@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      ru_id : 單位_ID<br>
  *      ru_name : 單位_名稱<br>
  *      ru_su_id : 帳號關聯_ID<br>
+ *      ru_su_account : 帳號關聯_帳號<br>
  *      ru_su_name : 帳號關聯_名稱<br>
  *      ru_content : 可處理內容敘述<br>
  *      ru_cell_mail : 自動通知Mail<br>
@@ -83,6 +84,9 @@ public class RepairUnit {
 
 	@Column(name = "ru_su_id", nullable = false)
 	private Long rusuid;
+
+	@Column(name = "ru_su_account", columnDefinition = "varchar(50)")
+	private String rusuaccount;
 
 	@Column(name = "ru_su_name", nullable = false, columnDefinition = "varchar(50)")
 	private String rusuname;
@@ -220,4 +224,13 @@ public class RepairUnit {
 	public void setRucellmail(Boolean rucellmail) {
 		this.rucellmail = rucellmail;
 	}
+
+	public String getRusuaccount() {
+		return rusuaccount;
+	}
+
+	public void setRusuaccount(String rusuaccount) {
+		this.rusuaccount = rusuaccount;
+	}
+
 }

@@ -1,0 +1,627 @@
+<!-- 查詢項目 -->
+<style>
+.radio_size {
+	width: 22px;
+	height: 20px;
+}
+
+.datalist {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.datetimepicker {
+	margin-top: 50px;
+}
+
+.fixed_cell {
+	position: sticky;
+}
+
+#search .table-style {
+	min-height: 450px;
+	height: 450px;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+.search_example_title tr {
+	top: 0px;
+	z-index: 3;
+}
+</style>
+<div id="search">
+	<div class="p-0 shadow mt-0 text-left">
+		<div class="bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-search mr-1"></i>Search
+		</div>
+		<div class="row p-0 m-0 search_example_finds">
+			<!-- col-md-2/4/6/8/10/12 -->
+			<div class="col-md-2 p-2 search_example_input">
+				<div class="h6 mb-1 s_name">Search1</div>
+				<div class="p-0">
+					<input class="col p-1 border border-dark rounded s_value" type="text" />
+				</div>
+			</div>
+			<div class="col-md-2 p-2 search_example_selsect">
+				<div class="h6 mb-1 s_name">Search2</div>
+				<select class="col-12 custom-select custom-select-sm s_value">
+					<option class="example_select_def" value="" selected>select</option>
+					<option class="example_select_one" value="1">One</option>
+				</select>
+			</div>
+		</div>
+		<div class="row justify-content-end p-0 m-0 search_example_button">
+			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
+				<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit">Search(Reset)</button>
+				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+			</div>
+		</div>
+	</div>
+	<!-- 修改 -->
+	<div class="p-0 shadow mt-2 text-left">
+		<div class="p-0  mt-0 text-left">
+			<div class="bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-search mr-1"></i>Modify
+			</div>
+			<div class="row p-0 m-0 modify_example_finds">
+				<!-- col-md-2/4/6/8/10/12 -->
+				<div class="col-md-2 p-2 modify_example_input">
+					<div class="h6 mb-1 s_name">Search1</div>
+					<div class="p-0">
+						<input class="col p-1 border border-dark rounded s_value" type="text" />
+					</div>
+				</div>
+				<div class="col-md-2 p-2 modify_example_selsect">
+					<div class="h6 mb-1 s_name">Search2</div>
+					<select class="col-12 custom-select custom-select-sm s_value">
+						<option class="example_select_def" value="" selected>select</option>
+						<option class="example_select_one" value="1">One</option>
+					</select>
+				</div>
+			</div>
+			<div class="row justify-content-end p-0 m-0 search_example_button">
+				<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
+					<button id="register_btn" class="col-md-3 mt-1 btn btn-primary btn-sm" type="button">Register</button>
+					<button id="save_all_btn" class="col-md-3 mt-1 btn btn-success btn-sm" type="button">Save All</button>
+					<button id="clear_modify_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 查詢結果 -->
+	<div class="shadow mt-2">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-list-ul mr-1"></i>Result
+		</div>
+		<div class="p-2">
+			<table class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+				<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
+					<tr class="fixed_cell bg-dark">
+						<th class="s_title_body" style="min-width: 150px;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Last</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+						<th class="s_title_last p-1" style="min-width: 150px; width: 100%;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Handle</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="search_example_list" style="white-space: nowrap;">
+					<tr class="search_example_content">
+						<td title="" class="s_list_body">0</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- 子目錄 暫存區 -->
+			<table id="data_item_son" class="d-none">
+				<tbody class="search_example_list_son" style="white-space: nowrap;">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+//控制端
+search = new Vue({
+	el: "#search",
+	//資料區
+	data: {
+		//換頁樣式
+		page_total: main.page_total, //每次_總筆數
+		page_batch: main.page_batch, //每次_第幾批
+
+		page_show_size: main.page_show_size, //目前_每分頁顯示數量
+		page_now_size: main.page_now_size, //目前_實際筆數
+		page_now: main.page_now, //目前_頁數
+		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		data_item_f_id: "", //父類別ID
+		list_son:{},// 群組-子類別
+		list_modify:[],//修改資料清單
+	},
+	//初始化
+	created() {
+		console.log("search.html(created)");
+	},
+	//可呼叫方法
+	methods: {
+		setDataTitle(title, html_permission) {
+			//標題注入資訊
+			//排序
+			console.log(title);
+			title = main.orderedSort(title);
+			fixed_cell = 0;
+			for (var i = 0; i < Object.keys(title).length - 1; i++) {
+				var one_item_header = $("#search .search_example_title .s_title_body").clone(); //複製樣本(header)
+				var key_id = Object.keys(title)[i];
+				var value_name = title[Object.keys(title)[i]].name;
+				var value_size = title[Object.keys(title)[i]].size;
+				var value_write = title[Object.keys(title)[i]].write;
+				//console.log(key_id+" "+value_name);
+				//header
+				one_item_header[0].className = "p-1 ";
+				one_item_header[0].id = key_id;
+				one_item_header[0].children[0].children[0].innerText = value_name;
+				one_item_header.insertBefore("#search .s_title_last");
+				$("#" + key_id).css("min-width", value_size);
+				$("#" + key_id).css("max-width", value_size);
+				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+				//body
+				var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+				one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+				one_item_body[0].innerText = value_name;
+				one_item_body.insertBefore("#search .s_list_body");
+			}
+			//結尾
+			var key_id = Object.keys(title)[Object.keys(title).length - 1];
+			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
+			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
+			//header
+			$("#search .s_title_last").attr("id", key_id);
+			$("#search .s_title_last .title_name").text(value_name);
+			$("#" + key_id).css("min-width", value_size);
+			$("#" + key_id).css("max-width", value_size);
+			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+			//body
+			var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+			one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+			one_item_body.insertBefore("#search .s_list_body");
+
+			//關閉範例
+			$("#search .s_title_body").addClass("d-none");
+			
+		},
+		setDataList(list, list_son, body_type) {
+			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+			this.list_modify=[];
+			var data_item_sons = [];
+			this.data_type = body_type.type;
+			this.list_son = list_son;
+			console.log(list.length, body_type.type);
+			//console.log(new Date());
+			
+			//可能 初次載入就沒資料
+			if (list.length < 1) {
+				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+				if (this.page_batch >= 1) {
+					this.page_batch -= 1;
+				}
+				return false;
+			}
+			//舊有資料清除
+			$("#search .search_example_list_son tr").remove();
+			$("#search .search_data_list").remove();
+
+			//開啟樣式
+			$("#search .s_list_body").removeClass("d-none");
+			$("#search .search_example_content").removeClass("d-none");
+			var fixed_cell_color = false;
+			
+			console.log(new Date());
+			for (var j = 0; j < list.length; j++) {
+				//固定顏色
+				if (fixed_cell_color) {
+					fixed_cell_color = false;
+				} else {
+					fixed_cell_color = true;
+				}
+
+				//排序
+				list[j] = main.orderedSort(list[j]);
+				//排序-子類別
+				if(list_son!=null){
+					var son_size = list_son[list[j]['02_b__ui_group_id']].length;
+					for(var s = 0;s<son_size;s++){
+						//排序
+						list_son[list[j]['02_b__ui_group_id']][s] = main.orderedSort(list_son[list[j]['02_b__ui_group_id']][s]);
+						//排序-子類別(將 02_b__ 替換掉)
+						var re_son = list_son[list[j]['02_b__ui_group_id']][s];
+						var new_son = {};
+						for(var y = 0;y<Object.keys(re_son).length;y++){
+							var key_id = Object.keys(re_son)[y];
+							var value_name = re_son[Object.keys(re_son)[y]];
+							key_id = key_id.split('_b__')[1];
+							new_son[key_id] = value_name+'';
+						}
+						//回寫
+						list_son[list[j]['02_b__ui_group_id']][s] = new_son;
+					}
+				}
+				//資料筆數
+				var list_item = $("#search .search_example_content").clone(); //複製樣本
+				//是否為群組
+				list_item[0].className = "search_data_list";
+				list_item[0].className+= " sn_"+list[j][Object.keys(list[j])[2]];
+				list_item[0].id = "search_data_" + (j + 1);
+				list_item.appendTo("#search .search_example_list");
+
+				//===每筆 資料欄位===
+				var fixed_cell_nb = 0;
+				var fixed_cell_wh = 1;
+				for (var i = 0; i < Object.keys(list[j]).length; i++) {
+					var where_i = i;
+					var one_item = $("#search_data_" + (j + 1))[0].children;  //每個欄位-複製樣本
+					var key_id = Object.keys(list[j])[i];
+					var value_name = list[j][Object.keys(list[j])[i]];
+					//取得title Size顯示
+					// console.log(key_id+" "+value_name);
+					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+					//取得title 是否顯示
+					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+						one_item[where_i].className = "datalist d-none "+key_id.split('_b__')[1];
+					} else {
+						one_item[where_i].className = "datalist "+key_id.split('_b__')[1];
+					}
+
+					//固定前2格
+					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+						if (fixed_cell_color) {
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+						} else {
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+						}
+						$("#" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+						$("#" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+						$("#" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+						one_item[where_i].className = "datalist fixed_cell "+key_id.split('_b__')[1];
+						fixed_cell_wh += parseInt(value_size);
+						fixed_cell_nb += 1;
+					} else {
+						one_item[where_i].style = "max-width:" + value_size;
+					}
+					one_item[where_i].id = "";
+					one_item[where_i].title = key_id;
+					one_item[where_i].innerText = value_name;
+					//one_item.insertBefore("#" + list_item[0].id + " .s_list_body");
+				}
+				$("#search_data_" + (j+1) + " .s_list_body").remove();
+			}
+			console.log(new Date());
+			//關閉樣式
+			$("#search .s_list_body").addClass("d-none");
+			$("#search .search_example_content").addClass("d-none");
+
+			//console.log(new Date());
+		},
+		setSearch(search) {
+			//查詢注入資訊
+			console.log(search);
+			for (var i = 0; i < search.length; i++) {
+				switch (search[i].tag) {
+					case "input":
+						var search_input = $("#search .search_example_input").clone(); //複製樣本
+						search_input[0].className = search[i].col + " p-2 search_true";
+						search_input[0].id = "search_" + search[i].id;
+						search_input.appendTo("#search .search_example_finds");
+						$("#" + search_input[0].id + " .s_name").text(search[i].name);
+						//$("#" + search_input[0].id + " .s_value").val(search[i].value);
+						//時間類型
+						if (search[i].type == 'date') {
+							$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
+						}
+						//預設
+						if (search[i].value != "") {
+							$("#" + search_input[0].id + " .s_value").attr("placeholder", search[i].value);
+						}
+						break;
+					case "select":
+						//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+						//id / value / type
+						var search_selsect = $("#search  .search_example_selsect").clone(); //複製樣本
+						search_selsect[0].className = search[i].col + " p-2 search_true";
+						search_selsect[0].id = "search_" + search[i].id;
+						search_selsect.appendTo("#search  .search_example_finds");
+						$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
+						for (var o = 0; o < search[i].values.length; o++) {
+							var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							one_option[0].id = "select_" + search[i]["values"][o]["key"];
+							one_option[0].value = search[i]["values"][o]["key"];
+							one_option[0].innerText = search[i]["values"][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo("#" + search_selsect[0].id + " select");
+						}
+						//關閉樣式
+						break;
+					default:
+				}
+				//關閉樣式
+				$("#search .example_select_one").addClass("d-none");
+				$("#search .search_example_input").addClass("d-none");
+				$("#search .search_example_selsect").addClass("d-none");
+				main.loading(false);
+			}
+
+			//時間格式
+			$('#search .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});
+		},
+		setModify(modify) {
+			//修改選項
+			console.log(modify);
+			for (var i = 0; i < modify.length; i++) {
+				switch (modify[i].tag) {
+					case "input":
+						var modify_input = $("#search .modify_example_input").clone(); //複製樣本
+						modify_input[0].className = modify[i].col + " p-2 modify_true";
+						modify_input[0].id = "modify_" + modify[i].id;
+						modify_input.appendTo("#search .modify_example_finds");
+						$("#" + modify_input[0].id + " .s_name").text(modify[i].name);
+						//$("#" + modify_input[0].id + " .s_value").val(modify[i].value);
+						//時間類型
+						if (modify[i].type == 'date') {
+							$("#" + modify_input[0].id + " .s_value").addClass('datetimepicker_date');
+						}
+						//預設
+						if (modify[i].value != "") {
+							$("#" + modify_input[0].id + " .s_value").attr("placeholder", modify[i].value);
+						}
+						break;
+					case "select":
+						//查詢物件練立modify:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+						//id / value / type
+						var modify_selsect = $("#search  .modify_example_selsect").clone(); //複製樣本
+						modify_selsect[0].className = modify[i].col + " p-2 modify_true";
+						modify_selsect[0].id = "modify_" + modify[i].id;
+						modify_selsect.appendTo("#search  .modify_example_finds");
+						$("#" + modify_selsect[0].id + " .s_name").text(modify[i].name);
+						for (var o = 0; o < modify[i].values.length; o++) {
+							var one_option = $("#" + modify_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							one_option[0].id = "select_" + modify[i]["values"][o]["key"];
+							one_option[0].value = modify[i]["values"][o]["key"];
+							one_option[0].innerText = modify[i]["values"][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo("#" + modify_selsect[0].id + " select");
+						}
+						//關閉樣式
+						break;
+					default:
+				}
+			}
+			//關閉樣式
+			$("#search .modify_example_input").addClass("d-none");
+			$("#search .modify_example_selsect").addClass("d-none");
+		},
+		selectAllInit() {
+			//監聽-同步相同屬性
+			//選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6)
+			$(document).on("click", "#search_btn", function (event) {
+				console.log("search_btn");
+				search.searchSend();
+			});
+			$(document).on("click", "#clear_btn", function (event) {
+				console.log("clear_btn");
+				$("#search .search_example_finds input").val("");
+				$("#search .search_example_finds select").val("");
+			});
+			
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#search .search_true input", function (event) {
+				if (event.which == 13) {
+					$('#search_btn').trigger('click');
+				}
+			});
+			
+			//快速登記 監聽確認
+			$(document).on("keypress", "#search #modify_rd_rr_sn input", function (event) {
+				if (event.which == 13) {
+					$('#register_btn').trigger('click');
+				}
+			});
+			//登記修改
+			$(document).on("click", "#register_btn", function (event) {
+				console.log("clear_modify_btn");
+				search.registerTemp();
+			});
+			//有登記的存檔
+			$(document).on("click", "#save_all_btn", function (event) {
+				console.log("save_all_btn");
+				search.modifySend();
+			});
+			//清除修改
+			$(document).on("click", "#clear_modify_btn", function (event) {
+				console.log("clear_modify_btn");
+				$("#search .modify_true .s_value").val("");
+			});
+		},
+		//登記
+		registerTemp(){
+			var check= true;
+			//檢查 所有內的值
+			$(".modify_true .s_value").filter(function() {
+				if (this.value == "" || this.value == "尚未填寫完整!!") {
+					check = false;
+				}
+			});
+			//登記
+			if(check){
+				var modify_one = {};
+				var rd_rr_sn = $("#search #modify_rd_rr_sn input").val();
+				var rd_true = $("#search #modify_rd_true input").val();
+				var rd_solve = $("#search #modify_rd_solve input").val();
+				var rd_experience = $("#search #modify_rd_experience input").val();
+				
+				var rd_u_finally = $("#search #modify_rd_u_finally select").val();
+				var rd_type = $("#search #modify_rd_type select").val();
+				//如果有此資料
+				if($(".sn_"+rd_rr_sn)!=null){	
+					//可能有重複-產品序號
+					if($(".sn_"+rd_rr_sn+" .rd_id").length>1){
+						for(var k =0;k<$(".sn_"+rd_rr_sn+" .rd_id").length;k++){
+							modify_one = {};
+							modify_one['rd_id'] =$($(".sn_"+rd_rr_sn+" .rd_id")[k]).text();
+							modify_one['rd_rr_sn'] = rd_rr_sn;
+							modify_one['rd_true'] = rd_true;
+							modify_one['rd_solve'] = rd_solve;
+							modify_one['rd_experience'] = rd_experience;
+							
+							modify_one['rd_u_finally'] = rd_u_finally;
+							modify_one['rd_type'] = rd_type;
+							search.list_modify.push(modify_one);
+						}
+					}else if($(".sn_"+rd_rr_sn+" .rd_id").length==1){
+						modify_one['rd_id'] = $(".sn_"+rd_rr_sn+" .rd_id").text();						
+						modify_one['rd_rr_sn'] = rd_rr_sn;
+						modify_one['rd_true'] = rd_true;
+						modify_one['rd_solve'] = rd_solve;
+						modify_one['rd_experience'] = rd_experience;
+						
+						modify_one['rd_u_finally'] = rd_u_finally;
+						modify_one['rd_type'] = rd_type;
+						search.list_modify.push(modify_one);
+					}
+					
+					$(".sn_"+rd_rr_sn+" .rd_true").text(rd_true);
+					$(".sn_"+rd_rr_sn+" .rd_solve").text(rd_solve);
+					$(".sn_"+rd_rr_sn+" .rd_experience").text(rd_experience);
+					$(".sn_"+rd_rr_sn+" .rd_u_finally").text(rd_u_finally);
+					$(".sn_"+rd_rr_sn+" .rd_type").text(rd_type);
+					
+					$("#search #modify_rd_rr_sn input").val("");
+				}
+			}else{
+				$("#search #modify_rd_rr_sn input").val("尚未填寫完整!!");	
+			}
+		},
+		//search
+		searchSend() {
+			main.loading(true);
+			//查詢
+			//Ex:body:{search:{b:b,c:c}}
+			var search = {};
+			for (var s = 0; s < $("#search .search_true").length; s++) {
+				var key = $("#search .search_true")[s].id.replace("search_", "");
+				var value = $("#" + $("#search .search_true")[s].id + " .s_value").val();
+				//console.log(key+ " "+value);
+				search[key] = value;
+			}
+			//包裝
+			var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
+			var s_type = "POST";
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = "AR";
+			req.body = {};
+			req.body.search = search;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.html_body = "";
+			req.call_bk_fn = "search";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		//modify
+		modifySend() {
+			main.loading(true);
+
+			//修改
+			var modify = this.list_modify;
+			//包裝
+			var s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+			var s_type = "PUT";
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = "AU";
+			req.body = {};
+			req.body.modify = modify;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.html_body = "";
+			req.call_bk_fn = "search";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		searchReturn() {
+			main.loading(false);
+			console.log("searchReturn");
+			//如果 資料包裝有-> body
+			if (main.allData.body != null) {
+				//可能 body->沒有資料
+				if (main.allData.body.search.length < 1) {
+					t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+					//回歸上一次分頁
+					return false;
+				}else{
+					//body->有資料
+					this.setDataList(main.allData.body.search,
+						main.allData.body.search_son,
+						main.allData.body_type);
+	
+					if (main.allData.cell_refresh != null) {
+						console.log(main.allData.cell_refresh);
+						//編輯-模板更新
+						modify.setDataTitleUpdate(main.allData.cell_refresh);
+					}					
+				}
+			} else {
+				if(main.allData.action=="AU"){
+					search.searchSend();
+				}
+			}
+		},
+	},
+	//移除監聽事件
+	beforeDestroy() {
+		console.log("search.html(beforeDestroy)");
+		$(document).off("click", "#clear_btn");
+		$(document).off("click", "#search_btn");
+		$(document).off("click", "#clear_modify_btn");
+		$(document).off("click", "#register_btn");
+		$(document).off("click", "#save_all_btn");
+		
+		$(document).off("keypress", "#search .search_true input");
+		$(document).off("keypress", "#search #modify_rd_rr_sn input");
+		
+	},
+});
+</script>

@@ -14,14 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.RepairCode;
+import dtri.com.tw.db.entity.RepairUnit;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.RepairCodeDao;
+import dtri.com.tw.db.pgsql.dao.RepairUnitDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class RepairCodeService {
 	@Autowired
 	private RepairCodeDao codeDao;
+	@Autowired
+	private RepairUnitDao unitDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -31,6 +35,7 @@ public class RepairCodeService {
 		int p_size = req.getPage_total();
 		ArrayList<RepairCode> maintainCodes = new ArrayList<RepairCode>();
 		ArrayList<RepairCode> rcgid_obj = new ArrayList<RepairCode>();
+		List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -53,6 +58,7 @@ public class RepairCodeService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rc_g_name", FFS.h_t("故障(總項目)名稱", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rc_name", FFS.h_t("故障(支項目)名稱", "180px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rc_value", FFS.h_t("故障編碼", "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rc_f_analyst", FFS.h_t("優先判斷單位", "150px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px", FFM.Wri.W_Y));
@@ -75,6 +81,15 @@ public class RepairCodeService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "rc_g_name", "故障(總項目)名稱"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "rc_name", "故障(支項目)名稱"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "rc_value", "故障編碼"));
+
+			a_val = new JSONArray();
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null,null, false, null);
+			for (RepairUnit oneUnit : mUnits) {
+				a_val.put((new JSONObject()).put("value", oneUnit.getRusuname()).put("key", oneUnit.getRusuaccount()));
+			}
+			// a_val.put((new JSONObject()).put("value", "全單位").put("key", ""));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "all", FFM.Wri.W_Y, "col-md-2", false, a_val, "rc_f_analyst", "優先判斷單位"));
+
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-2", true, n_val, "sys_sort", "排序"));
 
 			a_val = new JSONArray();
@@ -88,6 +103,7 @@ public class RepairCodeService {
 			JSONArray obj_g_m = new JSONArray();
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "rc_name", ""));
 			obj_g_m.put(FFS.h_g(FFM.Wri.W_Y, FFM.Dno.D_S, "col-md-2", "rc_g_name", ""));
+			obj_g_m.put(FFS.h_g(FFM.Wri.W_N, FFM.Dno.D_N, "col-md-2", "rc_f_analyst", ""));
 			bean.setCell_g_modify(obj_g_m);
 
 			// 放入包裝(search)
@@ -133,6 +149,7 @@ public class RepairCodeService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_g_name", one.getRcgname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_name", one.getRcname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_value", one.getRcvalue());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_f_analyst", one.getRcfanalyst() == null ? "" : one.getRcfanalyst());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -158,6 +175,7 @@ public class RepairCodeService {
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_g_name", one.getRcgname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_name", one.getRcname());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_value", one.getRcvalue());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rc_f_analyst", one.getRcfanalyst() == null ? "" : one.getRcfanalyst());
 
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -209,6 +227,7 @@ public class RepairCodeService {
 					sys_c.setRcgname(data.getString("rc_g_name"));
 					sys_c.setRcname("");
 					sys_c.setRcvalue(data.getString("rc_value"));
+					sys_c.setRcfanalyst("");
 					sys_c.setSysnote("");
 					sys_c.setSyssort(0);
 					sys_c.setSysstatus(0);
@@ -223,6 +242,7 @@ public class RepairCodeService {
 					sys_c.setRcgname(rc_g_name.equals("") ? mc.get(0).getRcgname() : rc_g_name);
 					sys_c.setRcname(data.getString("rc_name"));
 					sys_c.setRcvalue(data.getString("rc_value"));
+					sys_c.setRcfanalyst(data.getString("rc_f_analyst"));
 					sys_c.setSysnote("");
 					sys_c.setSyssort(0);
 					sys_c.setSysstatus(0);
@@ -273,6 +293,7 @@ public class RepairCodeService {
 					sys_c.setRcgname(rc_g_name);
 					sys_c.setRcname("");
 					sys_c.setRcvalue(data.getString("rc_value"));
+					sys_c.setRcfanalyst("");
 					sys_c.setSysnote("");
 					sys_c.setSyssort(0);
 					sys_c.setSysstatus(0);
@@ -286,6 +307,7 @@ public class RepairCodeService {
 					sys_c.setRcgname(rc_g_name);
 					sys_c.setRcname(data.getString("rc_name"));
 					sys_c.setRcvalue(data.getString("rc_value"));
+					sys_c.setRcfanalyst(data.getString("rc_f_analyst"));
 					sys_c.setSysnote("");
 					sys_c.setSyssort(0);
 					sys_c.setSysstatus(0);
@@ -325,6 +347,7 @@ public class RepairCodeService {
 					sys_p.setRcname("");
 					sys_p.setRcgname(rc_g_name);
 					sys_p.setRcvalue(data.getString("rc_value"));
+					sys_p.setRcfanalyst("");
 					sys_p.setSysnote("");
 					sys_p.setSyssort(0);
 					sys_p.setSysstatus(0);
@@ -340,6 +363,7 @@ public class RepairCodeService {
 					sys_p.setRcname(data.getString("rc_name"));
 					sys_p.setRcgname(rc_g_name);
 					sys_p.setRcvalue(data.getString("rc_value"));
+					sys_p.setRcfanalyst(data.getString("rc_f_analyst"));
 					sys_p.setSysnote("");
 					sys_p.setSyssort(0);
 					sys_p.setSysstatus(0);

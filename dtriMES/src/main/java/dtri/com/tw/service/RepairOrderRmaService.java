@@ -205,7 +205,7 @@ public class RepairOrderRmaService {
 
 			// 單據細節
 			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
 			}
@@ -1288,7 +1288,7 @@ public class RepairOrderRmaService {
 			// 維修單-訊息
 			JSONArray s_val = new JSONArray();
 			JSONObject object_documents = new JSONObject();
-			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				String oneUnit_one = oneUnit.getRugname();
 				s_val.put((new JSONObject()).put("value", oneUnit_one).put("key", oneUnit.getRuid()));

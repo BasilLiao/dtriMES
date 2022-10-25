@@ -27,9 +27,10 @@ public interface RepairUnitDao extends JpaRepository<RepairUnit, Long> {
 			+ "(:rugname is null or r.rugname LIKE %:rugname%) and "//
 			+ "(:rusuname is null or r.rusuname LIKE %:rusuname%) and "//
 			+ "(:rusuid = 0L or r.rusuid  = :rusuid) and "//
+			+ "(:rusuaccount is null or r.rusuaccount  = :rusuaccount) and "//
 			+ "( r.sysheader = :sysheader )  "//
 			+ "order by r.rugid asc, r.ruid asc")
-	List<RepairUnit> findAllByRepairUnit(Long rugid,Long rusuid, String rugname, String rusuname, boolean sysheader, Pageable p);
+	List<RepairUnit> findAllByRepairUnit(Long rugid, Long rusuid, String rugname, String rusuname, String rusuaccount, boolean sysheader, Pageable p);
 
 	// 取得G_ID
 	@Query(value = "SELECT NEXTVAL('repair_unit_g_seq')", nativeQuery = true)

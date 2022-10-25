@@ -212,7 +212,7 @@ public class RepairOrderDtrService {
 
 			// 單據細節
 			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
 			}
@@ -1258,6 +1258,7 @@ public class RepairOrderDtrService {
 				if (!data.getString("rd_statement").equals("")) {
 					String rds_code = data.getString("rd_statement");
 					String rds_char = "";// 轉換成文字
+					String rds_f_ana = "";// 分析人
 					for (String part : rds_code.split("_")) {
 						ArrayList<RepairCode> rcs = codeDao.findAllByRcvalue(part);
 						if (rcs.size() == 1) {
@@ -1265,9 +1266,19 @@ public class RepairOrderDtrService {
 						} else {
 							rds_char += part + "_";
 						}
+						rds_f_ana = rcs.get(0).getRcfanalyst();
+					}
+					List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
+					//單位人(翻譯)?
+					mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, rds_f_ana, false, null);
+					if (mUnits != null && mUnits.size() > 0) {
+						data.put("rd_f_analyst", mUnits.get(0).getRusuname());
+					} else {
+						data.put("rd_f_analyst", rds_f_ana);
 					}
 					data.put("rd_statement", rds_char);
 					data.put("rd_code", rds_code);
+
 				} else {
 					data.put("rd_statement", "Something project wrong");
 				}
@@ -1359,6 +1370,7 @@ public class RepairOrderDtrService {
 			rd.setRdrcvalue(data.getString("rd_code"));
 			rd.setRdruid(data.getLong("rd_ru_id"));
 			rd.setRduqty(data.getInt("rd_u_qty"));
+			rd.setRdfanalyst(data.getString("rd_f_analyst"));
 			rd.setRdtrue("");
 			rd.setRdexperience("");
 			rd.setRdsolve("");
@@ -1430,7 +1442,7 @@ public class RepairOrderDtrService {
 			// 維修單-訊息
 			JSONArray s_val = new JSONArray();
 			JSONObject object_documents = new JSONObject();
-			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, true, null);
+			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
 			for (RepairUnit oneUnit : mUnits) {
 				String oneUnit_one = oneUnit.getRugname();
 				s_val.put((new JSONObject()).put("value", oneUnit_one).put("key", oneUnit.getRuid()));

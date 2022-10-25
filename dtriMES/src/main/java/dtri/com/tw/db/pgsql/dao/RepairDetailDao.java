@@ -33,6 +33,17 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 	ArrayList<RepairDetail> findAllByRdidAndRdruid(String roid, String rdid, String rrsn, String rrpbtype, int rdcheck, int rocheck, Long rdruid,
 			Pageable pageable);
 
+	// 查詢 負責對象+維修單項目ID+SN產品號
+	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
+			+ "(:rdid is null or d.rdid LIKE %:rdid%) and "// 維修-項目ID
+			+ "(:rrsn is null or r.rrsn LIKE %:rrsn%) and "// 產品-序號
+			+ "(:rrprid is null or r.rrprid LIKE %:rrprid%) and "// 產品-製令單
+			+ "(:rdcheck = 0 or d.rdcheck  = :rdcheck) and "// 維修-維修狀況
+			+ "(:rdstatement is null or d.rdstatement LIKE %:rdstatement%) and "// 維修敘述
+			+ "(d.rdufinally is null or d.rdufinally='') "// 沒有 維修人
+			+ "order by r.rrprid asc,d.rdstatement")
+	ArrayList<RepairDetail> findAllByRdidAndRdruidBat(String rdid, String rrsn, String rrprid, String rdstatement, int rdcheck, Pageable pageable);
+
 	// 排序
 	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
 			+ "(:roid is null or o.roid LIKE %:roid%) "//
