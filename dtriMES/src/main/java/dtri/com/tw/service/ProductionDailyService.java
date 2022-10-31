@@ -289,11 +289,16 @@ public class ProductionDailyService {
 			int pdttqty = 0;// [測試]取最大值
 			int pdttbadqty = 0;
 			String pdttyield = "0";
+			String key = "";
+			JSONArray pbwArr = new JSONArray();
+			JSONObject pdphpbschedule = new JSONObject();
+			ProductionDailyBean dailyBean = new ProductionDailyBean();//
 			for (ProductionDaily pdOne : productionDailys) {
 				// 同一天+同一條產線+同一班別+同一張工單
-				String key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + pdOne.getPdwcline() + pdOne.getPdwcclass() + pdOne.getPdprid();
-				ProductionDailyBean dailyBean = new ProductionDailyBean();//
-				JSONArray pbwArr = new JSONArray();
+				key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + "_" + pdOne.getPdwcline() + "_" + pdOne.getPdwcclass() + "_" + pdOne.getPdprid();
+				dailyBean = new ProductionDailyBean();//
+				pbwArr = new JSONArray();
+				pdphpbschedule = new JSONObject();
 				// 如果[同一天+同一條產線+同一班別+同一張工單]
 				if (dailybeans.containsKey(key)) {
 					dailyBean = dailybeans.get(key);
@@ -365,7 +370,6 @@ public class ProductionDailyService {
 					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
 					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
 					// 累計數
-					JSONObject pdphpbschedule = new JSONObject();
 					if (pdOne.getPdphpbschedule() != null && !pdOne.getPdphpbschedule().equals("")) {
 						pdphpbschedule = new JSONObject(pdOne.getPdphpbschedule());
 					}
@@ -752,7 +756,7 @@ public class ProductionDailyService {
 							newDaily.setPdtsu(pd_accounts.size());// 人數
 							newDaily.setPdwcclass(w_cclass);// 班別
 							newDaily.setPdttime("0.0");// 工時
-							newDaily.setPdtqty(0);// 日完成數 初始數量
+							newDaily.setPdtqty(1);// 日完成數 初始數量
 							newDaily.setPdttqty(0);
 							newDaily.setPdttyield("0%");
 							newDaily.setPdpryield("0%");

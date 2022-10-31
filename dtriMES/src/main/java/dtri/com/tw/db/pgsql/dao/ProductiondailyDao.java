@@ -36,7 +36,7 @@ public interface ProductiondailyDao extends JpaRepository<ProductionDaily, Long>
 			+ "(:pdprbomid is null or c.pdprbomid LIKE %:pdprbomid% ) and "// BOM ID
 			+ "(cast(:pdstime as date) is null or c.sysmdate >= :pdstime) and "// 時間區間
 			+ "(cast(:pdetime as date) is null or c.sysmdate <= :pdetime) "// 時間區間
-			+ "order by to_char(c.pdstime,'YYYY-MM-DD') desc, c.pdwcline asc, c.pdwcclass asc, c.pdprid asc,c.pdwcname asc")
+			+ "order by c.sysmdate desc, c.pdwcline asc, c.pdwcclass asc, c.pdprid asc,c.pdwcname asc,c.pdprokqty desc")
 	ArrayList<ProductionDaily> findAllByProductionDaily(//
 			String pdwcline, String pdwcclass, String pdprid, String pdprpmodel, String pdprbomid, Date pdstime, Date pdetime);
 
