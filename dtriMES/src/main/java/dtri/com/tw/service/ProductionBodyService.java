@@ -32,7 +32,7 @@ public class ProductionBodyService {
 	private ProductionHeaderDao headerDao;
 
 	@Autowired
-	EntityManager em;
+	private EntityManager em;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
