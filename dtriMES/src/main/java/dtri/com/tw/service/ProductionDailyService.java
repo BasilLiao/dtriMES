@@ -379,8 +379,10 @@ public class ProductionDailyService {
 					ProductionRecords rds = new ProductionRecords();
 					rds.setPrid(pdOne.getPdprid());
 					List<ProductionHeader> hds = headerDao.findAllByProductionRecords(rds);
-
-					int fixNb = bodyDao.findPbbsnPbscheduleFixList(hds.get(0).getPhpbgid(), "_N").size();
+					int fixNb = 0;
+					if(hds.size()>0) {
+						fixNb = bodyDao.findPbbsnPbscheduleFixList(hds.get(0).getPhpbgid(), "_N").size();						
+					}
 					dailyBean.setPdbadqty(fixNb + "");
 					// 如果是最後一站
 					int tqty = 0;

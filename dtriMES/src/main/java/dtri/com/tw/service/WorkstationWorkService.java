@@ -384,8 +384,8 @@ public class WorkstationWorkService {
 							object_body_all.put("workdatation_program_name", wp_all.get(0).getWpname());
 							object_body_all.put("workdatation_sort", wp_all.get(0).getSyssort());
 							object_body_all.put("workdatation_name", w_one.get(0).getWpbname());
+							object_body_all.put("pb_position", pb_all.get(0).getPbposition() == null ? "" : pb_all.get(0).getPbposition());
 							bean.setBody(object_body_all);
-
 						} else {
 							bean.setBody(new JSONObject());
 							bean.autoMsssage("WK004");
@@ -1265,11 +1265,13 @@ public class WorkstationWorkService {
 			}
 		} catch (NullPointerException e) {
 			log.error(e.toString());
+			e.printStackTrace();
 			System.out.println(e);
 			bean.autoMsssage("WK013");
 			return false;
 		} catch (Exception e) {
 			log.error(e.toString());
+			e.printStackTrace();
 			System.out.println(e);
 			bean.autoMsssage("1111");
 			return false;
@@ -1289,6 +1291,7 @@ public class WorkstationWorkService {
 
 		} catch (Exception e) {
 			log.error(e.toString());
+			e.printStackTrace();
 			System.out.println(e);
 			return false;
 		}
@@ -1320,6 +1323,7 @@ public class WorkstationWorkService {
 			}
 		} catch (Exception e) {
 			log.error(e.toString());
+			e.printStackTrace();
 			System.out.println(e);
 		}
 		return check;

@@ -1990,6 +1990,10 @@
    			}else{
    				$('#w_focus_4').val("");
    			}
+   			//位置代碼
+   			if(main.allData.body.pb_position!=null && main.allData.body.pb_position!=""){
+   				$('#w_focus_3').val(main.allData.body.pb_position);
+   			}
    			
    			//Step3-3.移除重製
    			$(".sn_list").remove();
@@ -2250,7 +2254,7 @@
    				}
    				//清除
    				//Step7-2.基本清除
-   				$('#w_focus_3').val("");
+   				//$('#w_focus_3').val("");
    				$('#w_focus_4').val("");
    				$('#w_focus_5').val("");
    				$('#w_focus_6').val("");

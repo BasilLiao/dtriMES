@@ -315,10 +315,20 @@ public class ProductionHeaderService {
 			// 產品資訊
 			search_pbsn = body.getJSONObject("search").getString("pb_sn");
 			search_pbsn = (search_pbsn == null) ? "" : search_pbsn;
+
 			search_pbsnname = body.getJSONObject("search").getString("pb_sn_name");
 			search_pbsnname = search_pbsnname == null ? "" : search_pbsnname;
 			search_pbsnvalue = body.getJSONObject("search").getString("pb_sn_value");
 			search_pbsnvalue = search_pbsnvalue == null ? "" : search_pbsnvalue;
+			// 檢核-共同查詢
+			if (!search_pbsnname.equals("") && search_pbsnvalue.equals("")) {
+				bean.autoMsssage("102");
+				return false;
+			}
+			if (search_pbsnname.equals("") && !search_pbsnvalue.equals("")) {
+				bean.autoMsssage("102");
+				return false;
+			}
 			// 產品規格
 			search_prmodel = body.getJSONObject("search").getString("pr_p_model");
 			search_prmodel = (search_prmodel.equals("")) ? null : search_prmodel;
@@ -344,15 +354,21 @@ public class ProductionHeaderService {
 		}
 
 		// 查詢特定SN
-		if (!search_pbsnvalue.equals("")) {
+		if (!search_pbsnvalue.equals("") && !search_pbsnname.equals("") || !search_pbsn.equals("")) {
+			// 條件
 			String nativeQuery = "SELECT b.pb_g_id FROM production_body b join production_header h on b.pb_g_id = h.ph_pb_g_id  WHERE ";
-			nativeQuery += " (:pb_sn_value='' or " + search_pbsnname + " LIKE :pb_sn_value) and ";
-			nativeQuery += " (:pb_sn='' or b.pb_sn LIKE :pb_sn) and ";
+			if (!search_pbsnvalue.equals("") && !search_pbsnname.equals(""))
+				nativeQuery += " (:pb_sn_value='' or " + search_pbsnname + " LIKE :pb_sn_value) and ";
+			if (!search_pbsn.equals(""))
+				nativeQuery += " (:pb_sn='' or b.pb_sn LIKE :pb_sn) and ";
 			nativeQuery += " (b.pb_g_id != 0) group by b.pb_g_id ";
 			// 項目
 			Query query = em.createNativeQuery(nativeQuery);
-			query.setParameter("pb_sn_value", "%" + search_pbsnvalue + "%");
-			query.setParameter("pb_sn", "%" + search_pbsn + "%");
+			if (!search_pbsnvalue.equals("") && !search_pbsnname.equals(""))
+				query.setParameter("pb_sn_value", "%" + search_pbsnvalue + "%");
+			if (!search_pbsn.equals(""))
+				query.setParameter("pb_sn", "%" + search_pbsn + "%");
+
 			// 轉換LONG
 			List<BigInteger> pbid_obj = query.getResultList();
 			for (BigInteger obj : pbid_obj) {
