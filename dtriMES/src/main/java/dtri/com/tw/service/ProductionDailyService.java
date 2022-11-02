@@ -4,8 +4,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -248,15 +250,15 @@ public class ProductionDailyService {
 			e_Date = sc_e_date == null ? null : Fm_Time.toDateTime(sc_e_date);
 		}
 
-		// 把每個工作站查詢出過站的資料 dailybeans(準備好)
-		// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
+		// [準備] 把每個工作站查詢出過站的資料 dailybeans
+		// Step1. 工作站[{"wcname":"D0001","wpbname":"加工站","qty":"50"},{},{}]
 		workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null);
 		JSONArray pbwNewArr = new JSONArray();
 		for (Workstation w_one : workstations) {
 			if (w_one.getWgid() != 0) {
 				JSONObject pbwNewObj = new JSONObject();
 				pbwNewObj.put("wcname", w_one.getWcname());
-				pbwNewObj.put("wpbmane", w_one.getWpbname());
+				pbwNewObj.put("wpbname", w_one.getWpbname());
 				pbwNewObj.put("tsulist", new JSONArray());
 				pbwNewObj.put("qtsu", 0);// 當天 使用者數
 				pbwNewObj.put("qty", 0);// 當天 台數
@@ -266,51 +268,52 @@ public class ProductionDailyService {
 			}
 		}
 
-		// [每日生產數量]把每個工作站查詢出過站的資料() dailybeans
+		// Step2. [每日生產數量]把每個工作站查詢出過站的資料() dailybeans
 		productionDailys = dailyDao.findAllByProductionDaily(sc_line, sc_class, sc_id, sc_model, sc_bom_id, s_Date, e_Date);
 		if (productionDailys.size() > 0) {
-
-			// 此工單的 最後一站的數量 今天的產出數量
-			String prid = productionDailys.get(0).getPdprid();
-			String pbwcnameLast = "";
-			ProductionRecords prs = new ProductionRecords();
-			prs.setPrid(prid);
-			List<ProductionHeader> headers = headerDao.findAllByProductionRecords(prs);
-			Long wpid = headers.get(0).getPhwpid();// 取得 工作程序 ID
-			ArrayList<WorkstationProgram> pbwLast = programDao.findAllByWpgidOrderBySyssortAsc(wpid);
-			Long wpwgid = pbwLast.get(pbwLast.size() - 1).getWpwgid();
-			pbwcnameLast = workstationDao.findAllByWgidOrderBySyssortAsc(wpwgid).get(0).getWcname();
-
-			// 把同一個工作站 的 倒出來
-			int pdprokqty = 0;// [產品]取最大值
-			int pdprttokqty = 0;// [產品測試]取最大直
-			int pdprbadqty = 0;
-			String pdpryield = "0";
-			int pdttqty = 0;// [測試]取最大值
-			int pdttbadqty = 0;
-			String pdttyield = "0";
+			// Step3. [準備]每工單的 最後一站的數量 今天的產出數量
+			Map<String, String> last_wcname = new HashMap<String, String>();
+			Map<String, Integer> wait_fix = new HashMap<String, Integer>();
+			for (ProductionDaily object : productionDailys) {
+				String prid = object.getPdprid();
+				if (!last_wcname.containsKey(prid)) {
+					ProductionRecords prs = new ProductionRecords();
+					prs.setPrid(prid);
+					List<ProductionHeader> headers = headerDao.findAllByProductionRecords(prs);
+					Long wpid = headers.get(0).getPhwpid();// 取得 工作程序 ID
+					ArrayList<WorkstationProgram> pbwLast = programDao.findAllByWpgidOrderBySyssortAsc(wpid);
+					Long wpwgid = pbwLast.get(pbwLast.size() - 1).getWpwgid();
+					String pbwcnameLast = workstationDao.findAllByWgidOrderBySyssortAsc(wpwgid).get(0).getWcname();
+					last_wcname.put(prid, pbwcnameLast);// 最後工作站
+					int fixNb = bodyDao.findPbbsnPbscheduleFixList(headers.get(0).getPhpbgid(), "_N").size();
+					wait_fix.put(prid, fixNb);// 待修數量
+				}
+			}
+			// Step4. [準備] 完成幾台/產品測試/產品測試次數
 			String key = "";
 			JSONArray pbwArr = new JSONArray();
 			JSONObject pdphpbschedule = new JSONObject();
 			ProductionDailyBean dailyBean = new ProductionDailyBean();//
+			// Step4.每一筆日報表資料
 			for (ProductionDaily pdOne : productionDailys) {
+
 				// 同一天+同一條產線+同一班別+同一張工單
 				key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + "_" + pdOne.getPdwcline() + "_" + pdOne.getPdwcclass() + "_" + pdOne.getPdprid();
-				dailyBean = new ProductionDailyBean();//
 				pbwArr = new JSONArray();
 				pdphpbschedule = new JSONObject();
-				// 如果[同一天+同一條產線+同一班別+同一張工單]
+				dailyBean = new ProductionDailyBean();//
+				// Step5. 如果[同一天+同一條產線+同一班別+同一張工單]
 				if (dailybeans.containsKey(key)) {
 					dailyBean = dailybeans.get(key);
-
-					// 工作站[統計]
-					pbwArr = dailyBean.getPdwpbname();
+					// Step5-1. 工作站[統計]
+					pbwArr = dailyBean.getPdwpbname();// [{"wcname":"D0001","wpbname":"加工站","qty":"50"},{},{}]
 					for (int index = 0; index < pbwArr.length(); index++) {
-						JSONObject pbOne = pbwArr.getJSONObject(index);
+
+						JSONObject pdOne_old = pbwArr.getJSONObject(index);
 						// 如果工作站[同一個]:累加數量
-						if (pbOne.getString("wcname").equals(pdOne.getPdwcname())) {
+						if (pdOne_old.getString("wcname").equals(pdOne.getPdwcname())) {
 							// 使用者清單
-							JSONArray pdwnames_old = pbOne.getJSONArray("tsulist");
+							JSONArray pdwnames_old = pdOne_old.getJSONArray("tsulist");
 							JSONArray pdwnames_new = new JSONObject(pdOne.getPdwnames()).getJSONArray("list");
 							for (Object one : pdwnames_new) {
 								// 排除重複
@@ -318,128 +321,96 @@ public class ProductionDailyService {
 									pdwnames_old.put(one);
 								}
 							}
-							pbOne.put("tsulist", pdwnames_old);
-							pbOne.put("qty", pbOne.getInt("qty") + pdOne.getPdtqty());// 台數
-							pbOne.put("qtsu", pdwnames_old.length());// 人數
-							pbOne.put("qttime", pbOne.getDouble("qttime") + Double.parseDouble(pdOne.getPdttime()));// 工時
-							pbwArr.put(index, pbOne);
+							pdOne_old.put("tsulist", pdwnames_old);// 使用人清單
+							pdOne_old.put("qty", pdOne_old.getInt("qty") + pdOne.getPdtqty());// [同一個]工作站-台數(累加數量)
+							pdOne_old.put("qtsu", pdwnames_old.length());// 人數
+							pdOne_old.put("qttime", pdOne_old.getDouble("qttime") + Double.parseDouble(pdOne.getPdttime()));// 工時數
+							pbwArr.put(index, pdOne_old);
 
-							// 如果是最後一站(再累加)
-							if (pbwcnameLast.equals(pdOne.getPdwcname())) {
+							// 如果 是最後一站(累加[當日完成數])
+							if (last_wcname.get(pdOne.getPdprid()).equals(pdOne.getPdwcname())) {
 								int tqty = Integer.parseInt(dailyBean.getPdtqty()) + pdOne.getPdtqty();
 								dailyBean.setPdtqty(tqty + "");
 							}
-							// 同一日的最大完成數量
-							if (pdOne.getPdprokqty() >= pdprokqty) {
-								pdprttokqty = pdOne.getPdprttokqty();
-								pdprokqty = pdOne.getPdprokqty();
-								pdprbadqty = pdOne.getPdprbadqty();
-								pdpryield = pdOne.getPdpryield();
-							}
-							// 同一天測試次數最大
-							if (pdOne.getPdttqty() > 0 && pdOne.getPdttqty() >= pdttqty) {
-								pdttqty = pdOne.getPdttqty();
-								pdttbadqty = pdOne.getPdttbadqty();
-								pdttyield = pdOne.getPdttyield();
-							}
-							dailyBean.setPdprttokqty(pdprttokqty + "");
-							dailyBean.setPdprokqty(pdprokqty + "");
-							dailyBean.setPdprbadqty(pdprbadqty + "");
-							dailyBean.setPdpryield(pdpryield);
-							dailyBean.setPdttqty(pdttqty + "");
-							dailyBean.setPdttbadqty(pdttbadqty + "");
-							dailyBean.setPdttyield(pdttyield);
 							break;
 						}
 					}
-				} else {
-					// 如果不同[新建]
-					dailyBean = new ProductionDailyBean();
-					pdprokqty = 0;
-					pdttqty = 0;
-					pdttbadqty = 0;
-					pdttyield = "0%";
-					dailyBean.setId(pdOne.getPdid());
-					dailyBean.setSysmdate(Fm_Time.to_y_M_d(pdOne.getSysmdate()));
-					dailyBean.setPdprbomid(pdOne.getPdprbomid());
-					dailyBean.setPdprid(pdOne.getPdprid());
-					dailyBean.setPdprpmodel(pdOne.getPdprpmodel());
-
-					dailyBean.setPdwcline(pdOne.getPdwcline());
-					dailyBean.setPdwcclass(pdOne.getPdwcclass());
-					dailyBean.setPdwpbname(new JSONArray(pbwNewArr.toString()));
-					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");
-					// 累計數
-					if (pdOne.getPdphpbschedule() != null && !pdOne.getPdphpbschedule().equals("")) {
-						pdphpbschedule = new JSONObject(pdOne.getPdphpbschedule());
-					}
-					dailyBean.setPdphpbschedule(pdphpbschedule);
-
-					// 待修數量
-					ProductionRecords rds = new ProductionRecords();
-					rds.setPrid(pdOne.getPdprid());
-					List<ProductionHeader> hds = headerDao.findAllByProductionRecords(rds);
-					int fixNb = 0;
-					if(hds.size()>0) {
-						fixNb = bodyDao.findPbbsnPbscheduleFixList(hds.get(0).getPhpbgid(), "_N").size();						
-					}
-					dailyBean.setPdbadqty(fixNb + "");
-					// 如果是最後一站
-					int tqty = 0;
-					if (pbwcnameLast.equals(pdOne.getPdwcname())) {
-						tqty = pdOne.getPdtqty();
-					}
-					// 同一日的最大完成數量
-					if (pdOne.getPdprokqty() >= pdprokqty) {
-						pdprokqty = pdOne.getPdprokqty();
-						pdprttokqty = pdOne.getPdprttokqty();
-						pdprbadqty = pdOne.getPdprbadqty();
-						pdpryield = pdOne.getPdpryield();
+					// 同一日 最後的完成數量
+					if (pdOne.getSysmdate().getTime() > dailyBean.getSysmdatemsort().getTime()) {
+						dailyBean.setPdprokqty(pdOne.getPdprokqty() + "");// [固定]總完成數
+						dailyBean.setPdprttokqty(pdOne.getPdprttokqty() + "");
+						dailyBean.setPdprbadqty(pdOne.getPdprbadqty() + "");
+						dailyBean.setPdpryield(pdOne.getPdpryield());//
+						dailyBean.setSysmdatemsort(pdOne.getSysmdate());// [其他]最後更新時間
 					}
 					// 同一天測試次數最大
-					System.out.println(Fm_Time.to_yMd(pdOne.getSyscdate()) + " " + pdOne.getPdttqty());
-					if (pdOne.getPdttqty() > 0 && pdOne.getPdttqty() >= pdttqty) {
-						pdttqty = pdOne.getPdttqty();
-						pdttbadqty = pdOne.getPdttbadqty();
-						pdttyield = pdOne.getPdttyield();
+					if (pdOne.getPdttqty() > 0 && pdOne.getPdttqty() >= Integer.parseInt(dailyBean.getPdttqty())) {
+						dailyBean.setPdttqty(pdOne.getPdttqty() + "");
+						dailyBean.setPdttbadqty(pdOne.getPdttbadqty() + "");
+						dailyBean.setPdttyield(pdOne.getPdttyield());
 					}
-
-					dailyBean.setPdprokqty(pdprokqty + "");
-					dailyBean.setPdprttokqty(pdprttokqty + "");
-					dailyBean.setPdprbadqty(pdprbadqty + "");
-					dailyBean.setPdpryield(pdpryield);
-					dailyBean.setPdttqty(pdttqty + "");
-					dailyBean.setPdttbadqty(pdttbadqty + "");
-					dailyBean.setPdttyield(pdttyield);
-					dailyBean.setPdtqty(tqty + "");
-
+					dailybeans.put(key, dailyBean);
+				} else {
+					// Step6. 如果不同[新建]
+					// Step6-1. 建立物件(同一天+同一條產線+同一班別+同一張工單)
+					dailyBean = new ProductionDailyBean();
+					dailyBean.setId(pdOne.getPdid());
+					dailyBean.setSysmdate(Fm_Time.to_y_M_d(pdOne.getSysmdate()));// [固定]時間
+					dailyBean.setPdwcline(pdOne.getPdwcline());// [固定]產線
+					dailyBean.setPdwcclass(pdOne.getPdwcclass());// [固定]班別
+					dailyBean.setPdprid(pdOne.getPdprid());// [固定]工單
+					dailyBean.setPdprbomid(pdOne.getPdprbomid());// [固定]BOM
+					dailyBean.setPdprpmodel(pdOne.getPdprpmodel());// [固定]型號
+					dailyBean.setPdprtotal(pdOne.getPdprtotal() + "");// [固定]工單總數
+					dailyBean.setPdprokqty(pdOne.getPdprokqty() + "");// [固定]總完成數
+					dailyBean.setPdbadqty(wait_fix.get(pdOne.getPdprid()) + "");// [固定]待修數量
 					// 工作站[統計]
-					pbwArr = dailyBean.getPdwpbname();
+					int tqty = 0;
+					pbwArr = new JSONArray(pbwNewArr.toString());
 					for (int index = 0; index < pbwArr.length(); index++) {
 						JSONObject pbOne = pbwArr.getJSONObject(index);
 						// 如果工作站[同一個]:累加數量
 						if (pbOne.getString("wcname").equals(pdOne.getPdwcname())) {
 							// 防止欄位 沒資料
 							JSONArray tsulist = new JSONArray();
-							if (pdOne.getPdwnames() == null || pdOne.getPdwnames().equals("")) {
-								tsulist = new JSONArray();
-							} else {
+							if (pdOne.getPdwnames() != null && !pdOne.getPdwnames().equals("")) {
 								tsulist = new JSONObject(pdOne.getPdwnames()).getJSONArray("list");
 							}
-							pbOne.put("qty", pdOne.getPdtqty());
-							pbOne.put("qtsu", pdOne.getPdtsu());
-							pbOne.put("qttime", pdOne.getPdttime());
+							pbOne.put("qty", pdOne.getPdtqty());// [該站]通過數量
+							pbOne.put("qtsu", pdOne.getPdtsu());// [該站]人數
+							pbOne.put("qttime", pdOne.getPdttime());// [該站]工時數
 
-							pbOne.put("tsulist", tsulist);
-							pbOne.put("wcname", pdOne.getPdwcname());
-							pbOne.put("wpbmane", pdOne.getPdwpbname());
-
-							System.out.println("" + pbOne);
+							pbOne.put("tsulist", tsulist);// [該站]人清單
+							pbOne.put("wcname", pdOne.getPdwcname());// 工作站代號
+							pbOne.put("wpbname", pdOne.getPdwpbname());// 工作站名稱
 							pbwArr.put(index, pbOne);
+							// 如果是最後一站
+							if (last_wcname.get(pdOne.getPdprid()).equals(pdOne.getPdwcname())) {
+								tqty = pdOne.getPdtqty();
+							}
+							System.out.println("" + pbOne);
 							break;
 						}
 					}
-					dailyBean.setPdwpbname(pbwArr);
+					dailyBean.setPdwpbname(pbwArr);// [浮動]每一工作站
+					dailyBean.setPdtqty(tqty + "");// [固定]日完成數
+
+					// Step6-2.[其他] 資料
+					if (pdOne.getPdphpbschedule() != null && !pdOne.getPdphpbschedule().equals("")) {
+						pdphpbschedule = new JSONObject(pdOne.getPdphpbschedule());
+					}
+					dailyBean.setPdphpbschedule(pdphpbschedule);// 工作站 每一站過站數量
+					dailyBean.setSysmdatemsort(pdOne.getSysmdate());// 每一筆 時間
+
+					// Step6-3.[每日 測試不良] 同一日 最後的完成數量
+					dailyBean.setPdttqty(pdOne.getPdttqty() + "");
+					dailyBean.setPdttbadqty(pdOne.getPdttbadqty() + "");
+					dailyBean.setPdttyield(pdOne.getPdttyield());
+					// Step6-4.[每日 產品不良] 同一日 最後的完成數量
+					dailyBean.setPdprttokqty(pdOne.getPdprttokqty() + "");
+					dailyBean.setPdprbadqty(pdOne.getPdprbadqty() + "");
+					dailyBean.setPdpryield(pdOne.getPdpryield());
+
 					dailybeans.put(key, dailyBean);
 				}
 			}
@@ -529,7 +500,7 @@ public class ProductionDailyService {
 				object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + pbOne.getString("wcname"), pbOne.getDouble("qttime"));
 				object_dnoe_one.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.B) + pbOne.getString("wcname"), pbOne.getInt("qtsu"));
 				if (pbOne.getJSONArray("tsulist").length() > 0) {
-					tsulist += pbOne.getString("wpbmane") + ":" + pbOne.getJSONArray("tsulist") + "\n";
+					tsulist += pbOne.getString("wpbname") + ":" + pbOne.getJSONArray("tsulist") + "\n";
 				}
 				// 工單-累計資訊
 				if (pbphpbsArrAll.has(pbOne.getString("wcname"))) {
@@ -564,6 +535,7 @@ public class ProductionDailyService {
 
 		updateData();
 		return true;
+
 	}
 
 	@Transactional

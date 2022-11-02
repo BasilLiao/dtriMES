@@ -1,5 +1,7 @@
 package dtri.com.tw.bean;
 
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,7 +11,7 @@ import org.json.JSONObject;
 
 public class ProductionDailyBean {
 	public ProductionDailyBean() {
-
+		
 	}
 
 	private Long id;// ID
@@ -17,7 +19,7 @@ public class ProductionDailyBean {
 	private String pdwcline;// 產線
 	private String pdwcclass;// 班別
 	private String pdprid;// 工單
-	private JSONArray pdwpbname;// 工作站[{"wcname":"D0001","wpbmane":"加工站","qty":"50"},{},{}]
+	private JSONArray pdwpbname;// 工作站[{"wcname":"D0001","wpbname":"加工站","qty":"50"},{},{}]
 	private JSONObject pdphpbschedule;// 工作站累計數
 	private String pdprbomid;// BOM
 	private String pdprpmodel;// 產品型號
@@ -35,6 +37,7 @@ public class ProductionDailyBean {
 
 	private String pdtqty;
 	private Double pdttime;// 總時間
+	private Date sysmdatemsort;// 最後修改時間
 
 	public String getPdttqty() {
 		return pdttqty;
@@ -194,6 +197,14 @@ public class ProductionDailyBean {
 
 	public void setPdprttokqty(String pdprttokqty) {
 		this.pdprttokqty = pdprttokqty;
+	}
+
+	public Date getSysmdatemsort() {
+		return sysmdatemsort;
+	}
+
+	public void setSysmdatemsort(Date sysmdatemsort) {
+		this.sysmdatemsort = sysmdatemsort;
 	}
 
 }
