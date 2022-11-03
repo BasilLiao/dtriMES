@@ -165,7 +165,7 @@ public class ProductionBodyService {
 			object_analysis.put("pb_l_size", FFM.Wri.W_N);
 			object_analysis.put("pb_l_path", FFM.Wri.W_N);
 			object_analysis.put("pb_useful_sn", FFM.Wri.W_N);
-			object_analysis.put("pb_position", FFM.Wri.W_N);
+			//object_analysis.put("pb_position", FFM.Wri.W_N);
 			object_analysis.put("sys_note", FFM.Wri.W_N);
 			object_analysis.put("sys_sort", FFM.Wri.W_N);
 			object_analysis.put("sys_ver", FFM.Wri.W_N);
@@ -613,6 +613,8 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", productionHeader.getProductionRecords().getPrbomcid());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_shipping_date", one.getPbshippingdate() == null ? "" : one.getPbshippingdate());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_position", one.getPbposition() == null ? "" : one.getPbposition());
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_w_years", one.getPbwyears() == null ? "" : one.getPbwyears());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_f_value", one.getPbfvalue() == null ? "" : one.getPbfvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_check", one.getPbcheck());

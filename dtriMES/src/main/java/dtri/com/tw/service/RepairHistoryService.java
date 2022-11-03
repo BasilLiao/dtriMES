@@ -477,7 +477,8 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", one.getRdtrue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", one.getRdsolve() == null ? "" : one.getRdsolve());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", one.getRdexperience() == null ? "" : one.getRdexperience());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", one.getRdufinally());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_f_analyst", one.getRdfanalyst()== null ? "" : one.getRdfanalyst());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", one.getRdufinally()== null ? "" : one.getRdufinally());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_from", one.getOrder().getRofrom());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", one.getOrder().getRoramdate());
