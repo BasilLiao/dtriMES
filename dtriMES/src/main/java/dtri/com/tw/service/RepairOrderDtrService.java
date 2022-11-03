@@ -1259,24 +1259,26 @@ public class RepairOrderDtrService {
 					String rds_code = data.getString("rd_statement");
 					String rds_char = "";// 轉換成文字
 					String rds_f_ana = "";// 分析人
+					List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
 					for (String part : rds_code.split("_")) {
 						ArrayList<RepairCode> rcs = codeDao.findAllByRcvalue(part);
 						if (rcs.size() == 1) {
 							rds_char += rcs.get(0).getRcname() + "_";
+							// 單位人(翻譯)?
+							mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, rcs.get(0).getRcfanalyst(), false, null);
+							if (mUnits != null && mUnits.size() > 0) {
+								rds_f_ana += mUnits.get(0).getRusuname() + "_";
+							}
 						} else {
 							rds_char += part + "_";
 						}
-						rds_f_ana = rcs.get(0).getRcfanalyst();
 					}
-					List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
-					//單位人(翻譯)?
-					mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, rds_f_ana, false, null);
-					if (mUnits != null && mUnits.size() > 0) {
-						data.put("rd_f_analyst", mUnits.get(0).getRusuname());
-					} else {
-						data.put("rd_f_analyst", rds_f_ana);
+					int reCheck = rds_code.indexOf("[");// [故障代號] 移除字元之後內容
+					if (reCheck > 0) {
+						rds_code = rds_code.split("\\[")[0];
 					}
-					data.put("rd_statement", rds_char);
+					data.put("rd_f_analyst", rds_f_ana);
+					data.put("rd_statement", rds_char.replaceAll("ZZZZ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
 					data.put("rd_code", rds_code);
 
 				} else {
