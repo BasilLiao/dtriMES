@@ -221,6 +221,10 @@ customized = new Vue({
 			//排序 
 			title = main.orderedSort(title);
 			fixed_cell = 101;
+			//今日維修單
+			if(documents['ro_id']!=null){
+				$('#ro_id input').val(documents['ro_id']);
+			}
 			
 			for (var i = 0; i < Object.keys(title).length ; i++) {
 				var one_item_header = $("#customized .rd_search_example_title .s_title_body").clone(); //複製樣本(header)
@@ -280,6 +284,7 @@ customized = new Vue({
 					var css_must = ' rounded border-1 border-secondary ';
 					one_item_body.find(".select_value select").addClass(css_must);			
 				}
+				
 				
 				//特定數字類(input)
 				if(documents[key_name]!=null && documents[key_name]=='number'){
@@ -363,8 +368,12 @@ customized = new Vue({
 			$('#c_tex input').val(customer['c_tex']);
 			$('#c_fax input').val(customer['c_fax']);
 			//注入 單據資料
-			$('#ro_check select').val(documents['ro_check']);
-			$('#ro_id input').val(documents['ro_id']);
+			if(documents['ro_check']!=null){
+				$('#ro_check select').val(documents['ro_check']);
+			}
+			if(documents['ro_id']!=null){
+				$('#ro_id input').val(documents['ro_id']);				
+			}
 			//Excel 客戶
 			$('#excel_c_n').text(customer['c_c_name']);
 			$('#excel_c').text(customer['c_name']);

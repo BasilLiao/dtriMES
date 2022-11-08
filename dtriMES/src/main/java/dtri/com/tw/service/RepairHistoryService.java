@@ -54,11 +54,11 @@ public class RepairHistoryService {
 			page = 0;
 			p_size = 100;
 		}
-		//排序
+		// 排序
 		List<Sort.Order> orders = new ArrayList<>();
 		orders.add(new Sort.Order(Sort.Direction.DESC, "register.rrprid"));
 		orders.add(new Sort.Order(Sort.Direction.ASC, "rdstatement"));
-		orders.add(new Sort.Order(Sort.Direction.DESC, "rdid"));	
+		orders.add(new Sort.Order(Sort.Direction.DESC, "rdid"));
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by(orders));
 		String search_ro_id = null;
 		String search_rr_sn = null;
@@ -475,10 +475,10 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rc_value", one.getRdrcvalue() == null ? "" : one.getRdrcvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", one.getRdstatement());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", one.getRdtrue());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", one.getRdsolve() == null ? "" : one.getRdsolve());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", one.getRdexperience() == null ? "" : one.getRdexperience());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_f_analyst", one.getRdfanalyst()== null ? "" : one.getRdfanalyst());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", one.getRdufinally()== null ? "" : one.getRdufinally());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", one.getRdsolve() == null ? "" : one.getRdsolve().replaceAll("\\n", ""));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", one.getRdexperience() == null ? "" : one.getRdexperience().replaceAll("\\n", ""));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_f_analyst", one.getRdfanalyst() == null ? "" : one.getRdfanalyst().replaceAll("\\n", ""));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", one.getRdufinally() == null ? "" : one.getRdufinally().replaceAll("\\n", ""));
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_from", one.getOrder().getRofrom());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", one.getOrder().getRoramdate());
@@ -490,7 +490,7 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", one.getRegister().getRrexpired() == null ? "" : one.getRegister().getRrexpired());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", one.getRegister().getRrphwyears());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date",
-					one.getRegister().getRrpbsysmdate() == null ? "" : one.getRegister().getRrpbsysmdate());
+					one.getRegister().getRrpbsysmdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getRegister().getRrpbsysmdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", one.getRegister().getRrpbtype());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", one.getRegister().getRrv());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", one.getRegister().getRrfok());

@@ -500,6 +500,7 @@ analysis = new Vue({
 						console.log(Object.keys(list[j])[i]);
 						key_id = (Object.keys(list[j])[i]).split("_b__")[1];/*Ex:"01_b__pr_id"*/
 						value_name = list[j][Object.keys(list[j])[i]];
+						//value_name= value_name.toString().replaceAll(/(\r\n|\n|\r)/gm, "");
 						/*取得Report位置 : 如果*/
 						if(report_item[0].children[i]==null){continue;}/*如果沒有此欄位*/
 						report_item[0].children[i].className="report_" + key_id;

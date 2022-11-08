@@ -204,7 +204,7 @@ public class ProductionBodyService {
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, a_val, "sys_status", "系統狀態"));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-12", true, a_val, "pb_old_sn", "SN_[舊](燒錄/產品)"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "請小心填寫:格式Ex:[\"81TW12242C077_old_beginning\"]", "", FFM.Wri.W_Y, "col-md-12", false, a_val, "pb_old_sn", "SN_[舊](燒錄/產品)"));
 			// sn關聯表
 			for (j = 0; j < 50; j++) {
 				String m_name = "getPbvalue" + String.format("%02d", j + 1);
@@ -704,6 +704,7 @@ public class ProductionBodyService {
 				p_body.setPbsn(data.getString("pb_sn"));
 				p_body.setPbgid(p_Headers.get(0).getPhpbgid());
 				p_body.setPbcheck(data.getBoolean("pb_check"));
+				p_body.setPboldsn(data.getString("pb_old_sn"));
 				p_body.setPboldsn("");
 				p_body.setSysnote(data.getString("sys_note"));
 				p_body.setSyssort(data.getInt("sys_sort"));
@@ -766,6 +767,7 @@ public class ProductionBodyService {
 				p_body.setPbsn(data.getString("pb_sn"));
 				p_body.setPboldsn("");
 				p_body.setPbbsn(data.getString("pb_b_sn"));
+				p_body.setPboldsn(data.getString("pb_old_sn"));
 				p_body.setPbgid(p_Headers.get(0).getPhpbgid());
 				p_body.setPbcheck(data.getBoolean("pb_check"));
 				p_body.setSysnote(data.getString("sys_note"));

@@ -1488,6 +1488,13 @@ public class RepairOrderDtrService {
 
 			// 數字格式
 			object_documents.put("rd_u_qty", "number");
+			// 今日維修單號
+			// 維修單-自動生成
+			Date today = new Date();
+			String yyyy_MM_dd_HH_mm_ss = Fm_Time.to_y_M_d(today) + " 00:00:00";
+			Date todayStr = Fm_Time.toDateTime(yyyy_MM_dd_HH_mm_ss);// 今日起始
+			String ro_id = "DTR" + todayStr.getTime();
+			object_documents.put("ro_id", ro_id);
 
 			object_header.put("customized_documents", object_documents);
 

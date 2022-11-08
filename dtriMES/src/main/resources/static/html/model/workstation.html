@@ -1565,6 +1565,11 @@
    				}
    				//是否為維修代碼(群組類別)
    				if(workstation.fix_type[code]!=null ||code=='ZZZ'){
+   					//如果沒有打開
+   					if($('#fix_t_open').css('display')=='none'){
+	   					$( "#fix_open" ).trigger( "click" );   						
+   					}
+   					
    					if(($("#fix-item").text()!=code && $("#fix_i_open").css("display")=="none") ||$("#fix-item").text()==code || $("#fix-item").text()==""){
    						 $("#fix_i_open").slideToggle("fast");						
    					}
@@ -1640,40 +1645,48 @@
 					workstation.clearOrder();
    					return false;
    				}
-   				
-   				//(項目類別)
-   				if((code=='ZZZZ')||
-   					(workstation.fix_code_type!='ZZZ' && workstation.fix_code_type!="" && workstation.fix_type[workstation.fix_code_type].item[code]!=null)){
-   					//維修代碼-如果是自訂義(必須要有自訂義內容)
-   					if(workstation.fix_code_type=='ZZZ' && code=='ZZZZ'){
-   						if($('#fix_i_textarea_zzzz').val()!='' ){
-	   						code+= '['+$('#fix_i_textarea_zzzz').val()+']';
-	   						$('#fix_i_textarea_zzzz').val("");   							
-   						}else{
-   							workstation.clearOrder();
-   		   					return false;
-   						}
-   					}
-   					
-   					//維修代碼-複數已經存在?
-   					if($('#'+id).val()!=""){
-   						$('#'+id).val($('#'+id).val()+'_'+code);						
-   					}else{
-   						$('#'+id).val(code);	
-   					}
-   					workstation.clearOrder();
-   					return false;
+   				//只有在[維修欄位]上
+   				if(id=='w_focus_4'){
+	   				//(項目類別) 自訂義故障 or 以定義故障
+	   				if((code=='ZZZZ')||
+	   					(workstation.fix_code_type!='ZZZ' && 
+							workstation.fix_code_type!="" && 
+							workstation.fix_type[workstation.fix_code_type].item[code]!=null)){
+	   					//維修代碼-如果是自訂義(必須要有自訂義內容)
+	   					if(code=='ZZZZ'){
+	   						if(workstation.fix_code_type=='ZZZ' && $('#fix_i_textarea_zzzz').val()!='' ){
+		   						code+= '['+$('#fix_i_textarea_zzzz').val()+']';
+		   						$('#fix_i_textarea_zzzz').val("");   							
+	   						}else{
+	   							workstation.clearOrder();
+	   		   					return false;
+	   						}
+	   					}
+	   					
+	   					//維修代碼-複數已經存在?
+	   					if($('#'+id).val()!=""){
+	   						$('#'+id).val($('#'+id).val()+'_'+code);						
+	   					}else{
+	   						$('#'+id).val(code);	
+	   					}
+	   					workstation.clearOrder();
+	   					return false;
+	   				}else{
+	   					//不在故障代碼規範內
+	   					workstation.clearOrder();
+	   					return false;
+	   				}
    				}
-   				//略Workstation User(可能有複數)
-   				if(workstation.nb==0){
-   					if($('#'+id).val()==""){
-   						$('#'+id).val(code);	
-   					}else{
-   						$('#'+id).val($('#'+id).val()+'_'+code);								
-   					}
-   					workstation.clearOrder();
-   					return false;
-   				}
+	   				//略Workstation User(可能有複數)
+	   				if(workstation.nb==0){
+	   					if($('#'+id).val()==""){
+	   						$('#'+id).val(code);	
+	   					}else{
+	   						$('#'+id).val($('#'+id).val()+'_'+code);								
+	   					}
+	   					workstation.clearOrder();
+	   					return false;
+	   				}
    				//輸入一般值->換下一格
    				if(!$('#'+id).hasClass("sn_only")){
 	   				$('#'+id).val(code);	
