@@ -473,8 +473,8 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", one.getRegister().getRrcsn());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rc_value", one.getRdrcvalue() == null ? "" : one.getRdrcvalue());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", one.getRdstatement());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", one.getRdtrue());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", one.getRdstatement()== null? "" : one.getRdstatement().replaceAll("\\n", ""));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", one.getRdtrue()== null? "" : one.getRdtrue().replaceAll("\\n", ""));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", one.getRdsolve() == null ? "" : one.getRdsolve().replaceAll("\\n", ""));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", one.getRdexperience() == null ? "" : one.getRdexperience().replaceAll("\\n", ""));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_f_analyst", one.getRdfanalyst() == null ? "" : one.getRdfanalyst().replaceAll("\\n", ""));
