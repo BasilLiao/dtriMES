@@ -1061,15 +1061,16 @@
 						 //僅限於Img
 						 if ($("#detail_really_tr_"+this.detail_nb+" .m__"+key_id+" .save_value").attr("alt")=="img"){
 							 var imgs = $("#detail_really_tr_"+this.detail_nb+" .m__"+key_id)[0].children[1];//圖片位置
-							 console.log("img:");
-							 console.log();
-							 key_value = JSON.parse(key_value);
-							 for(var j=0;j<key_value.length;j++){
-								 var fileName = key_value[j]['fileName'];
-								 var fileData = key_value[j]['fileData'];
-								 $(imgs.children[(j+1)]).find('input').val(fileName);
-								 $(imgs.children[(j+1)]).find('img').attr('src',fileData);
-								 console.log(fileName);
+							 console.log("img:");//可能沒圖片
+							 if(key_value!=null &&key_value!=""){
+								 key_value = JSON.parse(key_value);
+								 for(var j=0;j<key_value.length;j++){
+									 var fileName = key_value[j]['fileName'];
+									 var fileData = key_value[j]['fileData'];
+									 $(imgs.children[(j+1)]).find('input').val(fileName);
+									 $(imgs.children[(j+1)]).find('img').attr('src',fileData);
+									 console.log(fileName);
+								 }								 
 							 }
 						 }
                     }
