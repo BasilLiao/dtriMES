@@ -62,6 +62,8 @@ public class RepairHistoryService {
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by(orders));
 		String search_ro_id = null;
 		String search_rr_sn = null;
+		String search_rd_id = null;
+		
 		String search_rr_pr_id = null;
 		String search_rd_statement = null;
 		String search_rd_u_finally = null;
@@ -140,6 +142,7 @@ public class RepairHistoryService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_type", FFS.h_t(rd_type, "120px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "120px", FFM.Wri.W_N));
 
 			// 產品資料
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "150px", FFM.Wri.W_Y));
@@ -178,6 +181,7 @@ public class RepairHistoryService {
 			// 維修單據
 			obj_m = new JSONArray();
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "系統建立", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ro_id", ro_id));
+			
 			customers = customerDao.findAll();
 			for (Customer one : customers) {
 				s_val.put((new JSONObject()).put("value", one.getCcname()).put("key", one.getCid()));
@@ -235,7 +239,7 @@ public class RepairHistoryService {
 			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "true", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_expired", rr_expired));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "rr_ph_w_years", rr_ph_w_years));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
 			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
@@ -257,7 +261,7 @@ public class RepairHistoryService {
 			s_val.put((new JSONObject()).put("value", "開啟(正常)").put("key", "0"));
 			s_val.put((new JSONObject()).put("value", "關閉(作廢)").put("key", "1"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-2", true, s_val, "sys_status", sys_status));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "sys_note", sys_note));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-5", false, n_val, "sys_note", sys_note));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", sys_m_date));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", sys_m_user));
 			resp.setCell_modify(obj_m);
@@ -266,6 +270,7 @@ public class RepairHistoryService {
 			JSONArray object_searchs = new JSONArray();
 			// 維修單
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ro_id", ro_id, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_id", rd_id, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rr_sn", rr_sn, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rr_pr_id", rr_pr_id, n_val));
 
@@ -301,6 +306,9 @@ public class RepairHistoryService {
 			// 進行-特定查詢
 			search_ro_id = body.getJSONObject("search").getString("ro_id");
 			search_ro_id = search_ro_id.equals("") ? null : search_ro_id;
+			search_rd_id = body.getJSONObject("search").getString("rd_id");
+			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
+			
 			search_rr_pr_id = body.getJSONObject("search").getString("rr_pr_id");
 			search_rr_pr_id = search_rr_pr_id.equals("") ? null : search_rr_pr_id;
 			search_rd_check = body.getJSONObject("search").getString("rd_check");
@@ -337,7 +345,7 @@ public class RepairHistoryService {
 
 		// 查詢
 		rdids = detailDao.findAllByRepairDetail(//
-				search_ro_id, search_rr_sn, search_rr_pr_id, Integer.parseInt(search_rd_check), search_rr_pb_type, //
+				search_ro_id,search_rd_id, search_rr_sn, search_rr_pr_id, Integer.parseInt(search_rd_check), search_rr_pb_type, //
 				search_rd_statement, search_rd_u_finally, rosramdate, roeramdate, //
 				rrspbsysmdate, rrepbsysmdate, null, page_r);
 
@@ -377,7 +385,8 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", rd.getRduqty());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd.getRdruid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_type", rd.getRdtype() == null ? "" : rd.getRdtype());
-
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_check", rd.getRdcheck() == null ? "" : rd.getRdcheck());
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr.getRrexpired() == null ? "" : rr.getRrexpired());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", rr.getRrphwyears());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date", rr.getRrpbsysmdate() == null ? "" : Fm_Time.to_y_M_d(rr.getRrpbsysmdate()));
@@ -481,11 +490,12 @@ public class RepairHistoryService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", one.getRdufinally() == null ? "" : one.getRdufinally().replaceAll("\\n", ""));
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_from", one.getOrder().getRofrom());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", one.getOrder().getRoramdate());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ro_ram_date", one.getOrder().getRoramdate()== null ? "" : Fm_Time.to_yMd_Hms(one.getOrder().getRoramdate()));
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", one.getRdid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_qty", one.getRduqty());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_type", one.getRdtype() == null ? "" : one.getRdtype());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_check", one.getRdcheck() == null ? "" : one.getRdcheck());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", one.getRegister().getRrexpired() == null ? "" : one.getRegister().getRrexpired());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", one.getRegister().getRrphwyears());
@@ -562,7 +572,7 @@ public class RepairHistoryService {
 					rd.setRdstatement(data.getString("rd_statement"));
 					rd.setRdsvg(data.getString("rd_svg"));
 					rd.setRdtrue(data.getString("rd_true"));
-					rd.setRdexperience(data.getString("rd_solve"));
+					rd.setRdsolve(data.getString("rd_solve"));
 					rd.setRdexperience(data.getString("rd_experience"));
 					rd.setSysmdate(new Date());
 					rd.setSysmuser(user.getSuaccount());

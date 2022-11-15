@@ -56,6 +56,7 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 			+ "(:rdstatement is null or d.rdstatement LIKE %:rdstatement% ) and "// 問題描述
 			+ "(:rdufinally is null or d.rdufinally LIKE %:rdufinally% ) and "// 修復 人員
 			+ "(:roid     is null or o.roid LIKE %:roid% ) and "// 維修單
+			+ "(:rdid     is null or d.rdid LIKE %:rdid% ) and "// 維修單-子序號
 			+ "(:rrsn     is null or r.rrsn LIKE %:rrsn% ) and "// 產品序號
 			+ "(:rrprid   is null or r.rrprid LIKE %:rrprid% ) and "// 工單序號
 			+ "(:rdcheck  =-1 or d.rdcheck  = :rdcheck ) and "// 檢核狀態
@@ -66,6 +67,6 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 			+ "(cast(:rrepbsysmdate as date) is null or  :rrepbsysmdate >= r.rrpbsysmdate ) and "// 生產日期(終)
 			+ "(:rofrom  is null or o.rofrom  = :rofrom ) ") // 來源
 	ArrayList<RepairDetail> findAllByRepairDetail(//
-			String roid, String rrsn, String rrprid, Integer rdcheck, String rrpbtype, String rdstatement, String rdufinally, //
+			String roid,String rdid, String rrsn, String rrprid, Integer rdcheck, String rrpbtype, String rdstatement, String rdufinally, //
 			Date rosramdate, Date roeramdate, Date rrspbsysmdate, Date rrepbsysmdate, String rofrom, Pageable pageable);
 }
