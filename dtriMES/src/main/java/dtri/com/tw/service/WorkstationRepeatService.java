@@ -392,64 +392,66 @@ public class WorkstationRepeatService {
 					ProductionBody p_now_clear = new ProductionBody();
 					// Step1. 檢查製令單
 					prArrayList = headerDao.findAllByPhpbgid(p_now.getPbgid());
-					if (prArrayList.size() == 1 //
-							&& (prArrayList.get(0).getPhtype().equals("A521_no_and_has_sn")//
-									|| prArrayList.get(0).getPhtype().equals("A521_has_sn") //
-									|| prArrayList.get(0).getPhtype().equals("A521_old_sn"))) {
-						// Step2. 是否有舊紀錄
-						if (p_now.getPboldsn() != null && !p_now.getPboldsn().equals("")) {
-							JSONArray re_old_sn = new JSONArray(p_now.getPboldsn());
-							String old_sn = re_old_sn.getString(re_old_sn.length() - 1);
-							// 核對
-							List<ProductionBody> old_sns = bodyDao.findAllByPbbsn(old_sn);
-							if (old_sns.size() == 1) {
-								// Step3. 還原舊資料
-								ProductionBody p_old = old_sns.get(0);
-								p_old.setPbbsn(old_sn.split("_")[0]);
-								p_old.setPbsn(old_sn.split("_")[0]);
-								// 只有單一繼承,清除源頭紀錄
-								if (re_old_sn.length() == 1) {
-									p_old.setPboldsn("");
-								}
+					if (prArrayList.size() == 1) {
+						ProductionHeader header_now = prArrayList.get(0);
+						if ((header_now.getPhtype().equals("A521_no_and_has_sn")//
+								|| header_now.getPhtype().equals("A521_has_sn") //
+								|| header_now.getPhtype().equals("A521_old_sn"))) {
+							// Step2. 是否有舊紀錄
+							if (p_now.getPboldsn() != null && !p_now.getPboldsn().equals("")) {
+								JSONArray re_old_sn = new JSONArray(p_now.getPboldsn());
+								String old_sn = re_old_sn.getString(re_old_sn.length() - 1);
+								// 核對
+								List<ProductionBody> old_sns = bodyDao.findAllByPbbsn(old_sn);
+								if (old_sns.size() == 1) {
+									// Step3. 還原舊資料
+									ProductionBody p_old = old_sns.get(0);
+									p_old.setPbbsn(old_sn.split("_")[0]);
+									p_old.setPbsn(old_sn.split("_")[0]);
+									// 只有單一繼承,清除源頭紀錄
+									if (re_old_sn.length() == 1) {
+										p_old.setPboldsn("");
+									}
 
-								// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
-								if (prArrayList.get(0).getPhtype().equals("A521_no_and_has_sn")//
-										|| prArrayList.get(0).getPhtype().equals("A521_has_sn")) {
-									p_now_clear.setPbid(p_now.getPbid());
-									p_now_clear.setSysver(0);
-									p_now_clear.setPbgid(p_now.getPbgid());
-									p_now_clear.setSysheader(false);
-									p_now_clear.setPbsn(p_now.getPbsn());
-									p_now_clear.setPbbsn(p_now.getPbbsn());
-									p_now_clear.setPbcheck(false);
-									p_now_clear.setPbusefulsn(0);
-									p_now_clear.setPbwyears(p_now.getPbwyears());
-									p_now_clear.setSysstatus(0);
-									p_now_clear.setSyssort(p_now.getSyssort());
-									p_now_clear.setPblpath("");
-									p_now_clear.setPblsize("");
-									p_now_clear.setPbltext("");
-									p_now_clear.setPbschedule(p_now.getPbschedule());
-									p_now_clear.setSysmuser(user.getSuaccount());
-									p_now_clear.setSyscuser(user.getSuaccount());
-									bodyDao.save(p_now_clear);
-								} else {
-									bodyDao.delete(p_now);
+									// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
+									if (header_now.getPhtype().equals("A521_no_and_has_sn")//
+											|| header_now.getPhtype().equals("A521_has_sn")) {
+										p_now_clear.setPbid(p_now.getPbid());
+										p_now_clear.setSysver(0);
+										p_now_clear.setPbgid(p_now.getPbgid());
+										p_now_clear.setSysheader(false);
+										p_now_clear.setPbsn(p_now.getPbsn());
+										p_now_clear.setPbbsn(p_now.getPbbsn());
+										p_now_clear.setPbcheck(false);
+										p_now_clear.setPbusefulsn(0);
+										p_now_clear.setPbwyears(p_now.getPbwyears());
+										p_now_clear.setSysstatus(0);
+										p_now_clear.setSyssort(p_now.getSyssort());
+										p_now_clear.setPblpath("");
+										p_now_clear.setPblsize("");
+										p_now_clear.setPbltext("");
+										p_now_clear.setPbschedule(p_now.getPbschedule());
+										p_now_clear.setSysmuser(user.getSuaccount());
+										p_now_clear.setSyscuser(user.getSuaccount());
+										bodyDao.save(p_now_clear);
+									} else {
+										bodyDao.delete(p_now);
+									}
+									bodyDao.save(p_old);
+									check = true;
 								}
-								bodyDao.save(p_old);
-								check = true;
-							}
-						} else {
-							// 沒有舊紀錄
-							List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
-							if (p_nows != null && p_nows.size() == 1) {
-								bodyDao.delete(p_nows.get(0));
-								check = true;
+							} else {
+								// 沒有舊紀錄
+								List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
+								if (p_nows != null && p_nows.size() == 1) {
+									bodyDao.delete(p_nows.get(0));
+									check = true;
+								}
 							}
 						}
 					}
 				} else {
-					// 移除舊資料(不是 old )
+					// 移除舊資料(不能是 old )
 					List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
 					if (p_nows != null && p_nows.size() == 1) {
 						bodyDao.delete(p_nows.get(0));

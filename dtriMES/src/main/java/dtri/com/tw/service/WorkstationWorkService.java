@@ -481,6 +481,9 @@ public class WorkstationWorkService {
 			boolean plt_file_classify = body.getJSONObject("modify").has("plt_file_classify")//
 					? body.getJSONObject("modify").getBoolean("plt_file_classify")//
 					: false;
+			boolean only_one_pass = body.getJSONObject("modify").has("only_one_pass")// 是否第一次過站
+					? body.getJSONObject("modify").getBoolean("only_one_pass")//
+					: false;
 			// System.out.println(list);
 			// [檢核階段-初步] 檢查是否有此人
 			List<String> pd_accounts = new ArrayList<String>();// 需要登記的人
@@ -655,6 +658,11 @@ public class WorkstationWorkService {
 					// 重複過站[標記]
 					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {
 						set_replace = false;
+						if (only_one_pass) {
+							bean.autoMsssage("WK021");
+							bean.setInfo_color(PackageBean.info_color_warning);
+							return false;
+						}
 					}
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
@@ -1213,8 +1221,11 @@ public class WorkstationWorkService {
 						if (list_log.has("pb_l_size")) {
 							pTest.setPtlsize(list_log.getInt("pb_l_size") + "");
 						}
-						if (list_log.has("pb_l_text")) {
+						//不存入太大資料8MB
+						if (list_log.has("pb_l_text") && list_log.getInt("pb_l_size") < 5000000) {
 							pTest.setPtltext(list_log.getString("pb_l_text"));
+						}else {
+							pTest.setPtltext(" ");
 						}
 						pTest.setPtpbbsn(body_one_now.getPbbsn());
 						pTest.setPtprid(p_records.getPrid());

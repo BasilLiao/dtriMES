@@ -575,6 +575,13 @@
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_check" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
+										<div class="row pl-1 m-0 font-weight-bold border rounded border-primary pb-1 mb-1">
+											<div class="p-0 pl-1">[功能]設定</div>
+											<div class="col-12 row p-0 m-0" id="checkbox_only_one_pass">
+												<div class="p-0">僅一次過站 :</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_one_pass" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
+											</div>
+										</div>
 									</div>
 
 									<div class="col-sm-3 p-1">
@@ -1537,6 +1544,8 @@
    					$("#checkbox_auto input").prop("checked", false);
    					$("#checkbox_sound input").prop("checked", false);
    					
+   					
+   					$("#checkbox_only_one_pass").prop("checked", true);
    					$("#after_sn_save").prop("checked", true);
    					$("#after_sn_check").prop("checked", true);
    					$("#set_replace").prop("checked", true);
@@ -1846,7 +1855,7 @@
    			modify_one['plt_save'] = false;
    			modify_one['plt_file_classify'] = false;
    			modify_one['plt_check'] = false;
-            
+   			modify_one['only_one_pass'] = false;
             //歸檔與檢核與檢察
             if ($('#plt_save').is(":checked")){
             	modify_one['plt_save'] = true;
@@ -1857,6 +1866,10 @@
             if ($('#plt_check').is(":checked")){
             	modify_one['plt_check'] = true;
 			}
+            if ($('#only_one_pass').is(":checked")){
+            	modify_one['only_one_pass'] = true;
+			}
+            
    			
    			//包裝(action = AR_AC/AR_AU/AR_AD)
    			action = "AU";

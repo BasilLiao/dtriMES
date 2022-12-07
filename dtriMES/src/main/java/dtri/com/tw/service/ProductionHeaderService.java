@@ -629,8 +629,8 @@ public class ProductionHeaderService {
 					pro_r.setPrbomcid(data.has("pr_bom_c_id") ? data.getString("pr_bom_c_id") : "");
 					pro_r.setPrpv(data.getString("pr_p_v"));
 					pro_r.setPrpmodel(data.getString("pr_p_model"));
-					pro_r.setPrbitem(data.get("pr_b_item").toString());
-					pro_r.setPrsitem(data.get("pr_s_item").toString());
+					pro_r.setPrbitem(data.get("pr_b_item").toString().equals("") ? "{}" : data.get("pr_b_item").toString());
+					pro_r.setPrsitem(data.get("pr_s_item").toString().equals("") ? "{}" : data.get("pr_s_item").toString());
 					// pro_r.setPrwcline();
 
 					// 有序號登記
