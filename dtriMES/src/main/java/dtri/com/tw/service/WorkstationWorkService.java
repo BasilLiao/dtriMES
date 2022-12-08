@@ -216,6 +216,14 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK003");
 				return false;
 			}
+			// 檢查是否已經綁繼承
+			if (pb_b_sn_old != null && !pb_b_sn_old.equals("") && //
+					pb_all.get(0).getPboldsn() != null && //
+					!pb_all.get(0).getPboldsn().equals("")) {
+				bean.setBody(new JSONObject());
+				bean.autoMsssage("WK004_3");
+				return false;
+			}
 
 			// Step2. 製令+工作站+SN關聯+Doc 檢查
 			ProductionRecords records = new ProductionRecords();
@@ -548,6 +556,12 @@ public class WorkstationWorkService {
 							List<ProductionHeader> ph_List_old = phDao.findAllByPhpbgid(body_one_old.getPbgid());
 							// Step1-2.[檢核階段-進階] 有此產品SN + 不是自己
 							if (ph_List_old.size() == 1 && !ph_List_old.get(0).getProductionRecords().getPrid().equals(list.getString("ph_pr_id"))) {
+								// 檢查是否已經綁繼承(不可重複綁定)
+								if (body_one_now.getPboldsn() != null && !body_one_now.getPboldsn().equals("")) {
+									bean.setBody(new JSONObject());
+									bean.autoMsssage("WK004_3");
+									return false;
+								}
 								// 已經有舊資料的話
 								if (body_one_old.getPboldsn() != null && !body_one_old.getPboldsn().equals("")) {
 									old_sn = new JSONArray(body_one_old.getPboldsn());
@@ -1221,10 +1235,10 @@ public class WorkstationWorkService {
 						if (list_log.has("pb_l_size")) {
 							pTest.setPtlsize(list_log.getInt("pb_l_size") + "");
 						}
-						//不存入太大資料8MB
+						// 不存入太大資料8MB
 						if (list_log.has("pb_l_text") && list_log.getInt("pb_l_size") < 5000000) {
 							pTest.setPtltext(list_log.getString("pb_l_text"));
-						}else {
+						} else {
 							pTest.setPtltext(" ");
 						}
 						pTest.setPtpbbsn(body_one_now.getPbbsn());

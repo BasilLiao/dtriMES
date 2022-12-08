@@ -279,12 +279,21 @@
 								</div>
 							</div>
 							<div id="use_explain" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 160px; overflow: auto;">
-								<div class="col-12 row m-0 p-0">
-									<div class="col-12 m-0 p-1 h4" style="height: 36px;">移動說明</div>
-									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ↑ : 往上移動</div>
-									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ↓ : 往下移動</div>
-									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + → : 檢查資訊</div>
-									<div class="col-12 m-0 p-1 h5" style="height: 30px;">Ctrl + ← : 清除欄位</div>
+								<div class="col-12 row m-0 p-0 border border-dark rounded">
+									<div class="col-12 m-0 p-1 h4" style="height: 36px;">快捷說明</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">Ctrl + ↑ : 往上移動</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">Ctrl + ↓ : 往下移動</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">Ctrl + → : 檢查資訊</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">Ctrl + ← : 清除欄位</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">Ctrl + Enter : 返回輸入</div>
+								</div>
+								<div class="col-12 row m-0 p-0 border border-dark rounded">
+									<div class="col-12 m-0 p-1 h4" style="height: 36px;">Barcode說明</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">[3X1AUTO] : 3X1 [自動]</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">[3X1EXCLUDE] : 3X1 [排除]</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">[3X1PART] : 3X1 [Part No]</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">[3X1PCODE] : 3X1 [P code]</div>
+									<div class="col-12 m-0 p-1 h6" style="height: 30px;">[3X1PQTY] : 3X1 [P qty]</div>
 								</div>
 							</div>
 						</td>
@@ -1064,12 +1073,18 @@
    			$("#send_command_btn" ).trigger( "click" );   		    	
    		    
    		});
-   		//17 = Ctrl 上=38 下=40 左 = 39 右37
-   		var map = {17: false, 37: false, 38: false,39: false,40: false};
+   		//13=Enter 17 = Ctrl 上=38 下=40 左 = 39 右37
+   		var map = {17: false, 37: false, 38: false,39: false,40: false,13:false,81:false};
    		$(document).on("keydown", function (e) {
+   			//console.log("keydown:"+e.which);
    			if (e.which in map) {
-   				//console.log("keydown:"+e.which);
    				map[e.which] = true;
+   				//Enter 回歸[輸入]對焦
+   	   			if(map[17] && map[13]){
+   	   			 	console.log("keydown:"+e.which);
+   	   				$('#m_order').focus();
+   	   				workstation.clearOrder();
+   			    }
    	   		 	//右移 清除
    	   			if(map[17] && map[37]){
    	   			 	console.log("keydown:"+e.which);
@@ -1236,6 +1251,54 @@
    				}
    				//指令類型
    				switch(code){
+   				case "ENTER":
+   					workstation.clearOrder();
+   					return false;
+   				break;
+   				case "3X1AUTO":
+   					if($("#sn_one_check").prop("checked")){
+	   					$("#sn_one_check").prop("checked", false); 
+	   					$("#sn_one_3x1_cl").trigger("click");
+   					}else{
+   						$("#sn_one_check").prop("checked", true);
+   						$("#sn_one_3x1_op").trigger("click");
+   					}
+   					$('#m_order').val('');
+   					$("html, body").animate({ scrollTop: 400 }, 'fast');
+   					return false;
+   				break;
+   				case "3X1EXCLUDE":
+   					if($("#ph_p_no_number").prop("checked")){
+	   					$("#ph_p_no_number").prop("checked", false);   						
+   					}else{
+   						$("#ph_p_no_number").prop("checked", true);
+   					}
+   					$('#m_order').val('');
+   					$("html, body").animate({ scrollTop: 400 }, 'fast');
+   					return false;
+   				break;
+   				case "3X1PART":
+   					if($("#ph_p_number").prop("checked")){
+	   					$("#ph_p_number").prop("checked", false);   						
+   					}else{
+   						$("#ph_p_number").prop("checked", true);
+   					}
+   					$('#m_order').val('');
+   					$("html, body").animate({ scrollTop: 400 }, 'fast');
+   					return false;
+   				break;
+   				case "3X1PCODE":
+   					$('#barcode_sn_one_printer').focus();
+   					$('#m_order').val('');
+   					$("html, body").animate({ scrollTop: 400 }, 'fast');
+   					return false;
+   				break;
+   				case "3X1PQTY":
+   					$('#barcode_sn_one_nb').focus();
+   					$('#m_order').val('');
+   					$("html, body").animate({ scrollTop: 400 }, 'fast');
+   					return false;
+   				break;
    				case "BC001":
    					//目前代碼位置 
    					if(workstation.nb>0){
@@ -1531,6 +1594,7 @@
    					$("#checkbox_only input").prop("checked", false);
    					$("#checkbox_auto input").prop("checked", false);
    					$("#checkbox_sound input").prop("checked", false);
+   					$("#checkbox_only_one_pass input").prop("checked", false);
    					
    					$("#after_sn_check").prop("checked", true);
    					$("#set_check_replace").prop("checked", true);
@@ -1543,6 +1607,7 @@
    					$("#checkbox_only input").prop("checked", false);
    					$("#checkbox_auto input").prop("checked", false);
    					$("#checkbox_sound input").prop("checked", false);
+   					$("#checkbox_only_one_pass input").prop("checked", true);
    					
    					
    					$("#checkbox_only_one_pass").prop("checked", true);
@@ -1559,6 +1624,7 @@
    					$("#checkbox_only input").prop("checked", false);
    					$("#checkbox_auto input").prop("checked", false);
    					$("#checkbox_sound input").prop("checked", false);
+   					$("#checkbox_only_one_pass input").prop("checked", false);
    					
    					$("#checkbox_plt input").prop("checked", true);
    					$("#only_check").prop("checked", true);

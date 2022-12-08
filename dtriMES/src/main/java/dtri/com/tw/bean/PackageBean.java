@@ -39,6 +39,8 @@ public class PackageBean {
 	public static final String info_work_warning4 = "[WK004] 無此 (產品/燒錄 序號) 與 (製令單號) 關聯資料 , 請檢查 (產品/燒錄 序號) 與 (製令單號)! [Warning]!!";
 	public static final String info_work_warning4_1 = "[WK004_1] 無此 ([舊]產品/燒錄 序號) 關聯資料 , 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
 	public static final String info_work_warning4_2 = "[WK004_2] 此 ([舊]產品/燒錄 製令單號) 為同一關聯資料 , 請檢查 ([舊]產品/燒錄 序號)! [Warning]!!";
+	public static final String info_work_warning4_3 = "[WK004_3] 此 (產品序號) 已有繼承 , 請至 重工作業程序 解綁([舊]產品序號)! [Warning]!!";
+	
 	public static final String info_work_warning5 = "[WK005] 前站 (產品/燒錄 序號) 未過站 , 請遞交給 (前站人員)! [Warning]!!";
 	public static final String info_work_warning6 = "[WK006] 無此 (標籤機 代號) , 請檢查(標籤機 代號)! [Warning]!!";
 	public static final String info_work_warning7 = "[WK007] 無此 (PLT檔案/格式/大小) , 請檢查 (是否上傳 內容)! [Warning]!!";
@@ -160,6 +162,9 @@ public class PackageBean {
 			break;
 		case "WK004_2":// "[WK004-1] 無此[[舊](產品/燒錄)]比對 ,請檢查[[舊](產品/燒錄)]! [Warning]!!"
 			this.info = info_work_warning4_2;
+			break;
+		case "WK004_3":// [WK004_3] 此 (產品序號) 已有繼承 , 請至 重工工單作業程序 解綁([舊]產品序號)! [Warning]!!
+			this.info = info_work_warning4_3;
 			break;
 		case "WK005":// "[WK005] 前站[產品/燒錄]未過站 ,請檢遞交給[前站人員]!
 			this.info = info_work_warning5;
