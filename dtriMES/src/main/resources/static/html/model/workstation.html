@@ -2068,7 +2068,9 @@
    				}
    			}
    			//指定重工工單 && 第一站 新建立的SN 才需要 
-   			if(main.allData.body.workdatation_sort==1 && ($('#m__ph_type .doc_c_value').val()=='A521_has_sn' || $('#m__ph_type .doc_c_value').val()=='A521_no_and_has_sn' )){
+   			if(main.allData.body.workdatation_sort==1 && 
+   				($('#m__ph_type .doc_c_value').val()=='A521_has_sn' || 
+   				$('#m__ph_type .doc_c_value').val()=='A521_no_and_has_sn' )){
    				$('.w_i_6').removeClass('d-none');
    			}else{
 				$('#w_focus_6').val("");
@@ -2139,19 +2141,22 @@
 	   				workstation.nb=6;
    				}
    			 }
-   			 //Step6. 自動位移 A511 _new sn
-   			if($(".sn_list").length>0 && $("#w_focus_6").val()!=""){
-				workstation.nb=7;
+			//Step6. 自動位移 A511 _new sn
+			if($('.w_i_6').hasClass('d-none')){
+				if($(".sn_list").length>0){
+					workstation.nb=7;
+				}else{
+					workstation.nb=5;
+				}	
 			}
-   		 	//Step7. 自動位移 如果有勾選檢查模式
-   			if($('#set_check_replace').is(":checked")){
-   				if($('.w_i_6').hasClass('d-none')){
-   					workstation.nb-=2;
-   				}else{
-   					workstation.nb-=1;
-   				}
-			}
-   			 
+			//Step7. 自動位移 如果是A521 
+  			if(!$('.w_i_6').hasClass('d-none')){
+  				if($(".sn_list").length>0 &&workstation.nb==6){
+  					workstation.nb=7;
+  				}else{
+  					workstation.nb=6;
+  				}
+  			}
    			$("#after_sn_check").prop("checked", true);
 
 			//更換Class

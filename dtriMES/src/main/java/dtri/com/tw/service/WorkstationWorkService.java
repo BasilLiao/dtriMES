@@ -216,10 +216,11 @@ public class WorkstationWorkService {
 				bean.autoMsssage("WK003");
 				return false;
 			}
-			// 檢查是否已經綁繼承
+			// 檢查是否已經綁繼承(除了自己)
 			if (pb_b_sn_old != null && !pb_b_sn_old.equals("") && //
 					pb_all.get(0).getPboldsn() != null && //
-					!pb_all.get(0).getPboldsn().equals("")) {
+					!pb_all.get(0).getPboldsn().equals("") && //
+					pb_all.get(0).getPboldsn().indexOf(pb_b_sn_old) < 0) {
 				bean.setBody(new JSONObject());
 				bean.autoMsssage("WK004_3");
 				return false;
