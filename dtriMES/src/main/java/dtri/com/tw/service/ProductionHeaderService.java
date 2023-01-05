@@ -412,7 +412,7 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_c_name", one.getPhcname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_c_from", one.getPhcfrom());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_w_years", one.getPhwyears());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_wc_line", one.getPhwcline());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_wc_line", one.getPhwcline() == null ? "" : one.getPhwcline());
 
 			// 工作程序
 			JSONObject ph_pb_s = new JSONObject();
