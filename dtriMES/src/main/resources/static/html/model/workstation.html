@@ -2134,24 +2134,22 @@
    			 //Step5.自動位移
    			 var id =$(".border-1").attr("id");
    			 workstation.nb=5;
-   			 if($(".sn_list").length>0 && $("#w_focus_5").val()!=""){
+   			 if($(".sn_list").length>0 && $("#w_focus_5").val()!=""&& $("#w_focus_6").val()==""){
    				if($('.w_i_6').hasClass('d-none')){
 	   				workstation.nb=7;
    				}else{
 	   				workstation.nb=6;
    				}
-   			 }
+   			 }else if($('.w_i_6').hasClass('d-none')){
 			//Step6. 自動位移 A511 _new sn
-			if($('.w_i_6').hasClass('d-none')){
 				if($(".sn_list").length>0){
 					workstation.nb=7;
 				}else{
 					workstation.nb=5;
 				}	
-			}
+			}else if(!$('.w_i_6').hasClass('d-none')){
 			//Step7. 自動位移 如果是A521 
-  			if(!$('.w_i_6').hasClass('d-none')){
-  				if($(".sn_list").length>0 &&workstation.nb==6){
+  				if($(".sn_list").length>0 &&workstation.nb==5){
   					workstation.nb=7;
   				}else{
   					workstation.nb=6;

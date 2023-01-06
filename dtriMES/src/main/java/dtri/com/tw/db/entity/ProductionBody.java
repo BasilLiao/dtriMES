@@ -179,7 +179,7 @@ public class ProductionBody implements Serializable {
 	@Column(name = "pb_sn", nullable = false, columnDefinition = "varchar(50)")
 	private String pbsn;
 
-	@Column(name = "pb_old_sn", columnDefinition = "varchar(50)")
+	@Column(name = "pb_old_sn", columnDefinition = "varchar(500)")
 	private String pboldsn;
 
 	@Column(name = "pb_b_sn", nullable = false, columnDefinition = "varchar(50)")
