@@ -132,6 +132,8 @@ public class RepairListBatService {
 			obj_m.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "rd_u_finally", rd_u_finally, s_val));
 
 			s_val = new JSONArray();
+			s_val.put((new JSONObject()).put("value", "未發現故障").put("key", "未發現故障"));
+			s_val.put((new JSONObject()).put("value", "人員誤刷").put("key", "人員誤刷"));
 			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
 			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
 			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));

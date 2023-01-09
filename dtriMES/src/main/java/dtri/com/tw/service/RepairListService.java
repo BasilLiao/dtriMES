@@ -765,6 +765,8 @@ public class RepairListService {
 			object_documents.put("rd_check", s_val);
 			// 處理狀態
 			s_val = new JSONArray();
+			s_val.put((new JSONObject()).put("value", "未發現故障").put("key", "未發現故障"));
+			s_val.put((new JSONObject()).put("value", "人員誤刷").put("key", "人員誤刷"));
 			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
 			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
 			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));

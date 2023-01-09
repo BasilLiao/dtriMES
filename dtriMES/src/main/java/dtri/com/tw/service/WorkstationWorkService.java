@@ -549,8 +549,8 @@ public class WorkstationWorkService {
 						bean.autoMsssage("WK019");
 						return false;
 					}
-					//防止上一台-故障代碼進入-下一台
-					if (!list.getString("pb_f_value").equals("") && list.getString("pb_f_value").indexOf("fix_code")>0 &&//
+					// 防止上一台-故障代碼進入-下一台
+					if (!list.getString("pb_f_value").equals("") && list.getString("pb_f_value").indexOf("fix_code") > 0 && //
 							(body_one_now.getPbfvalue() == null || body_one_now.getPbfvalue().equals(""))) {
 						log.info("WK019:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK019");
@@ -661,7 +661,15 @@ public class WorkstationWorkService {
 							}
 						}
 					}
-
+					// 重複過站[標記]
+					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {
+						set_replace = false;
+						if (only_one_pass) {
+							bean.autoMsssage("WK021");
+							bean.setInfo_color(PackageBean.info_color_warning);
+							return false;
+						}
+					}
 					// ========Step3.錯誤代碼 ->有則不通過 但可存檔========
 					if (list.getString("pb_f_value").equals("")) {
 						w_c_name = list.getString("w_c_name") + "_Y";
@@ -678,15 +686,7 @@ public class WorkstationWorkService {
 						repairOrder.put("rd_statement", list.getString("pb_f_value"));
 						orderDtrService.setDataCustomized(repairOrder, user);
 					}
-					// 重複過站[標記]
-					if (pbschedule.getJSONObject(list.getString("w_c_name")).getString("type").equals(list.getString("w_c_name") + "_Y")) {
-						set_replace = false;
-						if (only_one_pass) {
-							bean.autoMsssage("WK021");
-							bean.setInfo_color(PackageBean.info_color_warning);
-							return false;
-						}
-					}
+
 					pbschedule.put(list.getString("w_c_name"), pbschedule.getJSONObject(list.getString("w_c_name")).put("type", w_c_name));
 
 					body_map_now.put("setPbschedule", new JSONObject().put("value", pbschedule.toString()).put("type", String.class));
