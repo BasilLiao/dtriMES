@@ -103,8 +103,11 @@ public class ProductionHeader {
 	@Column(name = "ph_type", columnDefinition = "varchar(50)")
 	private String phtype;
 
-	@Column(name = "ph_p_number", columnDefinition = "varchar(50)")
-	private String phpnumber;
+	@Column(name = "ph_mfg_p_no", columnDefinition = "varchar(50)")
+	private String phmfgpno;
+
+	@Column(name = "ph_ps_no", columnDefinition = "varchar(50)")
+	private String phpsno;
 
 	@Column(name = "ph_p_name", columnDefinition = "varchar(50)")
 	private String phpname;
@@ -214,14 +217,6 @@ public class ProductionHeader {
 
 	public void setPhcfrom(String phcfrom) {
 		this.phcfrom = phcfrom;
-	}
-
-	public String getPhpnumber() {
-		return phpnumber;
-	}
-
-	public void setPhpnumber(String phpnumber) {
-		this.phpnumber = phpnumber;
 	}
 
 	public Long getPhpbgid() {
@@ -382,6 +377,22 @@ public class ProductionHeader {
 
 	public void setPhwcline(String phwcline) {
 		this.phwcline = phwcline;
+	}
+
+	public String getPhmfgpno() {
+		return phmfgpno;
+	}
+
+	public void setPhmfgpno(String phmfgpno) {
+		this.phmfgpno = phmfgpno;
+	}
+
+	public String getPhpsno() {
+		return phpsno;
+	}
+
+	public void setPhpsno(String phpsno) {
+		this.phpsno = phpsno;
 	}
 
 }

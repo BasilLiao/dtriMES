@@ -96,7 +96,7 @@ public class ProductionHeaderService {
 		String search_prsitem = "";
 		// 製令單據
 		String ph_id = "ID", ph_pb_g_id = "產品關聯ID", ph_type = "製令類型", ph_pr_id = "製令單號", //
-				ph_p_number = "驗證碼(Part No)", ph_p_name = "產品號(Product Name)", //
+				ph_mfg_p_no = "驗證碼(MFG Part No)", ph_ps_no = "組件號(Parts No)", ph_p_name = "產品號(Product Name)", //
 				// 產品號(Product Name) 可能與 BOM不同[如果不是半成品 則以成品 BOM命名]
 				ph_wp_id = "工作程序", ph_s_date = "開始時間", ph_e_date = "結束時間", ph_schedule = "進度(X／X)", //
 				ph_e_s_date = "預計出貨日", ph_p_qty = "預計生產數", ph_p_ok_qty = "生產完成數", ph_p_a_ok_qty = "加工完成數", //
@@ -122,7 +122,9 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_pb_g_id", FFS.h_t(ph_pb_g_id, "130px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_type", FFS.h_t(ph_type, "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_pr_id", FFS.h_t(ph_pr_id, "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_p_number", FFS.h_t(ph_p_number, "160px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_mfg_p_no", FFS.h_t(ph_mfg_p_no, "200px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_ps_no", FFS.h_t(ph_ps_no, "160px", FFM.Wri.W_Y));
+
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_p_name", FFS.h_t(ph_p_name, "200px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_wp_id", FFS.h_t(ph_wp_id, "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_e_s_date", FFS.h_t(ph_e_s_date, "180px", FFM.Wri.W_Y));
@@ -188,7 +190,8 @@ public class ProductionHeaderService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "A511", "A511", FFM.Wri.W_Y, "col-md-2", true, a_val, "ph_type", ph_type));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ph_pr_id", ph_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ph_p_number", ph_p_number));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ph_mfg_p_no", ph_mfg_p_no));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ph_ps_no", ph_ps_no));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ph_p_name", ph_p_name));
 
 			ArrayList<WorkstationProgram> list_p = programDao.findAllBySysheader(true);
@@ -398,7 +401,9 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_pb_g_id", one.getPhpbgid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_type", one.getPhtype());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_pr_id", one.getProductionRecords().getPrid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_number", one.getPhpnumber() == null ? "" : one.getPhpnumber());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_mfg_p_no", one.getPhmfgpno() == null ? "" : one.getPhmfgpno());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_ps_no", one.getPhpsno() == null ? "" : one.getPhpsno());
+
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_name", one.getPhpname() == null ? "" : one.getPhpname());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_wp_id", one.getPhwpid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_s_date", one.getPhesdate() == null ? "" : one.getPhesdate());
@@ -657,7 +662,8 @@ public class ProductionHeaderService {
 					pro_h = new ProductionHeader();
 					pro_h.setPhwpid(data.getLong("ph_wp_id"));
 					pro_h.setProductionRecords(pro_r);
-					pro_h.setPhpnumber(data.getString("ph_p_number"));
+					pro_h.setPhmfgpno(data.getString("ph_mfg_p_no"));
+					pro_h.setPhpsno(data.getString("ph_ps_no"));
 					pro_h.setPhpname(data.getString("ph_p_name"));
 					pro_h.setPhschedule(0 + "／" + data.getInt("ph_p_qty"));
 					pro_h.setPhpbschedule(json_ph_pb_schedule.toString());
@@ -938,7 +944,8 @@ public class ProductionHeaderService {
 					// pro_h.setPhid(id_h + 1);
 					pro_h.setPhwpid(data.getLong("ph_wp_id"));
 					pro_h.setProductionRecords(pro_r);
-					pro_h.setPhpnumber(data.getString("ph_p_number"));
+					pro_h.setPhmfgpno(data.getString("ph_mfg_p_no"));
+					pro_h.setPhpsno(data.getString("ph_ps_no"));
 					pro_h.setPhpname(data.getString("ph_p_name"));
 					pro_h.setPhschedule(0 + "／" + data.getInt("ph_p_qty"));
 					pro_h.setSysheader(true);
@@ -1091,7 +1098,8 @@ public class ProductionHeaderService {
 
 					// hearder
 					one_header.setSysstatus(data.getInt("sys_status"));
-					one_header.setPhpnumber(data.getString("ph_p_number"));
+					one_header.setPhmfgpno(data.getString("ph_mfg_p_no"));
+					one_header.setPhpsno(data.getString("ph_ps_no"));
 					one_header.setPhwpid(data.getLong("ph_wp_id"));
 					one_header.setPhpname(data.getString("ph_p_name"));
 					one_header.setPhschedule(data.getInt("ph_p_a_ok_qty") + "／" + one_header.getPhpqty());
@@ -1129,7 +1137,8 @@ public class ProductionHeaderService {
 							one_header.setSysstatus(data.getInt("sys_status"));
 						}
 					} else {
-						one_header.setPhpnumber(data.getString("ph_p_number"));
+						one_header.setPhpsno(data.getString("ph_ps_no"));
+						one_header.setPhmfgpno(data.getString("ph_mfg_p_no"));
 						one_header.setSysstatus(data.getInt("sys_status"));
 						one_header.setSysnote(data.getString("sys_note"));
 					}
