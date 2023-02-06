@@ -140,7 +140,7 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		if (req.getCall_bk_fn().equals("customized")) {
+		if (req.getCall_bk_fn().equals("customized_search")) {
 			check = orderRmaService.updateDataCustomized(resp, req, user);
 		} else {
 			check = orderRmaService.updateData(resp, req, user);

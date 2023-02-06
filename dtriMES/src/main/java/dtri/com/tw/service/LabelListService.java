@@ -1,11 +1,20 @@
 package dtri.com.tw.service;
 
-import java.lang.reflect.Method;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,45 +23,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dtri.com.tw.bean.LabelListBean;
 import dtri.com.tw.bean.PackageBean;
-import dtri.com.tw.db.entity.Customer;
-import dtri.com.tw.db.entity.ProductionBody;
-import dtri.com.tw.db.entity.ProductionHeader;
-import dtri.com.tw.db.entity.ProductionRecords;
-import dtri.com.tw.db.entity.RepairDetail;
-import dtri.com.tw.db.entity.RepairOrder;
-import dtri.com.tw.db.entity.RepairRegister;
-import dtri.com.tw.db.entity.RepairUnit;
+import dtri.com.tw.db.entity.LabelList;
 import dtri.com.tw.db.entity.SystemUser;
-import dtri.com.tw.db.pgsql.dao.CustomerDao;
-import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
-import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
-import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
-import dtri.com.tw.db.pgsql.dao.RepairDetailDao;
-import dtri.com.tw.db.pgsql.dao.RepairOrderDao;
-import dtri.com.tw.db.pgsql.dao.RepairRegisterDao;
-import dtri.com.tw.db.pgsql.dao.RepairUnitDao;
+import dtri.com.tw.db.pgsql.dao.LabelListDao;
 import dtri.com.tw.tools.Fm_Time;
+import dtri.com.tw.tools.Fm_ZPLCodeConveterImg;
 
 @Service
 public class LabelListService {
 	@Autowired
-	private RepairUnitDao unitDao;
-	@Autowired
-	private RepairOrderDao orderDao;
-	@Autowired
-	private RepairDetailDao detailDao;
-	@Autowired
-	private RepairRegisterDao registerDao;
-	@Autowired
-	private ProductionBodyDao bodyDao;
-	@Autowired
-	private ProductionHeaderDao headerDao;
-	@Autowired
-	private ProductionRecordsDao recordsDao;
-
-	@Autowired
-	private CustomerDao customerDao;
+	private LabelListDao labelsDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -60,7 +42,6 @@ public class LabelListService {
 		JSONObject body = req.getBody();
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
-		List<RepairUnit> mUnits = new ArrayList<RepairUnit>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -68,30 +49,22 @@ public class LabelListService {
 			p_size = 100;
 		}
 
-		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("rdid").descending());
-		String search_rd_id = null;
-		String search_ro_id = null;
-		String search_rd_rr_sn = null;
-		String search_rr_pb_type = "產品";
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("llid").descending());
+		String search_ll_name = null;
+		String search_ll_g_name = null;
 
 		// 功能-名稱編譯
 		// 維修細節
-		String rd_id = "維修項目(序號)", /* rd_ro_id = "維修單", */ //
-				rd_rr_sn = "產品序號", rd_u_qty = "數量", //
-				rd_ru_id = "分配單位ID", rd_statement = "描述問題", //
-				rd_true = "實際問題", rd_solve = "解決問題", rd_experience = "維修心得", rd_check = "檢核狀態", //
-				rd_svg = "圖片", rd_u_finally = "修復員";
-		// 維修登記(物件)
-		String /* rr_sn = "產品序號", */ rr_c_sn = "客戶產品(序號)", //
-				rr_pr_id = "製令單", rr_ph_p_qty = "製令數量", //
-				rr_pr_p_model = "產品型號", rr_ph_w_years = "保固年份", //
-				rr_pb_sys_m_date = "生產日期", rr_pb_type = "產品類型", //
-				rr_v = "版本號", rr_f_ok = "產品狀態", rr_expired = "保固內?";
+		String ll_id = "標籤ID", ll_name = "標籤名稱", ll_g_name = "標籤群名稱", //
+				ll_xa = "語法ZPL", ll_ci = "編碼(固定)", //
+				ll_ll = "紙張-長度", ll_pw = "紙張-寬度", //
+				ll_lh = "起始座標(x,y)", ll_md = "暗度(+-30)", //
+				ll_pr = "速度(1-7)", ll_fo_s = "所有區塊ZPL", ll_a_json = "設計內容Json";
 
 		// 固定-名稱編譯
-		String sys_c_date = "建立時間", sys_c_user = "建立人", sys_m_date = "修改時間", sys_m_user = "修改人", //
-				sys_note = "備註", /* sys_sort = "排序", sys_ver = "版本", */ sys_status = "狀態", //
-				sys_header = "群組"/* , ui_group_id = "UI_Group_ID" */;
+		String sys_c_date = "建立時間", sys_c_user = "建立人", //
+				sys_m_date = "修改時間", sys_m_user = "修改人", //
+				sys_note = "備註", sys_status = "狀態", sys_header = "群組";
 
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -99,30 +72,20 @@ public class LabelListService {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
-			// 維修細節
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t(sys_header, "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "250px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_rr_sn", FFS.h_t(rd_rr_sn, "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "150px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_finally", FFS.h_t(rd_u_finally, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "250px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_svg", FFS.h_t(rd_svg, "150px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_true", FFS.h_t(rd_true, "300px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_solve", FFS.h_t(rd_solve, "300px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_experience", FFS.h_t(rd_experience, "300px", FFM.Wri.W_N));
-
-			// 產品資料
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_p_qty", FFS.h_t(rr_ph_p_qty, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_w_years", FFS.h_t(rr_ph_w_years, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_sys_m_date", FFS.h_t(rr_pb_sys_m_date, "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_v", FFS.h_t(rr_v, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_f_ok", FFS.h_t(rr_f_ok, "100px", FFM.Wri.W_Y));
+			// 標籤資料
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_header", FFS.h_t(sys_header, "100px", FFM.Wri.W_N));// 群組專用-必須放前面
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_id", FFS.h_t(ll_id, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_name", FFS.h_t(ll_name, "200px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_g_name", FFS.h_t(ll_g_name, "200px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_xa", FFS.h_t(ll_xa, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_ci", FFS.h_t(ll_ci, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_ll", FFS.h_t(ll_ll, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_pw", FFS.h_t(ll_pw, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_lh", FFS.h_t(ll_lh, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_md", FFS.h_t(ll_md, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_pr", FFS.h_t(ll_pr, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_fo_s", FFS.h_t(ll_fo_s, "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_a_json", FFS.h_t(ll_a_json, "100px", FFM.Wri.W_N));
 
 			// 系統固定
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t(sys_c_date, "180px", FFM.Wri.W_N));
@@ -131,7 +94,6 @@ public class LabelListService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t(sys_m_user, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t(sys_status, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "100px", FFM.Wri.W_N));
-
 			bean.setHeader(new JSONObject().put("search_header", object_header));
 
 			// 放入修改 [m__(key)](modify/Create/Delete) 格式
@@ -139,56 +101,23 @@ public class LabelListService {
 			JSONArray s_val = new JSONArray();
 			JSONArray n_val = new JSONArray();
 
-			// 單據細節
+			// 標籤細節
 			obj_m = new JSONArray();
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "系統建立", "", FFM.Wri.W_N, "col-md-12", false, n_val, "rd_id", rd_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_ph_p_qty", rr_ph_p_qty));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "rd_rr_sn", rd_rr_sn));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1", "1", FFM.Wri.W_N, "col-md-1", true, n_val, "rd_u_qty", rd_u_qty));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_header", sys_header));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ll_id", ll_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ll_name", ll_name));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "製令單連動", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ll_g_name", ll_g_name));
 
-			s_val = new JSONArray();
-			// s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已檢核(收到)").put("key", "1"));
-			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", "2"));
-			s_val.put((new JSONObject()).put("value", "轉處理").put("key", "3"));
-			s_val.put((new JSONObject()).put("value", "修不好").put("key", "4"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, s_val, "rd_check", rd_check));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "UTF-8", "UTF-8", FFM.Wri.W_N, "col-md-1", true, n_val, "ll_ci", ll_ci));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_ll", ll_ll));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_pw", ll_pw));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ll_lh", ll_lh));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "-30~+30", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_md", ll_md));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1~7", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_pr", ll_pr));
 
-			s_val = new JSONArray();
-			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
-			for (RepairUnit oneUnit : mUnits) {
-				s_val.put((new JSONObject()).put("value", oneUnit.getRugname()).put("key", oneUnit.getRuid()));
-			}
-			s_val.put((new JSONObject()).put("value", "全單位").put("key", 0));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, s_val, "rd_ru_id", rd_ru_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rd_u_finally", rd_u_finally));
-
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "待修中").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", 1));
-			s_val.put((new JSONObject()).put("value", "已報廢").put("key", 2));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "false", FFM.Wri.W_N, "col-md-1", true, s_val, "rr_f_ok", rr_f_ok));
-
-			// 產品或是物件 登記資訊
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rr_c_sn", rr_c_sn));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
-			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "true", FFM.Wri.W_N, "col-md-1", true, s_val, "rr_expired", rr_expired));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_ph_w_years", rr_ph_w_years));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
-			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
-			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
-			s_val.put((new JSONObject()).put("value", "小板").put("key", "小板"));
-			s_val.put((new JSONObject()).put("value", "零件").put("key", "零件"));
-			s_val.put((new JSONObject()).put("value", "軟體").put("key", "軟體"));
-			s_val.put((new JSONObject()).put("value", "其他").put("key", "其他"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "產品", FFM.Wri.W_Y, "col-md-1", true, s_val, "rr_pb_type", rr_pb_type));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_v", rr_v));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ll_xa", ll_xa));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false, n_val, "ll_fo_s", ll_fo_s));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false, n_val, "ll_a_json", ll_a_json));
 
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "開啟(正常)").put("key", "0"));
@@ -198,86 +127,55 @@ public class LabelListService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", sys_m_date));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", sys_m_user));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "rd_statement", rd_statement));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_true", rd_true));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_solve", rd_true));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.IMG, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_svg", rd_svg));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_experience", rd_experience));
 			bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
-			// 維修單細節
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_id", rd_id, n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "rd_rr_sn", rd_rr_sn, n_val));
-
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
-			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
-			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
-			s_val.put((new JSONObject()).put("value", "小板").put("key", "小板"));
-			s_val.put((new JSONObject()).put("value", "零件").put("key", "零件"));
-			s_val.put((new JSONObject()).put("value", "軟體").put("key", "軟體"));
-			s_val.put((new JSONObject()).put("value", "其他").put("key", "其他"));
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "rr_pb_type", rr_pb_type, s_val));
+			// 標籤細節
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ll_name", ll_name, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "ll_g_name", ll_g_name, n_val));
 
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
-			search_rd_rr_sn = body.getJSONObject("search").getString("rd_rr_sn");
-			search_rd_rr_sn = search_rd_rr_sn.equals("") ? null : search_rd_rr_sn;
-			search_rd_id = body.getJSONObject("search").getString("rd_id");
-			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
-			search_rr_pb_type = body.getJSONObject("search").getString("rr_pb_type");
-			search_rr_pb_type = search_rr_pb_type.equals("") ? null : search_rr_pb_type;
+			search_ll_name = body.getJSONObject("search").getString("ll_name");
+			search_ll_name = search_ll_name.equals("") ? null : search_ll_name;
+			search_ll_g_name = body.getJSONObject("search").getString("ll_g_name");
+			search_ll_g_name = search_ll_g_name.equals("") ? null : search_ll_g_name;
 		}
 
 		// 查詢子類別?全查?
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
 
-		// 物件
-		Long rdruid = 0L;
-		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, null, false, null);
-		rdruid = units.size() >= 1 ? units.get(0).getRugid() : 0L;
-
-		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, search_rr_pb_type, 1, 0, rdruid, page_r);
+		ArrayList<LabelList> llist = labelsDao.findAllByLlgnameAndLlname(search_ll_name, search_ll_g_name, page_r);
 		// 有沒有資料?
-		if (rds.size() > 0) {
-			rds.forEach(rd -> {
+		if (llist.size() > 0) {
+			llist.forEach(ll -> {
 				JSONObject object_body = new JSONObject();
 				int ord = 0;
-				RepairRegister rr = rd.getRegister();
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", rd.getSysheader());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_id", rd.getRdid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_rr_sn", rr.getRrsn());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_ru_id", rd.getRdruid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_u_finally", rd.getRdufinally());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_check", rd.getRdcheck());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_statement", rd.getRdstatement());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_svg", rd.getRdsvg());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_true", rd.getRdtrue());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_solve", rd.getRdsolve() == null ? "" : rd.getRdsolve());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_header", ll.getSysheader());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_id", ll.getLlid());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_name", ll.getLlname());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_g_name", ll.getLlgname());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_xa", ll.getLlxa());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_ci", ll.getLlci());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_ll", ll.getLlll());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_pw", ll.getLlpw());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_lh", ll.getLllh());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_md", ll.getLlmd() == null ? "" : ll.getLlmd());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_pr", ll.getLlpr());
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_p_qty", rr.getRrphpqty());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr.getRrexpired());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", rr.getRrphwyears());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date", rr.getRrpbsysmdate() == null ? "" : rr.getRrpbsysmdate());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", rr.getRrpbtype());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", rr.getRrv());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", rr.getRrfok());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_fo_s", ll.getLlfos());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll_a_json", ll.getLlajson());
 
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(rd.getSyscdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", rd.getSyscuser());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(rd.getSysmdate()));
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", rd.getSysmuser());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", rd.getSysstatus());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", rd.getSysnote());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(ll.getSyscdate()));
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", ll.getSyscuser());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_date", Fm_Time.to_yMd_Hms(ll.getSysmdate()));
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_m_user", ll.getSysmuser());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", ll.getSysstatus());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", ll.getSysnote());
 
 				object_bodys.put(object_body);
 			});
@@ -327,19 +225,16 @@ public class LabelListService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				RepairDetail obj_b = new RepairDetail();
+				LabelList obj_b = new LabelList();
 				// 維修單細節
-				ArrayList<RepairDetail> obj_bs = detailDao.findAllByRdid(data.getString("rd_id"));
+				ArrayList<LabelList> obj_bs = labelsDao.findAllByLlid(data.getLong("ll_id"));
 				if (obj_bs.size() == 1) {
 					obj_b = obj_bs.get(0);
-					obj_b.setRdexperience(data.getString("rd_experience"));
-					obj_b.setRdstatement(data.getString("rd_statement"));
-					obj_b.setRdtrue(data.getString("rd_true"));
-					obj_b.setRdsolve(data.getString("rd_solve"));
-					obj_b.setRdsvg(data.getString("rd_svg"));
+					// ================需補充================
+
 					obj_b.setSysmdate(new Date());
 					obj_b.setSysmuser(user.getSuaccount());
-					detailDao.save(obj_b);
+					labelsDao.save(obj_b);
 					check = true;
 				}
 			}
@@ -361,7 +256,7 @@ public class LabelListService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				detailDao.deleteByRdid(data.getString("rd_id"));
+				labelsDao.deleteByLlid(data.getLong("ll_id"));
 				check = true;
 			}
 		} catch (Exception e) {
@@ -374,310 +269,130 @@ public class LabelListService {
 
 	// 更新/新增 資料清單
 	@Transactional
-	public boolean updateDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
+	public boolean updateOrAddDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
-			JSONObject list = body.getJSONObject("modify");
-			JSONObject rd_old_one = list.getJSONObject("repair");// 只改單一筆資料?
-			JSONArray rd_new_list = new JSONArray(list.getJSONArray("detail"));// 要添加其他維修?
+			JSONObject ll_one = body.getJSONObject("modify").getJSONObject("detail");
+			JSONObject label_set = ll_one.getJSONObject("label_set");
+			JSONObject label_package = ll_one.getJSONObject("label_package");
+			JSONArray label_blocks = ll_one.getJSONArray("label_block");
 
 			// ====[資料檢核]====
-			// 維修單-項目
-			if (rd_old_one.getString("rd_type").equals("") || rd_old_one.getString("rd_check").equals("") || //
-					rd_old_one.getString("rd_true").equals("") || rd_old_one.getString("rd_solve").equals("") || //
-					!rd_old_one.has("rd_id") || rd_old_one.getString("rd_id").equals("")) {
-				resp.autoMsssage("MT005");
+			// Step1. 標籤-標籤機與標籤紙
+			if (label_set.getString("ll_name").equals("") || //
+					label_set.getString("ll_g_name").equals("") || //
+					label_set.getString("ll_ll").equals("") || //
+					label_set.getString("ll_pw").equals("") || //
+					label_set.getString("ll_lh_y").equals("") || //
+					label_set.getString("ll_lh_x").equals("") || //
+					label_set.getString("ll_md").equals("") || //
+					label_set.getString("ll_pr").equals("")) {
+				resp.autoMsssage("LB005");
 				return check;
 			}
-
-			// 維修單細節-資料
-			for (int ch_d = 0; ch_d < rd_new_list.length(); ch_d++) {
-				JSONObject data = (JSONObject) rd_new_list.getJSONObject(ch_d);
-				// Step1.帶入 產品資訊
-				List<ProductionBody> bodys = bodyDao.findAllByPbbsn(data.getString("rr_sn"));
-				if (!data.getString("rr_sn").equals("") && bodys.size() == 1) {
-					// Step2.帶入 製令資訊
-					List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
-					if (headers.size() == 1) {
-						data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-						data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
-						data.put("rr_ph_w_years", headers.get(0).getPhwyears());
-						data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
-						data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
-					} else {
-						resp.autoMsssage("WK004");
-						check = false;
-						return check;
-					}
-					// Step3.檢查資訊正確性
-					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
-					data.put("rd_check", data.getString("rd_check").equals("") ? 1 : data.getInt("rd_check"));
-					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
-					data.put("rr_pb_type", data.getString("rr_pb_type").equals("") ? "其他" : data.getString("rr_pb_type"));
-					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
-					rd_new_list.put(ch_d, data);
-				} else {
-					data.put("rr_pr_id", "");
-					data.put("rr_ph_p_qty", 0);
-					data.put("rr_ph_w_years", 0);
-					data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(new Date()));
-
-					data.put("rr_v", data.has("rr_v") ? data.getString("rr_v") : "");
-					data.put("rd_check", data.getString("rd_check").equals("") ? 1 : data.getInt("rd_check"));
-					data.put("rd_type", "無法判定");
-
-					data.put("rd_ru_id", data.getString("rd_ru_id").equals("") ? 0L : data.getLong("rd_ru_id"));
-					data.put("rr_pb_type", data.getString("rr_pb_type").equals("") ? "產品" : data.getString("rr_pb_type"));
-					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
-					rd_new_list.put(ch_d, data);
+			// Step2. 標籤-分裝設定
+			if (label_package.getString("ll_o_p_type").equals("multiple")) {
+				if (label_package.getString("ll_o_top").equals("") || //
+						label_package.getString("ll_o_s_b_name").equals("") || //
+						label_package.getString("ll_o_p_qty").equals("") || //
+						label_package.getString("ll_o_h_b_name").equals("") || //
+						label_package.getString("ll_o_l_qty").equals("")) {
+					resp.autoMsssage("LB005");
+					return check;
 				}
 			}
+			// Step3. 標籤-區塊設定
+			for (Object label_block_O : label_blocks) {
+				JSONObject label_block = (JSONObject) label_block_O;
+				if (label_block.getString("ll_fo_name").equals("") || //
+						label_block.getString("ll_fo_y").equals("") || //
+						label_block.getString("ll_fo_x").equals("") || //
+						label_block.getJSONObject("ll_fo_content").toString().equals("{}")) {
+					resp.autoMsssage("LB005");
+					return check;
+				}
+			}
+			LabelList save_label = new LabelList();
+			// Step4. 可能是新增?
+			if (label_set.getString("ll_id").equals("")) {
+				// label_set
+				save_label.setLlname(label_set.getString("ll_name"));
+				save_label.setLlgname(label_set.getString("ll_g_name"));
+				save_label.setLlci("UTF-8");
+				save_label.setLlpw(label_set.getString("ll_pw"));
+				save_label.setLlmd(label_set.getString("ll_md"));
+				save_label.setLlpr(label_set.getString("ll_pr"));
+				save_label.setLlll(label_set.getString("ll_ll"));
+				save_label.setLllh(label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y"));// (X,Y)
+
+				// label_package
+				String lloptype = label_package.getString("ll_o_p_type").equals("multiple") ? "1" : "0";
+				save_label.setLloptype(lloptype);
+				save_label.setLlotop(Integer.parseInt(label_package.getString("ll_o_top")));
+				save_label.setLlosbname(label_package.getString("ll_o_s_b_name"));
+				save_label.setLlohbname(label_package.getString("ll_o_h_b_name"));
+				save_label.setLlopqty(Integer.parseInt(label_package.getString("ll_o_p_qty")));
+				save_label.setLlolqty(Integer.parseInt(label_package.getString("ll_o_l_qty")));
+
+				// label_block
+				save_label.setLlfos(label_blocks.toString());
+
+				// all
+				save_label.setLlajson(ll_one.toString());
+
+				labelsDao.save(save_label);
+				check = true;
+			} else {
+				// 修改?
+				ArrayList<LabelList> labels = labelsDao.findAllByLlid(Long.parseLong(label_set.getString("ll_id")));
+				if (labels.size() == 1) {
+					save_label = labels.get(0);
+					// label_set
+					save_label.setLlname(label_set.getString("ll_name"));
+					save_label.setLlgname(label_set.getString("ll_g_name"));
+					save_label.setLlci("UTF-8");
+					save_label.setLlpw(label_set.getString("ll_pw"));
+					save_label.setLlmd(label_set.getString("ll_md"));
+					save_label.setLlpr(label_set.getString("ll_pr"));
+					save_label.setLlll(label_set.getString("ll_ll"));
+					save_label.setLllh(label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y"));// (X,Y)
+
+					// label_package
+					String lloptype = label_package.getString("ll_o_p_type").equals("multiple") ? "1" : "0";
+					save_label.setLloptype(lloptype);
+					save_label.setLlotop(Integer.parseInt(label_package.getString("ll_o_top")));
+					save_label.setLlosbname(label_package.getString("ll_o_s_b_name"));
+					save_label.setLlohbname(label_package.getString("ll_o_h_b_name"));
+					save_label.setLlopqty(Integer.parseInt(label_package.getString("ll_o_p_qty")));
+					save_label.setLlolqty(Integer.parseInt(label_package.getString("ll_o_l_qty")));
+
+					// label_block
+					save_label.setLlfos(label_blocks.toString());
+
+					// all
+					save_label.setLlajson(ll_one.toString());
+
+					labelsDao.save(save_label);
+					check = true;
+				}
+			}
+
+			// Step5. 物件轉換入Entity
 
 			// ====[資料更新]====
 			// Step1. 維修單自動生成
-			Date today = new Date();
-			String yyyy_MM_dd_HH_mm_ss = Fm_Time.to_y_M_d(today) + " 00:00:00";
-			Date todayStr = Fm_Time.toDateTime(yyyy_MM_dd_HH_mm_ss);// 今日起始
-			String ro_id = "DTR" + todayStr.getTime();
-			// 客戶
-			ArrayList<Customer> customers = customerDao.findAllByCustomer(0L, "美商定誼", null, 0, null);
-			ArrayList<RepairOrder> orders = orderDao.findAllByRoid(ro_id);
+
 			// 如果有維修清單List
-			if (rd_new_list.length() > 0) {
-				// 共用
-				RepairOrder ro_one = new RepairOrder();// 維修單資料
-				RepairDetail rd_one = new RepairDetail();// 維修單-問題清單
-				ro_one.setSysnote("");
-				ro_one.setSysstatus(0);
-				ro_one.setSyscdate(new Date());
-				ro_one.setSysmdate(new Date());
-				ro_one.setSysmuser(user.getSuaccount());
-				ro_one.setSyscuser(user.getSuaccount());
+			if (ll_one.length() > 0) {
 
-				// Step2. 今日[尚未]建立
-				if (orders.size() == 0) {
-					ro_one.setRoid(ro_id);
-					ro_one.setRocid(customers.get(0).getCid());
-					ro_one.setRocheck(0);
-					ro_one.setRofrom("DTR");
-					ro_one.setRoramdate(new Date());
-					ro_one.setDetails(null);
-					ro_one.setSysheader(true);
-					orderDao.save(ro_one);
-				} else {
-					ro_one = orders.get(0);
-					ro_one.setSysmdate(new Date());
-					ro_one.setSysmuser(user.getSuaccount());
-				}
-
-				// Step3.維修單-項目 (新增-登記子類別+產品登記)
-				if (rd_new_list.length() > 0) {
-					for (Object rd_new_one : rd_new_list) {
-						JSONObject data = (JSONObject) rd_new_one;
-						RepairRegister rr_one = new RepairRegister();
-						ArrayList<RepairRegister> rrs = registerDao.findAllByRrsn(data.getString("rr_sn"));
-						if (rrs.size() == 1) {
-							rr_one = rrs.get(0);
-						} else {
-							rr_one.setRrsn(data.getString("rr_sn"));
-							rr_one.setRrcsn(data.getString("rr_c_sn"));
-							rr_one.setRrprid(data.getString("rr_pr_id"));
-							rr_one.setRrphpqty(data.getInt("rr_ph_p_qty"));
-							rr_one.setRrprpmodel(data.getString("rr_pr_p_model"));
-							rr_one.setRrexpired(true);// rr_ph_w_years
-							rr_one.setRrphwyears(data.getInt("rr_ph_w_years"));
-							rr_one.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
-							rr_one.setRrpbtype(data.getString("rr_pb_type"));
-							rr_one.setRrv(data.getString("rr_v"));
-							rr_one.setRrfok(0);
-							rr_one.setSysnote("");
-							rr_one.setSysstatus(0);
-							rr_one.setSyscdate(ro_one.getSyscdate());
-							rr_one.setSyscuser(ro_one.getSyscuser());
-						}
-						rr_one.setSysmdate(ro_one.getSysmdate());
-						rr_one.setSysmuser(ro_one.getSysmuser());
-						registerDao.save(rr_one);
-						// 維修單細節
-						Boolean check_rep = true;
-						int rd_id_nb = 1;
-						String rd_id = "S" + String.format("%04d", rd_id_nb++);
-						while (check_rep) {
-							if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-								rd_id = "S" + String.format("%04d", rd_id_nb++);
-							} else {
-								check_rep = false;
-							}
-						}
-						rd_one.setRdid(ro_id + '-' + rd_id);
-						rd_one.setRdstatement(data.getString("rd_statement"));
-						rd_one.setRdruid(data.getLong("rd_ru_id"));
-						rd_one.setRduqty(data.getInt("rd_u_qty"));
-						rd_one.setRdtrue("");
-						rd_one.setRdexperience("");
-						rd_one.setRdcheck(data.getInt("rd_check"));
-						rd_one.setRdufinally("");
-						rd_one.setOrder(ro_one);
-
-						rd_one.setSysnote("");
-						rd_one.setSysstatus(ro_one.getSysstatus());
-						rd_one.setSyscdate(ro_one.getSyscdate());
-						rd_one.setSysmdate(ro_one.getSysmdate());
-						rd_one.setSysmuser(ro_one.getSysmuser());
-						rd_one.setSyscuser(ro_one.getSyscuser());
-						rd_one.setSysheader(false);
-						rd_one.setRegister(rr_one);
-						detailDao.save(rd_one);
-						check = true;
-					}
-				}
 			}
-			// Step4.維修單-單一項目
-			if (rd_old_one.has("rd_id")) {
-				ArrayList<RepairDetail> rds = detailDao.findAllByRdid(rd_old_one.getString("rd_id"));
-				if (rds.size() == 1) {
-					RepairDetail rd = rds.get(0);
-					RepairRegister rr = rd.getRegister();
-					rr.setRrpbtype(rd_old_one.getString("rr_pb_type"));
-					rr.setRrv(rd_old_one.getString("rr_v"));
-					rr.setRrfok(1);
 
-					rd.setRdufinally(user.getSuaccount());
-					rd.setRdstatement(rd_old_one.getString("rd_statement"));
-					rd.setRdtrue(rd_old_one.getString("rd_true"));
-					rd.setRdsolve(rd_old_one.getString("rd_solve"));
-					rd.setRdexperience(rd_old_one.getString("rd_experience"));
-					rd.setRdcheck(rd_old_one.getInt("rd_check"));
-					rd.setRdtype(rd_old_one.getString("rd_type"));
-					rd.setRdsvg(rd_old_one.getString("rd_svg"));
-					rd.setRegister(rr);
-					rd.setSysmdate(new Date());
-					rd.setSysmuser(user.getSuaccount());
-					rd.setSysnote(rd_old_one.getString("sys_note"));
-
-					// 已處理(尚未選)
-					if (rd_old_one.getInt("rd_check") == 1) {
-						resp.autoMsssage("MT005");
-						check = false;
-						return check;
-					}
-					// 已處理(修復)
-					if (rd_old_one.getInt("rd_check") == 2) {
-						int rr_f_ok = 1;
-						// 檢查此產品是否已修復? 或是報廢
-						for (RepairDetail repairDetail : rds) {
-							if (repairDetail.getRdcheck() != 2) {
-								// 修復
-								rr_f_ok = 0;
-							}
-							if (repairDetail.getRdcheck() == 4) {
-								// 報廢
-								rr_f_ok = 2;
-							}
-						}
-						rr.setRrfok(rr_f_ok);
-						rd.setRegister(rr);
-						detailDao.save(rd);
-						// 檢查是否 此單據 全都修復完畢
-						String rd_ro_id = rd.getRdid().split("-")[0];
-						ArrayList<RepairOrder> ros = orderDao.findAllByRoid(rd_ro_id);
-						List<RepairDetail> ro_rds = ros.get(0).getDetails();
-						boolean rd_check = true;
-						for (Iterator<RepairDetail> iterator = ro_rds.iterator(); iterator.hasNext();) {
-							RepairDetail repairDetail = iterator.next();
-							if (repairDetail.getRdcheck() < 2) {
-								rd_check = false;
-								break;
-							}
-						}
-						// 如果都修好? 進行寫入 完成時間
-						if (rd_check) {
-							ros.get(0).setRoedate(new Date());
-							ros.get(0).setSysmdate(new Date());
-							ros.get(0).setSysmuser(user.getSuaccount());
-							orderDao.save(ros.get(0));
-						}
-						// 如果 工作站 程序上 有故障代碼?
-						List<ProductionBody> bodies = bodyDao.findAllByPbbsn(rr.getRrsn());
-						if (bodies.size() == 1) {
-							bodies.get(0).setPbfnote("");
-							bodies.get(0).setPbfvalue("");
-							bodyDao.save(bodies.get(0));
-						}
-					}
-					// 轉處理
-					if (rd_old_one.getInt("rd_check") == 3) {
-						rd_old_one.getLong("rd_ru_id");
-						// 新建-維修單細節
-						RepairDetail rd_old = rds.get(0);
-						RepairDetail rd_new = new RepairDetail();
-						Boolean check_rep = true;
-						int rd_id_nb = 1;
-						String rd_id = "S" + String.format("%04d", rd_id_nb++);
-						while (check_rep) {
-							if (detailDao.findAllByRdid(ro_id + '-' + rd_id).size() > 0) {
-								rd_id = "S" + String.format("%04d", rd_id_nb++);
-							} else {
-								check_rep = false;
-							}
-						}
-						// 維修單資料
-						// Step2. 今日[尚未]建立
-						RepairOrder ro_one = new RepairOrder();// 維修單資料
-						if (orders.size() == 0) {
-							ro_one.setRoid(ro_id);
-							ro_one.setRocid(customers.get(0).getCid());
-							ro_one.setRocheck(0);
-							ro_one.setRofrom("DTR");
-							ro_one.setRoramdate(new Date());
-							ro_one.setDetails(null);
-							ro_one.setSysheader(true);
-							orderDao.save(ro_one);
-						} else {
-							ro_one = orders.get(0);
-							ro_one.setSysmdate(new Date());
-							ro_one.setSysmuser(user.getSuaccount());
-						}
-
-						rd_new.setOrder(ro_one);
-						rd_new.setRegister(rr);
-						rd_new.setRdid(ro_id + '-' + rd_id);
-						rd_new.setRdstatement(rd_old.getRdstatement());
-						rd_new.setRduqty(rd_old.getRduqty());
-						rd_new.setRdtrue(rd_old.getRdtrue());
-						rd_new.setRdexperience(rd_old.getRdexperience());
-						rd_new.setRdufinally("");
-						// 轉處理
-						rd_new.setRdruid(rd_old_one.getLong("rd_ru_id"));
-						rd_new.setRdcheck(1);
-						// 系統
-						rd_new.setSysnote(rd_old_one.getString("sys_note"));
-						rd_new.setSysstatus(0);
-						rd_new.setSyscdate(new Date());
-						rd_new.setSysmdate(new Date());
-						rd_new.setSysmuser(user.getSuaccount());
-						rd_new.setSyscuser(user.getSuaccount());
-						rd_new.setSysheader(false);
-						detailDao.save(rd_new);
-						detailDao.save(rd);
-						rd_old_one.put("rd_id", ro_id + '-' + rd_id);
-					}
-					// 報廢
-					if (rd_old_one.getInt("rd_check") == 4) {
-						rr.setRrfok(3);
-						rd.setRegister(rr);
-						detailDao.save(rd);
-					}
-				}
-			}
+			// 回傳準備
 			JSONObject cb = req.getCall_bk_vals();
-			cb.put("search", false);
-			cb.put("rr_sn", rd_old_one.getString("rr_sn"));
-			cb.put("rd_id", rd_old_one.getString("rd_id"));
+			cb.put("search", true);
 			req.setCall_bk_vals(cb);
 
-			check = true;
 		} catch (Exception e) {
 			System.out.println(e);
 			check = false;
@@ -692,204 +407,457 @@ public class LabelListService {
 		if (resp == null) {
 			resp = new PackageBean();
 		}
-		// 查詢
-		String search_rr_sn = null;// 產品序號
-		String search_rd_id = null;// 維修項目
-		String search_ro_id = null;// 維修單據
-
-		// 維修單據
-		String rd_id = "No.", rr_pr_p_model = "Model", rr_sn = "P/N(DTR)", rr_c_sn = "P/N(client)", rr_pb_type = "Type", //
-				rd_statement = "Failure Description", rd_u_qty = "Qty", rr_expired = "Warranty?", rd_ru_id = "To whom", rd_check = "Status";
-
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = resp.getHeader();
 			JSONObject customized_header = new JSONObject();
-			int ord = 0;
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "80px", FFM.Wri.W_N));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "100px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_statement", FFS.h_t(rd_statement, "350px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_u_qty", FFS.h_t(rd_u_qty, "70px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "120px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_ru_id", FFS.h_t(rd_ru_id, "120px", FFM.Wri.W_Y));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_check", FFS.h_t(rd_check, "130px", FFM.Wri.W_Y));
 			object_header.put("customized_header", customized_header);
-
-			// 維修單-訊息
-			JSONArray s_val = new JSONArray();
-			JSONObject object_documents = new JSONObject();
-			// 維修單位
-			List<RepairUnit> mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
-			for (RepairUnit oneUnit : mUnits) {
-				String oneUnit_one = oneUnit.getRugname();
-				s_val.put((new JSONObject()).put("value", oneUnit_one).put("key", oneUnit.getRuid()));
-			}
-			s_val.put((new JSONObject()).put("value", "全單位").put("key", 0));
-			object_documents.put("rd_ru_id", s_val);
-			// 單據狀態
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "未結單").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已結單").put("key", 1));
-			object_documents.put("ro_check", s_val);
-			// 類型
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
-			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
-			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
-			s_val.put((new JSONObject()).put("value", "小板").put("key", "小板"));
-			s_val.put((new JSONObject()).put("value", "零件").put("key", "零件"));
-			s_val.put((new JSONObject()).put("value", "軟體").put("key", "軟體"));
-			s_val.put((new JSONObject()).put("value", "其他").put("key", "其他"));
-			object_documents.put("rr_pb_type", s_val);
-			// 處理狀態
-			s_val = new JSONArray();
-			// s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "待處理(未修)").put("key", 1));
-			s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
-			s_val.put((new JSONObject()).put("value", "轉處理(踢球)").put("key", 3));
-			s_val.put((new JSONObject()).put("value", "修不好(報廢)").put("key", 4));
-			// s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
-			object_documents.put("rd_check_2", s_val);
-
-			// 處理狀態
-			s_val = new JSONArray();
-			// s_val.put((new JSONObject()).put("value", "已申請(未到)").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "待處理(未修)").put("key", 1));
-			// s_val.put((new JSONObject()).put("value", "已處理(修復)").put("key", 2));
-			s_val.put((new JSONObject()).put("value", "修不好(報廢)").put("key", 4));
-			// s_val.put((new JSONObject()).put("value", "已寄出(結單)").put("key", 5));
-			object_documents.put("rd_check", s_val);
-			// 處理狀態
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "未發現故障").put("key", "未發現故障"));
-			s_val.put((new JSONObject()).put("value", "人員誤刷").put("key", "人員誤刷"));
-			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
-			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
-			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));
-			s_val.put((new JSONObject()).put("value", "外包").put("key", "外包"));
-			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
-			object_documents.put("rd_type", s_val);
-
-			// 產品狀態
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "待修中").put("key", 0));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", 1));
-			s_val.put((new JSONObject()).put("value", "已修復").put("key", 2));
-			object_documents.put("rr_f_ok", s_val);
-
-			// 處理狀態
-			s_val = new JSONArray();
-			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
-			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
-			object_documents.put("rr_expired", s_val);
-
-			// 數字格式
-			object_documents.put("rd_u_qty", "number");
-			object_header.put("customized_documents", object_documents);
 			resp.setHeader(object_header);
-		} else {
-			// 進行-特定查詢
-			search_rr_sn = body.getJSONObject("search").getString("rr_sn");
-			search_rr_sn = search_rr_sn.equals("") ? null : search_rr_sn;
-			search_rd_id = body.getJSONObject("search").getString("rd_id");
-			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
 		}
 
-		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
-		// 維修單-問題清單+產品
 		JSONObject object_body = resp.getBody();
 		if (object_body == null) {
 			object_body = new JSONObject();
 		}
 
-		// 預設維修
-		JSONObject object_detail = new JSONObject();
-		object_detail.put("rd_ru_id", "");
-		object_detail.put("rr_sn", "");
-
-		// Step1.維修人員?
-		Long rdruid = user.getSuid();
-		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, rdruid, null, null, null, false, null);
-		if (units.size() == 0) {
-			resp.autoMsssage("MT004");
-			return false;
-		} else {
-			object_detail.put("rd_ru_id", units.get(0).getRugid());
+		// 標籤資料
+		JSONArray objects = new JSONArray();
+		ArrayList<LabelList> labels = new ArrayList<LabelList>();
+		labels = (ArrayList<LabelList>) labelsDao.findAllByOrderByLlgnameAscLlnameAsc();
+		if (labels.size() >= 1) {
+			labels.forEach(lls -> {
+				JSONObject ll = new JSONObject();
+				ll.put("ll_id", lls.getLlid());
+				ll.put("ll_name", lls.getLlname());
+				ll.put("ll_gname", lls.getLlgname());
+				ll.put("ll_a_json", lls.getLlajson());
+				objects.put(ll);
+			});
 		}
+		object_body.put("customized_detail", objects);
+		resp.setBody(object_body);
+		return true;
+	}
 
-		// Step2.所屬的[維修人員]產品 or 維修單項目?
-		Long rugid = units.get(0).getRugid();
-		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
+	// 測試打印 資料清單
+	/**
+	 * @param resp
+	 * @param req
+	 * @param user
+	 * @param testPrint 是否測試打印
+	 * 
+	 */
+	@Transactional
+	public boolean printTestCustomized(PackageBean resp, PackageBean req, SystemUser user, Boolean testPrint) {
+		JSONObject body = req.getBody();
+		boolean check = false;
+		try {
+			if (body != null && !body.isNull("print")) {
+				System.out.println(body.getJSONObject("print"));
+				Long ll_id = Long.parseLong(body.getJSONObject("print").getString("label_choose"));
+				String printName = body.getJSONObject("print").getString("print_code");
+				int printQty = Integer.parseInt(body.getJSONObject("print").getString("print_qty"));
+				ArrayList<LabelList> labels = labelsDao.findAllByLlid(ll_id);
+				// Step1. 取出打印對象
+				if (labels.size() == 1) {
+					LabelList label = labels.get(0);
+					// Step2. 分析打印內容
+					JSONObject label_json = new JSONObject(label.getLlajson());
+					LabelListBean label_bean = new LabelListBean();
+					// label_set
+					JSONObject label_set = label_json.getJSONObject("label_set");
 
-		details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, null, 1, 0, rugid, null);
-		if (details.size() >= 1 && (search_rr_sn != null || search_rd_id != null)) {
-			// 有相關資料帶出第一筆資料
-			RepairDetail rd = details.get(0);
-			RepairRegister rr = rd.getRegister();
-			object_detail.put("rd_id", rd.getRdid());
-			object_detail.put("rr_sn", rd.getRegister().getRrsn());
-			object_detail.put("rr_pb_type", rr.getRrpbtype());
-			object_detail.put("rr_v", rr.getRrv());
-			object_detail.put("rr_f_ok", rr.getRrfok() + "");
-			object_detail.put("rr_pr_p_model", rr.getRrprpmodel());
+					label_bean.setLlpw(label_bean.getLlpw().replace("{標籤寬度(點)}", label_set.getString("ll_pw")));
+					label_bean.setLlll(label_bean.getLlll().replace("{標籤長度(點)}", label_set.getString("ll_ll")));
+					label_bean.setLlmd(label_bean.getLlmd().replace("{打印暗度}", label_set.getString("ll_md")));
+					label_bean.setLlpr(label_bean.getLlpr().replace("{打印速度}", label_set.getString("ll_pr")));
+					label_bean.setLllh(label_bean.getLllh().replace("{x,y起始打印座標(點)}", label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y")));
+					// label_package
+					JSONObject label_package = label_json.getJSONObject("label_package");
+					label_bean.setLl_o_p_type(label_package.getString("ll_o_p_type").equals("multiple"));
+					if (label_package.getString("ll_o_p_type").equals("multiple")) {
+						label_bean.setLl_o_p_qty(Integer.parseInt(label_package.getString("ll_o_p_qty")));// 每箱多少台
+						label_bean.setLl_o_l_qty(Integer.parseInt(label_package.getString("ll_o_l_qty")));// 每箱多少台
+						label_bean.setLl_l_qty(label_bean.getLl_o_p_qty() / label_bean.getLl_o_l_qty());// 每次 幾張標籤(無條件進位)
+						label_bean.setLl_l_now(1);
+						label_bean.setLl_o_h_b_name(label_package.getString("ll_o_h_b_name"));// 指定隱藏
+						label_bean.setLl_o_s_b_name(label_package.getString("ll_o_s_b_name"));// 指定重複
+						label_bean.setLl_o_top(Integer.parseInt(label_package.getString("ll_o_top")));
+						// 測試用
+						JSONArray label_t_blocks = label_json.getJSONArray("label_block");
+						for (int i = 0; i < label_t_blocks.length(); i++) {
+							JSONObject label_block = label_t_blocks.getJSONObject(i);
+							JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
+							String ll_fo_name = label_block.getString("ll_fo_name");
+							switch (ll_fo_c.getString("label_block_type")) {
+							case "char_type":
+								String ll_fds = "";
+								// 需要重複的
+								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+										ll_fds += ll_fo_c.getString("ll_fd") + " ";
+									}
+									ll_fo_c.put("ll_fd", ll_fds);
+									label_block.put("ll_fo_content", ll_fo_c);
+									label_t_blocks.put(i, label_block);
+								}
+								break;
+							case "img_type":
+								// 圖片
+								String ll_gfas = "";
+								// 需要重複的
+								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+										ll_gfas += ll_fo_c.getString("ll_gfa") + " ";
+									}
+									ll_fo_c.put("ll_gfa", ll_gfas);
+									label_block.put("ll_fo_content", ll_fo_c);
+									label_t_blocks.put(i, label_block);
+								}
+								break;
+							case "barcode_type":
+								// 一維碼
+								String ll_bfds = "";
+								// 需要重複的
+								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+										ll_bfds += ll_fo_c.getString("ll_bfd") + " ";
+									}
+									ll_fo_c.put("ll_bfd", ll_bfds);
+									label_block.put("ll_fo_content", ll_fo_c);
+									label_t_blocks.put(i, label_block);
+								}
 
-			object_detail.put("rd_check", rd.getRdcheck());
-			object_detail.put("rd_svg", rd.getRdsvg());
-			object_detail.put("rd_statement", rd.getRdstatement());
-			object_detail.put("rd_true", rd.getRdtrue());
-			object_detail.put("rd_solve", rd.getRdsolve());
-			object_detail.put("rd_experience", rd.getRdexperience());
-
-			// 如果有:產品規格
-			if (rr.getRrprid() != null) {
-				ArrayList<ProductionRecords> pr = recordsDao.findAllByPrid(rr.getRrprid(), null);
-				if (pr.size() == 1) {
-					object_detail.put("pr_b_item", pr.get(0).getPrbitem().replaceAll("},", "}, \n"));// 硬體
-					object_detail.put("pr_s_item", pr.get(0).getPrsitem().replaceAll("},", "}, \n"));// 軟體
-					object_detail.put("ph_esdate", pr.get(0).getHeader().getPhesdate()); // 預計出貨日
-				}
-			}
-			// 如果有:有零件
-			List<ProductionBody> pbs = bodyDao.findAllByPbbsn(rd.getRegister().getRrsn());
-			if (pbs.size() == 1) {
-				// sn關聯表
-				ProductionBody body_title = bodyDao.findAllByPbid(0l).get(0);
-				ProductionBody body_context = pbs.get(0);
-				JSONObject pr_i_item = new JSONObject();
-				int j = 0;
-				Method method_title;
-				Method method_context;
-				// sn關聯表
-				for (j = 0; j < 50; j++) {
-					String m_name = "getPbvalue" + String.format("%02d", j + 1);
-					try {
-						// 零件名稱
-						method_title = body_title.getClass().getMethod(m_name);
-						String name = (String) method_title.invoke(body_title);
-						// 零件值
-						method_context = body_context.getClass().getMethod(m_name);
-						String value = (String) method_context.invoke(body_context);
-
-						if (value != null && !value.equals("")) {
-							pr_i_item.put(name, value);
+								break;
+							case "qr_code_type":
+								// 二維碼
+								String ll_bqfds = "";
+								// 需要重複的
+								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+										ll_bqfds += ll_fo_c.getString("ll_bqfd") + " ";
+									}
+									ll_fo_c.put("ll_bqfd", ll_bqfds);
+									label_block.put("ll_fo_content", ll_fo_c);
+									label_t_blocks.put(i, label_block);
+								}
+								break;
+							}
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+						label_json.put("label_block", label_t_blocks);
+					}
+
+					// label_block
+					JSONArray label_blocks = label_json.getJSONArray("label_block");
+
+					// label_all
+					String llxa = "";
+					// 共要跑幾張
+					for (int y = 1; y <= label_bean.getLl_l_qty(); y++) {
+						label_bean.setLl_l_now(y);// 目前第幾張
+						label_bean.newFolist();
+
+						label_blocks.forEach(x -> {
+							JSONObject label_block = (JSONObject) x;
+							JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
+							String ll_fo_name = label_block.getString("ll_fo_name");
+							String llfo = "";
+							// 隱藏 = 頁數大於1 且被指定隱藏 = false
+							Boolean hidden = true;
+							if(label_bean.getLl_l_now() > 1) {
+								hidden = label_bean.getLl_o_h_b_name().indexOf(ll_fo_name) < 0;
+								
+							}
+							
+							if (hidden) {
+								switch (ll_fo_c.getString("label_block_type")) {
+								case "char_type":
+									llfo = "";
+									// 文字
+									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										// 一張標籤->多項->固定 or 跟隨?
+										String ll_fd_s[] = ll_fo_c.getString("ll_fd").split(" ");
+										if (!ll_fo_c.getString("ll_fd_f").equals("")) {
+											ll_fd_s = ll_fo_c.getString("ll_bf_f").split(" ");
+										}
+										// 複數區間
+										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
+										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
+										int l_o_top = label_bean.getLl_o_top();
+										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
+										String llfos = "";// 該區塊所有內容
+										for (int i = i_start; i < i_end; i++) {
+											String ll_fd = ll_fd_s[i];
+											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fd);
+											// 字型?
+											llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
+													ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
+															+ ll_fo_c.getString("ll_a_h") //
+															+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
+											// 區塊屬性?
+											if (!ll_fo_c.getString("ll_fb_d").equals("")) {
+												llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
+														ll_fo_c.getString("ll_fb_a") + "," //
+																+ ll_fo_c.getString("ll_fb_b") + ","//
+																+ ll_fo_c.getString("ll_fb_c") + "," //
+																+ ll_fo_c.getString("ll_fb_d") + ",0");
+											}
+											// 位置
+											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+											llfos += llfo;
+											ll_fo_y = ll_fo_y + l_o_top;
+										}
+										llfo = llfos;// 放回區塊內
+									} else {
+										// 一張標籤->單項->固定 or 跟隨?
+										if (ll_fo_c.getString("ll_fd_f").equals("")) {
+											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fo_c.getString("ll_fd"));
+										} else {
+											llfo = label_bean.getLlbfd().replace("{一般文字}", ll_fo_c.getString("ll_bf_f"));
+											// =========可能還需要添加跟隨參數=========
+										}
+										// 字型?
+										llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
+												ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
+														+ ll_fo_c.getString("ll_a_h") //
+														+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
+										// 區塊屬性?
+										if (!ll_fo_c.getString("ll_fb_d").equals("")) {
+											llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
+													ll_fo_c.getString("ll_fb_a") + "," //
+															+ ll_fo_c.getString("ll_fb_b") + ","//
+															+ ll_fo_c.getString("ll_fb_c") + "," //
+															+ ll_fo_c.getString("ll_fb_d") + ",0");
+
+										}
+										// 位置
+										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+									}
+
+									label_bean.setFolist(llfo);
+									break;
+								case "img_type":
+									// 圖片
+									llfo = "";
+									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										// 一張標籤->多項->固定
+										String ll_gfa_s[] = ll_fo_c.getString("ll_gfa").split(" ");
+										// 複數區間
+										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
+										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
+										int l_o_top = label_bean.getLl_o_top();
+										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
+										String llfos = "";// 該區塊所有內容
+										for (int i = i_start; i < i_end; i++) {
+											String ll_gfa = ll_gfa_s[i];
+											String imageString = ll_gfa.split(",")[1];
+											// create a buffered image
+											byte[] decodedBytes = Base64.decodeBase64(imageString);
+											InputStream inputImg = new ByteArrayInputStream(decodedBytes);
+											try {
+												imageString = Fm_ZPLCodeConveterImg.getFont2ImgZPL(inputImg, true, 90,
+														Double.parseDouble(ll_fo_c.getString("ll_gfa_p")));
+											} catch (IOException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+											// 位置
+											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}^FS", //
+													label_block.getString("ll_fo_x") + "," + ll_fo_y + imageString);
+											llfos += llfo;
+											ll_fo_y = ll_fo_y + l_o_top;
+										}
+										llfo = llfos;
+									} else {
+										String imageString = ll_fo_c.getString("ll_gfa").split(",")[1];
+										// create a buffered image
+										byte[] decodedBytes = Base64.decodeBase64(imageString);
+										InputStream inputImg = new ByteArrayInputStream(decodedBytes);
+										try {
+											imageString = Fm_ZPLCodeConveterImg.getFont2ImgZPL(inputImg, true, 90,
+													Double.parseDouble(ll_fo_c.getString("ll_gfa_p")));
+										} catch (IOException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+
+										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}^FS", //
+												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + imageString);
+									}
+									label_bean.setFolist(llfo);
+									break;
+								case "barcode_type":
+									// 一維條碼
+									llfo = "";
+									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										// 一張標籤->多項->固定 or 跟隨?
+										String ll_bfd_s[] = ll_fo_c.getString("ll_bfd").split(" ");
+										if (!ll_fo_c.getString("ll_bfd_f").equals("")) {
+											ll_bfd_s = ll_fo_c.getString("ll_bfd_f").split(" ");
+										}
+										// 複數區間
+										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
+										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
+										int l_o_top = label_bean.getLl_o_top();
+										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
+										String llfos = "";// 該區塊所有內容
+										for (int i = i_start; i < i_end; i++) {
+											String ll_bfd = ll_bfd_s[i];
+											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
+											// 條碼?
+											llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
+													ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
+											// 類型?
+											llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
+													ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N," + ll_fo_c.getString("ll_b_h") + ",N,N");
+
+											// 位置
+											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+											llfos += llfo;
+											ll_fo_y = ll_fo_y + l_o_top;
+										}
+										llfo = llfos;// 放回區塊內
+									} else {
+										// 固定 or 跟隨?
+										if (ll_fo_c.getString("ll_bfd_f").equals("")) {
+											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd"));
+										} else {
+											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd_f"));
+										}
+										// 條碼?
+										llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
+												ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
+										// 類型?
+										llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
+												ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N," + ll_fo_c.getString("ll_b_h") + ",N,N");
+										// 位置
+										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+									}
+									label_bean.setFolist(llfo);
+									break;
+								case "qr_code_type":
+									// 二維條碼
+									llfo = "";
+									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										// 一張標籤->多項->固定 or 跟隨?
+										String ll_bqfd_s[] = ll_fo_c.getString("ll_bqfd").split(" ");
+										if (!ll_fo_c.getString("ll_bqfd_f").equals("")) {
+											ll_bqfd_s = ll_fo_c.getString("ll_bqfd_f").split(" ");
+										}
+										// 複數區間
+										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
+										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
+										int l_o_top = label_bean.getLl_o_top();
+										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
+										String llfos = "";// 該區塊所有內容
+										for (int i = i_start; i < i_end; i++) {
+											String ll_bqfd = ll_bqfd_s[i];
+											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bqfd);
+
+											// 條碼?
+											llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
+													ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
+
+											// 位置
+											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+											llfos += llfo;
+											ll_fo_y = ll_fo_y + l_o_top;
+										}
+										llfo = llfos;// 放回區塊內
+									} else {
+										// 固定 or 跟隨?
+										if (ll_fo_c.getString("ll_bqfd_f").equals("")) {
+											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd"));
+										} else {
+											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd_f"));
+										}
+										// 條碼?
+										llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
+												ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
+
+										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+									}
+									label_bean.setFolist(llfo);
+									break;
+								}
+							}
+						});
+						// Step4.編譯成ZPL
+						llxa += label_bean.getLlxa().replace("{ZPL打印內容}", label_bean.getLlheader() + label_bean.getLlbody()) + "\n";
+
+					}
+					// Step5.辨識標籤機
+					PrintService pService = getPrinterService(printName);
+					// Step5.送出
+					System.out.println(llxa);
+					if (pService != null && printQty >= 1) {
+						// 印幾次
+						String pxa = "";
+						for (int i = 0; i < printQty; i++) {
+							pxa += llxa;
+						}
+						sendPrinter(pxa, pService);
+						check = true;
 					}
 				}
-				// 有登記的硬體資訊
-				object_detail.put("pb_i_item", pr_i_item.toString().replaceAll(",\"", ",\" \n"));
 			}
-		} else if (search_rr_sn != null || search_rd_id != null) {
-			resp.autoMsssage("102");
-			return false;
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		object_body.put("customized_detail", object_detail);
-		resp.setBody(object_body);
+
+		return check;
+
+	}
+
+	/**
+	 * 取得相對應->標籤機代碼
+	 * 
+	 * @param printName 服務名稱
+	 **/
+	private PrintService getPrinterService(String printName) {
+		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
+		for (final PrintService service : services) {
+			if (service.getName().equals(printName)) {
+				System.out.println(service.getName());
+				return service;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 完成傳送指令
+	 **/
+	private boolean sendPrinter(String zpl, PrintService service) {
+		// 用網路串流可能用到
+		// byte[] buf = new byte[1024];
+		// Socket socket = new Socket("127.0.0.1", 9100);
+		// OutputStream out = socket.getOutputStream();
+
+		// 紙張大小
+		// DocFlavor flavor = INPUT_STREAM.AUTOSENSE;
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					byte[] zpl_by = zpl.getBytes();
+					DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+					Doc doc = new SimpleDoc(zpl_by, flavor, null);
+					DocPrintJob printJob = service.createPrintJob();
+					printJob.print(doc, null);
+
+				} catch (PrintException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
 		return true;
 	}
 }

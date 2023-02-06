@@ -208,13 +208,17 @@ body {
 									main.allData = event['resp_content']; 
 									analysis.reportReturn();
                                     break;
-                                case "customized":
+                                case "customized_search":
 									main.allData = event['resp_content']; 
 									customized.searchReturn();
                                     break;
                                 case "customized_save":
 									main.allData = event['resp_content']; 
 									customized.saveReturn();
+                                    break;
+                                case "customized_other":
+									main.allData = event['resp_content']; 
+									customized.otherReturn();
                                     break;
                             }
 						}else{

@@ -104,7 +104,7 @@
 					</div>
 				</div>
 				<div id="rd_btn" class="col row m-0 mt-2 justify-content-end">
-					<button id="search_rd_btn" class="col-md-3 m-0 mr-2 btn btn-primary btn-sm" type="button">Search</button>
+					<button id="search_rd_btn" class="col-md-3 m-0 mr-2 btn btn-primary btn-sm" type="button">Search(S1)</button>
 					<button id="clear_rd_btn" class="col-md-3  m-0 btn btn-warning btn-sm" type="button">Clear</button>
 				</div>
 			</div>
@@ -124,7 +124,7 @@
 						<button id="rd_export_btn" class="col m-0 btn btn-info btn-sm" type="button">Export excel</button>
 					</div>
 					<div class="col-md-2 p-1">
-						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save</button>
+						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm" type="button">Save(S2)</button>
 					</div>
 					<div class="col-md-2 p-1">
 						<button id="rd_clear_btn" class="col m-0 btn btn-warning btn-sm" type="button">Clear</button>
@@ -697,7 +697,7 @@ customized = new Vue({
 			req.page_batch=this.page_batch;
 			req.page_now_nb=this.page_now_nb;
 			req.html_body= "";
-			req.call_bk_fn="customized";
+			req.call_bk_fn="customized_search";
 			req.call_bk_vals={};
 			req.call_bk_vals['search']=true;
 			s_data.req_content = req;

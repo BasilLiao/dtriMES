@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
+import dtri.com.tw.service.LabelListService;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.RepairListService;
 
 @Controller
 public class LabelListController extends AbstractController {
@@ -23,7 +23,7 @@ public class LabelListController extends AbstractController {
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	RepairListService orderListService;
+	LabelListService labelListService;
 
 	/**
 	 * 訪問
@@ -43,8 +43,8 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderListService.getData(resp, req, user);
-		check = orderListService.getDataCustomized(resp, req, user);
+		check = labelListService.getData(resp, req, user);
+		check = labelListService.getDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -75,7 +75,7 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderListService.getData(resp, req, user);
+		check = labelListService.getData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -106,9 +106,9 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderListService.createData(resp, req, user);
+		check = labelListService.createData(resp, req, user);
 		if (check) {
-			check = orderListService.save_asData(resp, req, user);
+			check = labelListService.save_asData(resp, req, user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -139,12 +139,9 @@ public class LabelListController extends AbstractController {
 		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行新增
-		if (req.getCall_bk_fn().equals("customized")) {
-			check = orderListService.updateDataCustomized(resp, req, user);
-		} else {
-			check = orderListService.updateData(resp, req, user);
-		}
+		// Step2.進行更新
+		check = labelListService.updateData(resp, req, user);
+
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -175,7 +172,7 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderListService.deleteData(resp, req, user);
+		check = labelListService.deleteData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -207,7 +204,7 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderListService.getDataCustomized(resp, req, user);
+		check = labelListService.getDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -222,7 +219,7 @@ public class LabelListController extends AbstractController {
 	}
 
 	/**
-	 * 修改
+	 * 修改/新增
 	 */
 	@ResponseBody
 	@RequestMapping(value = { "/ajax/label_list.basil.S2" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
@@ -238,7 +235,7 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderListService.updateDataCustomized(resp, req, user);
+		check = labelListService.updateOrAddDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -252,4 +249,34 @@ public class LabelListController extends AbstractController {
 		return packageService.objToJson(resp);
 	}
 
+	/**
+	 * print_
+	 */
+	@ResponseBody
+	@RequestMapping(value = { "/ajax/label_list.basil.S3" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	public String printCustomized(@RequestBody String json_object) {
+		showSYS_CM("printCustomized");
+		show(json_object);
+		PackageBean req = new PackageBean();
+		PackageBean resp = new PackageBean();
+		boolean check = false;
+
+		// Step0.當前用戶資料-UI權限
+		SystemUser user = loginUser().getSystemUser();
+		// Step1.包裝解析
+		req = packageService.jsonToObj(new JSONObject(json_object));
+		// Step2.進行打印
+		check = labelListService.printTestCustomized(resp, req, user, true);
+		// Step3.進行判定
+		if (check) {
+			// Step4.包裝回傳
+			resp = packageService.setObjResp(resp, req, null);
+		} else {
+			// Step4.包裝Err回傳
+			packageService.setObjErrResp(resp, req);
+			resp = packageService.setObjResp(resp, req, null);
+		}
+		// 回傳-資料
+		return packageService.objToJson(resp);
+	}
 }

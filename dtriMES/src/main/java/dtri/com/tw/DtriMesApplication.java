@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class DtriPmsApplication {
+public class DtriMesApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(DtriPmsApplication.class, args);
+		SpringApplication.run(DtriMesApplication.class, args);
 	}
 }

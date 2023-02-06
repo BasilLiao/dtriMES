@@ -45,6 +45,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * 
  *      ^XZ --結束<br>
  */
+/**
+ * @author Basil
+ *
+ */
 @Entity
 @Table(name = "label_list")
 @EntityListeners(AuditingEntityListener.class)
@@ -109,10 +113,28 @@ public class LabelList {
 	@Column(name = "ll_pr", nullable = false, columnDefinition = "varchar(50)")
 	private String llpr;// 動態-設定-速度(1-7) ^PR
 
-	// ===區域位置(設計)============================
-	@Column(name = "ll_fo", nullable = false, columnDefinition = "text default ''")
-	private String llfo;// 動態-設計-[標籤]上->[打印]位置座標(x,y) ^FO0,2 ... [打印]位置結尾:^FS
+	// ===紙張換張(設定)============================
+	@Column(name = "ll_o_p_type", nullable = false, columnDefinition = "varchar(5)")
+	private String lloptype;// 多張 = 1 單張=0
+	@Column(name = "ll_o_p_qty", columnDefinition = "int default 0")
+	private Integer llopqty;// 一箱 多少台
+	@Column(name = "ll_o_l_qty", columnDefinition = "int default 0")
+	private Integer llolqty;// 一張 多少台
+	@Column(name = "ll_o_h_b_name", columnDefinition = "varchar(255)")
+	private String llohbname;// 第二 張開始隱藏標籤
+	@Column(name = "ll_o_s_b_name", columnDefinition = "varchar(255)")
+	private String llosbname;// 指定 要重複的標籤
+	@Column(name = "ll_o_top", columnDefinition = "int default 0")
+	private Integer llotop;// 指定 間格高度
 
+	
+
+	// ===存檔設定(設計)============================
+	@Column(name = "ll_fo_s", nullable = false, columnDefinition = "text default ''")
+	private String llfos;// 動態-設計-[標籤]上->[打印]位置座標(x,y) ^FO0,2 ... [打印]位置結尾:^FS
+
+	@Column(name = "ll_a_json", nullable = false, columnDefinition = "text default ''")
+	private String llajson;// 前端設定內容
 
 	public LabelList() {
 		// DB
@@ -134,8 +156,11 @@ public class LabelList {
 		this.llmd = "^MD{打印暗度}";
 		this.llpr = "^PR{打印速度}";
 
-		// 區域位置(通用)
-		this.llfo = "^FO{x,y區域位置座標(點)}^FS";
+		// 全區域位置(通用)[如果有跟隨機制 則{table.cell}]
+		this.llfos = "^FO{x,y全部區域位置座標(點)}^FS";
+
+		// UI存檔(通用)
+		this.llajson = "{}";
 	}
 
 	public String getLlxa() {
@@ -194,12 +219,164 @@ public class LabelList {
 		this.llpr = llpr;
 	}
 
-	public String getLlfo() {
-		return llfo;
+	public Date getSyscdate() {
+		return syscdate;
 	}
 
-	public void setLlfo(String llfo) {
-		this.llfo = llfo;
+	public void setSyscdate(Date syscdate) {
+		this.syscdate = syscdate;
+	}
+
+	public String getSyscuser() {
+		return syscuser;
+	}
+
+	public void setSyscuser(String syscuser) {
+		this.syscuser = syscuser;
+	}
+
+	public Date getSysmdate() {
+		return sysmdate;
+	}
+
+	public void setSysmdate(Date sysmdate) {
+		this.sysmdate = sysmdate;
+	}
+
+	public String getSysmuser() {
+		return sysmuser;
+	}
+
+	public void setSysmuser(String sysmuser) {
+		this.sysmuser = sysmuser;
+	}
+
+	public Integer getSysver() {
+		return sysver;
+	}
+
+	public void setSysver(Integer sysver) {
+		this.sysver = sysver;
+	}
+
+	public String getSysnote() {
+		return sysnote;
+	}
+
+	public void setSysnote(String sysnote) {
+		this.sysnote = sysnote;
+	}
+
+	public Integer getSyssort() {
+		return syssort;
+	}
+
+	public void setSyssort(Integer syssort) {
+		this.syssort = syssort;
+	}
+
+	public Integer getSysstatus() {
+		return sysstatus;
+	}
+
+	public void setSysstatus(Integer sysstatus) {
+		this.sysstatus = sysstatus;
+	}
+
+	public Boolean getSysheader() {
+		return sysheader;
+	}
+
+	public void setSysheader(Boolean sysheader) {
+		this.sysheader = sysheader;
+	}
+
+	public Long getLlid() {
+		return llid;
+	}
+
+	public void setLlid(Long llid) {
+		this.llid = llid;
+	}
+
+	public String getLlname() {
+		return llname;
+	}
+
+	public void setLlname(String llname) {
+		this.llname = llname;
+	}
+
+	public String getLlgname() {
+		return llgname;
+	}
+
+	public void setLlgname(String llgname) {
+		this.llgname = llgname;
+	}
+
+	public String getLlfos() {
+		return llfos;
+	}
+
+	public void setLlfos(String llfos) {
+		this.llfos = llfos;
+	}
+
+	public String getLlajson() {
+		return llajson;
+	}
+
+	public void setLlajson(String llajson) {
+		this.llajson = llajson;
+	}
+
+	public String getLloptype() {
+		return lloptype;
+	}
+
+	public void setLloptype(String lloptype) {
+		this.lloptype = lloptype;
+	}
+
+	public Integer getLlopqty() {
+		return llopqty;
+	}
+
+	public void setLlopqty(Integer llopqty) {
+		this.llopqty = llopqty;
+	}
+
+	public Integer getLlolqty() {
+		return llolqty;
+	}
+
+	public void setLlolqty(Integer llolqty) {
+		this.llolqty = llolqty;
+	}
+
+	public String getLlohbname() {
+		return llohbname;
+	}
+
+	public void setLlohbname(String llohbname) {
+		this.llohbname = llohbname;
+	}
+
+	public String getLlosbname() {
+		return llosbname;
+	}
+
+	public void setLlosbname(String llosbname) {
+		this.llosbname = llosbname;
+	}
+
+	public Integer getLlotop() {
+		return llotop;
+	}
+
+	public void setLlotop(Integer llotop) {
+		this.llotop = llotop;
 	}
 
 }

@@ -110,7 +110,7 @@ public class LabelListBean {
 
 	// ===Image(圖片設計)============================
 	private String llgfa;// 動態-設計-圖片 請使用ZPLConveterImg 轉換
-	private String llpgfa;// 動態-設計-圖片 倍率(只能小)
+	private String llgfap;// 動態-設計-圖片 倍率(只能小)
 
 	// ===QR code(二維碼設計)============================
 	/**
@@ -124,6 +124,16 @@ public class LabelListBean {
 	private String testbqfd;// 動態-設計-條碼測試文字:^FDLA, ...
 	// ===彙整標籤(內容)============================
 	private ArrayList<String> folist;
+
+	// ===其他設定============================
+	private boolean ll_o_p_type;// 是否有外箱特殊設定
+	private int ll_o_p_qty;// 每箱-多少台
+	private int ll_o_l_qty;// 每標籤-多少台
+	private int ll_l_qty;// 每箱-多少張
+	private int ll_l_now;// 目前-第幾張
+	private String ll_o_h_b_name;// 第二張後->指定隱藏(用空格區隔)
+	private String ll_o_s_b_name;// 指定重複(用空格區隔)
+	private int ll_o_top;// 指定重複的間格高度
 
 	public LabelListBean() {
 		// 標籤紙
@@ -139,7 +149,7 @@ public class LabelListBean {
 		this.llfo = "^FO{x,y區域位置座標(點)}^FS";
 
 		// 一般文字(字體)
-		this.llfd = "^FD{一般文字}\\&";
+		this.llfd = "^FD{一般文字}";
 		// 一般字形(字體)
 		this.lla = "^A{字型與角度,高,寬}";
 		// 一般字段(字體)
@@ -147,16 +157,77 @@ public class LabelListBean {
 
 		// 一維碼設計
 		this.llbfd = "^FD{條碼文字}";
-		this.llby = "^BY{條碼窄線(點),條碼寬比,條碼高度(點)}";
-		this.llb = "^B3N,N,{高度},N,N";
+		this.llby = "^BY{條碼窄線(點),條碼寬比},10";
+		this.llb = "^B{類型與角度,N,條碼高度(點),N,N}";// 其他固定(N,N,N)
 
 		// 二維碼設計
 		this.llbqfd = "^FDLA,{條碼文字}";
 		this.llbq = "^BQ{角度,2,大小}";
 
+		// 其他設定
+		this.ll_o_p_type = false;
+		this.ll_l_qty = 1;
+		this.ll_l_now = 1;
+
 		// 準備要的資料
 		this.folist = new ArrayList<String>();
 
+	}
+
+	public boolean isLl_o_p_type() {
+		return ll_o_p_type;
+	}
+
+	public void setLl_o_p_type(boolean ll_o_p_type) {
+		this.ll_o_p_type = ll_o_p_type;
+	}
+
+	public int getLl_o_p_qty() {
+		return ll_o_p_qty;
+	}
+
+	public void setLl_o_p_qty(int ll_o_p_qty) {
+		this.ll_o_p_qty = ll_o_p_qty;
+	}
+
+	public int getLl_o_l_qty() {
+		return ll_o_l_qty;
+	}
+
+	public void setLl_o_l_qty(int ll_o_l_qty) {
+		this.ll_o_l_qty = ll_o_l_qty;
+	}
+
+	public int getLl_l_qty() {
+		return ll_l_qty;
+	}
+
+	public void setLl_l_qty(int ll_l_qty) {
+		this.ll_l_qty = ll_l_qty;
+	}
+
+	public String getLl_o_h_b_name() {
+		return ll_o_h_b_name;
+	}
+
+	public void setLl_o_h_b_name(String ll_o_h_b_name) {
+		this.ll_o_h_b_name = ll_o_h_b_name;
+	}
+
+	public String getLl_o_s_b_name() {
+		return ll_o_s_b_name;
+	}
+
+	public void setLl_o_s_b_name(String ll_o_s_b_name) {
+		this.ll_o_s_b_name = ll_o_s_b_name;
+	}
+
+	public int getLl_o_top() {
+		return ll_o_top;
+	}
+
+	public void setLl_o_top(int ll_o_top) {
+		this.ll_o_top = ll_o_top;
 	}
 
 	public String getLlxa() {
@@ -323,8 +394,12 @@ public class LabelListBean {
 		return folist;
 	}
 
-	public void setFolist(ArrayList<String> folist) {
-		this.folist = folist;
+	public void setFolist(String folist) {
+		this.folist.add(folist);
+	}
+
+	public void newFolist() {
+		this.folist = new ArrayList<String>();
 	}
 
 	public Long getLlid() {
@@ -351,4 +426,31 @@ public class LabelListBean {
 		this.llgname = llgname;
 	}
 
+	public String getLlgfap() {
+		return llgfap;
+	}
+
+	public void setLlgfap(String llgfap) {
+		this.llgfap = llgfap;
+	}
+
+	public String getLlheader() {
+		return llpw + llll + llmd + llpr + lllh;
+	}
+
+	public String getLlbody() {
+		String llbody = "";
+		for (String one : folist) {
+			llbody += one;
+		}
+		return llbody;
+	}
+
+	public int getLl_l_now() {
+		return ll_l_now;
+	}
+
+	public void setLl_l_now(int ll_l_now) {
+		this.ll_l_now = ll_l_now;
+	}
 }

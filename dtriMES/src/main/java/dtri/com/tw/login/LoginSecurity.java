@@ -58,7 +58,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String repair_order_rma = "/ajax/repair_order_rma.basil";
 		String repair_list = "/ajax/repair_list.basil";
 		String repair_list_bat = "/ajax/repair_list_bat.basil";
-		
+
 		String label_list = "/ajax/label_list.basil";
 
 		String work_hours = "/ajax/work_hours.basil";
@@ -257,16 +257,16 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, repair_list_bat + ".AR").hasAuthority(actionRole(repair_list_bat, "AR"))// (查詢)
 				.antMatchers(HttpMethod.PUT, repair_list_bat + ".AU").hasAuthority(actionRole(repair_list_bat, "AU"))// (修改)
 
-				// ----請求-repair_list-(訪問) ----
+				// ----請求-label_list-(訪問) ----
 				.antMatchers(HttpMethod.POST, label_list).hasAuthority(actionRole(label_list, ""))//
 				.antMatchers(HttpMethod.POST, label_list + ".AR").hasAuthority(actionRole(label_list, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, label_list + ".AC").hasAuthority(actionRole(label_list, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, label_list + ".AU").hasAuthority(actionRole(label_list, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, label_list + ".AD").hasAuthority(actionRole(label_list, "AD"))// (移除)
 				.antMatchers(HttpMethod.POST, label_list + ".S1").hasAuthority(actionRole(label_list, "S1"))// (客製化-查詢)
-				.antMatchers(HttpMethod.PUT, label_list + ".S2").hasAuthority(actionRole(label_list, "S2"))// (客製化-修改)
+				.antMatchers(HttpMethod.PUT, label_list + ".S2").hasAuthority(actionRole(label_list, "S2"))// (客製化-修改/添加)
+				.antMatchers(HttpMethod.PUT, label_list + ".S3").hasAuthority(actionRole(label_list, "S3"))// (客製化-列印)
 
-				
 				// ----請求-work_hours-(訪問) ----
 				.antMatchers(HttpMethod.POST, work_hours).hasAuthority(actionRole(work_hours, ""))//
 				.antMatchers(HttpMethod.POST, work_hours + ".AR").hasAuthority(actionRole(work_hours, "AR"))// (查詢)

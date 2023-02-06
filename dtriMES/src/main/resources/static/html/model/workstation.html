@@ -673,7 +673,7 @@
 												</div>
 												<div class="row m-0 pl-1 h5">
 													<div class="m-0 mr-1 p-0">
-														<input id="ph_p_number" name="" value="true" type="checkbox" class=" mt-1 border border-dark rounded big-checkbox">
+														<input id="ph_mfg_p_no" name="" value="true" type="checkbox" class=" mt-1 border border-dark rounded big-checkbox">
 													</div>
 													<div class="col-10 m-0 p-0">Part No:</div>
 												</div>
@@ -1278,10 +1278,10 @@
    					return false;
    				break;
    				case "3X1PART":
-   					if($("#ph_p_number").prop("checked")){
-	   					$("#ph_p_number").prop("checked", false);   						
+   					if($("#ph_mfg_p_no").prop("checked")){
+	   					$("#ph_mfg_p_no").prop("checked", false);   						
    					}else{
-   						$("#ph_p_number").prop("checked", true);
+   						$("#ph_mfg_p_no").prop("checked", true);
    					}
    					$('#m_order').val('');
    					$("html, body").animate({ scrollTop: 400 }, 'fast');
@@ -2165,17 +2165,17 @@
    			 
 			//=======Step6.標籤=======
    			//如果有[勾選]Part ON. 3*1
-   			if($('#ph_p_number').is(":checked") && $("#m__ph_p_number .doc_c_value").val()!=""){
-   				var top_lb= $("#m__ph_p_number .doc_c_name").text();
-   				top_lb+=$("#m__ph_p_number .doc_c_value").val();
+   			if($('#ph_mfg_p_no').is(":checked") && $("#m__ph_mfg_p_no .doc_c_value").val()!=""){
+   				var top_lb= $("#m__ph_mfg_p_no .doc_c_name").text();
+   				top_lb+=$("#m__ph_mfg_p_no .doc_c_value").val();
    				$("#barcode_sn_print #barcode_p_number").text(top_lb);
    			}else{
    				$("#barcode_sn_print #barcode_p_number").text("");
    			}
    			//如果有[勾選]Part ON. 3*2
    			if($('#ph_p_double_number').is(":checked") && $("#m__ph_p_double_number .doc_c_value").val()!=""){
-   				var top_lb= $("#m__ph_p_number .doc_c_name").text();
-   				top_lb+=$("#m__ph_p_number .doc_c_value").val();
+   				var top_lb= $("#m__ph_mfg_p_no .doc_c_name").text();
+   				top_lb+=$("#m__ph_mfg_p_no .doc_c_value").val();
    				$("#barcode_p_double_number").text(top_lb);
    			}else{
    				$("#barcode_p_double_number").text("");

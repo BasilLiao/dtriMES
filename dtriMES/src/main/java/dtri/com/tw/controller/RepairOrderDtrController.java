@@ -140,7 +140,7 @@ public class RepairOrderDtrController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		if (req.getCall_bk_fn().equals("customized")) {
+		if (req.getCall_bk_fn().equals("customized_search")) {
 			check = orderDtrService.updateDataCustomized(resp, req, user);
 		} else {
 			check = orderDtrService.updateData(resp, req, user);
