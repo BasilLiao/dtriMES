@@ -266,7 +266,7 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行打印
-		check = labelListService.printTestCustomized(resp, req, user, true);
+		check = labelListService.printerCustomized(resp, req, user, true, null);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

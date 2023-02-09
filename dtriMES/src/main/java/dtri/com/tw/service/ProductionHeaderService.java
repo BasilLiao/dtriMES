@@ -3,6 +3,7 @@ package dtri.com.tw.service;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
+import dtri.com.tw.db.entity.LabelList;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
@@ -27,6 +29,7 @@ import dtri.com.tw.db.entity.WorkHours;
 import dtri.com.tw.db.entity.WorkType;
 import dtri.com.tw.db.entity.Workstation;
 import dtri.com.tw.db.entity.WorkstationProgram;
+import dtri.com.tw.db.pgsql.dao.LabelListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionSNDao;
@@ -59,6 +62,9 @@ public class ProductionHeaderService {
 
 	@Autowired
 	private WorkHoursDao hoursDao;
+
+	@Autowired
+	private LabelListDao labelListDao;
 
 	@Autowired
 	EntityManager em;
@@ -100,7 +106,8 @@ public class ProductionHeaderService {
 				// 產品號(Product Name) 可能與 BOM不同[如果不是半成品 則以成品 BOM命名]
 				ph_wp_id = "工作程序", ph_s_date = "開始時間", ph_e_date = "結束時間", ph_schedule = "進度(X／X)", //
 				ph_e_s_date = "預計出貨日", ph_p_qty = "預計生產數", ph_p_ok_qty = "生產完成數", ph_p_a_ok_qty = "加工完成數", //
-				ph_order_id = "訂單編號", ph_c_name = "客戶名稱", ph_c_from = "單據來源", ph_w_years = "保固(年)", ph_wc_line = "生產線";
+				ph_order_id = "訂單編號", ph_c_name = "客戶名稱", ph_c_from = "單據來源", ph_w_years = "保固(年)", //
+				ph_wc_line = "生產線", ph_ll_a_json = "標籤組內容", ph_ll_g_name = "標籤組";
 		// 製令單規格
 		String pr_bom_id = "BOM料號(公司)", pr_bom_c_id = "BOM料號(客戶)", pr_p_model = "產品型號", pr_p_v = "產品版本", //
 				pr_b_item = "規格定義", pr_s_item = "軟體定義", //
@@ -139,6 +146,9 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_c_from", FFS.h_t(ph_c_from, "130px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_w_years", FFS.h_t(ph_w_years, "130px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_wc_line", FFS.h_t(ph_wc_line, "130px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll", FFS.h_t("ll", "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_ll_g_name", FFS.h_t(ph_ll_g_name, "130px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_ll_a_json", FFS.h_t(ph_ll_a_json, "130px", FFM.Wri.W_N));
 
 			// 工作站
 			for (Workstation w_one : w_s) {
@@ -213,6 +223,15 @@ public class ProductionHeaderService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_Y, "col-md-1", false, n_val, "ph_w_years", ph_w_years));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "ph_wc_line", ph_wc_line));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_c_from", ph_c_from));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "====標籤設置內容====", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ll", ""));
+
+			JSONArray a_val_g = new JSONArray();
+			ArrayList<String> label_g = labelListDao.getLabelGroupDistinct();
+			label_g.forEach(p -> {
+				a_val_g.put((new JSONObject()).put("value", p).put("key", p));
+			});
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, a_val_g, "ph_ll_g_name", ph_ll_g_name));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ph_ll_a_json", ph_ll_a_json));
 
 			// 規格-ProductionRecords
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "====產品規格====", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pr", ""));
@@ -418,6 +437,10 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_c_from", one.getPhcfrom());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_w_years", one.getPhwyears());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_wc_line", one.getPhwcline() == null ? "" : one.getPhwcline());
+
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ll", "====標籤設置內容====");
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_ll_g_name", one.getPhllgname() == null ? "" : one.getPhllgname());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_ll_a_json", one.getPhllajson() == null ? "" : one.getPhllajson());
 
 			// 工作程序
 			JSONObject ph_pb_s = new JSONObject();
@@ -685,6 +708,19 @@ public class ProductionHeaderService {
 					pro_h.setPhwyears(data.getInt("ph_w_years"));
 					pro_h.setPhesdate(data.getString("ph_e_s_date"));
 					pro_h.setPhwcline(data.getString("ph_wc_line"));
+					// 標籤?
+					if (data.has("ph_ll_g_name")) {
+						pro_h.setPhllgname(data.getString("ph_ll_g_name"));
+						ArrayList<LabelList> labels = labelListDao.findAllByLlgnameAndLlname(null, data.getString("ph_ll_g_name"), null);
+						if (labels.size() >= 1) {
+							String[] label_all = new String[labels.size()];
+							for (int i = 0; i < labels.size(); i++) {
+								label_all[i] = labels.get(i).getLlajson();
+							}
+							pro_h.setPhllajson(Arrays.toString(label_all));
+						}
+					}
+
 					productionHeaderDao.save(pro_h);
 					productionBodyDao.saveAll(pro_bs);
 
@@ -966,6 +1002,18 @@ public class ProductionHeaderService {
 					pro_h.setPhwyears(data.getInt("ph_w_years"));
 					pro_h.setPhesdate(data.getString("ph_e_s_date"));
 					pro_h.setPhwcline(data.getString("ph_wc_line"));
+					// 標籤?
+					if (data.has("ph_ll_g_name")) {
+						pro_h.setPhllgname(data.getString("ph_ll_g_name"));
+						ArrayList<LabelList> labels = labelListDao.findAllByLlgnameAndLlname(null, data.getString("ph_ll_g_name"), null);
+						if (labels.size() >= 1) {
+							String[] label_all = new String[labels.size()];
+							for (int i = 0; i < labels.size(); i++) {
+								label_all[i] = labels.get(i).getLlajson();
+							}
+							pro_h.setPhllajson(Arrays.toString(label_all));
+						}
+					}
 					productionHeaderDao.save(pro_h);
 					productionBodyDao.saveAll(pro_bs);
 
@@ -1109,6 +1157,18 @@ public class ProductionHeaderService {
 					one_header.setPhorderid(data.getString("ph_order_id"));
 					one_header.setPhpokqty(data.getInt("ph_p_a_ok_qty"));
 					one_header.setPhcfrom("MES");
+					// 標籤?
+					if (data.has("ph_ll_g_name")) {
+						one_header.setPhllgname(data.getString("ph_ll_g_name"));
+						ArrayList<LabelList> labels = labelListDao.findAllByLlgnameAndLlname(null, data.getString("ph_ll_g_name"), null);
+						if (labels.size() >= 1) {
+							String[] label_all = new String[labels.size()];
+							for (int i = 0; i < labels.size(); i++) {
+								label_all[i] = labels.get(i).getLlajson();
+							}
+							one_header.setPhllajson(Arrays.toString(label_all));
+						}
+					}
 					// 系統
 					one_header.setSysheader(true);
 					one_header.setSysnote(data.getString("sys_note"));

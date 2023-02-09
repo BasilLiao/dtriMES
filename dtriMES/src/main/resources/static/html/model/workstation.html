@@ -151,7 +151,7 @@
 									<div id="barcode_BC011"></div>
 									<div id="BC011" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
 										<div class="small font-weight-bold">
-											print(印出SN)<br>[BC011]
+											print(伺服器 打印)<br>[BC011]
 										</div>
 									</div>
 								</div>
@@ -641,7 +641,7 @@
 					<!-- 標籤樣式(固定) -->
 					<tr>
 						<td rowspan="2" colspan="3" class="p-0 border border-dark">
-							<div class="shadow-sm text-left" style="min-height: 740px;">
+							<div class="shadow-sm text-left" style="min-height: 100px;">
 								<div class=" bg-dark text-light m-0 p-1 h5">
 									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto)
 								</div>
@@ -929,6 +929,64 @@
 									</div>
 								</div>
 							</div>
+
+							<div class="shadow-sm text-left" style="min-height: 700px;">
+								<div class=" bg-dark text-light m-0 p-1 h5">
+									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b>
+								</div>
+								<div id="label_list" class="row m-0">
+									<!-- 範例標籤 -->
+									<div id="ex_label_id" class="d-none">
+										<div class="row p-0 m-1 justify-content-end border border-light" style="width: 275px;">
+											<div class="label_name h5 col-10 m-0 p-1">Ex範例標籤</div>
+											<div id="ex_label_op" class="col-2 pn__op pr-1 pl-3 pt-1">
+												<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
+											</div>
+											<div id="ex_label_cl" class="col-2 pn__cl pr-1 pl-3 pt-1 d-none">
+												<i class="bi bi-dash-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+											</div>
+										</div>
+										<div id="ex_label" class="d-none p-0 m-1 border border-dark" style="width: 275px;">
+											<div class="row m-0 pl-1 h5">
+												<div class="m-0 mr-1 p-0">
+													<input name="" value="true" type="checkbox" class="label_auto mt-1 border border-dark rounded big-checkbox">
+												</div>
+												<div class="col-10 m-0 p-0">選擇標籤(自動)</div>
+											</div>
+											<div class="printer_c p-1 m-0 mb-2 row bg-light">
+												<div class="col-6 m-0 p-1">Printer(標籤機)</div>
+												<div class="col-6 m-0 p-1">
+													<input placeholder="標籤機代號" type="text" class="col p-0 rounded" value="">
+												</div>
+											</div>
+											<div class="barcode_print_q p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Print Qty(打印次數)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="barcode_package_q d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Package Qty(每箱數量)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="100" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="barcode_label_q d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Label Qty(每標數量)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="front_from_sn d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Front_From_SN(登記)</div>
+												<p class="d-none def col-12 m-0 p-1"></p>
+											</div>
+										</div>
+									</div>
+									<!-- 正式 -->
+
+								</div>
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -963,6 +1021,8 @@
    		//項目 / 標題
    		fix_i_open:0,
    		fix_t_open:0,
+   		//obj_label 標籤群組
+   		obj_label:[],
    	},
    	//初始化
    	created() {
@@ -1426,9 +1486,6 @@
    						var divToPrint_double=$('<div>').append($('#barcode_sn_double_print').clone()).html();
    						//6*10
    						var divToPrint_big=$('<div>').append($('#barcode_sn_big_list').clone()).html();
-   						
-   					
-   					
    						//==數量==
    						var print_all='';
    						//3*1
@@ -1488,8 +1545,14 @@
    						$("#w_focus_"+workstation.nb).removeClass("border-0");
    						
    						//打印指令
-   						workstation.sendPrinter();
+   						workstation.sendPrinter(true);
    					}
+   					//標籤設計模式
+   					if (workstation.barcode_check && $('.label_auto').is(":checked")){
+   						//打印指令
+   						workstation.sendPrinter(false);
+   					}
+   					
    					workstation.clearOrder();
    					return false;
    					break;
@@ -1830,7 +1893,7 @@
    			//},200);
    		},
    		//指令列印
-   		sendPrinter(){
+   		sendPrinter(fixed){
    			var action = "PT";
    			var	s_type = "POST";
    			var s_url = "";
@@ -1847,40 +1910,77 @@
    			
    			//printer data
    			var printer = {};
-   			//========3*1========
-   			if($("#barcode_sn_one_printer").val()!=""){
-	   			var label_list=[];
-	   			for(var x =0;x<$("#barcode_3X1_print .order_print").length;x++){
+   			if(fixed){
+   			//========標籤(固定模式)========
+	   			//========3*1========
+	   			if($("#barcode_sn_one_printer").val()!=""){
+		   			var label_list=[];
+		   			for(var x =0;x<$("#barcode_3X1_print .order_print").length;x++){
+			   			var label = {}
+			   			label['part_no'] = $("#barcode_3X1_print #barcode_p_number")[x].innerText;
+			   			label['product_number']= "";
+			   			label['sn_name']= $("#barcode_3X1_print .order_print")[x].innerText.split(" ")[0];
+			   			label['sn_value']= $("#barcode_3X1_print .order_print")[x].innerText.split(" ")[1];
+			   			label_list.push(label);
+		   			}   			
+		   			printer['label_3X1_nb'] = $("#barcode_sn_one_nb").val();
+		   			printer['label_3X1_list'] = label_list;
+		   			printer['printer_3X1_code'] = $("#barcode_sn_one_printer").val();   				
+	   			}
+	   			//========3*2========
+	   			if($("#barcode_sn_double_printer").val()!=""){
+		   			var label_list=[];
 		   			var label = {}
-		   			label['part_no'] = $("#barcode_3X1_print #barcode_p_number")[x].innerText;
+		   			label['part_no'] = $("#barcode_sn_double_print #barcode_p_double_number").text();
 		   			label['product_number']= "";
-		   			label['sn_name']= $("#barcode_3X1_print .order_print")[x].innerText.split(" ")[0];
-		   			label['sn_value']= $("#barcode_3X1_print .order_print")[x].innerText.split(" ")[1];
-		   			label_list.push(label);
-	   			}   			
-	   			printer['label_3X1_nb'] = $("#barcode_sn_one_nb").val();
-	   			printer['label_3X1_list'] = label_list;
-	   			printer['printer_3X1_code'] = $("#barcode_sn_one_printer").val();   				
-   			}
-   			//========3*2========
-   			if($("#barcode_sn_double_printer").val()!=""){
-	   			var label_list=[];
-	   			var label = {}
-	   			label['part_no'] = $("#barcode_sn_double_print #barcode_p_double_number").text();
-	   			label['product_number']= "";
-	   			label['sn_name_1']= $("#barcode_sn_double_print #barcode_sn_double_name").text().split(" ")[0];
-	   			label['sn_value_1']= $("#barcode_sn_double_print #barcode_sn_double_name").text().split(" ")[1];
-	   			label['sn_name_2']= $("#barcode_sn_double_print #barcode_sn_double_name2").text().split(" ")[0];
-	   			label['sn_value_2']= $("#barcode_sn_double_print #barcode_sn_double_name2").text().split(" ")[1];	
-	   			//包裝
-	   			printer['label_3X2_nb'] = $("#barcode_sn_double_nb").val();
-	   			printer['label_3X2_list'] = label;
-	   			printer['printer_3X2_code'] = $("#barcode_sn_double_printer").val();   				
+		   			label['sn_name_1']= $("#barcode_sn_double_print #barcode_sn_double_name").text().split(" ")[0];
+		   			label['sn_value_1']= $("#barcode_sn_double_print #barcode_sn_double_name").text().split(" ")[1];
+		   			label['sn_name_2']= $("#barcode_sn_double_print #barcode_sn_double_name2").text().split(" ")[0];
+		   			label['sn_value_2']= $("#barcode_sn_double_print #barcode_sn_double_name2").text().split(" ")[1];	
+		   			//包裝
+		   			printer['label_3X2_nb'] = $("#barcode_sn_double_nb").val();
+		   			printer['label_3X2_list'] = label;
+		   			printer['printer_3X2_code'] = $("#barcode_sn_double_printer").val();   				
+	   			}
+   			}else{
+   				//========自定義標籤(設計模式)========
+				if ($('.label_auto').is(":checked")){
+					printer['label_list'] =[];
+					printer['label_list_sn'] = $('#w_focus_5').val();
+					$('.label_auto').map(function () {
+						if(this.id!=""){
+							var choose_id = this.id.replace("_auto","");
+							var one_label = $("#"+choose_id);
+							if(one_label.find(".label_auto").is(":checked")){
+								var label_obj = {};
+								//打印?
+								label_obj.printer_c = one_label.find('.printer_c input').val();//標籤機代號
+								label_obj.barcode_id = choose_id.replace("id_","").replace("_label","");//標籤ID
+								label_obj.barcode_pt_q = one_label.find('.barcode_print_q  input').val();//打印幾次
+								label_obj.barcode_pe_q = 0;//箱上台數
+								label_obj.barcode_ll_q = 0;//標籤上台數
+								label_obj.f_f_l = "";//來自前端值
+								//有包裝設定?
+								if(!one_label.find('.barcode_package_q').hasClass("d-none")){
+									label_obj.barcode_pe_q = one_label.find('.barcode_package_q input').val();
+									label_obj.barcode_ll_q = one_label.find('.barcode_label_q input').val();								
+								}
+								//有前端 值入設定?
+								if(one_label.find(".front_from_sn .front_sn_list").length>=1){
+									label_obj.f_f_l =  one_label.find(".front_sn_list").map((_,el) => el.innerHTML).get();								
+								}else{
+									label_obj.f_f_l = [];
+								}
+								printer['label_list'].push(label_obj);
+							}
+						}	
+					});
+				}
    			}
    				
-   			
-   			
-	   		if(printer['printer_3X1_code'] !=null ||printer['printer_3X2_code'] !=null){
+   				
+   				
+	   		if(printer['printer_3X1_code'] !=null ||printer['printer_3X2_code'] !=null||printer['label_list']!=null){
 		   		//包裝(action = AR_AC/AR_AU/AR_AD/PT)
 	   			s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
 	   			req.action=action;
@@ -2163,7 +2263,7 @@
 			$("#w_focus_"+workstation.nb).addClass("border-1");
 			$("#w_focus_"+workstation.nb).removeClass("border-0");
    			 
-			//=======Step6.標籤=======
+			//=======Step8.標籤=======
    			//如果有[勾選]Part ON. 3*1
    			if($('#ph_mfg_p_no').is(":checked") && $("#m__ph_mfg_p_no .doc_c_value").val()!=""){
    				var top_lb= $("#m__ph_mfg_p_no .doc_c_name").text();
@@ -2329,11 +2429,91 @@
    	   				workstation.sn_box_list=[];
    	   			}
    			}
+   			//=======Step9.New標籤=======
+			if(main.allData.body.obj_label!=null && $("#label_pr_id").text()!=doc_list.m__ph_pr_id){
+				this.obj_label = main.allData.body.obj_label;
+				$(".label_re").remove();
+				$("#label_pr_id").text(doc_list.m__ph_pr_id);
+				var obj_label = main.allData.body.obj_label;
+				//每個標籤設定
+				obj_label.forEach(function (x) {
+					var ll_id = x.label_set.ll_id;
+					var ex_label = $($("#ex_label_id").clone());
+					ex_label.removeClass("d-none");
+					ex_label.addClass("label_re");
+					ex_label.find('#ex_label_op').attr('id',"id_"+ll_id+'_label_op');
+					ex_label.find('#ex_label_cl').attr('id',"id_"+ll_id+'_label_cl');
+					ex_label.find('#ex_label').attr('id',"id_"+ll_id+'_label');
+					ex_label.find('.label_name').text(x.label_set.ll_name);
+					ex_label.find('.label_auto').attr('id',"id_"+ll_id+'_label_auto');
+					
+					//有包裝設定?
+					if(x.label_package.ll_o_p_type){
+						ex_label.find('.barcode_print_q').removeClass("d-none");
+						ex_label.find('.barcode_package_q').removeClass("d-none");
+						ex_label.find('.barcode_package_q input').val(x.label_package.ll_o_p_qty);
+						
+						ex_label.find('.barcode_label_q').removeClass("d-none");
+						ex_label.find('.barcode_label_q input').val(x.label_package.ll_o_l_qty);
+						
+					}
+					//標籤內有 任何 跟隨機制?
+					var front_from_sn = false;
+					x.label_block.forEach(function (y) {
+						if(y.ll_fo_content.ll_fd_f && !front_from_sn){
+							front_from_sn = (y.ll_fo_content.ll_fd_f=="fn.front_from_sn");
+						}
+						if(y.ll_fo_content.ll_bfd_f && !front_from_sn){
+							front_from_sn = (y.ll_fo_content.ll_bfd_f=="fn.front_from_sn");
+						}
+						if(y.ll_fo_content.ll_bqfd_f && !front_from_sn){
+							front_from_sn = (y.ll_fo_content.ll_bqfd_f=="fn.front_from_sn");
+						}
+					});
+					if(front_from_sn){
+						ex_label.find('.front_from_sn').removeClass("d-none");
+					}
+					ex_label.appendTo("#label_list");						
+				});
+			}
+			//自動化勾選
+	   		if ($('.label_auto').is(":checked")){
+	   			$('.label_auto').map(function () {
+	   				if(this.id!=""){
+		   				var choose_id = this.id.replace("_auto","");
+	
+		   				//確定有勾選且有(跟隨機制)Front_From_SN
+		  				if(!$("#"+choose_id+" .front_from_sn").hasClass("d-none")){
+		  					//數量?
+		  					var pq=	parseInt($("#"+choose_id+" .barcode_package_q input").val());
+		  					
+		  					if($("#"+choose_id+" .front_from_sn p").length<=pq){
+		  						//不能重複
+		  						var f_f_l = $("#"+choose_id+" .front_sn_list").map((_,el) => el.innerHTML).get();
+		  						if(f_f_l.indexOf($('#w_focus_5').val())<0){
+					   				var f_f_sn = $($("#"+choose_id+" .front_from_sn .def").clone());
+					   				f_f_sn.removeClass("d-none");
+					   				f_f_sn.removeClass("def");
+					   				f_f_sn.addClass("front_sn_list");
+					   				f_f_sn.text($('#w_focus_5').val());					   				 
+					   				f_f_sn.appendTo("#"+choose_id+" .front_from_sn");
+		  						}
+		  					}else if($("#"+choose_id+" .front_sn_list").length==pq){
+		  						//如果是有特殊設定(Front_From_SN)->但是沒外包裝
+		  						$("#"+choose_id+" .front_sn_list").text($('#w_focus_5').val());
+	  						}
+		  					
+		  				}
+	   				}
+	   			});
+	   		}
+   				
+   			
 
-   			//Step7.如果:存檔後檢查
+   			//Step Last.如果:存檔後檢查
    			if(workstation.barcode_save){
    				workstation.barcode_save = false;
-   				//Step7-1.自動列印
+   				//Step Last-1.自動列印
    				if($('#sn_one_check').is(":checked")){
    					//3*1
    					$("#BC011" ).trigger( "click" );						
@@ -2348,7 +2528,7 @@
    					$("#BC012" ).trigger( "click" );		
    				}
    				//清除
-   				//Step7-2.基本清除
+   				//Step Last.基本清除
    				//$('#w_focus_3').val("");
    				$('#w_focus_4').val("");
    				$('#w_focus_5').val("");
@@ -2360,7 +2540,7 @@
    					$(".sn_list .w_sn_value").val(""); 		
    				}
    				
-   				//Step7-3.更換Class
+   				//Step Last.更換Class
    				var id =$(".border-1").attr("id");
    				workstation.nb = 5;
    				$("#"+id).removeClass("border-1");

@@ -3,6 +3,7 @@ package dtri.com.tw.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,8 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import dtri.com.tw.bean.LabelListBean;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.LabelList;
+import dtri.com.tw.db.entity.ProductionBody;
+import dtri.com.tw.db.entity.ProductionHeader;
+import dtri.com.tw.db.entity.ProductionRecords;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.LabelListDao;
+import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.tools.Fm_Time;
 import dtri.com.tw.tools.Fm_ZPLCodeConveterImg;
 
@@ -35,6 +40,8 @@ import dtri.com.tw.tools.Fm_ZPLCodeConveterImg;
 public class LabelListService {
 	@Autowired
 	private LabelListDao labelsDao;
+	@Autowired
+	private ProductionBodyDao bodyDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -421,8 +428,9 @@ public class LabelListService {
 			object_body = new JSONObject();
 		}
 
-		// 標籤資料
 		JSONArray objects = new JSONArray();
+
+		// 標籤資料
 		ArrayList<LabelList> labels = new ArrayList<LabelList>();
 		labels = (ArrayList<LabelList>) labelsDao.findAllByOrderByLlgnameAscLlnameAsc();
 		if (labels.size() >= 1) {
@@ -436,6 +444,51 @@ public class LabelListService {
 			});
 		}
 		object_body.put("customized_detail", objects);
+
+		// 標籤跟隨清單
+		JSONArray object_follow = new JSONArray();
+		// 前端
+		object_follow.put("fn.front_from_sn.來自工作站產品序號");// 來自工作站前端
+		// 產品細節
+		object_follow.put("na.na.====產品細節====");// 
+		object_follow.put("pb.getPbbsn.產品身分號碼");// 產品燒錄號碼
+		object_follow.put("pb.getPbshippingdate.實際出貨日");// 實際出貨日
+		object_follow.put("pb.getPbrecyclingdate.回收日");// 回收日
+		object_follow.put("pb.getPbposition.最後位置");// 最後位置
+		object_follow.put("pb.getPbwyears.保固年分");// 保固年分
+		try {
+			// 有效設定的欄位
+			ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
+			for (int k = 0; k < 50; k++) {
+				String in_name = "getPbvalue" + String.format("%02d", k + 1);
+				Method in_method = body_one.getClass().getMethod(in_name);
+				String value = (String) in_method.invoke(body_one);
+				// 欄位有定義的顯示
+				if (value != null && !value.equals("")) {
+					object_follow.put("pb." + in_name + "." + value);// 動態欄位
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 製令單
+		object_follow.put("na.na.====製令單====");// 
+		object_follow.put("ph.getPhmfgpno.驗證碼");// 驗證碼
+		object_follow.put("ph.getPhpsno.組件號");// 組件號
+		object_follow.put("ph.getPhpname.產品名稱(號)");// 產品名稱(號)
+		object_follow.put("ph.getPhesdate.預計出貨日");// 預計出貨日
+		object_follow.put("ph.getPhorderid.訂單號(號)");// 訂單號(號)
+		object_follow.put("ph.getPhwcline.產線");// 產線
+		object_follow.put("ph.getSysnote.備註");// 備註
+		object_follow.put("pr.getPrid.製令單號");// 製令單號
+		// 製令規格
+		object_follow.put("na.na.====製令規格====");// 
+		object_follow.put("pr.getPrbomid.BOM料號(公司)");// BOM料號(公司)
+		object_follow.put("pr.getPrbomcid.BOM料號(客戶)");// BOM料號(客戶)
+		object_follow.put("pr.getPrpmodel.產品型號");// 產品型號
+		object_follow.put("pr.getPrpv.產品版本");// 產品版本
+
+		object_body.put("customized_follow", object_follow);
 		resp.setBody(object_body);
 		return true;
 	}
@@ -449,16 +502,22 @@ public class LabelListService {
 	 * 
 	 */
 	@Transactional
-	public boolean printTestCustomized(PackageBean resp, PackageBean req, SystemUser user, Boolean testPrint) {
+	public boolean printerCustomized(PackageBean resp, PackageBean req, SystemUser user, Boolean testPrint, LabelList truePrint) {
 		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			if (body != null && !body.isNull("print")) {
 				System.out.println(body.getJSONObject("print"));
-				Long ll_id = Long.parseLong(body.getJSONObject("print").getString("label_choose"));
-				String printName = body.getJSONObject("print").getString("print_code");
-				int printQty = Integer.parseInt(body.getJSONObject("print").getString("print_qty"));
-				ArrayList<LabelList> labels = labelsDao.findAllByLlid(ll_id);
+				String printName = body.getJSONObject("print").getString("print_code");// 標籤機代號
+				int printQty = Integer.parseInt(body.getJSONObject("print").getString("print_qty"));// 幾張
+				ArrayList<LabelList> labels = new ArrayList<LabelList>();
+				// Y=測試用?N=正是用?
+				if (testPrint) {
+					Long ll_id = Long.parseLong(body.getJSONObject("print").getString("label_choose"));
+					labels = labelsDao.findAllByLlid(ll_id);
+				} else {
+					labels.add(truePrint);
+				}
 				// Step1. 取出打印對象
 				if (labels.size() == 1) {
 					LabelList label = labels.get(0);
@@ -485,67 +544,69 @@ public class LabelListService {
 						label_bean.setLl_o_s_b_name(label_package.getString("ll_o_s_b_name"));// 指定重複
 						label_bean.setLl_o_top(Integer.parseInt(label_package.getString("ll_o_top")));
 						// 測試用
-						JSONArray label_t_blocks = label_json.getJSONArray("label_block");
-						for (int i = 0; i < label_t_blocks.length(); i++) {
-							JSONObject label_block = label_t_blocks.getJSONObject(i);
-							JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
-							String ll_fo_name = label_block.getString("ll_fo_name");
-							switch (ll_fo_c.getString("label_block_type")) {
-							case "char_type":
-								String ll_fds = "";
-								// 需要重複的
-								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
-									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
-										ll_fds += ll_fo_c.getString("ll_fd") + " ";
+						if (testPrint) {
+							JSONArray label_t_blocks = label_json.getJSONArray("label_block");
+							for (int i = 0; i < label_t_blocks.length(); i++) {
+								JSONObject label_block = label_t_blocks.getJSONObject(i);
+								JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
+								String ll_fo_name = label_block.getString("ll_fo_name");
+								switch (ll_fo_c.getString("label_block_type")) {
+								case "char_type":
+									String ll_fds = "";
+									// 需要重複的
+									if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+											ll_fds += ll_fo_c.getString("ll_fd") + " ";
+										}
+										ll_fo_c.put("ll_fd", ll_fds);
+										label_block.put("ll_fo_content", ll_fo_c);
+										label_t_blocks.put(i, label_block);
 									}
-									ll_fo_c.put("ll_fd", ll_fds);
-									label_block.put("ll_fo_content", ll_fo_c);
-									label_t_blocks.put(i, label_block);
-								}
-								break;
-							case "img_type":
-								// 圖片
-								String ll_gfas = "";
-								// 需要重複的
-								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
-									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
-										ll_gfas += ll_fo_c.getString("ll_gfa") + " ";
+									break;
+								case "img_type":
+									// 圖片
+									String ll_gfas = "";
+									// 需要重複的
+									if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+											ll_gfas += ll_fo_c.getString("ll_gfa") + " ";
+										}
+										ll_fo_c.put("ll_gfa", ll_gfas);
+										label_block.put("ll_fo_content", ll_fo_c);
+										label_t_blocks.put(i, label_block);
 									}
-									ll_fo_c.put("ll_gfa", ll_gfas);
-									label_block.put("ll_fo_content", ll_fo_c);
-									label_t_blocks.put(i, label_block);
-								}
-								break;
-							case "barcode_type":
-								// 一維碼
-								String ll_bfds = "";
-								// 需要重複的
-								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
-									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
-										ll_bfds += ll_fo_c.getString("ll_bfd") + " ";
+									break;
+								case "barcode_type":
+									// 一維碼
+									String ll_bfds = "";
+									// 需要重複的
+									if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+											ll_bfds += ll_fo_c.getString("ll_bfd") + " ";
+										}
+										ll_fo_c.put("ll_bfd", ll_bfds);
+										label_block.put("ll_fo_content", ll_fo_c);
+										label_t_blocks.put(i, label_block);
 									}
-									ll_fo_c.put("ll_bfd", ll_bfds);
-									label_block.put("ll_fo_content", ll_fo_c);
-									label_t_blocks.put(i, label_block);
-								}
 
-								break;
-							case "qr_code_type":
-								// 二維碼
-								String ll_bqfds = "";
-								// 需要重複的
-								if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
-									for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
-										ll_bqfds += ll_fo_c.getString("ll_bqfd") + " ";
+									break;
+								case "qr_code_type":
+									// 二維碼
+									String ll_bqfds = "";
+									// 需要重複的
+									if (label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+										for (int a = 1; a <= label_bean.getLl_o_p_qty(); a++) {
+											ll_bqfds += ll_fo_c.getString("ll_bqfd") + " ";
+										}
+										ll_fo_c.put("ll_bqfd", ll_bqfds);
+										label_block.put("ll_fo_content", ll_fo_c);
+										label_t_blocks.put(i, label_block);
 									}
-									ll_fo_c.put("ll_bqfd", ll_bqfds);
-									label_block.put("ll_fo_content", ll_fo_c);
-									label_t_blocks.put(i, label_block);
+									break;
 								}
-								break;
 							}
+							label_json.put("label_block", label_t_blocks);
 						}
-						label_json.put("label_block", label_t_blocks);
 					}
 
 					// label_block
@@ -565,11 +626,11 @@ public class LabelListService {
 							String llfo = "";
 							// 隱藏 = 頁數大於1 且被指定隱藏 = false
 							Boolean hidden = true;
-							if(label_bean.getLl_l_now() > 1) {
+							if (label_bean.getLl_l_now() > 1) {
 								hidden = label_bean.getLl_o_h_b_name().indexOf(ll_fo_name) < 0;
-								
+
 							}
-							
+
 							if (hidden) {
 								switch (ll_fo_c.getString("label_block_type")) {
 								case "char_type":
@@ -578,9 +639,7 @@ public class LabelListService {
 									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_fd_s[] = ll_fo_c.getString("ll_fd").split(" ");
-										if (!ll_fo_c.getString("ll_fd_f").equals("")) {
-											ll_fd_s = ll_fo_c.getString("ll_bf_f").split(" ");
-										}
+
 										// 複數區間
 										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
 										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
@@ -588,6 +647,10 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
+											//可能沒有資料
+											if(i>=ll_fd_s.length) {
+												continue;
+											}
 											String ll_fd = ll_fd_s[i];
 											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fd);
 											// 字型?
@@ -612,12 +675,8 @@ public class LabelListService {
 										llfo = llfos;// 放回區塊內
 									} else {
 										// 一張標籤->單項->固定 or 跟隨?
-										if (ll_fo_c.getString("ll_fd_f").equals("")) {
-											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fo_c.getString("ll_fd"));
-										} else {
-											llfo = label_bean.getLlbfd().replace("{一般文字}", ll_fo_c.getString("ll_bf_f"));
-											// =========可能還需要添加跟隨參數=========
-										}
+										llfo = label_bean.getLlfd().replace("{一般文字}", ll_fo_c.getString("ll_fd"));
+
 										// 字型?
 										llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
 												ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
@@ -695,9 +754,7 @@ public class LabelListService {
 									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_bfd_s[] = ll_fo_c.getString("ll_bfd").split(" ");
-										if (!ll_fo_c.getString("ll_bfd_f").equals("")) {
-											ll_bfd_s = ll_fo_c.getString("ll_bfd_f").split(" ");
-										}
+
 										// 複數區間
 										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
 										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
@@ -705,6 +762,10 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
+											//可能沒有資料
+											if(i>=ll_bfd_s.length) {
+												continue;
+											}
 											String ll_bfd = ll_bfd_s[i];
 											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
 											// 條碼?
@@ -723,11 +784,8 @@ public class LabelListService {
 										llfo = llfos;// 放回區塊內
 									} else {
 										// 固定 or 跟隨?
-										if (ll_fo_c.getString("ll_bfd_f").equals("")) {
-											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd"));
-										} else {
-											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd_f"));
-										}
+										llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd"));
+
 										// 條碼?
 										llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
 												ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
@@ -746,9 +804,7 @@ public class LabelListService {
 									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_bqfd_s[] = ll_fo_c.getString("ll_bqfd").split(" ");
-										if (!ll_fo_c.getString("ll_bqfd_f").equals("")) {
-											ll_bqfd_s = ll_fo_c.getString("ll_bqfd_f").split(" ");
-										}
+
 										// 複數區間
 										int i_start = (label_bean.getLl_l_now() - 1) * label_bean.getLl_o_l_qty();
 										int i_end = label_bean.getLl_l_now() * label_bean.getLl_o_l_qty();
@@ -756,6 +812,10 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
+											//可能沒有資料
+											if(i>=ll_bqfd_s.length) {
+												continue;
+											}
 											String ll_bqfd = ll_bqfd_s[i];
 											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bqfd);
 
@@ -772,11 +832,8 @@ public class LabelListService {
 										llfo = llfos;// 放回區塊內
 									} else {
 										// 固定 or 跟隨?
-										if (ll_fo_c.getString("ll_bqfd_f").equals("")) {
-											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd"));
-										} else {
-											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd_f"));
-										}
+										llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd"));
+
 										// 條碼?
 										llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
 												ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
@@ -811,9 +868,123 @@ public class LabelListService {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-
 		return check;
+	}
 
+	// 工作站-資訊轉換標籤
+	/**
+	 * 格式: { <br>
+	 * "label_package": { "ll_o_top": "0", "ll_o_p_type": "", "ll_o_s_b_name": "",
+	 * "ll_o_p_qty": "0", "ll_o_h_b_name": "", "ll_o_l_qty": "0" }, <br>
+	 * "label_set": { "ll_name": "3X1單張", "sys_note": "Test_Note", "ll_ci": "UTF-8",
+	 * "ll_pw": "600", "ll_md": "20", "ll_pr": "5", "ll_ll": "200", "ll_lh_y": "0",
+	 * "ll_g_name": "Test_Group", "ll_lh_x": "0", "ll_id": "6" }, <br>
+	 * "label_block": [ { "ll_fo_y": "50", "ll_fo_x": "50", "ll_fo_content": {
+	 * "label_block_type": "char_type", "ll_fd_f": "pb.getPbvalue08", "ll_a_h":
+	 * "20", "ll_a_w": "", "ll_fb_d": "", "ll_fb_b": "", "ll_fd": "Text_FD",
+	 * "ll_fb_c": "", "ll_fb_a": "", "ll_a_t": "GS", "ll_fd_test": "Test_FD",
+	 * "ll_a_c": "N" }, "ll_fo_name": "ex_4" } ] <br>
+	 * }<br>
+	 * 輸入格式:<br>
+	 * {"f_f_l":["A7777A0002"],"printer_c":"123","barcode_pe_q":0,"barcode_pt_q":"1","barcode_ll_q":0,"barcode_id":"6"}
+	 * 
+	 **/
+	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, ProductionHeader ph, ProductionRecords pr, ProductionBody pb) {
+		LabelList labelList = new LabelList();
+		String label_id = label_json.getString("barcode_id");// ID
+
+		JSONArray llajson = new JSONArray(ph.getPhllajson());
+		for (Object object : llajson) {
+			JSONObject ll = (JSONObject) object;
+			// 如果有找到->封裝->跳出->回傳
+			if (ll.getJSONObject("label_set").getString("ll_id").equals(label_id)) {
+				JSONObject label_set = ll.getJSONObject("label_set");
+				JSONObject label_package = ll.getJSONObject("label_package");
+				JSONArray label_blocks = ll.getJSONArray("label_block");
+				// 
+				
+				// 檢查區塊
+				for (int a = 0; a < label_blocks.length(); a++) {
+					JSONObject label_block = label_blocks.getJSONObject(a);
+					JSONObject block = label_block.getJSONObject("ll_fo_content");
+					String table = "";
+					String cell = "";
+					Method in_method;
+					String putName = "";
+					String putValue = "";
+					switch (block.getString("label_block_type")) {
+					case "char_type":
+						// 文字模式
+						// 跟隨機制?
+						putName = "ll_fd";
+						if (!block.getString("ll_fd_f").equals("")) {
+							table = block.getString("ll_fd_f").split("\\.")[0];
+							cell = block.getString("ll_fd_f").split("\\.")[1];
+						}
+						break;
+					case "barcode_type":
+						// 一維條碼
+						// 跟隨機制?
+						putName = "ll_bfd";
+						if (!block.getString("ll_bfd_f").equals("")) {
+							table = block.getString("ll_bfd_f").split("\\.")[0];
+							cell = block.getString("ll_bfd_f").split("\\.")[1];
+						}
+						break;
+					case "qr_code_type":
+						// 二維條碼
+						// 跟隨機制?
+						putName = "ll_bqfd";
+						if (!block.getString("ll_bqfd_f").equals("")) {
+							table = block.getString("ll_bqfd_f").split("\\.")[0];
+							cell = block.getString("ll_bqfd_f").split("\\.")[1];
+						}
+						break;
+					default:
+						break;
+					}
+					// 分析跟隨?
+					if (!table.equals("") && !cell.equals("")) {
+						try {
+							switch (table) {
+							case "ph":
+								in_method = ph.getClass().getMethod(cell);
+								putValue = (String) in_method.invoke(ph);
+								break;
+							case "pr":
+								in_method = pr.getClass().getMethod(cell);
+								putValue = (String) in_method.invoke(pr);
+								break;
+							case "pb":
+								in_method = pb.getClass().getMethod(cell);
+								putValue = (String) in_method.invoke(pb);
+								break;
+							case "fn":
+								// 有特殊-前端跟隨 設定?
+								if (front_from_sn.length() > 0) {
+									for (Object from_sn : front_from_sn) {
+										putValue += (String) from_sn + " ";
+									}
+								}
+								break;
+							default:
+								break;
+							}
+							block.put(putName, putValue);
+						} catch (Exception e) {
+							System.out.println(e);
+						}
+						label_block.put("ll_fo_content", block);
+						label_blocks.put(a, label_block);
+					}
+				}
+				// 放回區塊
+				ll.put("label_block", label_blocks);
+				labelList.setLlajson(ll.toString());
+				break;
+			}
+		}
+		return labelList;
 	}
 
 	/**

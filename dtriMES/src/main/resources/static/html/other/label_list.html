@@ -589,11 +589,11 @@ customized = new Vue({
 		setSearch(search) {
 			//查詢注入資訊
 			
-			if(search!=null){
+			if(search!=null && search.customized_detail!=null){
 				var old_choose = $("#label_choose").val();
 				$("#label_choose .lc_list").remove();
 				customized.search_ds = {}
-				search.forEach(function(ll) {
+				search.customized_detail.forEach(function(ll) {
 					//Label Choose(選擇標籤):
 					var lc_list = $($("#label_choose .def").clone());//複製樣本
 					lc_list.removeClass("def");
@@ -610,7 +610,27 @@ customized = new Vue({
 					customized.search_ds[ll.ll_id] = search_d;
 				});
 				$('#label_choose').val(old_choose).trigger('change');
-				
+				//跟隨選單
+				$("#ll_fd_f .lc_list").remove();
+				$("#ll_bfd_f .lc_list").remove();
+				$("#ll_bqfd_f .lc_list").remove();
+				if(search!=null && search.customized_follow!=null){
+					search.customized_follow.forEach(function(ll) {
+						var value = ll.split(".")[0]+'.'+ll.split(".")[1];
+						var name = ll.split(".")[2];
+						
+						var lc_list = $($("#ll_fd_f .def_na").clone());//複製樣本
+						lc_list.removeClass("def_na");
+						lc_list.addClass("lc_list");
+						lc_list.attr("value",value);
+						lc_list.text(name);
+						
+						lc_list.appendTo("#ll_fd_f");
+						lc_list.clone().appendTo("#ll_bfd_f");
+						lc_list.clone().appendTo("#ll_bqfd_f");
+						
+					});
+				}
 				console.log(customized.search_ds);
 				main.loading(false);
 			}
@@ -752,6 +772,7 @@ customized = new Vue({
 										$('#label_block_type').val('').trigger('change');
 									}
 									$("#ll_fd").val(bc_json.ll_fd);
+									$("#ll_fd_f").val(bc_json.ll_fd_f).trigger('change');
 									$("#ll_fd_test").val(bc_json.ll_fd_test);
 									$("#ll_a_t").val(bc_json.ll_a_t=="A"?'':bc_json.ll_a_t);
 									$("#ll_a_c").val(bc_json.ll_a_c=='N'?'':bc_json.ll_a_c);
@@ -774,6 +795,7 @@ customized = new Vue({
 									if($('#label_block_type').val()!='barcode_type'){
 										$('#label_block_type').val('barcode_type').trigger('change');
 									}
+									$("#ll_bfd_f").val(bc_json.ll_bfd_f).trigger('change');
 									$("#ll_bfd").val(bc_json.ll_bfd);
 									$("#ll_bfd_test").val(bc_json.ll_bfd_test);
 									$("#ll_bfd_f").val(bc_json.ll_bfd_f);
@@ -789,6 +811,7 @@ customized = new Vue({
 									if($('#label_block_type').val()!='qr_code_type'){
 										$('#label_block_type').val('qr_code_type').trigger('change');									
 									}
+									$("#ll_bqfd_f").val(bc_json.ll_bqfd_f).trigger('change');
 									$("#ll_bqfd").val(bc_json.ll_bqfd);
 									$("#ll_bqfd_test").val(bc_json.ll_bqfd_test);
 									$("#ll_bqfd_f").val(bc_json.ll_bqfd_f);
@@ -1297,7 +1320,7 @@ customized = new Vue({
 			main.loading(false);
 			console.log("searchReturn label_list");
 			if(main.allData.body.customized_detail!=null){
-				this.setSearch( main.allData.body.customized_detail);
+				this.setSearch(main.allData.body);
 			}
 		},
 		saveReturn(){

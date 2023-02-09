@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import dtri.com.tw.bean.FtpUtilBean;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.RepairCode;
+import dtri.com.tw.db.entity.LabelList;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionDaily;
 import dtri.com.tw.db.entity.ProductionHeader;
@@ -78,6 +79,8 @@ public class WorkstationWorkService {
 
 	@Autowired
 	private ForPrinterLabelService labelService;
+	@Autowired
+	private LabelListService labelNService;
 
 	@Autowired
 	private SystemConfigDao sysDao;
@@ -154,7 +157,9 @@ public class WorkstationWorkService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_s_date", "投線日"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_type", "製令類"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_pr_id", "製令單號"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_mfg_p_no", "Part No: "));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_mfg_p_no", "MFG Part No"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "ph_ps_no", "Parts No"));
+
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_name", "產品名(號)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_p_model", "產品型號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pr_bom_id", "BOM料號"));
@@ -175,6 +180,7 @@ public class WorkstationWorkService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "sys_note", "備註"));
 			object_header.put("doc_list", obj_m);
+
 			// bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
@@ -300,6 +306,7 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_type", one.getPhtype());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_pr_id", one.getProductionRecords().getPrid());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_mfg_p_no", one.getPhmfgpno());
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_ps_no", one.getPhpsno());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_name", one.getPhpname());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_p_model", one.getProductionRecords().getPrpmodel());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_bom_id", one.getProductionRecords().getPrbomid());
@@ -322,6 +329,15 @@ public class WorkstationWorkService {
 								object_doc.put(object_body);
 							});
 							object_body_all.put("search", object_doc);
+
+							// 取得標籤區塊
+							JSONArray obj_label = new JSONArray();
+							if (ph_all.get(0).getPhllajson() == null || ph_all.get(0).getPhllajson().equals("")) {
+								object_body_all.put("obj_label", obj_label);
+							} else {
+								obj_label = new JSONArray(ph_all.get(0).getPhllajson());
+								object_body_all.put("obj_label", obj_label);
+							}
 
 							// sn_list
 							// 規格設定-取出數量
@@ -1355,6 +1371,40 @@ public class WorkstationWorkService {
 					check = true;
 				}
 			}
+
+			// 新版標籤本控制
+			if (printer.has("label_list") && printer.has("label_list_sn")) {
+				List<ProductionBody> pb_all = pbDao.findAllByPbbsn(printer.getString("label_list_sn"));
+				if (pb_all.size() == 1) {
+					List<ProductionHeader> ph_all = phDao.findAllByPhpbgid(pb_all.get(0).getPbgid());
+					if (ph_all.size() == 1) {
+						LabelList labelList = new LabelList();
+						ProductionBody pb_one = pb_all.get(0);
+						ProductionHeader ph_one = ph_all.get(0);
+						ProductionRecords pr_one = ph_one.getProductionRecords();
+						if (printer.getJSONArray("label_list").length() > 0) {
+							for (Object label_list : printer.getJSONArray("label_list")) {
+								JSONObject label_json = (JSONObject) label_list;
+								JSONArray fron_from = new JSONArray();
+								// 有跟隨資料機制?
+								if (label_json.getJSONArray("f_f_l").length() > 0) {
+									fron_from = label_json.getJSONArray("f_f_l");
+								}
+								// 基礎標籤設定
+								JSONObject print = new JSONObject();
+								print.put("print_code", label_json.getString("printer_c"));// 標籤機代號
+								print.put("print_qty", label_json.getInt("barcode_pt_q") + "");// 數量
+								req.getBody().put("print", print);
+
+								// 資料轉換
+								labelList = labelNService.workstationToLabel(label_json, fron_from, ph_one, pr_one, pb_one);
+								check = labelNService.printerCustomized(resp, req, user, false, labelList);
+							}
+						}
+					}
+				}
+			}
+
 		} catch (Exception e) {
 			log.error(e.toString());
 			e.printStackTrace();

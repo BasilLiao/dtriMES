@@ -30,6 +30,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      ph_e_date : 結束製成 <br>
  *      ph_schedule : 進度{A站:{A1項目:Y,A2項目:N},{B站:{...},...}}<br>
  *      ph_pb_schedule :進度{A站:50,B站:20,...}}<br>
+ *      ph_ll_a_json:(所有相關設置jsonArray)ll_a_json<br>
+ *      ph_ll_g_name<br>
  *      <br>
  *      ph_order_id="訂單編號"<br>
  *      ph_c_name = "客戶名稱"<br>
@@ -154,6 +156,28 @@ public class ProductionHeader {
 
 	@Column(name = "ph_wc_line", columnDefinition = "varchar(50) default ''")
 	private String phwcline;
+
+	@Column(name = "ll_g_name", columnDefinition = "varchar(50)")
+	private String phllgname;
+
+	@Column(name = "ll_a_json", columnDefinition = "text default ''")
+	private String phllajson;
+
+	public String getPhllgname() {
+		return phllgname;
+	}
+
+	public void setPhllgname(String phllgname) {
+		this.phllgname = phllgname;
+	}
+
+	public String getPhllajson() {
+		return phllajson;
+	}
+
+	public void setPhllajson(String phllajson) {
+		this.phllajson = phllajson;
+	}
 
 	public Integer getPhwyears() {
 		return phwyears;

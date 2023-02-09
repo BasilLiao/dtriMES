@@ -18,10 +18,14 @@ public interface LabelListDao extends JpaRepository<LabelList, String> {
 	ArrayList<LabelList> findAllByLlgnameAndLlname(String llname, String llgname, Pageable pageable);
 
 	ArrayList<LabelList> findAllByLlid(Long id);
-	
+
 	ArrayList<LabelList> findAllByOrderByLlgnameAscLlnameAsc();
 
 	// 移除資料
 	Long deleteByLlid(Long id);
+
+	// 取得不同群組
+	@Query(value = "SELECT DISTINCT w.llgname FROM LabelList w")
+	ArrayList<String> getLabelGroupDistinct();
 
 }

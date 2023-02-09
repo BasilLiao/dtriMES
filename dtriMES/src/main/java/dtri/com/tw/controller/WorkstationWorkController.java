@@ -165,7 +165,7 @@ public class WorkstationWorkController extends AbstractController {
 		SystemUser user = loginUser().getSystemUser();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
-		// Step2.進行修改
+		// Step2.進行打印
 		check = workService.printerData(resp, req, user);
 		// Step3.進行判定
 		if (check) {

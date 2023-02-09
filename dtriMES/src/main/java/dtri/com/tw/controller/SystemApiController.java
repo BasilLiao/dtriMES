@@ -39,7 +39,7 @@ public class SystemApiController extends AbstractController {
 		JSONObject obj_return = new JSONObject();
 
 		// Step0.當前用戶資料-UI權限
-		//SystemUser user = loginUser().getSystemUser();
+		// SystemUser user = loginUser().getSystemUser();
 		SystemUser user = new SystemUser();
 		user.setSuaccount("system");
 		// Step1.解析行為
@@ -55,10 +55,12 @@ public class SystemApiController extends AbstractController {
 			}
 			break;
 		case "get_work_program":
-			// 取得-工作站程序
+			// 取得-工作站程序 & 標籤程序
 			obj_return.put("wProgram", apiService.getWorkstationProgramList().toString());
 			obj_return.put("wLine", apiService.getWorkstationLineList().toString());
+			obj_return.put("gLabel", apiService.getLabelGroup().toString());
 			obj_return.put("status", "ok");
+
 			break;
 		default:
 			obj_return.put("status", "fail");
