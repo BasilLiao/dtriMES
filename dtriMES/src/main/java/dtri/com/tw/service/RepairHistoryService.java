@@ -202,7 +202,17 @@ public class RepairHistoryService {
 
 			// 維修細節
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "系統建立", "", FFM.Wri.W_N, "col-md-12", true, n_val, "rd_id", rd_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rd_type", rd_type));
+			
+			
+			s_val = new JSONArray();
+			s_val.put((new JSONObject()).put("value", "未發現故障").put("key", "未發現故障"));
+			s_val.put((new JSONObject()).put("value", "人員誤刷").put("key", "人員誤刷"));
+			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
+			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
+			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));
+			s_val.put((new JSONObject()).put("value", "外包").put("key", "外包"));
+			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, s_val, "rd_type", rd_type));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1", "1", FFM.Wri.W_Y, "col-md-1", true, n_val, "rd_u_qty", rd_u_qty));
 			s_val = new JSONArray();
 			mUnits = unitDao.findAllByRepairUnit(0L, 0L, null, null, null, true, null);
@@ -572,6 +582,7 @@ public class RepairHistoryService {
 					rd.setRdstatement(data.getString("rd_statement"));
 					rd.setRdsvg(data.getString("rd_svg"));
 					rd.setRdtrue(data.getString("rd_true"));
+					rd.setRdtype(data.getString("rd_type"));
 					rd.setRdsolve(data.getString("rd_solve"));
 					rd.setRdexperience(data.getString("rd_experience"));
 					rd.setSysmdate(new Date());

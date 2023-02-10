@@ -448,9 +448,11 @@ public class LabelListService {
 		// 標籤跟隨清單
 		JSONArray object_follow = new JSONArray();
 		// 前端
-		object_follow.put("fn.front_from_sn.來自工作站產品序號");// 來自工作站前端
+		object_follow.put("na.na.====工作站====");//
+		object_follow.put("fn.front_from_fixed.工作站-固定名稱");// 來自工作站前端
+		object_follow.put("fn.front_from_sn.工作站-產品序號");// 來自工作站前端
 		// 產品細節
-		object_follow.put("na.na.====產品細節====");// 
+		object_follow.put("na.na.====產品細節====");//
 		object_follow.put("pb.getPbbsn.產品身分號碼");// 產品燒錄號碼
 		object_follow.put("pb.getPbshippingdate.實際出貨日");// 實際出貨日
 		object_follow.put("pb.getPbrecyclingdate.回收日");// 回收日
@@ -472,7 +474,7 @@ public class LabelListService {
 			e.printStackTrace();
 		}
 		// 製令單
-		object_follow.put("na.na.====製令單====");// 
+		object_follow.put("na.na.====製令單====");//
 		object_follow.put("ph.getPhmfgpno.驗證碼");// 驗證碼
 		object_follow.put("ph.getPhpsno.組件號");// 組件號
 		object_follow.put("ph.getPhpname.產品名稱(號)");// 產品名稱(號)
@@ -482,7 +484,7 @@ public class LabelListService {
 		object_follow.put("ph.getSysnote.備註");// 備註
 		object_follow.put("pr.getPrid.製令單號");// 製令單號
 		// 製令規格
-		object_follow.put("na.na.====製令規格====");// 
+		object_follow.put("na.na.====製令規格====");//
 		object_follow.put("pr.getPrbomid.BOM料號(公司)");// BOM料號(公司)
 		object_follow.put("pr.getPrbomcid.BOM料號(客戶)");// BOM料號(客戶)
 		object_follow.put("pr.getPrpmodel.產品型號");// 產品型號
@@ -647,8 +649,8 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
-											//可能沒有資料
-											if(i>=ll_fd_s.length) {
+											// 可能沒有資料
+											if (i >= ll_fd_s.length) {
 												continue;
 											}
 											String ll_fd = ll_fd_s[i];
@@ -762,8 +764,8 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
-											//可能沒有資料
-											if(i>=ll_bfd_s.length) {
+											// 可能沒有資料
+											if (i >= ll_bfd_s.length) {
 												continue;
 											}
 											String ll_bfd = ll_bfd_s[i];
@@ -812,8 +814,8 @@ public class LabelListService {
 										int ll_fo_y = Integer.parseInt(label_block.getString("ll_fo_y"));
 										String llfos = "";// 該區塊所有內容
 										for (int i = i_start; i < i_end; i++) {
-											//可能沒有資料
-											if(i>=ll_bqfd_s.length) {
+											// 可能沒有資料
+											if (i >= ll_bqfd_s.length) {
 												continue;
 											}
 											String ll_bqfd = ll_bqfd_s[i];
@@ -889,7 +891,8 @@ public class LabelListService {
 	 * {"f_f_l":["A7777A0002"],"printer_c":"123","barcode_pe_q":0,"barcode_pt_q":"1","barcode_ll_q":0,"barcode_id":"6"}
 	 * 
 	 **/
-	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, ProductionHeader ph, ProductionRecords pr, ProductionBody pb) {
+	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, JSONArray front_from_fixed, ProductionHeader ph, ProductionRecords pr,
+			ProductionBody pb) {
 		LabelList labelList = new LabelList();
 		String label_id = label_json.getString("barcode_id");// ID
 
@@ -901,8 +904,10 @@ public class LabelListService {
 				JSONObject label_set = ll.getJSONObject("label_set");
 				JSONObject label_package = ll.getJSONObject("label_package");
 				JSONArray label_blocks = ll.getJSONArray("label_block");
-				// 
-				
+				//包裝設置
+				label_package.put("ll_o_p_qty", label_json.getString("barcode_pe_q"));
+				label_package.put("ll_o_l_qty", label_json.getString("barcode_ll_q"));
+
 				// 檢查區塊
 				for (int a = 0; a < label_blocks.length(); a++) {
 					JSONObject label_block = label_blocks.getJSONObject(a);
@@ -961,9 +966,15 @@ public class LabelListService {
 								break;
 							case "fn":
 								// 有特殊-前端跟隨 設定?
-								if (front_from_sn.length() > 0) {
+								if (cell.equals("front_from_sn") && front_from_sn.length() > 0) {
 									for (Object from_sn : front_from_sn) {
 										putValue += (String) from_sn + " ";
+									}
+								}
+								// 有特殊-前端跟隨(固定) 設定?
+								if (cell.equals("front_from_fixed") && front_from_fixed.length() > 0) {
+									for (Object from_fixed : front_from_fixed) {
+										putValue += (String) from_fixed + " ";
 									}
 								}
 								break;

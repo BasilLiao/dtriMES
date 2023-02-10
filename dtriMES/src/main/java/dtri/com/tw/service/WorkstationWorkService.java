@@ -1382,14 +1382,23 @@ public class WorkstationWorkService {
 						ProductionBody pb_one = pb_all.get(0);
 						ProductionHeader ph_one = ph_all.get(0);
 						ProductionRecords pr_one = ph_one.getProductionRecords();
+						JSONArray f_f_sn = new JSONArray();
+						JSONArray f_f_f = new JSONArray();
+						//有跟隨資料機制
 						if (printer.getJSONArray("label_list").length() > 0) {
 							for (Object label_list : printer.getJSONArray("label_list")) {
 								JSONObject label_json = (JSONObject) label_list;
-								JSONArray fron_from = new JSONArray();
-								// 有跟隨資料機制?
-								if (label_json.getJSONArray("f_f_l").length() > 0) {
-									fron_from = label_json.getJSONArray("f_f_l");
+								 f_f_sn = new JSONArray();
+								 f_f_f = new JSONArray();
+								// 產品身分?
+								if (label_json.getJSONArray("f_f_sn").length() > 0) {
+									f_f_sn = label_json.getJSONArray("f_f_sn");
 								}
+								// 有跟隨資料+固定機制?
+								if (label_json.getJSONArray("f_f_f").length() > 0) {
+									f_f_f = label_json.getJSONArray("f_f_f");
+								}
+
 								// 基礎標籤設定
 								JSONObject print = new JSONObject();
 								print.put("print_code", label_json.getString("printer_c"));// 標籤機代號
@@ -1397,7 +1406,7 @@ public class WorkstationWorkService {
 								req.getBody().put("print", print);
 
 								// 資料轉換
-								labelList = labelNService.workstationToLabel(label_json, fron_from, ph_one, pr_one, pb_one);
+								labelList = labelNService.workstationToLabel(label_json, f_f_sn, f_f_f, ph_one, pr_one, pb_one);
 								check = labelNService.printerCustomized(resp, req, user, false, labelList);
 							}
 						}

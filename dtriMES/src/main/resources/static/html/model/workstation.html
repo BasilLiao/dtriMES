@@ -977,9 +977,10 @@
 													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
 												</div>
 											</div>
-											<div class="front_from_sn d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-12 m-0 p-1">Front_From_SN(登記)</div>
-												<p class="d-none def col-12 m-0 p-1"></p>
+											<div class="front_from d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Front_From(登記)</div>
+												<p class="from_fixed_def  d-none col-4 m-0 p-1"></p>
+												<p class="from_sn_def  d-none  col-8 m-0 p-1"></p>
 											</div>
 										</div>
 									</div>
@@ -1022,7 +1023,8 @@
    		fix_i_open:0,
    		fix_t_open:0,
    		//obj_label 標籤群組
-   		obj_label:[],
+   		obj_label:{},
+   		temp_w_focus_5:"",//傳送新標籤需用到
    	},
    	//初始化
    	created() {
@@ -1441,6 +1443,11 @@
    					$("#w_focus_"+workstation.nb).removeClass("border-0");
    					$('.doc_c_value').val("");
    					$(".sn_list").remove();
+   					//標籤清除
+   					$("#label_pr_id").text("");
+   					$(".label_re").remove();
+   					
+   					
    					workstation.barcode_save = false;
    					workstation.barcode_check = false;
    					workstation.clearOrder();
@@ -1946,7 +1953,7 @@
    				//========自定義標籤(設計模式)========
 				if ($('.label_auto').is(":checked")){
 					printer['label_list'] =[];
-					printer['label_list_sn'] = $('#w_focus_5').val();
+					printer['label_list_sn'] = $('#w_focus_5').val()==""?this.temp_w_focus_5:$('#w_focus_5').val();
 					$('.label_auto').map(function () {
 						if(this.id!=""){
 							var choose_id = this.id.replace("_auto","");
@@ -1957,28 +1964,49 @@
 								label_obj.printer_c = one_label.find('.printer_c input').val();//標籤機代號
 								label_obj.barcode_id = choose_id.replace("id_","").replace("_label","");//標籤ID
 								label_obj.barcode_pt_q = one_label.find('.barcode_print_q  input').val();//打印幾次
-								label_obj.barcode_pe_q = 0;//箱上台數
-								label_obj.barcode_ll_q = 0;//標籤上台數
+								label_obj.barcode_pe_q = "0";//箱上台數
+								label_obj.barcode_ll_q = "0";//標籤上台數 
 								label_obj.f_f_l = "";//來自前端值
+								
 								//有包裝設定?
 								if(!one_label.find('.barcode_package_q').hasClass("d-none")){
 									label_obj.barcode_pe_q = one_label.find('.barcode_package_q input').val();
 									label_obj.barcode_ll_q = one_label.find('.barcode_label_q input').val();								
 								}
+								var from_sn = false;
+								var from_fixed = false;
 								//有前端 值入設定?
-								if(one_label.find(".front_from_sn .front_sn_list").length>=1){
-									label_obj.f_f_l =  one_label.find(".front_sn_list").map((_,el) => el.innerHTML).get();								
+								if(one_label.find(".front_from .from_sn").length>=1){
+									label_obj.f_f_sn =  one_label.find(".from_sn").map((_,el) => el.innerHTML).get();								
+									printer['label_list'].push(label_obj);
+									one_label.find(".from_sn").remove();
+									from_sn = true;
 								}else{
-									label_obj.f_f_l = [];
+									label_obj.f_f_sn = [];
 								}
-								printer['label_list'].push(label_obj);
+								//有前端 (固定)值入設定?
+								//有前端 值入設定?
+								if(one_label.find(".front_from .from_fixed").length>=1){
+									label_obj.f_f_f =  one_label.find(".from_fixed").map((_,el) => el.innerHTML).get();	
+									one_label.find(".from_fixed").remove();
+									from_fixed = true;
+								}else{
+									label_obj.f_f_f = [];
+								}
+								//以上都不是
+								if(!from_sn && !from_fixed){
+									label_obj.f_f_f = [];
+									label_obj.f_f_sn = [];
+									printer['label_list'].push(label_obj);									
+								}
+								
+								
 							}
 						}	
 					});
+
 				}
-   			}
-   				
-   				
+   			}		
    				
 	   		if(printer['printer_3X1_code'] !=null ||printer['printer_3X2_code'] !=null||printer['label_list']!=null){
 		   		//包裝(action = AR_AC/AR_AU/AR_AD/PT)
@@ -2431,12 +2459,12 @@
    			}
    			//=======Step9.New標籤=======
 			if(main.allData.body.obj_label!=null && $("#label_pr_id").text()!=doc_list.m__ph_pr_id){
-				this.obj_label = main.allData.body.obj_label;
+				
 				$(".label_re").remove();
 				$("#label_pr_id").text(doc_list.m__ph_pr_id);
-				var obj_label = main.allData.body.obj_label;
+				var obj_labels = main.allData.body.obj_label;
 				//每個標籤設定
-				obj_label.forEach(function (x) {
+				obj_labels.forEach(function (x) {
 					var ll_id = x.label_set.ll_id;
 					var ex_label = $($("#ex_label_id").clone());
 					ex_label.removeClass("d-none");
@@ -2459,7 +2487,30 @@
 					}
 					//標籤內有 任何 跟隨機制?
 					var front_from_sn = false;
+					var front_from_fixed = false;
+					var front_from_fixed_val = "";
 					x.label_block.forEach(function (y) {
+						//固定
+						if(y.ll_fo_content.ll_fd_f && !front_from_fixed){
+							front_from_fixed = (y.ll_fo_content.ll_fd_f=="fn.front_from_fixed");
+							if(front_from_fixed){	
+								ex_label.find('.from_fixed_def').text(y.ll_fo_content.ll_fd);
+							}							
+						}
+						if(y.ll_fo_content.ll_bfd_f && !front_from_fixed){
+							front_from_fixed = (y.ll_fo_content.ll_bfd_f=="fn.front_from_fixed");
+							if(front_from_fixed){	
+								ex_label.find('.from_fixed_def').text(y.ll_fo_content.ll_bfd);
+							}
+						}
+						if(y.ll_fo_content.ll_bqfd_f && !front_from_fixed){
+							front_from_fixed = (y.ll_fo_content.ll_bqfd_f=="fn.front_from_fixed");
+							if(front_from_fixed){	
+								ex_label.find('.from_fixed_def').text(y.ll_fo_content.ll_bqfd);
+							}
+						}
+						
+						//浮動
 						if(y.ll_fo_content.ll_fd_f && !front_from_sn){
 							front_from_sn = (y.ll_fo_content.ll_fd_f=="fn.front_from_sn");
 						}
@@ -2470,45 +2521,58 @@
 							front_from_sn = (y.ll_fo_content.ll_bqfd_f=="fn.front_from_sn");
 						}
 					});
+					//浮動
 					if(front_from_sn){
-						ex_label.find('.front_from_sn').removeClass("d-none");
+						ex_label.find('.front_from').removeClass("d-none");
 					}
-					ex_label.appendTo("#label_list");						
+					
+					ex_label.appendTo("#label_list");	
+					//存入設定
+					workstation.obj_label["id_"+ll_id+'_label_auto'] = x;
 				});
+				console.log(workstation.obj_label);
+				
 			}
 			//自動化勾選
 	   		if ($('.label_auto').is(":checked")){
 	   			$('.label_auto').map(function () {
-	   				if(this.id!=""){
+	   				if(this.id!="" && $("#"+this.id).is(":checked")){
 		   				var choose_id = this.id.replace("_auto","");
 	
-		   				//確定有勾選且有(跟隨機制)Front_From_SN
-		  				if(!$("#"+choose_id+" .front_from_sn").hasClass("d-none")){
+		   				//確定有勾選且有(跟隨機制)Front_From
+		  				if(!$("#"+choose_id+" .front_from").hasClass("d-none")){
 		  					//數量?
 		  					var pq=	parseInt($("#"+choose_id+" .barcode_package_q input").val());
 		  					
-		  					if($("#"+choose_id+" .front_from_sn p").length<=pq){
+		  					if($("#"+choose_id+" .front_from .from_sn").length<=pq){
 		  						//不能重複
-		  						var f_f_l = $("#"+choose_id+" .front_sn_list").map((_,el) => el.innerHTML).get();
+		  						var f_f_l = $("#"+choose_id+" .from_sn").map((_,el) => el.innerHTML).get();
 		  						if(f_f_l.indexOf($('#w_focus_5').val())<0){
-					   				var f_f_sn = $($("#"+choose_id+" .front_from_sn .def").clone());
+					   				//固定
+					   				var f_f_fixed = $($("#"+choose_id+" .from_fixed_def").clone());
+					   				f_f_fixed.removeClass("d-none");
+					   				f_f_fixed.removeClass("from_fixed_def");
+					   				f_f_fixed.addClass("from_fixed");
+					   				f_f_fixed.appendTo("#"+choose_id+" .front_from");
+					   				//浮動
+					   				var f_f_sn = $($("#"+choose_id+" .from_sn_def").clone());
 					   				f_f_sn.removeClass("d-none");
-					   				f_f_sn.removeClass("def");
-					   				f_f_sn.addClass("front_sn_list");
+					   				f_f_sn.removeClass("from_sn_def");
+					   				f_f_sn.addClass("from_sn");
 					   				f_f_sn.text($('#w_focus_5').val());					   				 
-					   				f_f_sn.appendTo("#"+choose_id+" .front_from_sn");
+					   				f_f_sn.appendTo("#"+choose_id+" .front_from");
+					   				
 		  						}
-		  					}else if($("#"+choose_id+" .front_sn_list").length==pq){
+			   				
+		  					}else if($("#"+choose_id+" .from_sn").length==pq){
 		  						//如果是有特殊設定(Front_From_SN)->但是沒外包裝
-		  						$("#"+choose_id+" .front_sn_list").text($('#w_focus_5').val());
+		  						$("#"+choose_id+" .from_sn").text($('#w_focus_5').val());
 	  						}
-		  					
+
 		  				}
 	   				}
 	   			});
 	   		}
-   				
-   			
 
    			//Step Last.如果:存檔後檢查
    			if(workstation.barcode_save){
@@ -2526,6 +2590,33 @@
    				}else if($('#sn_cumulative_number').val()<=$('.sn_cumulative_list').length || workstation.sn_box_number >= $('#sn_box_number').val()){
    					//6*10外標籤
    					$("#BC012" ).trigger( "click" );		
+   				}
+   				//=======.New標籤=======
+   				else if($('.label_auto').is(":checked")){
+   					var BC011_send = false;
+   					$('.label_auto').map(function () {
+   						if(this.id!="" && $("#"+this.id).is(":checked")){
+		   				var choose_id = this.id.replace("_auto","");
+			   				//包裝-確定有勾選且有(跟隨機制)Front_From
+			  				if(!$("#"+choose_id+" .front_from").hasClass("d-none")){
+				  				//數量?
+				  				var pq=	parseInt($("#"+choose_id+" .barcode_package_q input").val());
+				  				if($("#"+choose_id+" .front_from .from_sn").length>=pq){
+				  					BC011_send = true;
+				  				}
+			  				}else{
+			  					//一般
+			  					BC011_send = true;
+			  				}
+		   				}
+   					});
+   					//有滿足條件即刻發送
+   					if(BC011_send){
+   						this.temp_w_focus_5 = $('#w_focus_5').val();
+   						$("#BC011" ).trigger("click");
+   					}else{
+   						
+   					}	
    				}
    				//清除
    				//Step Last.基本清除
