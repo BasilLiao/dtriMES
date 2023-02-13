@@ -451,6 +451,7 @@ public class LabelListService {
 		object_follow.put("na.na.====工作站====");//
 		object_follow.put("fn.front_from_fixed.工作站-固定名稱");// 來自工作站前端
 		object_follow.put("fn.front_from_sn.工作站-產品序號");// 來自工作站前端
+		object_follow.put("fn.front_from_qty.工作站-產品序號數量");// 產品序號數量
 		// 產品細節
 		object_follow.put("na.na.====產品細節====");//
 		object_follow.put("pb.getPbbsn.產品身分號碼");// 產品燒錄號碼
@@ -891,7 +892,7 @@ public class LabelListService {
 	 * {"f_f_l":["A7777A0002"],"printer_c":"123","barcode_pe_q":0,"barcode_pt_q":"1","barcode_ll_q":0,"barcode_id":"6"}
 	 * 
 	 **/
-	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, JSONArray front_from_fixed, ProductionHeader ph, ProductionRecords pr,
+	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, int front_from_qty, ProductionHeader ph, ProductionRecords pr,
 			ProductionBody pb) {
 		LabelList labelList = new LabelList();
 		String label_id = label_json.getString("barcode_id");// ID
@@ -904,7 +905,7 @@ public class LabelListService {
 				JSONObject label_set = ll.getJSONObject("label_set");
 				JSONObject label_package = ll.getJSONObject("label_package");
 				JSONArray label_blocks = ll.getJSONArray("label_block");
-				//包裝設置
+				// 包裝設置
 				label_package.put("ll_o_p_qty", label_json.getString("barcode_pe_q"));
 				label_package.put("ll_o_l_qty", label_json.getString("barcode_ll_q"));
 
@@ -922,6 +923,7 @@ public class LabelListService {
 						// 文字模式
 						// 跟隨機制?
 						putName = "ll_fd";
+						putValue = block.getString(putName);
 						if (!block.getString("ll_fd_f").equals("")) {
 							table = block.getString("ll_fd_f").split("\\.")[0];
 							cell = block.getString("ll_fd_f").split("\\.")[1];
@@ -931,6 +933,7 @@ public class LabelListService {
 						// 一維條碼
 						// 跟隨機制?
 						putName = "ll_bfd";
+						putValue = block.getString(putName);
 						if (!block.getString("ll_bfd_f").equals("")) {
 							table = block.getString("ll_bfd_f").split("\\.")[0];
 							cell = block.getString("ll_bfd_f").split("\\.")[1];
@@ -940,6 +943,7 @@ public class LabelListService {
 						// 二維條碼
 						// 跟隨機制?
 						putName = "ll_bqfd";
+						putValue = block.getString(putName);
 						if (!block.getString("ll_bqfd_f").equals("")) {
 							table = block.getString("ll_bqfd_f").split("\\.")[0];
 							cell = block.getString("ll_bqfd_f").split("\\.")[1];
@@ -967,15 +971,22 @@ public class LabelListService {
 							case "fn":
 								// 有特殊-前端跟隨 設定?
 								if (cell.equals("front_from_sn") && front_from_sn.length() > 0) {
+									putValue = "";
 									for (Object from_sn : front_from_sn) {
 										putValue += (String) from_sn + " ";
 									}
 								}
 								// 有特殊-前端跟隨(固定) 設定?
-								if (cell.equals("front_from_fixed") && front_from_fixed.length() > 0) {
-									for (Object from_fixed : front_from_fixed) {
-										putValue += (String) from_fixed + " ";
+								if (cell.equals("front_from_fixed") && front_from_sn.length() > 0) {
+									String putValues = "";
+									for (int i = 0; i < front_from_qty; i++) {
+										putValues += putValue + " ";
 									}
+									putValue = putValues;
+								}
+								// 有特殊-前端跟隨(數量) 設定?
+								if (cell.equals("front_from_qty") && front_from_sn.length() > 0) {
+									putValue = front_from_qty + "";
 								}
 								break;
 							default:

@@ -198,7 +198,7 @@ select {
 				</div>
 			</div>
 			<div class="row p-0 m-0">
-				<div id="label_blocks" class="col-md-12 m-0 p-2 text-left" style="overflow: scroll; height: 630px;">
+				<div id="label_blocks_ex" class="col-md-12 m-0 p-2 pr-4 text-left">
 					<div class="col-md m-0 p-1 row" id="">
 						<div class="col-md-1 p-1">A/D:</div>
 						<div class="col-md-4 p-1">*Name Key(區塊):</div>
@@ -240,6 +240,7 @@ select {
 						</div>
 					</div>
 				</div>
+				<div id="label_blocks" class="col-md-12 m-0 p-2 text-left" style="overflow: scroll; height: 530px;"></div>
 			</div>
 		</div>
 		<!-- 右半邊 -->
@@ -260,7 +261,7 @@ select {
 				<div class="col-md-12 m-0 p-2 text-left" style="overflow: scroll; height: 630px;">
 					<div id="bg_linear" style="min-height: 2000px; min-width: 2000px;">
 						<div id="bg_label" style="height: 200px; width: 600px; background-color: #e9ecef80;">
-							<div id="bg_pl_ex" class="bg-success border d-none" style="position: absolute; height: 30px; width: 120px; top: 8px; left: 8px;"></div>
+							<div id="bg_pl_ex" class=" rounded border border-success d-none" style="position: absolute; height: 30px; width: 120px; top: 8px; left: 8px; background-color: #e9ecef80;"></div>
 						</div>
 					</div>
 				</div>
@@ -1105,7 +1106,7 @@ customized = new Vue({
         	     w.document.close();
         	 });
         	 //圖片上傳資料
-        	 $(document).on("change", ".c_chose_imgs", function (event) {
+        	 $(document).on("change", "#label_block_content .c_chose_imgs", function (event) {
         		 console.log();
         		 //console.log(event);
         		 //console.log(event.currentTarget.files);
@@ -1181,7 +1182,18 @@ customized = new Vue({
 					$("#ll_o_p_all .clear_i").attr("disabled","disabled");
 					$("#ll_o_p_all .clear_i").val("");
 				}
+				var lp = {};
+				lp.ll_o_p_type = $("#ll_o_p_type").val();
+				lp.ll_o_p_qty = $("#ll_o_p_qty").val()==""?"0":$("#ll_o_p_qty").val();
+				lp.ll_o_l_qty = $("#ll_o_l_qty").val()==""?"0":$("#ll_o_l_qty").val();
+				lp.ll_o_h_b_name = $("#ll_o_h_b_name").val();
+				lp.ll_o_s_b_name = $("#ll_o_s_b_name").val();
+				lp.ll_o_top = $("#ll_o_top").val()==""?"0":$("#ll_o_top").val();
+				$("#ll_o_all").val(JSON.stringify(lp));
 			});
+			//拖曳
+		    $( "#label_blocks" ).sortable();
+		    $( "#label_blocks" ).disableSelection();
 		},
 		//鎖定(可能資料不正確)
 		onLockAll(lock,def){
@@ -1346,7 +1358,7 @@ customized = new Vue({
 		$(document).off("click", "#label_block_ok_btn");
 		$(document).off("click", "#label_set_ok_btn");
 		$(document).off("click", ".c_img_listen");
-		$(document).off("change", ".c_chose_imgs");
+		$(document).off("change", "#label_block_content .c_chose_imgs");
 		
 		
 		$(document).off("click", "#ll_gfa_clear_btn");

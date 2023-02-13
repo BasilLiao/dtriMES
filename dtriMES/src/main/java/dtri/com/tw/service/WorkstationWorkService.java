@@ -1383,20 +1383,17 @@ public class WorkstationWorkService {
 						ProductionHeader ph_one = ph_all.get(0);
 						ProductionRecords pr_one = ph_one.getProductionRecords();
 						JSONArray f_f_sn = new JSONArray();
-						JSONArray f_f_f = new JSONArray();
-						//有跟隨資料機制
+						int f_f_q = 0;// 數量
+						// 有跟隨資料機制
 						if (printer.getJSONArray("label_list").length() > 0) {
 							for (Object label_list : printer.getJSONArray("label_list")) {
 								JSONObject label_json = (JSONObject) label_list;
-								 f_f_sn = new JSONArray();
-								 f_f_f = new JSONArray();
+								f_f_sn = new JSONArray();
+								f_f_q = 0;
 								// 產品身分?
 								if (label_json.getJSONArray("f_f_sn").length() > 0) {
 									f_f_sn = label_json.getJSONArray("f_f_sn");
-								}
-								// 有跟隨資料+固定機制?
-								if (label_json.getJSONArray("f_f_f").length() > 0) {
-									f_f_f = label_json.getJSONArray("f_f_f");
+									f_f_q = label_json.getJSONArray("f_f_sn").length();
 								}
 
 								// 基礎標籤設定
@@ -1406,7 +1403,7 @@ public class WorkstationWorkService {
 								req.getBody().put("print", print);
 
 								// 資料轉換
-								labelList = labelNService.workstationToLabel(label_json, f_f_sn, f_f_f, ph_one, pr_one, pb_one);
+								labelList = labelNService.workstationToLabel(label_json, f_f_sn, f_f_q, ph_one, pr_one, pb_one);
 								check = labelNService.printerCustomized(resp, req, user, false, labelList);
 							}
 						}
