@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class ProductionTestService {
 			p_size = 100;
 		}
 
-		PageRequest page_r = PageRequest.of(page, p_size, Sort.by(Sort.Direction.ASC, "ptprid").and(Sort.by(Sort.Direction.ASC, "ptpbbsn")));
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by(Sort.Direction.DESC, "sysmdate").and(Sort.by(Sort.Direction.ASC, "ptpbbsn")));
 		// 查詢
 		String search_pt_pb_b_sn = null, search_pt_pr_id = null, //
 				search_pt_pr_model = null, search_pt_pr_bom_id = null, //
@@ -233,7 +232,7 @@ public class ProductionTestService {
 	// 移除 資料清單
 	@Transactional
 	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
-		//JSONObject body = req.getBody();
+		// JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			// JSONArray list = body.getJSONArray("delete");

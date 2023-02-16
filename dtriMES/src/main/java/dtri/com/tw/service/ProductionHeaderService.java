@@ -52,7 +52,7 @@ public class ProductionHeaderService {
 	private WorkstationDao workDao;
 
 	@Autowired
-	private ProductionBodyDao productionBodyDao;
+	private ProductionBodyDao bodyDao;
 
 	@Autowired
 	private ProductionSNDao snDao;
@@ -77,7 +77,7 @@ public class ProductionHeaderService {
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<ProductionHeader> productionHeaders = new ArrayList<ProductionHeader>();
-		ProductionBody body_one = productionBodyDao.findAllByPbid(0l).get(0);
+		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
 			page = 0;
@@ -588,7 +588,7 @@ public class ProductionHeaderService {
 							// 檢核[系統SN]_區間是否用過
 							sn_f = sn_list.getJSONArray("sn_list").get(0).toString();
 							sn_e = sn_list.getJSONArray("sn_list").get(sn_list.getJSONArray("sn_list").length() - 1).toString();
-							if (productionBodyDao.findAllByPbbsn(sn_f).size() > 0 || productionBodyDao.findAllByPbbsn(sn_e).size() > 0) {
+							if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
 								return false;
 							}
 							// 更新[系統SN]區段
@@ -621,11 +621,11 @@ public class ProductionHeaderService {
 						// 檢核[SN]_區間是否用過
 						sn_f = pbsn_list.get(0).toString();
 						sn_e = pbsn_list.get(pbsn_list.length() - 1).toString();
-						if (productionBodyDao.findAllByPbbsn(sn_f).size() > 0 || productionBodyDao.findAllByPbbsn(sn_e).size() > 0) {
+						if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
 							return false;
 						}
 						// Step3. 建立[產品資訊]
-						Long id_b_g = productionBodyDao.getProductionBodyGSeq();
+						Long id_b_g = bodyDao.getProductionBodyGSeq();
 
 						for (int i = 0; i < pbsn_list.length(); i++) {
 							// body
@@ -722,7 +722,7 @@ public class ProductionHeaderService {
 					}
 
 					productionHeaderDao.save(pro_h);
-					productionBodyDao.saveAll(pro_bs);
+					bodyDao.saveAll(pro_bs);
 
 					// Step5. 建立[工時資訊] typeDao+hoursDao
 					List<WorkHours> works_p = new ArrayList<WorkHours>();
@@ -826,8 +826,6 @@ public class ProductionHeaderService {
 				// 無重複->新建
 				if (headers.size() < 1) {
 					// header
-					// int id_h = productionHeaderDao.getProductionHeaderSeq();
-					// int id_b = productionBodyDao.getProductionBodySeq();
 					Long id_b_g2 = 1l;
 					// 工作站資訊
 					JSONObject json_work = new JSONObject();
@@ -893,7 +891,7 @@ public class ProductionHeaderService {
 						// 檢核_區間是否用過
 						String sn_f = sn_list.getJSONArray("sn_list").get(0).toString();
 						String sn_e = sn_list.getJSONArray("sn_list").get(sn_list.getJSONArray("sn_list").length() - 1).toString();
-						if (productionBodyDao.findAllByPbsn(sn_f).size() > 0 || productionBodyDao.findAllByPbsn(sn_e).size() > 0) {
+						if (bodyDao.findAllByPbsn(sn_f).size() > 0 || bodyDao.findAllByPbsn(sn_e).size() > 0) {
 							return false;
 						}
 
@@ -907,7 +905,7 @@ public class ProductionHeaderService {
 
 						sn_lists = sn_list.getJSONArray("sn_list");
 
-						Long id_b_g = productionBodyDao.getProductionBodyGSeq();
+						Long id_b_g = bodyDao.getProductionBodyGSeq();
 
 						for (int i = 0; i < sn_lists.length(); i++) {
 							// body
@@ -1015,7 +1013,7 @@ public class ProductionHeaderService {
 						}
 					}
 					productionHeaderDao.save(pro_h);
-					productionBodyDao.saveAll(pro_bs);
+					bodyDao.saveAll(pro_bs);
 
 					// typeDao+hoursDao
 					List<WorkHours> works_p = new ArrayList<WorkHours>();
@@ -1127,12 +1125,12 @@ public class ProductionHeaderService {
 						}
 						// 更新產品 過站設定
 						JSONObject json_work_d = json_work;
-						List<ProductionBody> pb_s = productionBodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
+						List<ProductionBody> pb_s = bodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
 						pb_s.forEach(s -> {
 							s.setPbschedule(json_work_d.toString());
 							s.setPbwyears(data.getInt("ph_w_years"));
 						});
-						productionBodyDao.saveAll(pb_s);
+						bodyDao.saveAll(pb_s);
 					}
 					// 否:生產中 & 以生產
 					// records
@@ -1240,14 +1238,14 @@ public class ProductionHeaderService {
 				if (phs.size() != 0) {
 					ProductionHeader pheader = phs.get(0);
 					// 檢查 移除製令單 不能包含old 被繼承 or 繼承別張製令單
-					if (productionBodyDao.findAllByPbgidAndPbbsnLikeOrPboldsnLike(data.getLong("ph_pb_g_id"), "old", "old").size() > 0) {
+					if (bodyDao.findAllByPbgidAndPbbsnLikeOrPboldsnLike(data.getLong("ph_pb_g_id"), "old", "old").size() > 0) {
 						return check;
 					}
 					// 移除
 					hoursDao.deleteByproductionRecords(pheader.getProductionRecords());
 					productionHeaderDao.deleteByPhidAndSysheader(data.getLong("ph_id"), true);
 					if (data.getLong("ph_pb_g_id") != 1L) {// 不能移除 NO SN
-						productionBodyDao.deleteByPbgid(data.getLong("ph_pb_g_id"));
+						bodyDao.deleteByPbgid(data.getLong("ph_pb_g_id"));
 					}
 					check = true;
 				}

@@ -153,7 +153,7 @@ public class FtpService {
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.changeWorkingDirectory(ftp.getFtpPath());
-			//上傳資料位置
+			// 上傳資料位置
 			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(ftp.getLocalPath()));
 			System.out.println(ftp.getRemotePathBackup());
 			ftpClient.storeFile(ftp.getRemotePathBackup(), inputStream);
@@ -223,7 +223,7 @@ public class FtpService {
 					// ========第一行抓取+檢驗 (檔頭BOM)去除 是否為正確========
 					String line = new String(), line_all = new String();
 					line = bufferedReader.readLine();
-					line_all = bufferedReader.readLine();
+					line_all = line;
 					if (line != null && line.charAt(0) != '{') {
 						line = line.substring(1);
 					}
@@ -277,7 +277,7 @@ public class FtpService {
 					one.put("ph_model", "");
 					one.put("pb_sn", one.has("SN") ? one.getString("SN") : "");
 					one.put("pb_l_size", file_size);
-					one.put("pb_l_text", everything.toString());
+					one.put("pb_l_text", line+"\n"+everything.toString());
 					one.put("pb_l_path", new_path);
 					one.put("check", true);
 					one.put("pb_l_dt", Fm_Time.to_yMd_Hms(updateDate));

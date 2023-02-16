@@ -59,7 +59,7 @@ public class WorkstationWorkService {
 	@Autowired
 	private ProductionRecordsDao prDao;
 	@Autowired
-	private ProductionBodyDao pbDao;
+	private ProductionBodyDao bodyDao;
 	@Autowired
 	private WorkstationDao wkDao;
 	@Autowired
@@ -214,7 +214,7 @@ public class WorkstationWorkService {
 			ArrayList<ProductionRecords> pr_old = new ArrayList<ProductionRecords>();
 			ArrayList<ProductionTest> pTests = new ArrayList<ProductionTest>();
 
-			pb_all = pbDao.findAllByPbbsn(pb_b_sn);
+			pb_all = bodyDao.findAllByPbbsn(pb_b_sn);
 
 			// 檢查資料是否存在
 			if (pb_all.size() != 1) {
@@ -250,17 +250,17 @@ public class WorkstationWorkService {
 					if (wp_all.size() == 1) {
 						String wpcname = w_one.get(0).getWcname();
 						// 比對-檢查 燒錄 SN關聯
-						pb_all = pbDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
+						pb_all = bodyDao.findAllByPbbsnAndPbgid(pb_b_sn, ph_all.get(0).getPhpbgid());
 						if (pb_all.size() == 1) {
 							// 計算 此工作站完成數
-							List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "" + wpcname + "_Y");
-							List<String> wk_fix = pbDao.findPbbsnPbscheduleFixList(pb_all.get(0).getPbgid(), "" + wpcname + "_N");
+							List<String> wk_schedules = bodyDao.findPbbsnPbscheduleList(pb_all.get(0).getPbgid(), "" + wpcname + "_Y");
+							List<String> wk_fix = bodyDao.findPbbsnPbscheduleFixList(pb_all.get(0).getPbgid(), "" + wpcname + "_N");
 							int all_nb = wk_schedules.size();
 							int all_nb_bad = wk_fix.size();
 							String pb_old_sn = pb_all.get(0).getPboldsn() == null ? "" : pb_all.get(0).getPboldsn();
 							// 如果是A521 有舊的SN (要排除已經繼承)
 							if (pb_b_sn_old != null && pb_old_sn.indexOf(pb_b_sn_old) < 0) {
-								pb_old_all = pbDao.findAllByPbbsnAndPbbsnNotLike(pb_b_sn_old, "_old");
+								pb_old_all = bodyDao.findAllByPbbsnAndPbbsnNotLike(pb_b_sn_old, "_old");
 								if (pb_old_all.size() != 1) {
 									bean.setBody(new JSONObject());
 									bean.autoMsssage("WK004_1");
@@ -523,19 +523,19 @@ public class WorkstationWorkService {
 			if (!list.get("pb_b_sn").equals("")) {
 				List<ProductionBody> body_s = new ArrayList<ProductionBody>();
 				List<ProductionBody> body_s_old = new ArrayList<ProductionBody>();
-				body_s = pbDao.findAllByPbbsn(list.getString("pb_b_sn"));
-				body_s_old = pbDao.findAllByPbbsnAndPbbsnNotLike(list.getString("pb_old_sn"), "%old%");
+				body_s = bodyDao.findAllByPbbsn(list.getString("pb_b_sn"));
+				body_s_old = bodyDao.findAllByPbbsnAndPbbsnNotLike(list.getString("pb_old_sn"), "%old%");
 
 				// 更新 [ProductionBody] 開始
 				if (body_s.size() == 1) {
 					ProductionRecords p_records = new ProductionRecords();
 					ProductionBody body_one_now = body_s.get(0);// 目前產品資料
 					ProductionBody body_one_old = body_s_old.size() > 0 ? body_s_old.get(0) : null;// 舊產品資料
-					ProductionBody title_body = pbDao.findAllByPbid(0l).get(0);// 目前產品 自訂義SN欄位
+					ProductionBody title_body = bodyDao.findAllByPbid(0l).get(0);// 目前產品 自訂義SN欄位
 					JSONObject pbschedule = new JSONObject(body_s.get(0).getPbschedule());// 目前工作程序
 					Map<String, JSONObject> body_map_now = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
 					Map<String, JSONObject> body_map_old = new HashedMap<String, JSONObject>();// 自訂義 SN範圍+工作站+過站時間+需要更新資料
-					List<String> check_sn = pbDao.findPbbsnList(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
+					List<String> check_sn = bodyDao.findPbbsnList(body_one_now.getPbgid());// 與此 燒錄SN的產品 製令單 相關清單
 
 					ArrayList<ProductionRecords> wpicheck_pr = prDao.findAllByPrid(list.getString("ph_pr_id"), PageRequest.of(0, 1));// 產品規格內容(檢驗用)
 					Map<String, JSONObject> wpi_pr_map = new HashedMap<String, JSONObject>();// 轉換成檢查參數
@@ -1192,7 +1192,7 @@ public class WorkstationWorkService {
 						p_header.setPhsdate(new Date());
 					}
 					// 關聯SN 計算完成數量 完成?
-					List<Boolean> p_body = pbDao.findPbcheckList(p_header.getPhpbgid());
+					List<Boolean> p_body = bodyDao.findPbcheckList(p_header.getPhpbgid());
 					int finish = p_body.size();
 
 					// 規格
@@ -1204,7 +1204,7 @@ public class WorkstationWorkService {
 					p_header.setSysmdate(new Date());
 					// 更新工作站 (更新數量)/(避免先前[舊版本]有沒過站內容)
 					ArrayList<WorkstationProgram> programs = wkpDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(p_header.getPhwpid(), false);
-					List<String> wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + list.getString("w_c_name") + "_Y");
+					List<String> wk_schedules = bodyDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + list.getString("w_c_name") + "_Y");
 
 					// 記錄-每站過站數
 					if (p_header.getPhpbschedule() != null && !p_header.getPhpbschedule().equals("")) {
@@ -1218,7 +1218,7 @@ public class WorkstationWorkService {
 						for (WorkstationProgram p_one : programs) {
 							ArrayList<Workstation> works = wkDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
 							// 計算 此工作站完成數
-							wk_schedules = pbDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + works.get(0).getWcname() + "_Y");
+							wk_schedules = bodyDao.findPbbsnPbscheduleList(p_header.getPhpbgid(), "" + works.get(0).getWcname() + "_Y");
 							json_ph_pb_schedule.put(works.get(0).getWcname(), wk_schedules.size());
 						}
 						p_header.setPhpbschedule(json_ph_pb_schedule.toString());
@@ -1232,8 +1232,8 @@ public class WorkstationWorkService {
 						p_header.setPhedate(new Date());
 					}
 					phDao.save(p_header);
-					pbDao.save(body_one_now);
-					pbDao.save(body_one_old);
+					bodyDao.save(body_one_now);
+					bodyDao.save(body_one_old);
 					// true = 一般過站/false = 重複過站 = ?
 					if (set_replace) {
 						log.info("WK020:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
@@ -1374,7 +1374,7 @@ public class WorkstationWorkService {
 
 			// 新版標籤本控制
 			if (printer.has("label_list") && printer.has("label_list_sn")) {
-				List<ProductionBody> pb_all = pbDao.findAllByPbbsn(printer.getString("label_list_sn"));
+				List<ProductionBody> pb_all = bodyDao.findAllByPbbsn(printer.getString("label_list_sn"));
 				if (pb_all.size() == 1) {
 					List<ProductionHeader> ph_all = phDao.findAllByPhpbgid(pb_all.get(0).getPbgid());
 					if (ph_all.size() == 1) {

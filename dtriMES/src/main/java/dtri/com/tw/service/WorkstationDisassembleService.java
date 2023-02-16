@@ -240,8 +240,8 @@ public class WorkstationDisassembleService {
 				}
 				pro_b_one_old.setPbbsn(sn_old);
 				pro_b_one_old.setPbsn(sn_old);
-				pro_b_one_old.setSysmuser(user.getSuaccount());
-				pro_b_one_old.setSysmdate(new Date());
+				//pro_b_one_old.setSysmuser(user.getSuaccount());
+				//pro_b_one_old.setSysmdate(new Date());
 				bodyDao.save(pro_b_one_old);
 
 				// 新
