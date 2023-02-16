@@ -284,7 +284,7 @@ public class LabelListService {
 			JSONObject label_set = ll_one.getJSONObject("label_set");
 			JSONObject label_package = ll_one.getJSONObject("label_package");
 			JSONArray label_blocks = ll_one.getJSONArray("label_block");
-
+			LabelList save_label = new LabelList();
 			// ====[資料檢核]====
 			// Step1. 標籤-標籤機與標籤紙
 			if (label_set.getString("ll_name").equals("") || //
@@ -320,9 +320,14 @@ public class LabelListService {
 					return check;
 				}
 			}
-			LabelList save_label = new LabelList();
 			// Step4. 可能是新增?
 			if (label_set.getString("ll_id").equals("")) {
+				ArrayList<LabelList> save_label_old = labelsDao.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
+				// 如果跟舊的名稱一樣不可新增
+				if (save_label_old.size() > 0) {
+					resp.autoMsssage("LB006");
+					return check;
+				}
 				// label_set
 				save_label.setLlname(label_set.getString("ll_name"));
 				save_label.setLlgname(label_set.getString("ll_g_name"));
