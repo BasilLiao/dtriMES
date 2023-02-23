@@ -95,10 +95,10 @@ public class LabelListService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ll_a_json", FFS.h_t(ll_a_json, "100px", FFM.Wri.W_N));
 
 			// 系統固定
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t(sys_c_date, "180px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t(sys_c_user, "100px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "180px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t(sys_m_user, "100px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t(sys_c_date, "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t(sys_c_user, "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t(sys_m_date, "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_user", FFS.h_t(sys_m_user, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t(sys_status, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "100px", FFM.Wri.W_N));
 			bean.setHeader(new JSONObject().put("search_header", object_header));
@@ -352,7 +352,8 @@ public class LabelListService {
 
 				// all
 				save_label.setLlajson(ll_one.toString());
-
+				save_label.setSyscuser(user.getSuaccount());
+				save_label.setSysmuser(user.getSuaccount());
 				labelsDao.save(save_label);
 				check = true;
 			} else {
@@ -384,7 +385,8 @@ public class LabelListService {
 
 					// all
 					save_label.setLlajson(ll_one.toString());
-
+					save_label.setSysmdate(new Date());
+					save_label.setSysmuser(user.getSuaccount());
 					labelsDao.save(save_label);
 					check = true;
 				}
@@ -775,13 +777,25 @@ public class LabelListService {
 												continue;
 											}
 											String ll_bfd = ll_bfd_s[i];
+											// 如果只有一格字
+											if (ll_bfd.length() == 1) {
+												ll_bfd += " ";
+											}
 											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
 											// 條碼?
 											llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
 													ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
 											// 類型?
+											String codeType = "";
+											if (ll_fo_c.getString("ll_b_x").equals("C")) {
+												// code128
+												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
+											} else {
+												// code39 or 11
+												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
+											}
 											llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
-													ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N," + ll_fo_c.getString("ll_b_h") + ",N,N");
+													codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
 
 											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
@@ -792,14 +806,27 @@ public class LabelListService {
 										llfo = llfos;// 放回區塊內
 									} else {
 										// 固定 or 跟隨?
-										llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_fo_c.getString("ll_bfd"));
+										String ll_bfd = ll_fo_c.getString("ll_bfd");
+										// 如果只有一格字
+										if (ll_bfd.length() == 1) {
+											ll_bfd += " ";
+										}
+										llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
 
 										// 條碼?
 										llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
 												ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
 										// 類型?
+										String codeType = "";
+										if (ll_fo_c.getString("ll_b_x").equals("C")) {
+											// code128
+											codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
+										} else {
+											// code39 or 11
+											codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
+										}
 										llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
-												ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N," + ll_fo_c.getString("ll_b_h") + ",N,N");
+												codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
 										// 位置
 										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
 												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
