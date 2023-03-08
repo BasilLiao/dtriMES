@@ -1,48 +1,46 @@
 <!-- 查詢項目 -->
 <div id="customized">
-	<div class="shadow mt-0 text-left">
-		<div class=" bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-pen mr-1"></i>Customized-重工-工單製令 (繼承"舊"產品SN序號)
-		</div>
-		<div class="row m-0">
-			<div id="bulletinBoard" class="col-lg-12 p-0">
-				<div class="p-0">
-					<div class="col m-0 p-1 border border-dark rounded" style="min-height: 450px;">
-						<div class="row p-0 m-0 pb-2 text-center mt-3">
-							<div class="col-md-3 p-1 m-0 h4 text-center">[新]重工-製令單(登記)</div>
+	<div class="row m-0">
+		<div class="mt-0 text-left mb-2 col-6 p-0 pr-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-pen mr-1"></i>重工單(登記)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0" id="bulletinBoard">
+					<div class="col m-0 p-1 rounded">
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4 text-center">[目前新]重工單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<div class="row p-0 m-0">
+								<div class="row justify-content-between p-0 m-0">
 									<button id="check_order_btn" type="submit" class="col-5  p-1 btn btn-primary btn-sm" style="min-height: 36px;">Check</button>
-									<div class="col-2"></div>
 									<button id="locked_order_btn" type="submit" class="col-5  p-1 btn btn-warning btn-sm" style="min-height: 36px;">Unlock</button>
 								</div>
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[舊]原先-製令單(登記)</div>
+							<div class="col-md-3 p-1 m-0 h4">[原先舊]製令單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3"></div>
 						</div>
-
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[舊]產品-SN身分(登記)</div>
+							<div class="col-md-3 p-1 m-0 h4">[原先舊]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">登記SN至[重工 製令單]</button>
+								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN登記 [重工單]</button>
 							</div>
 						</div>
 						<div class="row p-1 m-0">
-							<div id="" class="col-md-3 h4 text-center">
+							<div id="" class="col-md-6 h4 text-center">
 								登記數/總數(台) <b id="order_nb">?/?</b>
 							</div>
-							<div class="col-md-9 p-0">
+							<div class="col-md-6 p-0">
 								<div class="row pr-3 pl-3 p-0 m-0 font-weight-bold">
 									<div class="p-0 h4">[新建產品SN身分 :</div>
 									<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="check_create_data" name="" value="true" type="checkbox" style="height: 25px; width: 25px">
@@ -50,47 +48,65 @@
 								</div>
 							</div>
 						</div>
-						<hr class="mt-5 mb-5">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-2 col-6 p-0 pl-1 rounded">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-reply mr-1"></i>重工單(歸還)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前]產品-SN身分(歸還)</div>
+							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_return_sn" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">歸還SN到[原先 製令單]</button>
+								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN歸還 [製令單]</button>
 							</div>
 						</div>
-						<div class="row p-0 m-0 pb-2 text-center mt-3 ">
-							<div class="col-md-3 p-1 m-0 h4 text-center">[工單]登記-製令單(說明)</div>
-							<div class="col-md-9 row m-0">
-								<div class="col-md-6 p-1 text-left ">
-									<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-										<b>(登記)方法</b>:使用 沿用舊的[產品/燒錄 SN] 時,資料登記至 [新工單] 上,
-										<!--  -->
-										<hr class="mt-2 mb-1">
-										<b>Step1.</b>輸入 [新]重工-製令單(登記)
-										<!--  -->
-										<br> <b>Step2.</b>輸入 [舊]產品-SN身分(登記)
-										<!--  -->
-										<br> <b>Step3.</b>按下 <b>Check</b> 檢查
-										<!--  -->
-										<br> <b>Step4.</b>顯示 登記數/總數(台) ?/?
-										<!--  -->
-										<br> <b>Step5.</b>按下 <b>登記SN至[重工 製令單]</b>
-										<!--  -->
-										<br> <b>Step6.</b>變化 登記數/總數(台) ?/? ,
-										<!--  -->
-										<br>如果想更換 [新]重工-製令單 按下 <b>Unlock</b>.
-									</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-0 col-12 p-0 pl-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-question-diamond mr-1"></i>重工工單使用說明
+			</div>
+			<div class="shadow row m-0">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
+						<div class="col-md-12 row p-0 m-0">
+							<div class="col-md-6 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>(登記)方法</b>:使用 沿用[原先舊]產品SN 時,資料登記至 [新工單] 上,
+									<!--  -->
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 [目前新]重工單
+									<!--  -->
+									<br> <b>Step2.</b>輸入 [原先舊]產品SN
+									<!--  -->
+									<br> <b>Step3.</b>按下 <b>Check</b> 檢查
+									<!--  -->
+									<br> <b>Step4.</b>顯示 登記數/總數(台) ?/?
+									<!--  -->
+									<br> <b>Step5.</b>按下 <b>產品SN登記 [重工單]</b>
+									<!--  -->
+									<br> <b>Step6.</b>變化 登記數/總數(台) ?/? ,
+									<!--  -->
+									<br>如果想更換 [目前新]重工單 按下 <b>Unlock</b>.
 								</div>
-								<div class="col-md-6 p-1 text-left ">
-									<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-										<b>(歸還)方法</b>:返回 取消舊的[產品/燒錄 SN] 時,資料還原至 [舊工單] 上,
-										<hr class="mt-2 mb-1">
-										<b>Step1.</b>輸入 [目前]產品-SN身分(歸還)
-										<!--  -->
-										<br> <b>Step2.</b>按下 <b>已被綁定的 [產品/燒錄 SN]</b> 即可還原.
-									</div>
+							</div>
+							<div class="col-md-6 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>(歸還)方法</b>:返回 [目前新]產品SN 時,資料還原至 [舊工單] 上,
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 [目前新]產品SN
+									<!--  -->
+									<br> <b>Step2.</b>按下 <b>產品SN歸還 [製令單]</b> 即可還原.
 								</div>
 							</div>
 						</div>
@@ -145,21 +161,21 @@
             	   if (event.which == 13) {
             		   //位移
             		   if($('#m_now_order').val()==""){
-            			   $("#m_now_order").focus();
-            			   return null;
+            			   	$("#m_now_order").focus();
+            			   	return null;
             		   }
             		   if($('#m_old_sn').val()==""){
             			   	$("#m_old_sn").focus();
            	   				$("#m_old_sn").select();
-            			   return null;
+            			   	return null;
             		   }
             		   
             		   //進行存檔
             		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!="" && customized.check_order_btn){
-            			   $('#order_btn').trigger('click');
+            				$('#order_btn').trigger('click');
 	           			   	$("#m_old_sn").focus();
 	       	   				$("#m_old_sn").select();
-            			   return null;
+            			    return null;
             		   }
             		   
             		   //進行檢查
@@ -171,14 +187,14 @@
                });
 		   		
 				//歸還 監聽確認
-               $(document).on("keypress", "#m_return_sn", function (event) {
-            	   if (event.which == 13) {
-            		   	$("#m_return_sn").focus();
-       	   				$("#m_return_sn").select();
-            		   	$('#return_order_btn').trigger('click');
-        			   return null;
-            	   }
-               });
+				$(document).on("keypress", "#m_return_sn", function (event) {
+					if (event.which == 13) {
+					 	$("#m_return_sn").focus();
+						$("#m_return_sn").select();
+					   	$('#return_order_btn').trigger('click');
+					return null;
+					}
+				});
 			},
 	   		//檢查
 	   		sendCheck(action) {

@@ -38,13 +38,13 @@ public class WorkstationDisassembleController extends AbstractController {
 		boolean check = false;
 
 		// Step0.當前用戶資料-UI權限
-		// SystemUser user = loginUser().getSystemUser();
+		SystemUser user = loginUser().getSystemUser();
 		SystemPermission pern = permissionUI();
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		// check = disassembleService.getData(resp, req, user);
-		check = true;
+		check = disassembleService.getProductionBodyData(resp, req, user);
+		// check = true;
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

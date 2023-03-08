@@ -1,28 +1,27 @@
 <!-- 查詢項目 -->
 <div id="customized">
-	<div class="shadow mt-0 text-left">
-		<div class=" bg-white rounded-top m-0 pl-1 h4">
-			<i class="bi bi-pen mr-1"></i>Customized-拆解-工單製令
-		</div>
-		<div class="row m-0">
-			<div id="bulletinBoard" class="col-lg-12 p-0">
-				<div class="p-0">
-					<div class="col m-0 p-1 border border-dark rounded" style="min-height: 450px;">
-						<div class="row p-0 m-0 pb-2 text-center mt-3">
-							<div class="col-md-3 p-1 m-0 h4 text-center">[新]拆解-製令單(登記)</div>
+	<div class="row m-0">
+		<div class="mt-0 text-left mb-2 col-6 p-0 pr-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-trash mr-1"></i>拆解單(登記)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4 text-center">[目前新]拆解單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded">
+								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<div class="row p-0 m-0">
+								<div class="row justify-content-between p-0 m-0">
 									<button id="check_order_btn" type="submit" class="col-5  p-1 btn btn-primary btn-sm" style="min-height: 36px;">Check</button>
-									<div class="col-2"></div>
 									<button id="locked_order_btn" type="submit" class="col-5  p-1 btn btn-warning btn-sm" style="min-height: 36px;">Unlock</button>
 								</div>
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[舊]原先-製令單(登記)</div>
+							<div class="col-md-3 p-1 m-0 h4">[原先舊]製令單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
@@ -30,71 +29,177 @@
 						</div>
 
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[舊]產品-SN身分(登記)</div>
+							<div class="col-md-3 p-1 m-0 h4">[原先舊]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded">
+								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">登記SN至[拆解 製令單]</button>
+								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN登記 [拆解單]</button>
 							</div>
 						</div>
 						<div class="row p-1 m-0">
-							<div id="" class="col-md-3 h4 text-center">
+							<div id="" class="col-md-6 h4 text-center">
 								登記數/總數(台) <b id="order_nb">?/?</b>
 							</div>
-							<div class="col-md-9 p-0">
+							<div class="col-md-6 p-0">
 								<div class="row pr-3 pl-3 p-0 m-0 font-weight-bold">
-									<div class="p-0 h4">[(檢查)SN如果沒有對應 資料,則自動新建(產品-SN身分) :</div>
+									<div class="p-0 h4">[新建產品SN身分 :</div>
 									<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="check_create_data" name="" value="true" type="checkbox" style="height: 25px; width: 25px">
 									<div class="p-0 h4">]</div>
 								</div>
 							</div>
 						</div>
-						<hr class="mt-5 mb-5">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-2 col-6 p-0 pl-1 rounded">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-reply mr-1"></i>拆解單(歸還)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前]產品-SN身分(歸還)</div>
+							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_return_sn" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">歸還SN到[原先 製令單]</button>
+								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN歸還 [製令單]</button>
 							</div>
 						</div>
-						<div class="row p-0 m-0 pb-2 text-center mt-3 ">
-							<div class="col-md-3 p-1 m-0 h4 text-center">[工單]登記-製令單(說明)</div>
-							<div class="col-md-9 row m-0">
-								<div class="col-md-6 p-1 text-left ">
-									<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-										<b>(登記)方法</b>:使用 沿用舊的[產品/燒錄 SN] 時,資料登記至 [新工單] 上,
-										<!--  -->
-										<hr class="mt-2 mb-1">
-										<b>Step1.</b>輸入 [新]拆解-製令單(登記)
-										<!--  -->
-										<br> <b>Step2.</b>按下 <b>Check</b> 檢查
-										<!--  -->
-										<br> <b>Step3.</b>顯示 登記數/總數(台) ?/?
-										<!--  -->
-										<br> <b>Step4.</b>輸入 [舊]原先-製令單(登記) 以及 [舊]產品-SN身分(登記)
-										<!--  -->
-										<br> <b>Step5.</b>按下 <b>登記SN至[重工 製令單]</b>
-										<!--  -->
-										<br> <b>Step6.</b>變化 登記數/總數(台) ?/? ,
-										<!--  -->
-										<br>如果想更換 [新]拆解-製令單 按下 <b>Unlock</b>.
-									</div>
-								</div>
-								<div class="col-md-6 p-1 text-left ">
-									<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-										<b>(歸還)方法</b>:返回 取消舊的[產品/燒錄 SN] 時,資料還原至 [舊工單] 上,
-										<hr class="mt-2 mb-1">
-										<b>Step1.</b>輸入 [目前]產品-SN身分(歸還)
-										<!--  -->
-										<br> <b>Step2.</b>按下 <b>已被綁定的 [產品/燒錄 SN]</b> 即可還原.
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-2 col-6 p-0 pr-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-unlock-fill mr-1"></i>料件標記解綁(登記)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_sn_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="sn_part_unlock_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN解綁 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">[目前新]製令單</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_order_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="order_part_unlock_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">製令單解綁 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">[目前新]產品項</div>
+							<div class="row col-md-9 p-0 m-0 pr-3 pl-3">
+								<div id="part_ex" class="col-md-2 p-1 m-0 h6 row rounded border border-primary">
+									<div class="col-9 p-0 part_name">All</div>
+									<div class="col-3 p-0">
+										<input class="part_val" id="part_all" type="checkbox" value="" style="height: 20px; width: 20px;">
 									</div>
 								</div>
 							</div>
 						</div>
-
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-2 col-6 p-0 pl-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-lock-fill mr-1"></i>料件標記綁定(歸還)
+			</div>
+			<div class="shadow row m-0" style="min-height: 220px">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_return_sn_part_lock" type="text" required="required" class="col-12 p-1 rounded">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="return_sn_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN綁定 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">[目前新]製令單</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_return_order_part_lock" type="text" required="required" class="col-12 p-1 rounded">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="return_order_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">製令單綁定 [料件]</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-0 text-left mb-0 col-12 p-0 pl-1 rounded ">
+			<div class=" bg-white rounded-top m-0 pl-1 h4">
+				<i class="bi bi-question-diamond mr-1"></i>拆解使用說明
+			</div>
+			<div class="shadow row m-0">
+				<div class="col-lg-12 p-0">
+					<div class="col m-0 p-1 rounded">
+						<div class="col-md-12 row p-0 m-0">
+							<div class="col-md-3 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>拆解單(登記)</b> : 使用 [原先舊]產品SN ,資料登記至 [拆解單] 上
+									<!--  -->
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 [目前新]拆解單
+									<!--  -->
+									<br> <b>Step2.</b>輸入 [原先舊]產品SN
+									<!--  -->
+									<br> <b>Step3.</b>按下 <b>Check</b> 檢查
+									<!--  -->
+									<br> <b>Step4.</b>顯示 登記數/總數(台) ?/?
+									<!--  -->
+									<br> <b>Step5.</b>按下 <b>產品SN登記 [拆解單]</b>
+									<!--  -->
+									<br> <b>Step6.</b>變化 登記數/總數(台) ?/? ,
+									<!--  -->
+									<br>如果想更換 [目前新]拆解單 按下 <b>Unlock</b>.
+								</div>
+							</div>
+							<div class="col-md-3 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>拆解單(歸還)</b> : 返回 取消舊的([原先舊]產品SN) 時,資料還原至 [舊工單] 上
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 [目前]產品-SN身分(歸還)
+									<!--  -->
+									<br> <b>Step2.</b>按下 <b>已被綁定的 產品SN歸還 [製令單]</b> 即可還原.
+								</div>
+							</div>
+							<div class="col-md-3 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>料件標記解綁(登記)</b> : ([目前新]產品SN/[目前新]製令單)+[目前新]產品項,標記解綁在(產品/製令單)
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 ([目前新]產品SN/[目前新]製令單)
+									<!--  -->
+									<b>Step2.</b>選擇 [目前新]產品項
+									<!--  -->
+									<br> <b>Step3.</b>按下 <b>產品SN解綁 [料件]/製令單解綁 [料件]</b> 即可.
+								</div>
+							</div>
+							<div class="col-md-3 p-1 text-left ">
+								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
+									<b>料件標記綁定(歸還)</b> : ([目前新]產品SN/[目前新]製令單),標記綁定在(產品/製令單)
+									<hr class="mt-2 mb-1">
+									<b>Step1.</b>輸入 ([目前新]產品SN/[目前新]製令單)
+									<!--  -->
+									<br> <b>Step2.</b>按下 <b>產品SN綁定 [料件]/製令單綁定 [料件]</b> 即可.
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -117,8 +222,21 @@
 		//可呼叫方法
 		methods : {
 			selectAllInit() {
+				console.log(main.allData.body);
 				$('#m_now_order').val('');
 				$('#m_now_order').focus();
+				var parts = main.allData.body.search;
+				parts = main.orderedSort(parts);/*排序*/
+				for(var k in parts) {
+					//console.log(k, parts[k]);
+					//建立產品 料件清單
+					var part_ex = $($("#part_ex").clone());
+					part_ex.find('.part_name').text(parts[k]);
+					part_ex.find('.part_val').attr('id',k);
+					part_ex.attr('id','');
+					part_ex.insertAfter("#part_ex");
+				}
+				
 				//檢查工單製令 ?
 		   		$(document).on("click", "#check_order_btn", function (event) {
 					console.log("check_order_btn");
@@ -130,42 +248,109 @@
 					$('#m_now_order').removeAttr("disabled");
 					customized.check_order_btn = false;
 		   		});
-		   		//登記SN 重工 工工單
+		   		//登記SN 拆解單
 		   		$(document).on("click", "#order_btn", function (event) {
 		   		    console.log("order_btn");
 		   			customized.sendCheck("order_btn");
 		   		});
-		   		//歸還SN
+		   		// 產品SN歸還
 		   		$(document).on("click", "#return_order_btn", function (event) {
 		   		    console.log("return_order_btn");
 		   			customized.sendCheck("return_order_btn");
 		   		});
-		   	//快速移動 監聽確認
-	               $(document).on("keypress", ".m_input", function (event) {
-	            	   if (event.which == 13) {
-	            		   //位移
-	            		   if($('#m_now_order').val()==""){
-	            			   $("#m_now_order").focus();
-	            			   return null;
-	            		   }
-	            		   if($('#m_old_sn').val()==""){
-	            			   $("#m_old_sn").focus();
-	            			   return null;
-	            		   }
-	            		   
-	            		   //進行存檔
-	            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!="" && customized.check_order_btn){
-	            			   $('#order_btn').trigger('click');
-	            			   return null;
-	            		   }
-	            		   
-	            		   //進行檢查
-	            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!=""){
-	            			   $('#check_order_btn').trigger('click');
-	            			   return null;
-	            		   } 
-	            	    }
-	               });
+		   		
+		   		//登記解綁
+		   		$(document).on("click", "#sn_part_unlock_btn", function (event) {
+		   		    console.log("sn_part_unlock_btn");
+		   			customized.sendCheck("sn_part_unlock_btn");
+		   		});
+		   		$(document).on("click", "#order_part_unlock_btn", function (event) {
+		   		    console.log("order_part_unlock_btn");
+		   			customized.sendCheck("order_part_unlock_btn");
+		   		});
+		   		
+		   		// 產品SN綁定
+		   		$(document).on("click", "#return_sn_part_lock_btn", function (event) {
+		   		    console.log("return_sn_part_lock_btn");
+		   			customized.sendCheck("return_sn_part_lock_btn");
+		   		});
+		   		// 製令單綁定
+		   		$(document).on("click", "#return_order_part_lock_btn", function (event) {
+		   		    console.log("return_order_part_lock_btn");
+		   			customized.sendCheck("return_order_part_lock_btn");
+		   		});
+		   		//快速移動 監聽確認
+				$(document).on("keypress", ".m_input", function (event) {
+					if (event.which == 13) {
+						//料件標記 解綁
+						if($('#m_sn_part_unlock').val()!=""){
+							$("#m_sn_part_unlock").focus();
+							$("#m_sn_part_unlock").select();
+							$('#sn_part_unlock_btn').trigger('click');
+							return null;
+						}
+						if($('#m_order_part_unlock').val()!=""){
+							$("#m_order_part_unlock").focus();
+							$("#m_order_part_unlock").select();
+							$('#order_part_unlock_btn').trigger('click');
+							return null;
+						}
+						
+						
+						//位移
+						if($('#m_now_order').val()==""){
+						$("#m_now_order").focus();
+						return null;
+						}
+						if($('#m_old_sn').val()==""){
+							$("#m_old_sn").focus();
+							$("#m_old_sn").select();
+							return null;
+						}
+						  
+						//進行存檔
+						if($('#m_old_sn').val()!="" && $('#m_now_order').val()!="" && customized.check_order_btn){
+							$('#order_btn').trigger('click');
+							$("#m_old_sn").focus();
+							$("#m_old_sn").select();
+							return null;
+						}
+						  
+						//進行檢查
+						if($('#m_old_sn').val()!="" && $('#m_now_order').val()!=""){
+							$('#check_order_btn').trigger('click');
+							return null;
+						}
+					}
+				});
+		   		
+				//產品SN歸還[製令單] 監聽確認
+				$(document).on("keypress", "#m_return_sn", function (event) {
+					if (event.which == 13) {
+					 	$("#m_return_sn").focus();
+						$("#m_return_sn").select();
+					   	$('#return_order_btn').trigger('click');
+					return null;
+					}
+				});
+				//歸還 SN綁定[料件] 監聽確認
+				$(document).on("keypress", "#m_return_sn_part_lock", function (event) {
+					if (event.which == 13) {
+					 	$("#m_return_sn_part_lock").focus();
+						$("#m_return_sn_part_lock").select();
+					   	$('#return_sn_part_lock_btn').trigger('click');
+					return null;
+					}
+				});
+				//歸還 製令單綁定[料件] 監聽確認
+				$(document).on("keypress", "#m_return_order_part_lock", function (event) {
+					if (event.which == 13) {
+					 	$("#m_return_order_part_lock").focus();
+						$("#m_return_order_part_lock").select();
+					   	$('#return_order_part_lock_btn').trigger('click');
+					return null;
+					}
+				});
 			},
 	   		//檢查
 	   		sendCheck(action) {
@@ -209,6 +394,7 @@
 	            	case"return_order_btn":
 	            		//歸還/消除 工單
 	            		if($('#m_return_sn').val()!=""){
+	            			console.log("return_order_btn");
 	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
 	            			s_type = "DELETE";
 	            			obj['action'] = "return_order_btn";
@@ -217,6 +403,75 @@
 	            			req.call_bk_fn = "customized_save";
 	    	            }
 	            	break;
+	            	//料件標記解綁(登記)
+	            	case"sn_part_unlock_btn":
+	            		//產品SN解綁 [料件]
+	            		if($('#m_sn_part_unlock').val()!=""){
+							console.log("sn_part_unlock_btn"+" 產品SN解綁 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	var part_val = [];
+	    	            	//選擇的項目
+	    	            	$( ".part_val" ).each(function( index ) {
+	    	            		if($( this ).is(':checked')){
+									console.log( index + ": " + $( this ).is(':checked')+" : "+ $( this ).attr('id') );
+	    	            			part_val.push($( this ).attr('id'));
+	    	            		}
+	    	            	});
+	    	            	obj['part_val'] = part_val;
+	    	            	obj['action'] = "sn_part_unlock";
+	    	            	obj['m_sn_part_unlock'] = $('#m_sn_part_unlock').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
+	            	case"order_part_unlock_btn":
+	            		//製令單解綁 [料件]
+	            		if($('#m_order_part_unlock').val()!=""){
+							console.log("order_part_unlock_btn"+" 製令單解綁 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	var part_val = [];
+	    	            	//選擇的項目
+	    	            	$( ".part_val" ).each(function( index ) {
+	    	            		if($( this ).is(':checked')){
+									console.log( index + ": " + $( this ).is(':checked')+" : "+ $( this ).attr('id') );
+	    	            			part_val.push($( this ).attr('id'));
+	    	            		}
+	    	            	});
+	    	            	obj['part_val'] = part_val;
+	    	            	obj['action'] = "order_part_unlock";
+	    	            	obj['m_order_part_unlock'] = $('#m_order_part_unlock').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
+	            	//料件標記綁定(歸還)
+	            	case"return_sn_part_lock_btn":
+	            		//產品SN綁定 [料件]
+	            		if($('#m_return_sn_part_lock').val()!=""){
+							console.log("return_sn_part_lock_btn"+" 產品SN綁定 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	obj['action'] = "return_sn_part_lock";
+	    	            	obj['m_return_sn_part_lock'] = $('#m_return_sn_part_lock').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
+	            	case"return_order_part_lock_btn":
+	            		//製令單綁定 [料件]
+	            		if($('#m_return_order_part_lock').val()!=""){
+							console.log("return_order_part_lock_btn"+" 製令單綁定 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	obj['action'] = "return_order_part_lock";
+	    	            	obj['m_return_order_part_lock'] = $('#m_return_order_part_lock').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
+	            	
 	            }
 	           
 	            //包裝
@@ -251,8 +506,6 @@
 	   			if(main.allData.info_color=="success"){
 	   				customized.sendCheck("check_order_btn");
 	   			}
-	   			$("#m_old_sn").focus();
-	   			$("#m_old_sn").select();
 			},
 			//嘗試檢查後
 	   		searchReturn(){
@@ -277,9 +530,20 @@
 			console.log("disassemble.html(beforeDestroy)");
 			$(document).off("click", "#check_order_btn");
 			$(document).off("click", "#locked_order_btn");
-			$(document).off("click", "#order_btn");
-			$(document).off("click", "#return_order_btn");
 			$(document).off("keypress", ".m_input");
+			//
+			$(document).off("click", "#order_btn");
+			$(document).off("click", "#sn_part_unlock_btn");
+			$(document).off("click", "#order_part_unlock_btn");
+			//
+			$(document).off("click", "#return_order_part_lock_btn");
+			$(document).off("click", "#return_sn_part_lock_btn");
+			$(document).off("click", "#return_order_btn");
+			//
+			$(document).off("keypress", "#m_return_sn");			
+			$(document).off("keypress", "#m_return_sn_part_lock");
+			$(document).off("keypress", "#m_return_order_part_lock");
+			
 		}
 	});
 </script>

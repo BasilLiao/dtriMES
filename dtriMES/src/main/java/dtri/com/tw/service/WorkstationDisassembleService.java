@@ -34,6 +34,37 @@ public class WorkstationDisassembleService {
 	@Autowired
 	private WorkstationDao workDao;
 
+	// 取得當前 產品項目資料清單
+	public boolean getProductionBodyData(PackageBean bean, PackageBean req, SystemUser user) {
+		// 傳入參數
+		// JSONObject body = req.getBody();
+
+		// 取得清單
+		JSONObject secrch = new JSONObject();
+		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
+		Method method;
+		for (int j = 0; j < 50; j++) {
+			String m_name = "getPbvalue" + String.format("%02d", j + 1);
+			try {
+				method = body_one.getClass().getMethod(m_name);
+				String value = (String) method.invoke(body_one);
+				String name = "setPbvalue" + String.format("%02d", j + 1);
+				if (value != null && !value.equals("")) {
+					secrch.put(name, value);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (secrch.length() != 0) {
+			bean.setBody(new JSONObject().put("search", secrch));
+		} else {
+			bean.autoMsssage("102");
+			return false;
+		}
+		return true;
+	}
+
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
@@ -178,7 +209,7 @@ public class WorkstationDisassembleService {
 				String m_old_order = body.getJSONObject("modify").getString("m_old_order");
 				ProductionRecords phprid = new ProductionRecords();
 
-				// Step1. 進行-特定查詢(重工工單)
+				// Step1. 進行-特定查詢(拆解工單)
 				phprid.setPrid(now_order);
 				prArrayList = headerDao.findAllByProductionRecordsAndPhtype(phprid, "A431_disassemble");
 				// 檢查 u 新的 製令單資料
@@ -240,8 +271,8 @@ public class WorkstationDisassembleService {
 				}
 				pro_b_one_old.setPbbsn(sn_old);
 				pro_b_one_old.setPbsn(sn_old);
-				//pro_b_one_old.setSysmuser(user.getSuaccount());
-				//pro_b_one_old.setSysmdate(new Date());
+				// pro_b_one_old.setSysmuser(user.getSuaccount());
+				// pro_b_one_old.setSysmdate(new Date());
 				bodyDao.save(pro_b_one_old);
 
 				// 新
@@ -370,8 +401,184 @@ public class WorkstationDisassembleService {
 						}
 					}
 				}
+			} else if (action.equals("sn_part_unlock")) {
+				// 產品SN解綁 [料件]
+				String pbbsn = body.getJSONObject("modify").getString("m_sn_part_unlock");
+				JSONArray part_vals = body.getJSONObject("modify").getJSONArray("part_val");
+				Boolean all = false;
+
+				for (Object x : part_vals) {
+					if (x.toString().equals("part_all")) {
+						all = true;
+					}
+				}
+
+				// Step1. 避免->不存在
+				List<ProductionBody> pbbs = bodyDao.findAllByPbbsn(pbbsn);
+				if (pbbs.size() == 1) {
+					ProductionBody pbb = pbbs.get(0);
+					Method method_get;
+					Method method_set;
+					try {
+						// Step2. 可能是(全部/指定)->
+						if (all) {
+							for (int j = 0; j < 50; j++) {
+								String name_get = "getPbvalue" + String.format("%02d", j + 1);
+								String name_set = "setPbvalue" + String.format("%02d", j + 1);
+								method_get = pbb.getClass().getMethod(name_get);
+								method_set = pbb.getClass().getMethod(name_set, String.class);
+								// 取值
+								String value = (String) method_get.invoke(pbb);
+								// 填入(不能是空的+沒有_old)
+								if (value != null && !value.equals("") && value.indexOf("_old") < 0) {
+									method_set.invoke(pbb, value + "_old");
+								}
+							}
+						} else {
+							for (Object x : part_vals) {
+								String name_get = x.toString().replace("set", "get");
+								String name_set = x.toString();
+								method_get = pbb.getClass().getMethod(name_get);
+								method_set = pbb.getClass().getMethod(name_set, String.class);
+								// 取值
+								String value = (String) method_get.invoke(pbb);
+								// 填入(不能是空的+沒有_old)
+								if (value != null && !value.equals("") && value.indexOf("_old") < 0) {
+									method_set.invoke(pbb, value + "_old");
+								}
+							}
+						}
+						check = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					// 存檔
+					pbb.setSysmdate(new Date());
+					pbb.setSysmuser(user.getSuaccount());
+					bodyDao.save(pbb);
+				}
+
+			} else if (action.equals("order_part_unlock")) {
+				// 製令單解綁 [料件]
+				String prid = body.getJSONObject("modify").getString("m_order_part_unlock");
+				JSONArray part_vals = body.getJSONObject("modify").getJSONArray("part_val");
+				Boolean all = false;
+
+				for (Object x : part_vals) {
+					if (x.toString().equals("part_all")) {
+						all = true;
+					}
+				}
+
+				ProductionRecords pr = new ProductionRecords();
+				pr.setPrid(prid);
+				prArrayList = headerDao.findAllByProductionRecords(pr);
+				// Step1. 避免->不存在
+				if (prArrayList.size() == 1) {
+					List<ProductionBody> pbbs = bodyDao.findAllByPbgidOrderByPbsnAsc(prArrayList.get(0).getPhpbgid());
+					if (pbbs.size() >= 1) {
+						for (ProductionBody pbb : pbbs) {
+							Method method_get;
+							Method method_set;
+
+							// Step2. 可能是(全部/指定)->
+							if (all) {
+								for (int j = 0; j < 50; j++) {
+									String name_get = "getPbvalue" + String.format("%02d", j + 1);
+									String name_set = "setPbvalue" + String.format("%02d", j + 1);
+									method_get = pbb.getClass().getMethod(name_get);
+									method_set = pbb.getClass().getMethod(name_set, String.class);
+									// 取值
+									String value = (String) method_get.invoke(pbb);
+									// 填入(不能是空的+沒有_old)
+									if (value != null && !value.equals("") && value.indexOf("_old") < 0) {
+										method_set.invoke(pbb, value + "_old");
+									}
+								}
+							} else {
+								for (Object x : part_vals) {
+									String name_get = x.toString().replace("set", "get");
+									String name_set = x.toString();
+									method_get = pbb.getClass().getMethod(name_get);
+									method_set = pbb.getClass().getMethod(name_set, String.class);
+									// 取值
+									String value = (String) method_get.invoke(pbb);
+									// 填入(不能是空的+沒有_old)
+									if (value != null && !value.equals("") && value.indexOf("_old") < 0) {
+										method_set.invoke(pbb, value + "_old");
+									}
+								}
+							}
+							check = true;
+
+							// 存檔
+							pbb.setSysmdate(new Date());
+							pbb.setSysmuser(user.getSuaccount());
+							bodyDao.save(pbb);
+						}
+					}
+				}
+			} else if (action.equals("return_sn_part_lock")) {
+				// 產品SN綁定 [料件]
+				action.equals("m_return_sn_part_lock");
+				// Step1. 避免->不存在
+				String pbbsn = body.getJSONObject("modify").getString("m_return_sn_part_lock");
+				List<ProductionBody> pbbs = bodyDao.findAllByPbbsn(pbbsn);
+				if (pbbs.size() == 1) {
+					ProductionBody pbb = pbbs.get(0);
+					Method method_get;
+					Method method_set;
+
+					for (int j = 0; j < 50; j++) {
+						String name_get = "getPbvalue" + String.format("%02d", j + 1);
+						String name_set = "setPbvalue" + String.format("%02d", j + 1);
+						method_get = pbb.getClass().getMethod(name_get);
+						method_set = pbb.getClass().getMethod(name_set, String.class);
+						// 取值
+						String value = (String) method_get.invoke(pbb);
+						// 填入(不能是空的+沒有_old)
+						if (value != null && !value.equals("") && value.indexOf("_old") > 0) {
+							method_set.invoke(pbb, value.replace("_old", ""));
+						}
+					}
+					pbb.setSysmdate(new Date());
+					pbb.setSysmuser(user.getSuaccount());
+					bodyDao.save(pbb);
+					check = true;
+				}
+			} else if (action.equals("return_order_part_lock")) {
+				// 製令單綁定 [料件]
+				String prid = body.getJSONObject("modify").getString("m_return_order_part_lock");
+				ProductionRecords pr = new ProductionRecords();
+				pr.setPrid(prid);
+				prArrayList = headerDao.findAllByProductionRecords(pr);
+				// Step1. 避免->不存在
+				if (prArrayList.size() == 1) {
+					List<ProductionBody> pbbs = bodyDao.findAllByPbgidOrderByPbsnAsc(prArrayList.get(0).getPhpbgid());
+					for (ProductionBody pbb : pbbs) {
+						Method method_get;
+						Method method_set;
+						for (int j = 0; j < 50; j++) {
+							String name_get = "getPbvalue" + String.format("%02d", j + 1);
+							String name_set = "setPbvalue" + String.format("%02d", j + 1);
+							method_get = pbb.getClass().getMethod(name_get);
+							method_set = pbb.getClass().getMethod(name_set, String.class);
+							// 取值
+							String value = (String) method_get.invoke(pbb);
+							// 填入(不能是空的+沒有_old)
+							if (value != null && !value.equals("") && value.indexOf("_old") > 0) {
+								method_set.invoke(pbb, value.replace("_old", ""));
+							}
+						}
+						pbb.setSysmdate(new Date());
+						pbb.setSysmuser(user.getSuaccount());
+						bodyDao.save(pbb);
+						check = true;
+					}
+				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e);
 			return false;
 		}
