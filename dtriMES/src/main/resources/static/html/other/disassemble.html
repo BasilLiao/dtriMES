@@ -81,16 +81,7 @@
 				<div class="col-lg-12 p-0">
 					<div class="col m-0 p-1 rounded">
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_sn_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
-							</div>
-							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="sn_part_unlock_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN解綁 [料件]</button>
-							</div>
-						</div>
-						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]製令單</div>
+							<div class="col-md-3 p-1 m-0 h4">製令單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_order_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
 							</div>
@@ -99,8 +90,17 @@
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]產品項</div>
-							<div class="row col-md-9 p-0 m-0 pr-3 pl-3">
+							<div class="col-md-3 p-1 m-0 h4">產品SN</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_sn_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="sn_part_unlock_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN解綁 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">產品項</div>
+							<div class="row col-md-9 p-0 m-0 pt-1 pr-3 pl-3">
 								<div id="part_ex" class="col-md-2 p-1 m-0 h6 row rounded border border-primary">
 									<div class="col-9 p-0 part_name">All</div>
 									<div class="col-3 p-0">
@@ -121,21 +121,21 @@
 				<div class="col-lg-12 p-0">
 					<div class="col m-0 p-1 rounded">
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_return_sn_part_lock" type="text" required="required" class="col-12 p-1 rounded">
-							</div>
-							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="return_sn_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN綁定 [料件]</button>
-							</div>
-						</div>
-						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]製令單</div>
+							<div class="col-md-3 p-1 m-0 h4">製令單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
 								<input autocomplete="off" id="m_return_order_part_lock" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<button id="return_order_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">製令單綁定 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">產品SN</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_return_sn_part_lock" type="text" required="required" class="col-12 p-1 rounded">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="return_sn_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN綁定 [料件]</button>
 							</div>
 						</div>
 					</div>
@@ -181,20 +181,20 @@
 							</div>
 							<div class="col-md-3 p-1 text-left ">
 								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-									<b>料件標記解綁(登記)</b> : ([目前新]產品SN/[目前新]製令單)+[目前新]產品項,標記解綁在(產品/製令單)
+									<b>料件標記解綁(登記)</b> : (產品SN/製令單)+產品項,標記解綁在(產品/製令單)
 									<hr class="mt-2 mb-1">
-									<b>Step1.</b>輸入 ([目前新]產品SN/[目前新]製令單)
+									<b>Step1.</b>輸入 (產品SN/製令單)
 									<!--  -->
-									<b>Step2.</b>選擇 [目前新]產品項
+									<b>Step2.</b>選擇 產品項
 									<!--  -->
 									<br> <b>Step3.</b>按下 <b>產品SN解綁 [料件]/製令單解綁 [料件]</b> 即可.
 								</div>
 							</div>
 							<div class="col-md-3 p-1 text-left ">
 								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-									<b>料件標記綁定(歸還)</b> : ([目前新]產品SN/[目前新]製令單),標記綁定在(產品/製令單)
+									<b>料件標記綁定(歸還)</b> : (產品SN/製令單),標記綁定在(產品/製令單)
 									<hr class="mt-2 mb-1">
-									<b>Step1.</b>輸入 ([目前新]產品SN/[目前新]製令單)
+									<b>Step1.</b>輸入 (產品SN/製令單)
 									<!--  -->
 									<br> <b>Step2.</b>按下 <b>產品SN綁定 [料件]/製令單綁定 [料件]</b> 即可.
 								</div>
