@@ -455,7 +455,7 @@ public class LabelListService {
 		// 標籤跟隨清單
 		JSONArray object_follow = new JSONArray();
 		// 前端
-		object_follow.put("na.na.====工作站====");//
+		object_follow.put("na.na.====工作站(外箱裝用)====");//
 		object_follow.put("fn.front_from_fixed.工作站-固定名稱");// 來自工作站前端
 		object_follow.put("fn.front_from_sn.工作站-產品序號");// 來自工作站前端
 		object_follow.put("fn.front_from_qty.工作站-產品序號數量");// 產品序號數量

@@ -163,6 +163,14 @@
 										</div>
 									</div>
 								</div>
+								<div class="p-2" id="save">
+									<div id="barcode_BC023"></div>
+									<div id="BC023" class="btn btn-sm btn-light col-12 p-0 m-0 mt-1 barcode_action">
+										<div class="small font-weight-bold">
+											print(清除包裝)<br>[BC023]
+										</div>
+									</div>
+								</div>
 								<div class="dropdown-divider p-0 mt-2"></div>
 								<div class="p-2" id="clear">
 									<div id="barcode_BC005"></div>
@@ -638,12 +646,68 @@
 							<div class="dropdown-divider p-0 m-0 border border-dark"></div>
 						</td>
 					</tr>
-					<!-- 標籤樣式(固定) -->
 					<tr>
 						<td rowspan="2" colspan="3" class="p-0 border border-dark">
+							<!-- 標籤樣式(動態) -->
+							<div class="shadow-sm text-left" style="min-height: 700px;">
+								<div class=" bg-dark text-light m-0 p-1 h5">
+									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b>
+								</div>
+								<div id="label_list" class="row m-0">
+									<!-- 範例標籤 -->
+									<div id="ex_label_id" class="d-none">
+										<div class="row p-0 m-1 justify-content-end border border-light" style="width: 275px;">
+											<div class="label_name h5 col-10 m-0 p-1">Ex範例標籤</div>
+											<div id="ex_label_op" class="col-2 pn__op pr-1 pl-3 pt-1">
+												<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
+											</div>
+											<div id="ex_label_cl" class="col-2 pn__cl pr-1 pl-3 pt-1 d-none">
+												<i class="bi bi-dash-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
+											</div>
+										</div>
+										<div id="ex_label" class="d-none p-0 m-1 border border-dark" style="width: 275px;">
+											<div class="row m-0 pl-1 h5">
+												<div class="col-1 m-0 p-0">
+													<input name="" value="true" type="checkbox" class="label_auto mt-1 border border-dark rounded big-checkbox">
+												</div>
+												<div class="col-11 m-0 p-0">選擇標籤(自動)</div>
+											</div>
+											<div class="printer_c p-1 m-0 mb-2 row bg-light">
+												<div class="col-6 m-0 p-1">Printer(標籤機)</div>
+												<div class="col-6 m-0 p-1">
+													<input placeholder="標籤機代號" type="text" class="col p-0 rounded" value="">
+												</div>
+											</div>
+											<div class="barcode_print_q p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Print Qty(打印次數)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="barcode_package_q d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Package Qty(每箱數量)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="100" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="barcode_label_q d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-8 m-0 p-1">Label Qty(每標數量)</div>
+												<div class="col-4 m-0 p-1">
+													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
+												</div>
+											</div>
+											<div class="front_from d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Front_From(登記)</div>
+												<p class="from_fixed_def  d-none col-4 m-0 p-1"></p>
+												<p class="from_sn_def  d-none  col-8 m-0 p-1"></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div> <!-- 標籤樣式(固定) -->
 							<div class="shadow-sm text-left" style="min-height: 100px;">
 								<div class=" bg-dark text-light m-0 p-1 h5">
-									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto)
+									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) Old
 								</div>
 								<div class="row m-0">
 									<!-- SN 3X1 單一標籤 -->
@@ -929,65 +993,6 @@
 									</div>
 								</div>
 							</div>
-
-							<div class="shadow-sm text-left" style="min-height: 700px;">
-								<div class=" bg-dark text-light m-0 p-1 h5">
-									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b>
-								</div>
-								<div id="label_list" class="row m-0">
-									<!-- 範例標籤 -->
-									<div id="ex_label_id" class="d-none">
-										<div class="row p-0 m-1 justify-content-end border border-light" style="width: 275px;">
-											<div class="label_name h5 col-10 m-0 p-1">Ex範例標籤</div>
-											<div id="ex_label_op" class="col-2 pn__op pr-1 pl-3 pt-1">
-												<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
-											</div>
-											<div id="ex_label_cl" class="col-2 pn__cl pr-1 pl-3 pt-1 d-none">
-												<i class="bi bi-dash-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
-											</div>
-										</div>
-										<div id="ex_label" class="d-none p-0 m-1 border border-dark" style="width: 275px;">
-											<div class="row m-0 pl-1 h5">
-												<div class="m-0 mr-1 p-0">
-													<input name="" value="true" type="checkbox" class="label_auto mt-1 border border-dark rounded big-checkbox">
-												</div>
-												<div class="col-10 m-0 p-0">選擇標籤(自動)</div>
-											</div>
-											<div class="printer_c p-1 m-0 mb-2 row bg-light">
-												<div class="col-6 m-0 p-1">Printer(標籤機)</div>
-												<div class="col-6 m-0 p-1">
-													<input placeholder="標籤機代號" type="text" class="col p-0 rounded" value="">
-												</div>
-											</div>
-											<div class="barcode_print_q p-1 m-0 mb-2 row bg-light">
-												<div class="col-8 m-0 p-1">Print Qty(打印次數)</div>
-												<div class="col-4 m-0 p-1">
-													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
-												</div>
-											</div>
-											<div class="barcode_package_q d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-8 m-0 p-1">Package Qty(每箱數量)</div>
-												<div class="col-4 m-0 p-1">
-													<input type="number" class="col p-0 rounded" value="1" min="1" max="100" oninput="workstation.checkNumberValue(this);">
-												</div>
-											</div>
-											<div class="barcode_label_q d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-8 m-0 p-1">Label Qty(每標數量)</div>
-												<div class="col-4 m-0 p-1">
-													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
-												</div>
-											</div>
-											<div class="front_from d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-12 m-0 p-1">Front_From(登記)</div>
-												<p class="from_fixed_def  d-none col-4 m-0 p-1"></p>
-												<p class="from_sn_def  d-none  col-8 m-0 p-1"></p>
-											</div>
-										</div>
-									</div>
-									<!-- 正式 -->
-
-								</div>
-							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -1053,6 +1058,8 @@
    		this.create_barcode("barcode_BC010","BC010","code39",22);
    		this.create_barcode("barcode_BC011","BC011","code39",22);
    		this.create_barcode("barcode_BC012","BC012","code39",22);
+   		//標籤清除
+   		this.create_barcode("barcode_BC023","BC023","code39",22);
    		
    		//維修代號
    		this.create_barcode("barcode_BC013","BC013","code39",22);
@@ -1702,6 +1709,13 @@
    					$("#after_sn_check").prop("checked", true);
    					$("#set_replace").prop("checked", true);
    					$("#set_success").prop("checked", true);
+   					workstation.clearOrder();
+   					return false;
+   					break;
+   				case "BC023":
+   					//清除包裝資料
+   					$(".from_fixed").remove();
+   					$(".from_sn").remove();
    					workstation.clearOrder();
    					return false;
    					break;
@@ -2460,9 +2474,10 @@
    			//=======Step9.New標籤=======
 			if(main.allData.body.obj_label!=null && $("#label_pr_id").text()!=doc_list.m__ph_pr_id){
 				
-				$(".label_re").remove();
-				$("#label_pr_id").text(doc_list.m__ph_pr_id);
 				var obj_labels = main.allData.body.obj_label;
+				$(".label_re").remove();
+				$("#label_pr_id").text(doc_list.m__ph_pr_id+"/Label For : "+obj_labels[0].label_set.ll_g_name);
+				
 				//每個標籤設定
 				obj_labels.forEach(function (x) {
 					var ll_id = x.label_set.ll_id;
@@ -2542,12 +2557,12 @@
 		   				//確定有勾選且有(跟隨機制)Front_From
 		  				if(!$("#"+choose_id+" .front_from").hasClass("d-none")){
 		  					//數量?
-		  					var pq=	parseInt($("#"+choose_id+" .barcode_package_q input").val());
-		  					
-		  					if($("#"+choose_id+" .front_from .from_sn").length<=pq){
-		  						//不能重複
+		  					var pq = parseInt($("#"+choose_id+" .barcode_package_q input").val());
+		  					var from_sn_lh = $("#"+choose_id+" .front_from .from_sn").length;
+		  					if(from_sn_lh<=pq){
 		  						var f_f_l = $("#"+choose_id+" .from_sn").map((_,el) => el.innerHTML).get();
-		  						if(f_f_l.indexOf($('#w_focus_5').val())<0){
+		  						//不能重複+數量不能超過設定
+		  						if(f_f_l.indexOf($('#w_focus_5').val())<0 && from_sn_lh<pq){
 					   				//固定
 					   				var f_f_fixed = $($("#"+choose_id+" .from_fixed_def").clone());
 					   				f_f_fixed.removeClass("d-none");
@@ -2561,7 +2576,6 @@
 					   				f_f_sn.addClass("from_sn");
 					   				f_f_sn.text($('#w_focus_5').val());					   				 
 					   				f_f_sn.appendTo("#"+choose_id+" .front_from");
-					   				
 		  						}
 			   				
 		  					}else if($("#"+choose_id+" .from_sn").length==pq){

@@ -62,6 +62,8 @@ public class LabelListBean {
 
 	private String llpr;// 動態-設定-速度(1-7) ^PR
 
+	private String llcw;// 動態-設定-而外字體(C:MINGLIU.TTF) ^CW
+
 	// ===區域位置(設計)============================
 
 	private String llfo;// 動態-設計-[標籤]上->[打印]位置座標(x,y) ^FO0,2 ... [打印]位置結尾:^FS
@@ -139,6 +141,7 @@ public class LabelListBean {
 		// 標籤紙
 		this.llxa = "^XA{ZPL打印內容}^XZ";
 		this.llci = "^CI28";
+		this.llcw = "^CW1,C:MINGLIU.TTF";// 代號1,支援繁體[細明體字型]
 		this.lllh = "^LH{x,y起始打印座標(點)}";
 		this.llll = "^LL{標籤長度(點)}";
 		this.llpw = "^PW{標籤寬度(點)}";
@@ -435,7 +438,7 @@ public class LabelListBean {
 	}
 
 	public String getLlheader() {
-		return llpw + llll + llmd + llpr + lllh;
+		return llci+llpw + llll + llmd + llpr + lllh + llcw;
 	}
 
 	public String getLlbody() {
