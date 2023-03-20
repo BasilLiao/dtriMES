@@ -11,8 +11,8 @@
 					<!-- 快速移動 -->
 					<div class="col m-0 p-1 border border-dark rounded" style="min-height: 450px;">
 						<div class="row m-0">
-							<div class="col-5 m-0 p-1">
-								<input name="barcode_function" placeholder="Go?:Code Ex:[Workstation=WK000]" id="barcode_function" type="text" class="col p-1 rounded" value="">
+							<div class="col-7 m-0 p-1">
+								<input name="barcode_function" placeholder="Go?:Ex:[功能?(WK000)/作業人員/工作站別/模式/標籤號]" id="barcode_function" type="text" class="col p-1 rounded" value="">
 							</div>
 							<div class="col-sm-2 m-0 p-1">
 								<button id="send_home_btn" class="col-12 m-0 p-2 btn btn-primary btn-sm" type="submit" style="height: 36px;">Where to go ...</button>
@@ -80,8 +80,11 @@
 			},
 			//執行動作
 	   		send_command(){
-				var code = $('#barcode_function').val().toUpperCase();//排除多餘字
-				console.log("send_command :"+code );
+				main.send_command = $('#barcode_function').val();
+				var code_list = main.send_command.split("/");
+				var code = code_list[0];//轉換功能單位
+				code.toUpperCase();//排除多餘字
+				console.log("send_command :"+code);
 				switch(code){
 				case "WK000":
 					var s_url = "workstation_work.basil";

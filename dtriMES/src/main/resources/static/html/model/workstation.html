@@ -649,14 +649,14 @@
 					<tr>
 						<td rowspan="2" colspan="3" class="p-0 border border-dark">
 							<!-- 標籤樣式(動態) -->
-							<div class="shadow-sm text-left" style="min-height: 700px;">
+							<div class="shadow-sm text-left" style="min-height: 400px;">
 								<div class=" bg-dark text-light m-0 p-1 h5">
 									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b>
 								</div>
 								<div id="label_list" class="row m-0">
 									<!-- 範例標籤 -->
-									<div id="ex_label_id" class="d-none">
-										<div class="row p-0 m-1 justify-content-end border border-light" style="width: 275px;">
+									<div id="ex_label_id" class="d-none m-1">
+										<div class="row p-0 m-1 justify-content-end border border-primary rounded-top" style="width: 275px;">
 											<div class="label_name h5 col-10 m-0 p-1">Ex範例標籤</div>
 											<div id="ex_label_op" class="col-2 pn__op pr-1 pl-3 pt-1">
 												<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
@@ -705,7 +705,7 @@
 									</div>
 								</div>
 							</div> <!-- 標籤樣式(固定) -->
-							<div class="shadow-sm text-left" style="min-height: 100px;">
+							<div class="shadow-sm text-left" style="min-height: 350px;">
 								<div class=" bg-dark text-light m-0 p-1 h5">
 									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) Old
 								</div>
@@ -1241,8 +1241,6 @@
 			fix_t_example.insertBefore("#fix_t_example");
 			//建立新code
 			this.create_barcode('barcode_'+key_id,key_id,"code39",22);
-   			
-   			
    			$("#fix_t_example").addClass('d-none');
    			
    			//console.log(this.fix_type);
@@ -1280,7 +1278,28 @@
    		sn_init(){
    			 this.sn_list_example =$("#workstation_example").clone();
    			 $("#workstation_example").remove();
-   			
+   			//自動指令
+   	   		if(main.send_command.split("/").length>=4){
+   	   			$("#w_focus_0").val(main.send_command.split("/")[1]);//*作業人(s):
+   	   			$("#w_focus_1").val(main.send_command.split("/")[2]);//*工作站:
+   	   			//有標籤指定:
+   	   			if(main.send_command.split("/").length>4){
+   	   				$("#ex_label_id .printer_c input").val(main.send_command.split("/")[4]);
+   	   			}
+   	   			//*模式:
+   	   			$("#m_order").val(main.send_command.split("/")[3]);
+   	   			workstation.send_command();
+   	   			//下移
+   	   			setTimeout(function(){
+	   	   			$('#m_order').val('BC002');
+	  				workstation.send_command();
+   	   			},500);
+   	   			setTimeout(function(){
+		   	   		$('#m_order').val('BC002');
+		   			workstation.send_command();
+	   	   		},1000);
+   	   		} 
+   	   		main.send_command = '';
    		},
    		//建立 一維條碼
    		create_barcode(taget_id,barcode_val,code,h_size){
@@ -2013,12 +2032,9 @@
 									label_obj.f_f_sn = [];
 									printer['label_list'].push(label_obj);									
 								}
-								
-								
 							}
 						}	
 					});
-
 				}
    			}		
    				
@@ -2489,6 +2505,7 @@
 					ex_label.find('#ex_label').attr('id',"id_"+ll_id+'_label');
 					ex_label.find('.label_name').text(x.label_set.ll_name);
 					ex_label.find('.label_auto').attr('id',"id_"+ll_id+'_label_auto');
+					ex_label.attr('id','');
 					
 					//有包裝設定?
 					if(x.label_package.ll_o_p_type){
