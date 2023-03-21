@@ -263,7 +263,7 @@ select {
 						<div id="bg_label" style="height: 200px; width: 600px; background-color: #e9ecef80;">
 							<div id="bg_pl_ex" class="d-none rounded border border-success " style="position: absolute; min-height: 30px; min-width: 30px; top: 10px; left: 10px; background-color: #e9ecef80;">
 								<div class="pl_title text-muted small" style="position: absolute;">區塊標題</div>
-								<div class="pl_content pt-2 h5 mb-0"></div>
+								<div class="pl_content pt-2 h5 mb-0" style="word-break: break-all;"></div>
 							</div>
 						</div>
 					</div>
@@ -973,6 +973,9 @@ customized = new Vue({
 						bc.ll_a_w = $("#ll_a_w").val();
 						//預覽文字內容
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content").text($("#ll_fd").val());
+						if($("#ll_fb_a").val()!="" && $("#ll_fb_a").val()>0){
+							$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content").css("max-width",$("#ll_fb_a").val()+"px");
+						}
 						
 						//區塊屬性設置
 						bc.ll_fb_a = $("#ll_fb_a").val();
@@ -1029,7 +1032,7 @@ customized = new Vue({
 						//預覽一維條碼
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content").html('<img src="./img/barcode.png"/>');
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content img").css('height',bc.ll_b_h+"px");
-						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content img").css('width',(bc.ll_bfd.length*20)+"px");
+						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content img").css('width',(bc.ll_bfd.length*bc.ll_by_m*10)+"px");
 						
 						
 					break;
@@ -1130,7 +1133,10 @@ customized = new Vue({
 						//預覽文字內容
 						switch(item.ll_fo_content.label_block_type){
 						case "char_type":
-							$(".bg_pls").last().find(".pl_content").text(item.ll_fo_content.ll_fd);						
+							$(".bg_pls").last().find(".pl_content").text(item.ll_fo_content.ll_fd);		
+							if(item.ll_fo_content.ll_fb_a!="" && item.ll_fo_content.ll_fb_a>0){
+								$(".bg_pls").last().find(".pl_content").css("max-width",item.ll_fo_content.ll_fb_a+"px");
+							}
 							break;
 						case "img_type":
 							$(".bg_pls").last().find(".pl_content").html('<img src="'+item.ll_fo_content.ll_gfa+'" />');
@@ -1141,7 +1147,7 @@ customized = new Vue({
 						case "barcode_type":
 							$(".bg_pls").last().find(".pl_content").html('<img src="./img/barcode.png"/>');
 							$(".bg_pls").last().find(".pl_content img").css('height',item.ll_fo_content.ll_b_h+"px");
-							$(".bg_pls").last().find(".pl_content img").css('width',(item.ll_fo_content.ll_bfd.length*20)+"px");
+							$(".bg_pls").last().find(".pl_content img").css('width',(item.ll_fo_content.ll_by_m*item.ll_fo_content.ll_bfd.length*10)+"px");
 							break;
 						case "qr_code_type":
 							$(".bg_pls").last().find(".pl_content").html('<img src="./img/QRcode.png"/>');	
