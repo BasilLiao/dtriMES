@@ -1029,6 +1029,7 @@
    		fix_t_open:0,
    		//obj_label 標籤群組
    		obj_label:{},
+   		force_label:true,//強制打印: false = 自動打印/ true = 強制打印
    		temp_w_focus_5:"",//傳送新標籤需用到
    	},
    	//初始化
@@ -2003,15 +2004,23 @@
 								label_obj.barcode_ll_q = "0";//標籤上台數 
 								label_obj.f_f_l = "";//來自前端值
 								
+								//============外箱組態============
+								var from_sn = false;
+								var from_fixed = false;
+								var from_print = true;//是否滿足打印?
 								//有包裝設定?
 								if(!one_label.find('.barcode_package_q').hasClass("d-none")){
 									label_obj.barcode_pe_q = one_label.find('.barcode_package_q input').val();
-									label_obj.barcode_ll_q = one_label.find('.barcode_label_q input').val();								
+									label_obj.barcode_ll_q = one_label.find('.barcode_label_q input').val();
+									//自動打印->需要檢查是否數量正確?
+									if(!workstation.force_label){//打印: false = 自動打印/ true = 強制打印
+										if(one_label.find(".front_from .from_sn").length<label_obj.barcode_pe_q){
+											from_print = false;
+										}
+									}
 								}
-								var from_sn = false;
-								var from_fixed = false;
 								//有前端 值入設定?
-								if(one_label.find(".front_from .from_sn").length>=1){
+								if(from_print && one_label.find(".front_from .from_sn").length>=1){
 									label_obj.f_f_sn =  one_label.find(".from_sn").map((_,el) => el.innerHTML).get();								
 									printer['label_list'].push(label_obj);
 									one_label.find(".from_sn").remove();
@@ -2020,23 +2029,26 @@
 									label_obj.f_f_sn = [];
 								}
 								//有前端 (固定)值入設定?
-								//有前端 值入設定?
-								if(one_label.find(".front_from .from_fixed").length>=1){
+								if(from_print && one_label.find(".front_from .from_fixed").length>=1){
 									label_obj.f_f_f =  one_label.find(".from_fixed").map((_,el) => el.innerHTML).get();	
 									one_label.find(".from_fixed").remove();
 									from_fixed = true;
 								}else{
 									label_obj.f_f_f = [];
 								}
-								//以上都不是
+								
+								//============以上都不是(非外箱組態)============
 								if(!from_sn && !from_fixed){
 									label_obj.f_f_f = [];
 									label_obj.f_f_sn = [];
-									printer['label_list'].push(label_obj);									
+									if(from_print){
+										printer['label_list'].push(label_obj);																		
+									}
 								}
 							}
 						}	
 					});
+					workstation.force_label = true;
 				}
    			}		
    				
@@ -2628,6 +2640,7 @@
    				//=======.New標籤=======
    				else if($('.label_auto').is(":checked")){
    					var BC011_send = false;
+   					workstation.force_label = false;
    					$('.label_auto').map(function () {
    						if(this.id!="" && $("#"+this.id).is(":checked")){
 		   				var choose_id = this.id.replace("_auto","");

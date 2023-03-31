@@ -441,9 +441,10 @@ public class WorkstationRepeatService {
 									check = true;
 								}
 							} else {
-								// 沒有舊紀錄
+								// 沒有舊紀錄->必須不是被繼承的+ 僅 無SN繼承 或是原號繼承
 								List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
-								if (p_nows != null && p_nows.size() == 1) {
+								if (p_nows != null && p_nows.size() == 1 && //
+										(header_now.getPhtype().equals("A511_no_sn") || header_now.getPhtype().equals("A521_old_sn"))) {
 									bodyDao.delete(p_nows.get(0));
 									check = true;
 								}
