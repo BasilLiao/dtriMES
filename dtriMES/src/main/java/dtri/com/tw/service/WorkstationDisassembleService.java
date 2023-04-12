@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,8 @@ public class WorkstationDisassembleService {
 	private WorkstationProgramDao programDao;
 	@Autowired
 	private WorkstationDao workDao;
+	@Autowired
+	private EntityManager em;
 
 	// 取得當前 產品項目資料清單
 	public boolean getProductionBodyData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -518,12 +523,56 @@ public class WorkstationDisassembleService {
 						}
 					}
 				}
+			} else if (action.equals("key_part_unlock")) {
+				// key_part綁定 [料件]
+				String pb_value = body.getJSONObject("modify").getString("m_key_part_unlock");
+				JSONArray part_vals = body.getJSONObject("modify").getJSONArray("part_val");
+
+				Boolean all = false;
+				// 判斷 All
+				for (Object x : part_vals) {
+					if (x.toString().equals("part_all")) {
+						all = true;
+					}
+				}
+				// 必須 不是ALL+選擇一項料件項
+				if (!all && part_vals.length() == 1) {
+					String name_get = part_vals.get(0).toString().replace("set", "get");
+					String name_set = part_vals.get(0).toString();
+					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue", "pb_value");
+					// 查詢SN欄位
+					List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
+					String nativeQuery = "SELECT b.* FROM production_body b WHERE"; //
+					nativeQuery += " (b." + pb_value_name + " LIKE :pb_value)";
+					nativeQuery += "and (b.pb_b_sn NOT LIKE '%old%')";
+					Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
+					query.setParameter("pb_value", "%" + pb_value + "%");
+					productionBodies = query.getResultList();
+					// 如果有取得產品
+					if (productionBodies.size() == 1) {
+						Method method_get;
+						Method method_set;
+						ProductionBody pbb = new ProductionBody();
+						pbb = productionBodies.get(0);
+						method_get = pbb.getClass().getMethod(name_get);
+						method_set = pbb.getClass().getMethod(name_set, String.class);
+						// 取值
+						String value = (String) method_get.invoke(pbb);
+						// 填入(不能是空的+沒有_old)
+						if (value != null && !value.equals("") && value.indexOf("_old") < 0) {
+							method_set.invoke(pbb, value + "_old");
+							pbb.setSysmdate(new Date());
+							pbb.setSysmuser(user.getSuaccount());
+							bodyDao.save(pbb);
+							check = true;
+						}
+					}
+				}
 			} else if (action.equals("return_sn_part_lock")) {
 				// 產品SN綁定 [料件]
-				action.equals("m_return_sn_part_lock");
-				// Step1. 避免->不存在
 				String pbbsn = body.getJSONObject("modify").getString("m_return_sn_part_lock");
 				List<ProductionBody> pbbs = bodyDao.findAllByPbbsn(pbbsn);
+				// Step1. 避免->不存在
 				if (pbbs.size() == 1) {
 					ProductionBody pbb = pbbs.get(0);
 					Method method_get;
@@ -576,7 +625,53 @@ public class WorkstationDisassembleService {
 						check = true;
 					}
 				}
+			} else if (action.equals("return_key_part_lock")) {
+				// key_part綁定 [料件]
+				String pb_value = body.getJSONObject("modify").getString("m_return_key_part_lock");
+				JSONArray part_vals = body.getJSONObject("modify").getJSONArray("part_val");
+
+				Boolean all = false;
+				// 判斷 All
+				for (Object x : part_vals) {
+					if (x.toString().equals("part_all")) {
+						all = true;
+					}
+				}
+				// 必須 不是ALL+選擇一項料件項
+				if (!all && part_vals.length() == 1) {
+					String name_get = part_vals.get(0).toString().replace("set", "get");
+					String name_set = part_vals.get(0).toString();
+					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue", "pb_value");
+					// 查詢SN欄位
+					List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
+					String nativeQuery = "SELECT b.* FROM production_body b WHERE"; //
+					nativeQuery += " (b." + pb_value_name + " LIKE :pb_value)";
+					nativeQuery += "and (b.pb_b_sn NOT LIKE '%old%')";
+					Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
+					query.setParameter("pb_value", "%" + pb_value + "%");
+					productionBodies = query.getResultList();
+					// 如果有取得產品
+					if (productionBodies.size() == 1) {
+						Method method_get;
+						Method method_set;
+						ProductionBody pbb = new ProductionBody();
+						pbb = productionBodies.get(0);
+						method_get = pbb.getClass().getMethod(name_get);
+						method_set = pbb.getClass().getMethod(name_set, String.class);
+						// 取值
+						String value = (String) method_get.invoke(pbb);
+						// 填入(不能是空的+沒有_old)
+						if (value != null && !value.equals("")) {
+							method_set.invoke(pbb, value.replace("_old", ""));
+							pbb.setSysmdate(new Date());
+							pbb.setSysmuser(user.getSuaccount());
+							bodyDao.save(pbb);
+							check = true;
+						}
+					}
+				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e);

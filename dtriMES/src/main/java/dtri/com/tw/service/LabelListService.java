@@ -495,6 +495,8 @@ public class LabelListService {
 		object_follow.put("na.na.====製令規格====");//
 		object_follow.put("pr.getPrbomid.BOM料號(公司)");// BOM料號(公司)
 		object_follow.put("pr.getPrbomcid.BOM料號(客戶)");// BOM料號(客戶)
+		object_follow.put("pr.getPrname.產品品名");// 產品品名
+		object_follow.put("pr.getPrspecification.規格敘述");// 規格敘述
 		object_follow.put("pr.getPrpmodel.產品型號");// 產品型號
 		object_follow.put("pr.getPrpv.產品版本");// 產品版本
 

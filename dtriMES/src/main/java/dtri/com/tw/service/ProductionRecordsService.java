@@ -54,6 +54,9 @@ public class ProductionRecordsService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_p_model", FFS.h_t("產品型號", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t("BOM料號(公司)", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_bom_c_id", FFS.h_t("BOM料號(客戶)", "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_name", FFS.h_t("產品品名", "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_specification", FFS.h_t("規格敘述", "150px", FFM.Wri.W_Y));
+			
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_b_item", FFS.h_t("規格定義", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_item", FFS.h_t("軟體定義", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pr_s_sn", FFS.h_t("產品SN_開始", "150px", FFM.Wri.W_Y));
@@ -82,6 +85,9 @@ public class ProductionRecordsService {
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_bom_id", "BOM料號(公司)"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pr_bom_c_id", "BOM料號(客戶)"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "pr_name", "產品品名"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "pr_specification", "規格敘述"));
+			
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "pr_b_item", "規格定義"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "pr_s_item", "軟體定義"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "pr_s_sn", "產品SN_開始"));
@@ -140,6 +146,8 @@ public class ProductionRecordsService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", one.getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", one.getPrbomcid());
 
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_name", one.getPrname());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_specification", one.getPrspecification());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_b_item", one.getPrbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_item", one.getPrsitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_s_sn", one.getPrssn());
@@ -186,6 +194,8 @@ public class ProductionRecordsService {
 				entity.setPrid(data.getString("pr_id"));
 				entity.setPrbomid(data.getString("pr_bom_id"));
 				entity.setPrbomcid(data.getString("pr_bom_c_id"));
+				entity.setPrname(data.getString("pr_name"));
+				entity.setPrspecification(data.getString("pr_specification"));
 				entity.setPrssn(data.getString("pr_s_sn"));
 				entity.setPresn(data.getString("pr_e_sn"));
 				entity.setPrpmodel(data.getString("pr_p_model"));
@@ -216,6 +226,8 @@ public class ProductionRecordsService {
 				entity.setPrid(data.getString("pr_id"));
 				entity.setPrbomid(data.getString("pr_bom_id"));
 				entity.setPrbomcid(data.getString("pr_bom_c_id"));
+				entity.setPrname(data.getString("pr_name"));
+				entity.setPrspecification(data.getString("pr_specification"));
 				entity.setPrssn(data.getString("pr_s_sn"));
 				entity.setPresn(data.getString("pr_e_sn"));
 				entity.setPrpmodel(data.getString("pr_p_model"));
@@ -263,6 +275,8 @@ public class ProductionRecordsService {
 					ProductionRecords entity = headers.get(0).getProductionRecords();
 					entity.setPrbitem(data.getString("pr_b_item"));
 					entity.setPrsitem(data.getString("pr_s_item"));
+					entity.setPrname(data.getString("pr_name"));
+					entity.setPrspecification(data.getString("pr_specification"));
 					entity.setSysnote(data.getString("sys_note"));
 					entity.setPrbomcid(data.getString("pr_bom_c_id"));
 					entity.setSysmdate(new Date());

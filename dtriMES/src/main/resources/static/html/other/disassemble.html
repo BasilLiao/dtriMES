@@ -99,7 +99,16 @@
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">產品項</div>
+							<div class="col-md-3 p-1 m-0 h4">料件(Key part)</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input placeholder="料件項:必須只能 選一項" autocomplete="off" id="m_key_part_unlock" type="text" required="required" class="col-12 p-1 rounded m_input">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="key_part_unlock_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">Key part解綁 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">料件項</div>
 							<div class="row col-md-9 p-0 m-0 pt-1 pr-3 pl-3">
 								<div id="part_ex" class="col-md-2 p-1 m-0 h6 row rounded border border-primary">
 									<div class="col-9 p-0 part_name">All</div>
@@ -136,6 +145,15 @@
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<button id="return_sn_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN綁定 [料件]</button>
+							</div>
+						</div>
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-3 p-1 m-0 h4">料件(Key part)</div>
+							<div class="col-md-6 p-1 pr-3 pl-3">
+								<input placeholder="料件項:必須只能 選一項" autocomplete="off" id="m_return_key_part_lock" type="text" required="required" class="col-12 p-1 rounded">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="return_key_part_lock_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">Key part綁定 [料件]</button>
 							</div>
 						</div>
 					</div>
@@ -264,11 +282,21 @@
 		   		    console.log("sn_part_unlock_btn");
 		   			customized.sendCheck("sn_part_unlock_btn");
 		   		});
+		   		$(document).on("click", "#key_part_unlock_btn", function (event) {
+		   		    console.log("key_part_unlock_btn");
+		   			customized.sendCheck("key_part_unlock_btn");
+		   		});
+		   		
 		   		$(document).on("click", "#order_part_unlock_btn", function (event) {
 		   		    console.log("order_part_unlock_btn");
 		   			customized.sendCheck("order_part_unlock_btn");
 		   		});
 		   		
+		   		// 料件(Key part)綁定
+		   		$(document).on("click", "#return_key_part_lock_btn", function (event) {
+		   		    console.log("return_key_part_lock_btn");
+		   			customized.sendCheck("return_key_part_lock_btn");
+		   		});
 		   		// 產品SN綁定
 		   		$(document).on("click", "#return_sn_part_lock_btn", function (event) {
 		   		    console.log("return_sn_part_lock_btn");
@@ -295,8 +323,13 @@
 							$('#order_part_unlock_btn').trigger('click');
 							return null;
 						}
-						
-						
+						if($('#m_key_part_unlock').val()!=""){
+							$("#m_key_part_unlock").focus();
+							$("#m_key_part_unlock").select();
+							$('#key_part_unlock_btn').trigger('click');
+							return null;
+						}
+
 						//位移
 						if($('#m_now_order').val()==""){
 						$("#m_now_order").focus();
@@ -333,6 +366,16 @@
 					return null;
 					}
 				});
+				
+				//歸還 料件(Key part) 監聽確認
+				$(document).on("keypress", "#m_return_key_part_lock", function (event) {
+					if (event.which == 13) {
+					 	$("#m_return_key_part_lock").focus();
+						$("#m_return_key_part_lock").select();
+					   	$('#return_key_part_lock_btn').trigger('click');
+					return null;
+					}
+				});
 				//歸還 SN綁定[料件] 監聽確認
 				$(document).on("keypress", "#m_return_sn_part_lock", function (event) {
 					if (event.which == 13) {
@@ -362,7 +405,7 @@
 	        	req.call_bk_fn = "customized_search";
 	            switch(action){
 	            	case"check_order_btn":
-	            		//檢查 重工-工單
+	            		//檢查 拆解-工單
 		            	if($('#m_now_order').val()!=""){
 		            		obj['action'] = "check_order_btn";
 		            		obj['m_now_order'] = $('#m_now_order').val();
@@ -371,7 +414,7 @@
 		            	}
 	            	break;
 	            	case"order_btn":
-	            		//登記 重工-工單
+	            		//登記 拆解-工單
 	            		if(this.check_order_btn  && $('#m_old_sn').val()!=""){
 		            		if( $('#check_create_data').is(":checked")){
 		            			//自動新建
@@ -404,6 +447,27 @@
 	    	            }
 	            	break;
 	            	//料件標記解綁(登記)
+	            	case"key_part_unlock_btn":
+	            		//產品SN解綁 [料件]
+	            		if($('#m_key_part_unlock').val()!=""){
+							console.log("key_part_unlock_btn"+" 料件(Key part)解綁 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	var part_val = [];
+	    	            	//選擇的項目
+	    	            	$( ".part_val" ).each(function( index ) {
+	    	            		if($( this ).is(':checked')){
+									console.log( index + ": " + $( this ).is(':checked')+" : "+ $( this ).attr('id') );
+	    	            			part_val.push($( this ).attr('id'));
+	    	            		}
+	    	            	});
+	    	            	obj['part_val'] = part_val;
+	    	            	obj['action'] = "key_part_unlock";
+	    	            	obj['m_key_part_unlock'] = $('#m_key_part_unlock').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
 	            	case"sn_part_unlock_btn":
 	            		//產品SN解綁 [料件]
 	            		if($('#m_sn_part_unlock').val()!=""){
@@ -447,6 +511,28 @@
 	    	            }
 	            	break;
 	            	//料件標記綁定(歸還)
+	            	case"return_key_part_lock_btn":
+	            		//產品SN綁定 [料件]
+	            		if($('#m_return_key_part_lock').val()!=""){
+							console.log("return_key_part_lock_btn"+" Key part綁定 [料件]");
+							s_type = "PUT";
+	    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+	    	            	
+	    	            	var part_val = [];
+	    	            	//選擇的項目
+	    	            	$( ".part_val" ).each(function( index ) {
+	    	            		if($( this ).is(':checked')){
+									console.log( index + ": " + $( this ).is(':checked')+" : "+ $( this ).attr('id') );
+	    	            			part_val.push($( this ).attr('id'));
+	    	            		}
+	    	            	});
+	    	            	obj['part_val'] = part_val;
+	    	            	obj['action'] = "return_key_part_lock";
+	    	            	obj['m_return_key_part_lock'] = $('#m_return_key_part_lock').val();
+	    	            	
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
 	            	case"return_sn_part_lock_btn":
 	            		//產品SN綁定 [料件]
 	            		if($('#m_return_sn_part_lock').val()!=""){
@@ -533,14 +619,18 @@
 			$(document).off("keypress", ".m_input");
 			//
 			$(document).off("click", "#order_btn");
+			$(document).off("click", "#return_order_btn");
+			$(document).off("keypress", "#m_return_sn");
+			//
+			$(document).off("click", "#key_part_unlock_btn");
 			$(document).off("click", "#sn_part_unlock_btn");
 			$(document).off("click", "#order_part_unlock_btn");
 			//
+			$(document).off("click", "#return_key_part_lock_btn");
 			$(document).off("click", "#return_order_part_lock_btn");
 			$(document).off("click", "#return_sn_part_lock_btn");
-			$(document).off("click", "#return_order_btn");
-			//
-			$(document).off("keypress", "#m_return_sn");			
+			//			
+			$(document).off("keypress", "#m_return_key_part_lock");		
 			$(document).off("keypress", "#m_return_sn_part_lock");
 			$(document).off("keypress", "#m_return_order_part_lock");
 			

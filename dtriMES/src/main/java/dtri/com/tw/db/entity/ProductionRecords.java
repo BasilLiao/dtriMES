@@ -27,6 +27,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pr_e_sn : 產品序號 結束 EX: xxxxxx 01YW12042J050<br>
  *      pr_s_b_sn : 燒錄序號 開始 EX:xxxxxx 01YW12042J044-<br>
  *      pr_e_b_sn : 燒錄序號 結束 EX:xxxxxx 01YW12042J044-<br>
+ *      pr_specification: 產品規格敘述<br>
+ *      pr_name: 產品品名<br>
  * 
  */
 @Entity
@@ -90,6 +92,12 @@ public class ProductionRecords {
 
 	@Column(name = "pr_bom_c_id", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prbomcid;
+
+	@Column(name = "pr_specification",  columnDefinition = "varchar(150) default ''")
+	private String prspecification;
+
+	@Column(name = "pr_name",  columnDefinition = "varchar(150) default ''")
+	private String prname;
 
 	@Column(name = "pr_b_item", nullable = false, columnDefinition = "text default ''")
 	private String prbitem;
@@ -289,6 +297,22 @@ public class ProductionRecords {
 
 	public void setPrpv(String prpv) {
 		this.prpv = prpv;
+	}
+
+	public String getPrspecification() {
+		return prspecification;
+	}
+
+	public void setPrspecification(String prspecification) {
+		this.prspecification = prspecification;
+	}
+
+	public String getPrname() {
+		return prname;
+	}
+
+	public void setPrname(String prname) {
+		this.prname = prname;
 	}
 
 }
