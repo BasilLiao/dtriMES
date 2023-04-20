@@ -141,7 +141,7 @@ public class LabelListBean {
 		// 標籤紙
 		this.llxa = "^XA{ZPL打印內容}^XZ";
 		this.llci = "^CI28";
-		this.llcw = "^CW1,C:MINGLIU.TTF";// 代號1,支援繁體[細明體字型]
+		this.llcw = "^CW1,C:MINGLIU.TTF^CW2,C:MSJHBold.TTF";// 代號1,支援繁體[細明體字型]
 		this.lllh = "^LH{x,y起始打印座標(點)}";
 		this.llll = "^LL{標籤長度(點)}";
 		this.llpw = "^PW{標籤寬度(點)}";
