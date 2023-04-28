@@ -235,7 +235,10 @@ public class LabelListController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = labelListService.updateOrAddDataCustomized(resp, req, user);
+		check = labelListService.updateOrAddDataCustomized(resp, req, user, false);
+		// Step2-1.特殊新增(必須而外再存一次)
+		check = labelListService.updateOrAddDataCustomized(resp, req, user, true);
+
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

@@ -276,7 +276,7 @@ public class LabelListService {
 
 	// 更新/新增 資料清單
 	@Transactional
-	public boolean updateOrAddDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
+	public boolean updateOrAddDataCustomized(PackageBean resp, PackageBean req, SystemUser user, boolean dubCheck) {
 		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
@@ -318,6 +318,13 @@ public class LabelListService {
 						label_block.getJSONObject("ll_fo_content").toString().equals("{}")) {
 					resp.autoMsssage("LB005");
 					return check;
+				}
+			}
+			// Step4-0. 可能是新增?(.特殊新增(必須而外再存一次))
+			if (label_set.getString("ll_id").equals("") && dubCheck) {
+				ArrayList<LabelList> save2_label_old = labelsDao.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
+				if (save2_label_old.size() > 0) {
+					label_set.put("ll_id", save2_label_old.get(0).getLlid()+"");
 				}
 			}
 			// Step4. 可能是新增?
@@ -664,7 +671,38 @@ public class LabelListService {
 												continue;
 											}
 											String ll_fd = ll_fd_s[i];
+											// 避免是空值
+											if (ll_fd.length() != 0) {
+												llfo = label_bean.getLlfd().replace("{一般文字}", ll_fd);
+												// 字型?
+												llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
+														ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
+																+ ll_fo_c.getString("ll_a_h") //
+																+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
+												// 區塊屬性?
+												if (!ll_fo_c.getString("ll_fb_d").equals("")) {
+													llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
+															ll_fo_c.getString("ll_fb_a") + "," //
+																	+ ll_fo_c.getString("ll_fb_b") + ","//
+																	+ ll_fo_c.getString("ll_fb_c") + "," //
+																	+ ll_fo_c.getString("ll_fb_d") + ",0");
+												}
+												// 位置
+												llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+														label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+												llfos += llfo;
+												ll_fo_y = ll_fo_y + l_o_top;
+											}
+										}
+										llfo = llfos;// 放回區塊內
+										label_bean.setFolist(llfo);
+									} else {
+										// 一張標籤->單項->固定 or 跟隨?
+										String ll_fd = ll_fo_c.getString("ll_fd");
+										// 避免是空值
+										if (ll_fd.length() != 0) {
 											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fd);
+
 											// 字型?
 											llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
 													ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
@@ -677,38 +715,14 @@ public class LabelListService {
 																+ ll_fo_c.getString("ll_fb_b") + ","//
 																+ ll_fo_c.getString("ll_fb_c") + "," //
 																+ ll_fo_c.getString("ll_fb_d") + ",0");
+
 											}
 											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
-											llfos += llfo;
-											ll_fo_y = ll_fo_y + l_o_top;
+													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
 										}
-										llfo = llfos;// 放回區塊內
-									} else {
-										// 一張標籤->單項->固定 or 跟隨?
-										llfo = label_bean.getLlfd().replace("{一般文字}", ll_fo_c.getString("ll_fd"));
-
-										// 字型?
-										llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
-												ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
-														+ ll_fo_c.getString("ll_a_h") //
-														+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
-										// 區塊屬性?
-										if (!ll_fo_c.getString("ll_fb_d").equals("")) {
-											llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
-													ll_fo_c.getString("ll_fb_a") + "," //
-															+ ll_fo_c.getString("ll_fb_b") + ","//
-															+ ll_fo_c.getString("ll_fb_c") + "," //
-															+ ll_fo_c.getString("ll_fb_d") + ",0");
-
-										}
-										// 位置
-										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+										label_bean.setFolist(llfo);
 									}
-
-									label_bean.setFolist(llfo);
 									break;
 								case "img_type":
 									// 圖片
@@ -779,11 +793,49 @@ public class LabelListService {
 												continue;
 											}
 											String ll_bfd = ll_bfd_s[i];
-											// 如果只有一格字
-											if (ll_bfd.length() == 1) {
+											// 避免是空值
+											if (ll_bfd.length() != 0) {
+												// 如果只有一格字(code39 or 11)
+												if (!ll_fo_c.getString("ll_b_x").equals("C") && ll_bfd.length() == 1) {
+													ll_bfd += " ";
+												}
+												llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
+												// 條碼?
+												llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
+														ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
+												// 類型?
+												String codeType = "";
+												if (ll_fo_c.getString("ll_b_x").equals("C")) {
+													// code128
+													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
+												} else {
+													// code39 or 11
+													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
+												}
+												llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
+														codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
+
+												// 位置
+												llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+														label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+												llfos += llfo;
+												ll_fo_y = ll_fo_y + l_o_top;
+											}
+										}
+										llfo = llfos;// 放回區塊內
+										label_bean.setFolist(llfo);
+									} else {
+										// 固定 or 跟隨?
+										String ll_bfd = ll_fo_c.getString("ll_bfd");
+										// 避免是空值
+										if (ll_bfd.length() != 0) {
+											// 如果只有一格字(code39 or 11)
+											if (!ll_fo_c.getString("ll_b_x").equals("C") && ll_bfd.length() == 1) {
 												ll_bfd += " ";
 											}
+
 											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
+
 											// 條碼?
 											llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
 													ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
@@ -798,42 +850,12 @@ public class LabelListService {
 											}
 											llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
 													codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
-
 											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
-											llfos += llfo;
-											ll_fo_y = ll_fo_y + l_o_top;
+													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+											label_bean.setFolist(llfo);
 										}
-										llfo = llfos;// 放回區塊內
-									} else {
-										// 固定 or 跟隨?
-										String ll_bfd = ll_fo_c.getString("ll_bfd");
-										// 如果只有一格字
-										if (ll_bfd.length() == 1) {
-											ll_bfd += " ";
-										}
-										llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
-
-										// 條碼?
-										llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
-												ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
-										// 類型?
-										String codeType = "";
-										if (ll_fo_c.getString("ll_b_x").equals("C")) {
-											// code128
-											codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
-										} else {
-											// code39 or 11
-											codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
-										}
-										llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
-												codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
-										// 位置
-										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
 									}
-									label_bean.setFolist(llfo);
 									break;
 								case "qr_code_type":
 									// 二維條碼
@@ -854,31 +876,38 @@ public class LabelListService {
 												continue;
 											}
 											String ll_bqfd = ll_bqfd_s[i];
-											llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bqfd);
+											// 避免是空值
+											if (ll_bqfd.length() != 0) {
+												llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bqfd);
 
+												// 條碼?
+												llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
+														ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
+
+												// 位置
+												llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
+														label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
+												llfos += llfo;
+												ll_fo_y = ll_fo_y + l_o_top;
+											}
+										}
+										llfo = llfos;// 放回區塊內
+										label_bean.setFolist(llfo);
+									} else {
+										// 固定 or 跟隨?
+										String ll_bqfd = ll_fo_c.getString("ll_bqfd");
+										// 避免是空值
+										if (ll_bqfd.length() != 0) {
+											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_bqfd);
 											// 條碼?
 											llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
 													ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
 
-											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + ll_fo_y + llfo);
-											llfos += llfo;
-											ll_fo_y = ll_fo_y + l_o_top;
+													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+											label_bean.setFolist(llfo);
 										}
-										llfo = llfos;// 放回區塊內
-									} else {
-										// 固定 or 跟隨?
-										llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_fo_c.getString("ll_bqfd"));
-
-										// 條碼?
-										llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
-												ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
-
-										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
 									}
-									label_bean.setFolist(llfo);
 									break;
 								}
 							}
@@ -936,7 +965,7 @@ public class LabelListService {
 			JSONObject ll = (JSONObject) object;
 			// 如果有找到->封裝->跳出->回傳
 			if (ll.getJSONObject("label_set").getString("ll_id").equals(label_id)) {
-				JSONObject label_set = ll.getJSONObject("label_set");
+				// JSONObject label_set = ll.getJSONObject("label_set");
 				JSONObject label_package = ll.getJSONObject("label_package");
 				JSONArray label_blocks = ll.getJSONArray("label_block");
 				// 包裝設置
