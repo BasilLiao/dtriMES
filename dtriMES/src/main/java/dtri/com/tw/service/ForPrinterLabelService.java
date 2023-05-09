@@ -18,7 +18,7 @@ public class ForPrinterLabelService {
 	/**
 	 * label_3X1 = 3*1 套版
 	 **/
-	final String label_3X1 = "^FO0,2"//
+	final String label_3X1 = "^FO20,2"//
 			+ "^A0,20,19"//
 			+ "^FB240,1,1,C,"//
 			+ "^FD${part_no}\\&"//
@@ -30,7 +30,7 @@ public class ForPrinterLabelService {
 			+ "^FD${sn_1}"//
 			+ "^FS"//
 			+ ""//
-			+ "^FO0,55"//
+			+ "^FO20,55"//
 			+ "^A0,20,20"//
 			+ "^FB240,1,5,C,"//
 			+ "^FD${sn_2}\\&"//
@@ -40,7 +40,7 @@ public class ForPrinterLabelService {
 	 **/
 	final String label_3X2 = "" + //
 			"" + //
-			"^FO0,5" + //
+			"^FO20,5" + //
 			"^A0,20,19" + //
 			"^FB240,1,1,C," + //
 			"^FD${part_no}\\&" + //
@@ -51,13 +51,13 @@ public class ForPrinterLabelService {
 			"^FD${sn_1_1}" + //
 			"^FS" + //
 			"" + //
-			"^FO0,65" + //
+			"^FO20,65" + //
 			"^A0,20,20" + //
 			"^FB240,1,5,C," + //
 			"^FD${sn_1_2}\\&" + //
 			"^FS" + //
 			"" + //
-			"^FO0,80" + //
+			"^FO20,80" + //
 			"^A0,20,19" + //
 			"^FB240,1,1,C," + //
 			"^FD\\&" + //
@@ -69,7 +69,7 @@ public class ForPrinterLabelService {
 			"^FD${sn_2_1}" + //
 			"^FS" + //
 			"" + //
-			"^FO0,135" + //
+			"^FO20,135" + //
 			"^A0,20,20" + //
 			"^FB240,1,5,C," + //
 			"^FD${sn_2_2}\\&" + //
@@ -139,7 +139,7 @@ public class ForPrinterLabelService {
 				String label_3X1_copy = label_3X1;
 				JSONObject one = sn_list.getJSONObject(i);
 				int left_size = 15 - (one.getString("sn_value").length());
-				left_size = 10 + (left_size * 5);
+				left_size = 30 + (left_size * 5);
 				label_3X1_copy = label_3X1_copy.replace("${left}", left_size + "");
 				label_3X1_copy = label_3X1_copy.replace("${sn_1}", one.getString("sn_value"));
 				label_3X1_copy = label_3X1_copy.replace("${sn_2}", one.getString("sn_name") + " " + one.getString("sn_value"));
@@ -172,7 +172,7 @@ public class ForPrinterLabelService {
 			String label_3X2_copy = label_3X2;
 			// 第一區塊
 			int left_size_1 = 15 - sn_list.getString("sn_value_1").length();
-			left_size_1 = 10 + (left_size_1 * 5);
+			left_size_1 = 30 + (left_size_1 * 5);
 			label_3X2_copy = label_3X2_copy.replace("${left_1}", left_size_1 + "");
 			label_3X2_copy = label_3X2_copy.replace("${sn_1_1}", sn_list.getString("sn_value_1"));
 			label_3X2_copy = label_3X2_copy.replace("${sn_1_2}", sn_list.getString("sn_name_1") + " " + sn_list.getString("sn_value_1"));
@@ -180,7 +180,7 @@ public class ForPrinterLabelService {
 			part_no = "";
 			// 第二區塊
 			int left_size_2 = 15 - sn_list.getString("sn_value_2").length();
-			left_size_2 = 10 + (left_size_2 * 5);
+			left_size_2 = 30 + (left_size_2 * 5);
 			label_3X2_copy = label_3X2_copy.replace("${left_2}", left_size_2 + "");
 			label_3X2_copy = label_3X2_copy.replace("${sn_2_1}", sn_list.getString("sn_value_2"));
 			label_3X2_copy = label_3X2_copy.replace("${sn_2_2}", sn_list.getString("sn_name_2") + " " + sn_list.getString("sn_value_2"));

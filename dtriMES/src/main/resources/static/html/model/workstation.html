@@ -225,7 +225,7 @@
 								</div>
 							</div>
 						</td>
-						<td colspan="2" rowspan="100" class="p-0 border-dark border">
+						<td colspan="2" rowspan="100" class="p-1 border-warning border">
 							<!-- 維修條碼_類型(浮動) -->
 							<div id="fix_t_open" class="col-12 row justify-content-start m-0 text-center p-0 border border-secondary rounded" style="display: none; height: 290px; overflow: auto;">
 								<!-- 浮動上下 -->
@@ -309,7 +309,7 @@
 							<!-- 必要性框架隔板 -->
 						</td>
 						<!-- Doc -->
-						<td colspan="2" class="p-1 border border-dark" rowspan="100">
+						<td colspan="2" class="p-1 border border-primary" rowspan="100">
 							<!-- (固定)顯特定內容 -->
 							<div class="doc_open" style="display: none;">
 								<div id="" style="min-width: 380px;">
@@ -597,6 +597,10 @@
 											<div class="col-12 row p-0 m-0" id="checkbox_only_one_pass">
 												<div class="p-0">僅一次過站 :</div>
 												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="only_one_pass" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
+											</div>
+											<div class="col-12 row p-0 m-0" id="checkbox_remember_printer_set">
+												<div class="p-0">記憶標籤設定 :</div>
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="remember_printer_set" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
 									</div>
@@ -1014,6 +1018,8 @@
    		fix_type:{},
    		fix_item:{},
    		fix_code_type:"",//暫存維修屬性
+   		//標籤記憶
+   		rber_pr_set:[],
    		//上次使用的code
    		barcode_save:false,
    		barcode_check:false,
@@ -2094,6 +2100,7 @@
    			modify_one['plt_file_classify'] = false;
    			modify_one['plt_check'] = false;
    			modify_one['only_one_pass'] = false;
+   			
             //歸檔與檢核與檢察
             if ($('#plt_save').is(":checked")){
             	modify_one['plt_save'] = true;
@@ -2108,6 +2115,25 @@
             	modify_one['only_one_pass'] = true;
 			}
             
+          	//標籤-前端記憶設定
+            if ($('#remember_printer_set').is(":checked")){
+            	workstation.rber_pr_set=[];
+	   			$('.label_auto').map(function () {
+	   				if(this.id!="" && $("#"+this.id).is(":checked")){
+	   					var choose_id = this.id.replace("_auto","");
+	   					var content = {};
+	   					content.id = choose_id;//ID
+	   					content.printer_c = $("#"+choose_id+" .printer_c input").val();
+	   					content.barcode_print_q = $("#"+choose_id+" .barcode_print_q input").val();
+	   					content.barcode_package_q = $("#"+choose_id+" .barcode_package_q input").val();
+	   					content.barcode_label_q = $("#"+choose_id+" .barcode_label_q input").val();
+	   					workstation.rber_pr_set.push(content);
+	   				}
+	   			});
+	   			console.log(workstation.rber_pr_set);
+			}else{
+				workstation.rber_pr_set=[];
+			}
    			
    			//包裝(action = AR_AC/AR_AU/AR_AD)
    			action = "AU";
@@ -2579,6 +2605,18 @@
 				});
 				console.log(workstation.obj_label);
 				
+				//是否有存-上次標籤設定
+				if(workstation.rber_pr_set.length>0){
+					workstation.rber_pr_set.forEach(function (z) {
+						if($("#"+z.id)!=null){
+							$("#"+z.id+" .label_auto ").attr("checked",true);
+		   					$("#"+z.id+" .printer_c input").val(z.printer_c);
+		   					$("#"+z.id+" .barcode_print_q input").val(z.barcode_print_q);
+		   					$("#"+z.id+" .barcode_package_q input").val(z.barcode_package_q);
+		   					$("#"+z.id+" .barcode_label_q input").val(z.barcode_label_q);
+						}
+					});
+				}
 			}
 			//自動化勾選
 	   		if ($('.label_auto').is(":checked")){
