@@ -981,6 +981,7 @@ public class LabelListService {
 					Method in_method;
 					String putName = "";
 					String putValue = "";
+					String putSpace="";
 					switch (block.getString("label_block_type")) {
 					case "char_type":
 						// 文字模式
@@ -1035,8 +1036,10 @@ public class LabelListService {
 								// 有特殊-前端跟隨 設定?
 								if (cell.equals("front_from_sn") && front_from_sn.length() > 0) {
 									putValue = "";
+									//是否需要空格(如果只有1筆資料)
+									putSpace = (front_from_sn.length()==1?"":" ");
 									for (Object from_sn : front_from_sn) {
-										putValue += (String) from_sn + " ";
+										putValue += (String) from_sn + putSpace;
 									}
 								}
 								// 有特殊-前端跟隨(固定) 設定?
