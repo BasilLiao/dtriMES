@@ -108,7 +108,13 @@
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">料件項</div>
+							<div class="col-md-3 p-1 m-0 h4">
+								<div>料件項</div>
+								<br>
+								<div>
+									(產品)<br>拆解次數:<span id="dis_qty">0</span>
+								</div>
+							</div>
 							<div class="row col-md-9 p-0 m-0 pt-1 pr-3 pl-3">
 								<div id="part_ex" class="col-md-2 p-1 m-0 h6 row rounded border border-primary">
 									<div class="col-9 p-0 part_name">All</div>
@@ -487,6 +493,9 @@
 	    	            	obj['action'] = "sn_part_unlock";
 	    	            	obj['m_sn_part_unlock'] = $('#m_sn_part_unlock').val();
 	            			req.call_bk_fn = "customized_save";
+	            			//計數
+	            			$("#dis_qty").text(parseInt($("#dis_qty").text())+1);
+	            			
 	    	            }
 	            	break;
 	            	case"order_part_unlock_btn":

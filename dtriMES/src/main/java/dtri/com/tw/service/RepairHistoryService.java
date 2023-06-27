@@ -418,6 +418,7 @@ public class RepairHistoryService {
 	}
 
 	// 報表 查詢 資料清單
+	@SuppressWarnings("unchecked")
 	public boolean getReportData(PackageBean bean, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
 		boolean check = false;

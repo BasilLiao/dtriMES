@@ -137,6 +137,7 @@ public class RepairListBatService {
 			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
 			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
 			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));
+			s_val.put((new JSONObject()).put("value", "加工").put("key", "加工"));
 			s_val.put((new JSONObject()).put("value", "外包").put("key", "外包"));
 			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
 			obj_m.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "無法判定", "col-md-1", "rd_type", rd_type, s_val));

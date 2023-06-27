@@ -197,6 +197,7 @@ public class WorkstationDisassembleService {
 	}
 
 	// 更新 資料清單
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();

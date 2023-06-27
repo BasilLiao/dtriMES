@@ -172,13 +172,15 @@ public class RepairListService {
 
 			// 產品或是物件 登記資訊
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rr_c_sn", rr_c_sn));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
+			obj_m.put(
+					FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
 			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "true", FFM.Wri.W_N, "col-md-1", true, s_val, "rr_expired", rr_expired));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_ph_w_years", rr_ph_w_years));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date", rr_pb_sys_m_date));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.DATE, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "rr_pb_sys_m_date",
+					rr_pb_sys_m_date));
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "產品").put("key", "產品"));
 			s_val.put((new JSONObject()).put("value", "配件").put("key", "配件"));
@@ -202,7 +204,8 @@ public class RepairListService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_true", rd_true));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", true, n_val, "rd_solve", rd_true));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.IMG, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_svg", rd_svg));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_experience", rd_experience));
+			obj_m.put(
+					FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-6", false, n_val, "rd_experience", rd_experience));
 			bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
@@ -241,7 +244,8 @@ public class RepairListService {
 		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, user.getSuid(), null, null, null, false, null);
 		rdruid = units.size() >= 1 ? units.get(0).getRugid() : 0L;
 
-		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, search_rr_pb_type, 1, 0, rdruid, page_r);
+		ArrayList<RepairDetail> rds = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rd_rr_sn, search_rr_pb_type, 1, 0, rdruid,
+				page_r);
 		// 有沒有資料?
 		if (rds.size() > 0) {
 			rds.forEach(rd -> {
@@ -770,6 +774,7 @@ public class RepairListService {
 			s_val.put((new JSONObject()).put("value", "無法判定").put("key", "無法判定"));
 			s_val.put((new JSONObject()).put("value", "材料").put("key", "材料"));
 			s_val.put((new JSONObject()).put("value", "組裝").put("key", "組裝"));
+			s_val.put((new JSONObject()).put("value", "加工").put("key", "加工"));
 			s_val.put((new JSONObject()).put("value", "外包").put("key", "外包"));
 			s_val.put((new JSONObject()).put("value", "主板").put("key", "主板"));
 			object_documents.put("rd_type", s_val);

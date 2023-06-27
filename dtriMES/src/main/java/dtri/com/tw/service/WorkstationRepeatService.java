@@ -413,7 +413,8 @@ public class WorkstationRepeatService {
 										p_old.setPboldsn("");
 									}
 
-									// Step4. 移除新資料(更新) 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
+									// Step4. 移除新資料(更新)
+									// 區分-(A521_has_sn && A521_no_and_has_sn 清空自訂特定欄位即可 )
 									if (header_now.getPhtype().equals("A521_no_and_has_sn")//
 											|| header_now.getPhtype().equals("A521_has_sn")) {
 										p_now_clear.setPbid(p_now.getPbid());
@@ -434,8 +435,10 @@ public class WorkstationRepeatService {
 										p_now_clear.setSysmuser(user.getSuaccount());
 										p_now_clear.setSyscuser(user.getSuaccount());
 										bodyDao.save(p_now_clear);
+										log.info("Step4.還原新資料");
 									} else {
 										bodyDao.delete(p_now);
+										log.info("Step4.移除新資料:"+p_now.getPbbsn());
 									}
 									bodyDao.save(p_old);
 									check = true;
@@ -445,6 +448,7 @@ public class WorkstationRepeatService {
 								List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(p_now.getPbbsn(), "%old%");
 								if (p_nows != null && p_nows.size() == 1 && //
 										(header_now.getPhtype().equals("A511_no_sn") || header_now.getPhtype().equals("A521_old_sn"))) {
+									log.info("Step5.移除新資料:沒有舊紀錄->必須不是被繼承的+ 僅 無SN繼承 或是原號繼承:"+p_nows.get(0).getPbbsn());
 									bodyDao.delete(p_nows.get(0));
 									check = true;
 								}
@@ -455,6 +459,7 @@ public class WorkstationRepeatService {
 					// 移除舊資料(不能是 old )
 					List<ProductionBody> p_nows = bodyDao.findAllByPbbsnAndPbbsnNotLike(return_sn, "%old%");
 					if (p_nows != null && p_nows.size() == 1) {
+						log.info("Step6. 移除舊資料(不能是 old ):"+p_nows.get(0).getPbbsn());
 						bodyDao.delete(p_nows.get(0));
 						check = true;
 					}

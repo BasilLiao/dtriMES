@@ -398,6 +398,7 @@ public class ProductionHeaderService {
 				query.setParameter("pb_sn", "%" + search_pbsn + "%");
 
 			// 轉換LONG
+			@SuppressWarnings("unchecked")
 			List<BigInteger> pbid_obj = query.getResultList();
 			for (BigInteger obj : pbid_obj) {
 				String one = obj.toString();

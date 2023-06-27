@@ -35,6 +35,7 @@ public class ProductionBodyService {
 	private EntityManager em;
 
 	// 取得當前 資料清單
+	@SuppressWarnings("unchecked")
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
@@ -530,6 +531,7 @@ public class ProductionBodyService {
 	}
 
 	// 報表 查詢 資料清單
+	@SuppressWarnings("unchecked")
 	public boolean getReportData(PackageBean bean, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
 		// int page = req.getPage_batch();

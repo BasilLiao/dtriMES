@@ -24,13 +24,13 @@ import dtri.com.tw.db.pgsql.dao.WorkTypeDao;
 import dtri.com.tw.tools.Fm_Time;
 
 /**
- *  
+ * 
  * 
  * 
  * !!!!!!!!!!!!!!!!!!工時登記 因 資料異動 尚未完成!!!!!!!!!!!!!!!!!!
  * 
  * 
- * */
+ */
 @Service
 public class WorkHoursService {
 	@Autowired
@@ -178,7 +178,8 @@ public class WorkHoursService {
 		Date s_date = wh_s_date.equals("") ? null : Fm_Time.toDateTime(wh_s_date);
 		Date e_date = wh_e_date.equals("") ? null : Fm_Time.toDateTime(wh_e_date);
 		// workhours = hoursDao.findAll();
-		workhours = hoursDao.findAllByWorkHours(wh_pr_id/* ,wh_account */, wh_do, Integer.parseInt(wh_wt_id), Integer.parseInt(status), s_date, e_date, page_r);
+		workhours = hoursDao.findAllByWorkHours(wh_pr_id/* ,wh_account */, wh_do, Integer.parseInt(wh_wt_id), Integer.parseInt(status), s_date,
+				e_date, page_r);
 		List<String> pr_id = new ArrayList<String>();
 
 		// 避免重複
@@ -203,7 +204,7 @@ public class WorkHoursService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_do", one.getWhdo());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_nb", one.getWhnb());
-			//object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_ph_p_qty", one.get());
+			// object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_ph_p_qty", one.get());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_account", one.getWhaccount());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_s_date", one.getWhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getWhsdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "wh_e_date", one.getWhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getWhedate()));
@@ -238,30 +239,32 @@ public class WorkHoursService {
 
 			// 重製
 			works_p = new ArrayList<WorkHours>();
-			int total_tw = 0;
+			// int total_tw = 0;
 			for (Object one : list) {
 				// 物件轉換
 				WorkHours work_p = new WorkHours();
 				JSONObject data = (JSONObject) one;
 				WorkType type = new WorkType();
 				// 驗證是否有此製令
-				total_tw = 0;
+				// total_tw = 0;
 				if (pr_id.equals("") || !data.getString("wh_pr_id").equals(pr_id)) {
 					pr_id = data.getString("wh_pr_id");
 					wh_pr_id = new ProductionRecords();
 					wh_pr_id.setPrid(pr_id);
-					total_tw = 0;
+					// total_tw = 0;
 				} else {
 					// return false;
 				}
 
 				// 檢核總數量
-				List<WorkHours> check_wts = hoursDao.findAllByWorkHours(data.getString("wh_pr_id"), null, data.getInt("wh_wt_id"), 0, null, null,
-						PageRequest.of(0, 9999));
-				for (WorkHours workHours : check_wts) {
-					total_tw += workHours.getWhnb();
-				}
-				total_tw += data.getInt("wh_nb");
+				// List<WorkHours> check_wts =
+				// hoursDao.findAllByWorkHours(data.getString("wh_pr_id"), null,
+				// data.getInt("wh_wt_id"), 0, null, null,
+				// PageRequest.of(0, 9999));
+				// for (WorkHours workHours : check_wts) {
+				// total_tw += workHours.getWhnb();
+				// }
+				// total_tw += data.getInt("wh_nb");
 //				if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
 //					return false;
 //				}
@@ -386,12 +389,12 @@ public class WorkHoursService {
 					// 檢核總數量
 					List<WorkHours> check_wts = hoursDao.findAllByWorkHours(data.getString("wh_pr_id"), null, data.getInt("wh_wt_id"), 0, null, null,
 							PageRequest.of(0, 9999));
-					int total_tw = 0;
+					// int total_tw = 0;
 					for (WorkHours workHours : check_wts) {
 						if (workHours.getWhid() == data.getInt("wh_id")) {
-							total_tw += data.getInt("wh_nb");
+							// total_tw += data.getInt("wh_nb");
 						} else {
-							total_tw += workHours.getWhnb();
+							// total_tw += workHours.getWhnb();
 						}
 					}
 //					if (total_tw > check_wts.get(0).getProductionRecords().getPrpquantity()) {
