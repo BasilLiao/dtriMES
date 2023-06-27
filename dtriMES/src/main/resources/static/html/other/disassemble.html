@@ -11,19 +11,19 @@
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4 text-center">[目前新]拆解單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
+								<input disabled="disabled" autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<div class="row justify-content-between p-0 m-0">
-									<button id="check_order_btn" type="submit" class="col-5  p-1 btn btn-primary btn-sm" style="min-height: 36px;">Check</button>
-									<button id="locked_order_btn" type="submit" class="col-5  p-1 btn btn-warning btn-sm" style="min-height: 36px;">Unlock</button>
+									<button disabled="disabled" id="check_order_btn" type="submit" class="col-5  p-1 btn btn-primary btn-sm" style="min-height: 36px;">Check</button>
+									<button disabled="disabled" id="locked_order_btn" type="submit" class="col-5  p-1 btn btn-warning btn-sm" style="min-height: 36px;">Unlock</button>
 								</div>
 							</div>
 						</div>
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4">[原先舊]製令單</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
+								<input disabled="disabled" disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3"></div>
 						</div>
@@ -31,10 +31,10 @@
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4">[原先舊]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
+								<input disabled="disabled" autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN登記 [拆解單]</button>
+								<button disabled="disabled" id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-success btn-sm" style="min-height: 36px;">產品SN登記 [拆解單]</button>
 							</div>
 						</div>
 						<div class="row p-1 m-0">
@@ -44,7 +44,7 @@
 							<div class="col-md-6 p-0">
 								<div class="row pr-3 pl-3 p-0 m-0 font-weight-bold">
 									<div class="p-0 h4">[新建產品SN身分 :</div>
-									<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="check_create_data" name="" value="true" type="checkbox" style="height: 25px; width: 25px">
+									<input disabled="disabled" class="mt-1 ml-1 p-1 rounded big-checkbox" id="check_create_data" name="" value="true" type="checkbox" style="height: 25px; width: 25px">
 									<div class="p-0 h4">]</div>
 								</div>
 							</div>
@@ -63,10 +63,10 @@
 						<div class="row p-0 m-0 pb-2 text-center">
 							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
 							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_return_sn" type="text" required="required" class="col-12 p-1 rounded">
+								<input disabled="disabled" autocomplete="off" id="m_return_sn" type="text" required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN歸還 [製令單]</button>
+								<button disabled="disabled" id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN歸還 [製令單]</button>
 							</div>
 						</div>
 					</div>
@@ -412,16 +412,16 @@
 	            switch(action){
 	            	case"check_order_btn":
 	            		//檢查 拆解-工單
-		            	if($('#m_now_order').val()!=""){
+		            	/*if($('#m_now_order').val()!=""){
 		            		obj['action'] = "check_order_btn";
 		            		obj['m_now_order'] = $('#m_now_order').val();
 		            		obj['m_old_sn'] = $('#m_old_sn').val();
 	            			s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
-		            	}
+		            	}*/
 	            	break;
 	            	case"order_btn":
 	            		//登記 拆解-工單
-	            		if(this.check_order_btn  && $('#m_old_sn').val()!=""){
+	            		/*if(this.check_order_btn  && $('#m_old_sn').val()!=""){
 		            		if( $('#check_create_data').is(":checked")){
 		            			//自動新建
 		            			s_url = (t_body.html_body + ".AC").replace("html", "basil").replace("body_", "");
@@ -438,11 +438,11 @@
 		    	            	obj['m_old_sn'] = $('#m_old_sn').val();
 		    	            }
 		            		req.call_bk_fn = "customized_save";
-	            		}
+	            		}*/
 	            	break;
 	            	case"return_order_btn":
 	            		//歸還/消除 工單
-	            		if($('#m_return_sn').val()!=""){
+	            		/*if($('#m_return_sn').val()!=""){
 	            			console.log("return_order_btn");
 	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
 	            			s_type = "DELETE";
@@ -450,7 +450,7 @@
 	            			obj['m_now_order'] = $('#m_now_order').val();
 	            			obj['m_return_sn'] = $('#m_return_sn').val();
 	            			req.call_bk_fn = "customized_save";
-	    	            }
+	    	            }*/
 	            	break;
 	            	//料件標記解綁(登記)
 	            	case"key_part_unlock_btn":
