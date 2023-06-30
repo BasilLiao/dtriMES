@@ -22,9 +22,13 @@ public interface ProductionRecordsDao extends JpaRepository<ProductionRecords, L
 			+ "( c.sysstatus = :sysstatus ) "//
 			+ "order by c.sysmdate desc")
 	ArrayList<ProductionRecords> findAllByRecords(//
-			@Param("prid") String prid,//
+			@Param("prid") String prid, //
 			@Param("prbomid") String prbomid, @Param("prssn") String prssn, //
 			@Param("sysstatus") Integer sysstatus, Pageable pageable);
+
+	@Query("SELECT c FROM ProductionRecords c "//
+			+ "WHERE (:sprssn is null or :eprssn is null or c.prssn BETWEEN :sprssn  AND :eprssn )")
+	ArrayList<ProductionRecords> findAllByRecordsESprssn(String sprssn, String eprssn);
 
 	// 查詢是否重複 製令
 	ArrayList<ProductionRecords> findAllByPrid(String prid, Pageable pageable);

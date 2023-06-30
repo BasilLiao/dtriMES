@@ -600,7 +600,7 @@
 											</div>
 											<div class="col-12 row p-0 m-0" id="checkbox_remember_printer_set">
 												<div class="p-0">記憶標籤設定 :</div>
-												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="remember_printer_set" checked="checked" name="" value="true" type="checkbox" style="max-width: 30px;">
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="remember_printer_set"  name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
 									</div>
@@ -2127,6 +2127,10 @@
 	   					content.barcode_print_q = $("#"+choose_id+" .barcode_print_q input").val();
 	   					content.barcode_package_q = $("#"+choose_id+" .barcode_package_q input").val();
 	   					content.barcode_label_q = $("#"+choose_id+" .barcode_label_q input").val();
+	   					//包裝類型?
+	   					if(!$("#"+choose_id+" .front_from").hasClass("d-none")){
+	   						content.barcode_label_package = $("#"+choose_id+" .front_from").html();
+	   					}
 	   					workstation.rber_pr_set.push(content);
 	   				}
 	   			});
@@ -2614,6 +2618,10 @@
 		   					$("#"+z.id+" .barcode_print_q input").val(z.barcode_print_q);
 		   					$("#"+z.id+" .barcode_package_q input").val(z.barcode_package_q);
 		   					$("#"+z.id+" .barcode_label_q input").val(z.barcode_label_q);
+		   					if(z.barcode_label_package!=null){
+			   					$("#"+z.id+" .front_from").html(z.barcode_label_package);	   						
+			   					console.log(z.barcode_label_package);
+		   					}
 						}
 					});
 				}

@@ -32,6 +32,7 @@ import dtri.com.tw.db.entity.WorkstationProgram;
 import dtri.com.tw.db.pgsql.dao.LabelListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
+import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
 import dtri.com.tw.db.pgsql.dao.ProductionSNDao;
 import dtri.com.tw.db.pgsql.dao.WorkHoursDao;
 import dtri.com.tw.db.pgsql.dao.WorkTypeDao;
@@ -44,6 +45,9 @@ import dtri.com.tw.tools.Fm_Time;
 public class ProductionHeaderService {
 	@Autowired
 	private ProductionHeaderDao productionHeaderDao;
+
+	@Autowired
+	ProductionRecordsDao recordsDao;
 
 	@Autowired
 	private WorkstationProgramDao programDao;
@@ -218,7 +222,8 @@ public class ProductionHeaderService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ph_order_id", ph_order_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_Y, "col-md-1", false, n_val, "ph_p_qty", ph_p_qty));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_p_ok_qty", ph_p_ok_qty));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_p_a_ok_qty", ph_p_a_ok_qty));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val, "ph_p_a_ok_qty",
+					ph_p_a_ok_qty));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "ph_schedule", ph_schedule));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ph_s_date", ph_s_date));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ph_e_date", ph_e_date));
@@ -233,7 +238,8 @@ public class ProductionHeaderService {
 			label_g.forEach(p -> {
 				a_val_g.put((new JSONObject()).put("value", p).put("key", p));
 			});
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, a_val_g, "ph_ll_g_name", ph_ll_g_name));
+			obj_m.put(
+					FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, a_val_g, "ph_ll_g_name", ph_ll_g_name));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ph_ll_a_json", ph_ll_a_json));
 
 			// 規格-ProductionRecords
@@ -244,11 +250,13 @@ public class ProductionHeaderService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pr_bom_id", pr_bom_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "pr_bom_c_id", pr_bom_c_id));
 			// 流水號
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "無客製化SN,請空白", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_f_sn", "SN_燒錄序號(固定)"));//
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "無客製化SN,請空白", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_f_sn",
+					"SN_燒錄序號(固定)"));//
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_sn", "SN_燒錄序號(流水)"));//
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "pr_name", pr_name));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "pr_specification", pr_specification));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "pr_specification",
+					pr_specification));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "pr_b_item", pr_b_item));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", true, n_val, "pr_s_item", pr_s_item));
@@ -594,12 +602,18 @@ public class ProductionHeaderService {
 							pro_sn.add(pro_sn_one);
 							System.out.println("");
 							sn_list = Fm_SN.analyze_Sn(pro_sn, true, data.getInt("ph_p_qty"));
-							// 檢核[系統SN]_區間是否用過
-							sn_f = sn_list.getJSONArray("sn_list").get(0).toString();
-							sn_e = sn_list.getJSONArray("sn_list").get(sn_list.getJSONArray("sn_list").length() - 1).toString();
+							// 檢核[系統SN]_區間(頭尾)是否用過
+							sn_f = sn_list.getJSONArray("sn_list").getString(0);
+							sn_e = sn_list.getJSONArray("sn_list").getString(sn_list.getJSONArray("sn_list").length() - 1);
 							if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
 								return false;
 							}
+							// 檢核[系統SN]_區間(之內)是否用過
+							if (recordsDao.findAllByRecordsESprssn(sn_f, sn_e).size() > 0) {
+								return false;
+							}
+
+							productionHeaderDao.findAll();
 							// 更新[系統SN]區段
 							ProductionSN pro_sn_YYMM = snDao.findAllByPsid(11L).get(0);
 							pro_sn_YYMM.setPsvalue(sn_list.getString("sn_YYWW"));
@@ -631,6 +645,10 @@ public class ProductionHeaderService {
 						sn_f = pbsn_list.get(0).toString();
 						sn_e = pbsn_list.get(pbsn_list.length() - 1).toString();
 						if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
+							return false;
+						}
+						// 檢核[系統SN]_區間(之內)是否用過
+						if (recordsDao.findAllByRecordsESprssn(sn_f, sn_e).size() > 0) {
 							return false;
 						}
 						// Step3. 建立[產品資訊]
@@ -1125,7 +1143,8 @@ public class ProductionHeaderService {
 					// 工作站資訊 (不同 工作站程序時 才作重製)
 					if (one_header.getPhwpid() != data.getLong("ph_wp_id")) {
 						JSONObject json_work = new JSONObject();
-						ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
+						ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"),
+								false);
 						for (WorkstationProgram p_one : programs) {
 							ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
 							JSONObject json_one = new JSONObject();
