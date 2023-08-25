@@ -130,7 +130,7 @@ public class ProductionHeader {
 	private String phpbschedule;
 
 	// 20220902轉移
-	@Column(name = "ph_order_id", nullable = false, columnDefinition = "varchar(60) default ''")
+	@Column(name = "ph_order_id", nullable = false, columnDefinition = "varchar(100) default ''")
 	private String phorderid;
 
 	@Column(name = "ph_c_name", nullable = false, columnDefinition = "varchar(60) default ''")
