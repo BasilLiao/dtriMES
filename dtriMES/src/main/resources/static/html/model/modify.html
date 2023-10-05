@@ -238,10 +238,10 @@
 							<td class="border border-secondary p-1">
 								<div class="modify_example_remove">
 									<i class="bi bi-x-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
-								</div> <!-- <div class="modify_example_add">
+								</div>
+								<div class="modify_example_add">
 									<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
 								</div>
-								 -->
 							</td>
 							<td class="border border-secondary modify_example_group p-0">
 								<div class="modify_group_i border-top border-dark p-1">
@@ -1074,12 +1074,12 @@
 							 }
 						 }
                     }
-
+		
+					//細節不可顯示+-號(因為後端無法檢核新的群組資料還是 舊的子類別)                    	
+                    $("#detail_really_tr_"+this.detail_nb +" .detail_example_add").addClass("d-none");
+                	$("#detail_really_tr_"+this.detail_nb +" .detail_example_remove").addClass("d-none");
 					//群組類型-因為全部都反白
                     if($("#detail_really_tr_"+this.detail_nb+" .m__sys_header input").val()=="true"){
-						//群組不可顯示+號(因為後端無法檢核新的群組資料還是 舊的子類別)                    	
-                    	$("#detail_really_tr_"+this.detail_nb +" .detail_example_add").addClass("d-none");
-                    	$("#detail_really_tr_"+this.detail_nb +" .detail_example_remove").addClass("d-none");
                     	
     					$("#detail_really_tr_"+this.detail_nb+" .detail_example_group").addClass("d-none");
                     	$("#detail_really_tr_"+this.detail_nb).addClass("bg-yellow-30");
@@ -1169,7 +1169,7 @@
 					one_option.appendTo(".modify_example");
 					$("#modify_really_tr_"+this.modify_nb).addClass("modify_really_tr");
 					$("#modify_really_tr_"+this.modify_nb+" .modify_example_remove").attr("id","modify_example_remove_"+this.modify_nb);
-					//$("#modify_really_tr_"+this.modify_nb+" .modify_example_add").attr("id","modify_example_add_"+ this.modify_nb);
+					$("#modify_really_tr_"+this.modify_nb+" .modify_example_add").attr("id","modify_example_add_"+ this.modify_nb);
 					//資料欄位
                     for (var i = 0; i < Object.keys(obj_one).length; i++) {
                     	 var key_id = Object.keys(obj_one)[i];
@@ -1607,23 +1607,23 @@
                      console.log("modify_example_add");
             		 var id = (event.currentTarget.id).replace("modify_example_add","modify_really_tr");
             		 console.log(id);
-					//自動觸發+複製All value 至新增
-            		 $( "#create_example_tr .create_example_add").trigger( "click" );
+            		 //自動觸發+複製All value 至新增
+					 if($("#"+id+" .modify_example_group").hasClass( "d-none")){
+						 //父類別->要雙複製
+						 modify.create_example_data();
+					 }else{
+						 //子類別->單複製
+						 modify.create_example_data("son_data");						 
+					 }
             		 for(var cell =0;cell<$("#"+id+" .save_key").length;cell++){
 	            		 var value = $("#"+id+" .save_key .save_value")[cell].value;
 	            		 $("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].value=value
 	            		 
-	            		 //僅限於 checkbox 
+	            		//僅限於checkbox
 						 if ($("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].type=="checkbox" && value=="true"){
 							$("#create_really_tr_"+(modify.create_nb-1)+" .save_key .save_value")[cell].checked=true;
 						 }
             		 }
-            			//群組類型
-                     if($("#create_really_tr_"+(modify.create_nb-1)+" .m__sys_header input").val()=="true"){
-                    	 $("#create_really_tr_"+(modify.create_nb-1)+" .create_example_group").addClass("d-none");
-                     }else{
-                    	 $("#create_really_tr_"+(modify.create_nb-1)+" .create_example_group").removeClass("d-none");
-                     }
                  });
             	 
             	 //複製->新增

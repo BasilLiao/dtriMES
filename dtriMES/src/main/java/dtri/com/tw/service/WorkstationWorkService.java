@@ -913,7 +913,7 @@ public class WorkstationWorkService {
 						}
 
 						// ======== Step5. FTP檢查[] ========
-						log.info("Step5. FTP檢查[]");
+						log.info("Step5. FTP檢查[]"+plt_check);
 
 						if (plt_check) {
 							ArrayList<SystemConfig> config = sysDao.findAllByConfig(null, "FTP_PLT", 0, PageRequest.of(0, 99));
