@@ -209,7 +209,7 @@ public class ProductionSnService {
 						return false;
 					}
 				}
-				sys_c.setPsgid(sn.get(0).getPsgid());
+				sys_c.setPsgid(data.getLong("ps_g_id"));
 				sys_c.setPsgname(sn.get(0).getPsgname());
 				sys_c.setPsname(data.getString("ps_name"));
 				sys_c.setPsvalue(data.getString("ps_value"));

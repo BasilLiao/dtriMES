@@ -23,7 +23,6 @@ import dtri.com.tw.db.entity.LabelList;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
-import dtri.com.tw.db.entity.ProductionSN;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.entity.WorkHours;
 import dtri.com.tw.db.entity.WorkType;
@@ -38,7 +37,6 @@ import dtri.com.tw.db.pgsql.dao.WorkHoursDao;
 import dtri.com.tw.db.pgsql.dao.WorkTypeDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationProgramDao;
-import dtri.com.tw.tools.Fm_SN;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
@@ -94,7 +92,7 @@ public class ProductionHeaderService {
 		Date search_phssdate = null;
 		Date search_phsedate = null;
 		Date search_sysmdate = null;
-		String search_sysstatus = "1";
+		String search_sysstatus = "-1";
 		// 產品資訊
 		String search_prmodel = "";
 		String search_pbsnvalue = "";
@@ -250,7 +248,7 @@ public class ProductionHeaderService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "pr_bom_id", pr_bom_id));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "pr_bom_c_id", pr_bom_c_id));
 			// 流水號
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "無客製化SN,請空白", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_f_sn",
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "SN必填,除了無SN", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_f_sn",
 					"SN_燒錄序號(固定)"));//
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_Y, "col-md-2", false, n_val, "ps_b_sn", "SN_燒錄序號(流水)"));//
 
@@ -519,7 +517,7 @@ public class ProductionHeaderService {
 				ProductionHeader pro_h = new ProductionHeader();
 				ProductionRecords pro_r = new ProductionRecords();
 				List<ProductionBody> pro_bs = new ArrayList<ProductionBody>();
-				ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
+				//ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
 				JSONObject data = (JSONObject) one;
 
 				// 查詢重複
@@ -551,76 +549,18 @@ public class ProductionHeaderService {
 					}
 					// 無SN不需要指定新建
 					JSONArray pbsn_list = new JSONArray();
-					if (data.getString("ph_type").equals("A511_no_and_has_sn") || data.getString("ph_type").equals("A511_has_sn")
-							|| data.getString("ph_type").equals("A521_no_and_has_sn") || data.getString("ph_type").equals("A521_has_sn")) {
+					if (data.getString("ph_type").equals("A511_no_and_has_sn") || //
+							data.getString("ph_type").equals("A511_has_sn") || //
+							data.getString("ph_type").equals("A521_no_and_has_sn") || //
+							data.getString("ph_type").equals("A521_has_sn")) {
 
 						String sn_f = "";
 						String sn_e = "";
 						JSONObject sn_list = new JSONObject();
 						// Step1. SN 類型 [系統SN][自訂義SN]
 						if (data.isNull("ps_b_f_sn") && data.getString("ps_b_f_sn").equals("") && data.getInt("ps_b_sn") >= 0) {
-							// 檢核[系統SN]選項
-							if (data.getString("ps_sn_1").equals("no_") || //
-									data.getString("ps_sn_2").equals("s") || //
-									data.getString("ps_sn_3").equals("n") || //
-									data.getString("ps_sn_5").equals("n")) {
-								return false;
-							}
+//							// 檢核[系統SN]選項更新
 
-							// 分類[系統SN] 規則
-							pro_sn = new ArrayList<ProductionSN>();
-							ProductionSN pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_1"));
-							pro_sn_one.setPsgid(1L);
-							pro_sn.add(pro_sn_one);
-
-							pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_2"));
-							pro_sn_one.setPsgid(2l);
-							pro_sn.add(pro_sn_one);
-
-							pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_3"));
-							pro_sn_one.setPsgid(3l);
-							pro_sn.add(pro_sn_one);
-
-							pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_4"));
-							pro_sn_one.setPsgid(4l);
-							pro_sn_one.setPsname("[YYWW]");
-							pro_sn.add(pro_sn_one);
-
-							pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_5"));
-							pro_sn_one.setPsgid(5l);
-							pro_sn.add(pro_sn_one);
-
-							pro_sn_one = new ProductionSN();
-							pro_sn_one.setPsvalue(data.getString("ps_sn_6"));
-							pro_sn_one.setPsgid(6l);
-							pro_sn_one.setPsname("[000]");
-							pro_sn.add(pro_sn_one);
-							System.out.println("");
-							sn_list = Fm_SN.analyze_Sn(pro_sn, true, data.getInt("ph_p_qty"));
-							// 檢核[系統SN]_區間(頭尾)是否用過
-							sn_f = sn_list.getJSONArray("sn_list").getString(0);
-							sn_e = sn_list.getJSONArray("sn_list").getString(sn_list.getJSONArray("sn_list").length() - 1);
-							if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
-								return false;
-							}
-							// 檢核[系統SN]_區間(之內)是否用過
-							if (recordsDao.findAllByRecordsESprssn(sn_f, sn_e).size() > 0) {
-								return false;
-							}
-
-							productionHeaderDao.findAll();
-							// 更新[系統SN]區段
-							ProductionSN pro_sn_YYMM = snDao.findAllByPsid(11L).get(0);
-							pro_sn_YYMM.setPsvalue(sn_list.getString("sn_YYWW"));
-							ProductionSN pro_sn_SN = snDao.findAllByPsid(16L).get(0);
-							pro_sn_SN.setPsvalue(sn_list.getString("sn_000"));
-							snDao.save(pro_sn_SN);
-							snDao.save(pro_sn_YYMM);
 						}
 						// Step2. SN 類型 [API_SN][MES_SN]
 						if (data.has("sn_list") && data.getJSONArray("sn_list").length() > 0 && data.getBoolean("sys_sn_auto")) {
@@ -841,7 +781,7 @@ public class ProductionHeaderService {
 				ProductionHeader pro_h = new ProductionHeader();
 				// ProductionBody pro_b = new ProductionBody();
 				ProductionRecords pro_r = new ProductionRecords();
-				ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
+				//ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
 				List<ProductionBody> pro_bs = new ArrayList<ProductionBody>();
 				JSONObject data = (JSONObject) one;
 
@@ -873,98 +813,7 @@ public class ProductionHeaderService {
 					JSONArray sn_lists = new JSONArray();
 					if (data.getString("ph_type").equals("A511_no_and_has_sn") || data.getString("ph_type").equals("A511_has_sn")
 							|| data.getString("ph_type").equals("A521_no_and_has_sn") || data.getString("ph_type").equals("A521_has_sn")) {
-
-						// 檢核SN選項
-						if (data.getString("ps_sn_1").equals("no_") || //
-								data.getString("ps_sn_2").equals("s") || //
-								data.getString("ps_sn_3").equals("n") || //
-								data.getString("ps_sn_5").equals("n")) {
-							return false;
-						}
-
-						// sn
-						pro_sn = new ArrayList<ProductionSN>();
-						ProductionSN pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_1"));
-						pro_sn_one.setPsgid(1l);
-						pro_sn.add(pro_sn_one);
-
-						pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_2"));
-						pro_sn_one.setPsgid(2l);
-						pro_sn.add(pro_sn_one);
-
-						pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_3"));
-						pro_sn_one.setPsgid(3l);
-						pro_sn.add(pro_sn_one);
-
-						pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_4"));
-						pro_sn_one.setPsgid(4l);
-						pro_sn_one.setPsname("[YYWW]");
-						pro_sn.add(pro_sn_one);
-
-						pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_5"));
-						pro_sn_one.setPsgid(5l);
-						pro_sn.add(pro_sn_one);
-
-						pro_sn_one = new ProductionSN();
-						pro_sn_one.setPsvalue(data.getString("ps_sn_6"));
-						pro_sn_one.setPsgid(6l);
-						pro_sn_one.setPsname("[000]");
-						pro_sn.add(pro_sn_one);
-						JSONObject sn_list = Fm_SN.analyze_Sn(pro_sn, true, data.getInt("ph_p_qty"));
-
-						// 檢核_區間是否用過
-						String sn_f = sn_list.getJSONArray("sn_list").get(0).toString();
-						String sn_e = sn_list.getJSONArray("sn_list").get(sn_list.getJSONArray("sn_list").length() - 1).toString();
-						if (bodyDao.findAllByPbsn(sn_f).size() > 0 || bodyDao.findAllByPbsn(sn_e).size() > 0) {
-							return false;
-						}
-
-						// 更新SN區段
-						ProductionSN pro_sn_YYMM = snDao.findAllByPsid(11L).get(0);
-						pro_sn_YYMM.setPsvalue(sn_list.getString("sn_YYWW"));
-						ProductionSN pro_sn_SN = snDao.findAllByPsid(16L).get(0);
-						pro_sn_SN.setPsvalue(sn_list.getString("sn_000"));
-						snDao.save(pro_sn_SN);
-						snDao.save(pro_sn_YYMM);
-
-						sn_lists = sn_list.getJSONArray("sn_list");
-
-						Long id_b_g = bodyDao.getProductionBodyGSeq();
-
-						for (int i = 0; i < sn_lists.length(); i++) {
-							// body
-							ProductionBody pro_b = new ProductionBody();
-							pro_b.setSysver(0);
-							pro_b.setPbgid(id_b_g);
-							pro_b.setSysheader(false);
-							pro_b.setPbsn(sn_lists.getString(i));
-							if (data.getString("ps_b_f_sn") != null && !data.getString("ps_b_f_sn").equals("") && data.getInt("ps_b_sn") >= 0) {
-								String pr_e_b_sn = data.getString("ps_b_f_sn")
-										+ String.format("%0" + data.getString("ps_b_sn").length() + "d", (data.getInt("ps_b_sn") + i));
-								pro_b.setPbbsn(pr_e_b_sn);
-							} else {
-								pro_b.setPbbsn(sn_lists.getString(i));
-							}
-							pro_b.setPbcheck(false);
-							pro_b.setPbusefulsn(0);
-							pro_b.setPbwyears(data.getInt("ph_w_years"));
-							pro_b.setSyssort(data.getInt("sys_sort"));
-							pro_b.setPblpath("");
-							pro_b.setPblsize("");
-							pro_b.setPbltext("");
-							pro_b.setPbschedule(json_work.toString());
-							pro_b.setSysmuser(user.getSuaccount());
-							pro_b.setSyscuser(user.getSuaccount());
-							pro_b.setSysstatus(0);
-							pro_bs.add(pro_b);
-						}
-
-						id_b_g2 = id_b_g;
+						
 					}
 
 					// 規格

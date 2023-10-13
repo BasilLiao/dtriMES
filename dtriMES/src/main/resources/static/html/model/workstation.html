@@ -520,8 +520,8 @@
 					<tr id="title_sn" class="d-none">
 						<td colspan="2" class="p-0 m-0">
 							<div class=" row p-1 m-0 border border-light rounded h2">
-								<div class="h6 col-3 p-0 m-0 pl-2 font-weight-bold b_code_w" style="font-size: 14px;">指定[列印]勾選</div>
-								<div class="h6 col-9 p-0 m-0 pl-2 font-weight-bold" style="font-size: 14px;">登記[序號]料件</div>
+								<div class="h6 col-4 p-0 m-0 pl-2 font-weight-bold b_code_w" style="font-size: 14px;">指定[列印]勾選</div>
+								<div class="h6 col-8 p-0 m-0 pl-2 font-weight-bold" style="font-size: 14px;">登記[序號]料件</div>
 							</div>
 						</td>
 						<td>
@@ -536,11 +536,11 @@
 					<tr id="workstation_example" class="w_i_6 font-weight-bold">
 						<td colspan="2" class="p-0">
 							<div class=" row p-1 m-0 border border-light rounded">
-								<div class="col-3 p-0 row m-0 b_code_w">
+								<div class="col-4 p-0 row m-0 b_code_w">
 									<input class="ml-1 mt-2 p-1 border border-dark rounded big-checkbox w_sn_check" id="" name="" value="true" type="checkbox">
 									<div class=" m-0 p-1 w_sn_name" contenteditable="true">Loading...</div>
 								</div>
-								<div class="col-9 p-0">
+								<div class="col-8 p-0">
 									<input id="" class="w_sn_value col p-1 border-0 border-primary rounded" disabled="disabled" type="text" required>
 								</div>
 							</div>
@@ -600,7 +600,7 @@
 											</div>
 											<div class="col-12 row p-0 m-0" id="checkbox_remember_printer_set">
 												<div class="p-0">記憶標籤設定 :</div>
-												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="remember_printer_set"  name="" value="true" type="checkbox" style="max-width: 30px;">
+												<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="remember_printer_set" name="" value="true" type="checkbox" style="max-width: 30px;">
 											</div>
 										</div>
 									</div>
@@ -655,21 +655,21 @@
 							<!-- 標籤樣式(動態) -->
 							<div class="shadow-sm text-left" style="min-height: 400px;">
 								<div class=" bg-dark text-light m-0 p-1 h5">
-									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b> <b id="label_group"></b>
+									<i class="bi bi-upc-scan mr-1"></i> Print Barcode (Auto) For : <b id="label_pr_id"></b><b id="label_group"></b>
 								</div>
 								<div id="label_list" class="row m-0">
 									<!-- 範例標籤 -->
-									<div id="ex_label_id" class="d-none m-1">
-										<div class="row p-0 m-1 justify-content-end border border-primary rounded-top" style="width: 275px;">
+									<div id="ex_label_id" class="d-none m-1" style="width: 245px;">
+										<div class="row p-0 m-1 justify-content-end border border-primary rounded-top">
 											<div class="label_name h5 col-10 m-0 p-1">Ex範例標籤</div>
-											<div id="ex_label_op" class="col-2 pn__op pr-1 pl-3 pt-1">
+											<div id="ex_label_op" class="col-2 pn__op p-1 pt-1">
 												<i class="bi bi-plus-square btn btn-outline-success p-0 pl-1 pr-1 m-0"></i>
 											</div>
-											<div id="ex_label_cl" class="col-2 pn__cl pr-1 pl-3 pt-1 d-none">
+											<div id="ex_label_cl" class="col-2 pn__cl p-1 pt-1 d-none">
 												<i class="bi bi-dash-square btn btn-outline-danger p-0 pl-1 pr-1 m-0"></i>
 											</div>
 										</div>
-										<div id="ex_label" class="d-none p-0 m-1 border border-dark" style="width: 275px;">
+										<div id="ex_label" class="d-none p-0 m-1 border border-dark">
 											<div class="row m-0 pl-1 h5">
 												<div class="col-1 m-0 p-0">
 													<input name="" value="true" type="checkbox" class="label_auto mt-1 border border-dark rounded big-checkbox">
@@ -689,16 +689,32 @@
 												</div>
 											</div>
 											<div class="barcode_package_q d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-8 m-0 p-1">Package Qty(每箱數量)</div>
-												<div class="col-4 m-0 p-1">
+												<div class="col-9 m-0 p-1">Package Qty(每箱數)</div>
+												<div class="col-3 m-0 p-1">
 													<input type="number" class="col p-0 rounded" value="1" min="1" max="100" oninput="workstation.checkNumberValue(this);">
 												</div>
 											</div>
 											<div class="barcode_label_q d-none p-1 m-0 mb-2 row bg-light">
-												<div class="col-8 m-0 p-1">Label Qty(每標數量)</div>
-												<div class="col-4 m-0 p-1">
+												<div class="col-9 m-0 p-1">Label Qty(每標數)</div>
+												<div class="col-3 m-0 p-1">
 													<input type="number" class="col p-0 rounded" value="1" min="1" max="10" oninput="workstation.checkNumberValue(this);">
 												</div>
+											</div>
+											<div class="label_lc1 d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Customized_LC1(自訂)</div>
+												<textarea class="col-12 m-0 p-1" rows="1" cols="" placeholder="自訂義_C1欄位"></textarea>
+											</div>
+											<div class="label_lc2 d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Customized_LC2(自訂)</div>
+												<textarea class="col-12 m-0 p-1" rows="1" cols="" placeholder="自訂義_C2欄位"></textarea>
+											</div>
+											<div class="label_lc3 d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Customized_LC3(自訂)</div>
+												<textarea class="col-12 m-0 p-1" rows="1" cols="" placeholder="自訂義_C3欄位"></textarea>
+											</div>
+											<div class="label_lc4 d-none p-1 m-0 mb-2 row bg-light">
+												<div class="col-12 m-0 p-1">Customized_LC4(自訂)</div>
+												<textarea class="col-12 m-0 p-1" rows="1" cols="" placeholder="自訂義_C4欄位"></textarea>
 											</div>
 											<div class="front_from d-none p-1 m-0 mb-2 row bg-light">
 												<div class="col-12 m-0 p-1">Front_From(登記)</div>
@@ -2009,6 +2025,23 @@
 								label_obj.barcode_pe_q = "0";//箱上台數
 								label_obj.barcode_ll_q = "0";//標籤上台數 
 								label_obj.f_f_l = "";//來自前端值
+								//============自訂義()============
+								label_obj.barcode_lc1 = "";
+								label_obj.barcode_lc2 = "";
+								label_obj.barcode_lc3 = "";
+								label_obj.barcode_lc4 = "";
+								if(!one_label.find('.label_lc1').hasClass("d-none")){
+									label_obj.barcode_lc1 = one_label.find('.label_lc1 textarea').val();
+								}
+								if(!one_label.find('.label_lc2').hasClass("d-none")){
+									label_obj.barcode_lc2 = one_label.find('.label_lc2 textarea').val();
+								}
+								if(!one_label.find('.label_lc3').hasClass("d-none")){
+									label_obj.barcode_lc3 = one_label.find('.label_lc3 textarea').val();
+								}
+								if(!one_label.find('.label_lc4').hasClass("d-none")){
+									label_obj.barcode_lc4 = one_label.find('.label_lc4 textarea').val();
+								}
 								
 								//============外箱組態============
 								var from_sn = false;
@@ -2042,7 +2075,7 @@
 								}else{
 									label_obj.f_f_f = [];
 								}
-								
+
 								//============以上都不是(非外箱組態)============
 								if(!from_sn && !from_fixed){
 									label_obj.f_f_f = [];
@@ -2051,6 +2084,7 @@
 										printer['label_list'].push(label_obj);																		
 									}
 								}
+									
 							}
 						}	
 					});
@@ -2562,10 +2596,19 @@
 						ex_label.find('.barcode_label_q input').val(x.label_package.ll_o_l_qty);
 						
 					}
-					//標籤內有 任何 跟隨機制?
+					//標籤內有 任何 跟隨機制/自訂義?
 					var front_from_sn = false;
 					var front_from_fixed = false;
 					var front_from_fixed_val = "";
+					//自訂義
+					var front_from_lc1 = false;
+					var front_from_lc2 = false;
+					var front_from_lc3 = false;
+					var front_from_lc4 = false;
+					var front_from_lc1_val = "";
+					var front_from_lc2_val = "";
+					var front_from_lc3_val = "";
+					var front_from_lc4_val = "";
 					x.label_block.forEach(function (y) {
 						//固定
 						if(y.ll_fo_content.ll_fd_f && !front_from_fixed){
@@ -2590,18 +2633,78 @@
 						//浮動
 						if(y.ll_fo_content.ll_fd_f && !front_from_sn){
 							front_from_sn = (y.ll_fo_content.ll_fd_f=="fn.front_from_sn");
-						}
-						if(y.ll_fo_content.ll_bfd_f && !front_from_sn){
+						}else if(y.ll_fo_content.ll_bfd_f && !front_from_sn){
 							front_from_sn = (y.ll_fo_content.ll_bfd_f=="fn.front_from_sn");
-						}
-						if(y.ll_fo_content.ll_bqfd_f && !front_from_sn){
+						}else if(y.ll_fo_content.ll_bqfd_f && !front_from_sn){
 							front_from_sn = (y.ll_fo_content.ll_bqfd_f=="fn.front_from_sn");
 						}
+						
+						//自訂義(1)
+						if(y.ll_fo_content.ll_fd_f && !front_from_lc1 && (y.ll_fo_content.ll_fd_f=="lc.front_from_lc1")){
+							front_from_lc1 = true;
+							ex_label.find('.label_lc1 textarea').attr("placeholder",y.ll_fo_content.ll_fd);
+						}else if(y.ll_fo_content.ll_bfd_f && !front_from_lc1 && (y.ll_fo_content.ll_bfd_f=="lc.front_from_lc1")){
+							front_from_lc1 = true;
+							ex_label.find('.label_lc1 textarea').attr("placeholder",y.ll_fo_content.ll_bfd);
+						}else if(y.ll_fo_content.ll_bqfd_f && !front_from_lc1 && (y.ll_fo_content.ll_bqfd_f=="lc.front_from_lc1")){
+							front_from_lc1 = true;
+							ex_label.find('.label_lc1 textarea').attr("placeholder",y.ll_fo_content.ll_bqfd);
+						}
+						//自訂義(2)
+						if(y.ll_fo_content.ll_fd_f && !front_from_lc2 && (y.ll_fo_content.ll_fd_f=="lc.front_from_lc2")){
+							front_from_lc2 = true;
+							ex_label.find('.label_lc2 textarea').attr("placeholder",y.ll_fo_content.ll_fd);
+						}else if(y.ll_fo_content.ll_bfd_f && !front_from_lc2 && (y.ll_fo_content.ll_bfd_f=="lc.front_from_lc2")){
+							front_from_lc2 = true;
+							ex_label.find('.label_lc2 textarea').attr("placeholder",y.ll_fo_content.ll_bfd);
+						}else if(y.ll_fo_content.ll_bqfd_f && !front_from_lc2 && (y.ll_fo_content.ll_bqfd_f=="lc.front_from_lc2")){
+							front_from_lc2 = true;
+							ex_label.find('.label_lc2 textarea').attr("placeholder",y.ll_fo_content.ll_bqfd);
+						}
+						//自訂義(3)
+						if(y.ll_fo_content.ll_fd_f && !front_from_lc3 && (y.ll_fo_content.ll_fd_f=="lc.front_from_lc3")){
+							front_from_lc3 = true;
+							ex_label.find('.label_lc3 textarea').attr("placeholder",y.ll_fo_content.ll_fd);
+						}else if(y.ll_fo_content.ll_bfd_f && !front_from_lc3 && (y.ll_fo_content.ll_bfd_f=="lc.front_from_lc3")){
+							front_from_lc3 = true;
+							ex_label.find('.label_lc3 textarea').attr("placeholder",y.ll_fo_content.ll_bfd);
+						}else if(y.ll_fo_content.ll_bqfd_f && !front_from_lc3 && (y.ll_fo_content.ll_bqfd_f=="lc.front_from_lc3")){
+							front_from_lc3 = true;
+							ex_label.find('.label_lc3 textarea').attr("placeholder",y.ll_fo_content.ll_bqfd);
+						}
+						//自訂義(4)
+						if(y.ll_fo_content.ll_fd_f && !front_from_lc4 && (y.ll_fo_content.ll_fd_f=="lc.front_from_lc4")){
+							front_from_lc4 = true;
+							ex_label.find('.label_lc4 textarea').attr("placeholder",y.ll_fo_content.ll_fd);
+						}else if(y.ll_fo_content.ll_bfd_f && !front_from_lc4 && (y.ll_fo_content.ll_bfd_f=="lc.front_from_lc4")){
+							front_from_lc4 = true;
+							ex_label.find('.label_lc4 textarea').attr("placeholder",y.ll_fo_content.ll_bfd);
+						}else if(y.ll_fo_content.ll_bqfd_f && !front_from_lc4 && (y.ll_fo_content.ll_bqfd_f=="lc.front_from_lc4")){
+							front_from_lc4 = true;
+							ex_label.find('.label_lc4 textarea').attr("placeholder",y.ll_fo_content.ll_bqfd);
+						}
+						
+						
 					});
+					//顯示而外設定?
 					//浮動
 					if(front_from_sn){
 						ex_label.find('.front_from').removeClass("d-none");
 					}
+					//自訂義
+					if(front_from_lc1){
+						ex_label.find('.label_lc1').removeClass("d-none");
+					}
+					if(front_from_lc2){
+						ex_label.find('.label_lc2').removeClass("d-none");
+					}
+					if(front_from_lc3){
+						ex_label.find('.label_lc3').removeClass("d-none");
+					}
+					if(front_from_lc4){
+						ex_label.find('.label_lc4').removeClass("d-none");
+					}
+					
 					
 					ex_label.appendTo("#label_list");	
 					//存入設定

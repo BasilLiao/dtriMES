@@ -324,7 +324,7 @@ public class LabelListService {
 			if (label_set.getString("ll_id").equals("") && dubCheck) {
 				ArrayList<LabelList> save2_label_old = labelsDao.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
 				if (save2_label_old.size() > 0) {
-					label_set.put("ll_id", save2_label_old.get(0).getLlid()+"");
+					label_set.put("ll_id", save2_label_old.get(0).getLlid() + "");
 				}
 			}
 			// Step4. 可能是新增?
@@ -461,6 +461,12 @@ public class LabelListService {
 
 		// 標籤跟隨清單
 		JSONArray object_follow = new JSONArray();
+		// 自訂義
+		object_follow.put("na.na.====工作站(自訂義)====");//
+		object_follow.put("lc.front_from_lc1.工作站-自訂義:LC1");// 自訂義:LC1
+		object_follow.put("lc.front_from_lc2.工作站-自訂義:LC2");// 自訂義:LC2
+		object_follow.put("lc.front_from_lc3.工作站-自訂義:LC3");// 自訂義:LC3
+		object_follow.put("lc.front_from_lc4.工作站-自訂義:LC4");// 自訂義:LC4
 		// 前端
 		object_follow.put("na.na.====工作站(外箱裝用)====");//
 		object_follow.put("fn.front_from_fixed.工作站-固定名稱");// 來自工作站前端
@@ -550,7 +556,8 @@ public class LabelListService {
 					label_bean.setLlll(label_bean.getLlll().replace("{標籤長度(點)}", label_set.getString("ll_ll")));
 					label_bean.setLlmd(label_bean.getLlmd().replace("{打印暗度}", label_set.getString("ll_md")));
 					label_bean.setLlpr(label_bean.getLlpr().replace("{打印速度}", label_set.getString("ll_pr")));
-					label_bean.setLllh(label_bean.getLllh().replace("{x,y起始打印座標(點)}", label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y")));
+					label_bean.setLllh(
+							label_bean.getLllh().replace("{x,y起始打印座標(點)}", label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y")));
 					// label_package
 					JSONObject label_package = label_json.getJSONObject("label_package");
 					label_bean.setLl_o_p_type(label_package.getString("ll_o_p_type").equals("multiple"));
@@ -981,7 +988,7 @@ public class LabelListService {
 					Method in_method;
 					String putName = "";
 					String putValue = "";
-					String putSpace="";
+					String putSpace = "";
 					switch (block.getString("label_block_type")) {
 					case "char_type":
 						// 文字模式
@@ -1036,8 +1043,8 @@ public class LabelListService {
 								// 有特殊-前端跟隨 設定?
 								if (cell.equals("front_from_sn") && front_from_sn.length() > 0) {
 									putValue = "";
-									//是否需要空格(如果只有1筆資料)
-									putSpace = (front_from_sn.length()==1?"":" ");
+									// 是否需要空格(如果只有1筆資料)
+									putSpace = (front_from_sn.length() == 1 ? "" : " ");
 									for (Object from_sn : front_from_sn) {
 										putValue += (String) from_sn + putSpace;
 									}
@@ -1053,6 +1060,19 @@ public class LabelListService {
 								// 有特殊-前端跟隨(數量) 設定?
 								if (cell.equals("front_from_qty") && front_from_sn.length() > 0) {
 									putValue = front_from_qty + "";
+								}
+								break;
+							case "lc":
+								// 工作站-自訂義-跟隨
+								if (cell.equals("front_from_lc1")) {
+									System.out.println(label_json.getString("front_from_lc1"));
+									putValue = label_json.getString("front_from_lc1");// 自訂義-跟隨(1)
+								} else if (cell.equals("front_from_lc2")) {
+									putValue = label_json.getString("front_from_lc2");// 自訂義-跟隨(2)
+								} else if (cell.equals("front_from_lc3")) {
+									putValue = label_json.getString("front_from_lc3");// 自訂義-跟隨(3)
+								} else if (cell.equals("front_from_lc4")) {
+									putValue = label_json.getString("front_from_lc4");// 自訂義-跟隨(4)
 								}
 								break;
 							default:
