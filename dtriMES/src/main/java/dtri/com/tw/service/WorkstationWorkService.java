@@ -1404,6 +1404,7 @@ public class WorkstationWorkService {
 								// 資料轉換
 								labelList = labelNService.workstationToLabel(label_json, f_f_sn, f_f_q, ph_one, pr_one, pb_one);
 								check = labelNService.printerCustomized(resp, req, user, false, labelList);
+								System.out.println("");
 							}
 						}
 					}
