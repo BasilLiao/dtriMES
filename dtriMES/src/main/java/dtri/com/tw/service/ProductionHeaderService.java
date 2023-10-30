@@ -32,7 +32,6 @@ import dtri.com.tw.db.pgsql.dao.LabelListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
-import dtri.com.tw.db.pgsql.dao.ProductionSNDao;
 import dtri.com.tw.db.pgsql.dao.WorkHoursDao;
 import dtri.com.tw.db.pgsql.dao.WorkTypeDao;
 import dtri.com.tw.db.pgsql.dao.WorkstationDao;
@@ -56,8 +55,8 @@ public class ProductionHeaderService {
 	@Autowired
 	private ProductionBodyDao bodyDao;
 
-	@Autowired
-	private ProductionSNDao snDao;
+//	@Autowired
+//	private ProductionSNDao snDao;
 
 	@Autowired
 	private WorkTypeDao typeDao;
@@ -517,7 +516,7 @@ public class ProductionHeaderService {
 				ProductionHeader pro_h = new ProductionHeader();
 				ProductionRecords pro_r = new ProductionRecords();
 				List<ProductionBody> pro_bs = new ArrayList<ProductionBody>();
-				//ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
+				// ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
 				JSONObject data = (JSONObject) one;
 
 				// 查詢重複
@@ -607,6 +606,10 @@ public class ProductionHeaderService {
 							pro_b.setPbwyears(data.getInt("ph_w_years"));
 							pro_b.setSysstatus(0);
 							pro_b.setSyssort(data.getInt("sys_sort"));
+							// 預計出貨時間
+							if (!data.getString("ph_e_s_date").equals("")) {
+								pro_b.setPbshippingdate(Fm_Time.toDate(data.getString("ph_e_s_date")));
+							}
 							pro_b.setPblpath("");
 							pro_b.setPblsize("");
 							pro_b.setPbltext("");
@@ -781,7 +784,7 @@ public class ProductionHeaderService {
 				ProductionHeader pro_h = new ProductionHeader();
 				// ProductionBody pro_b = new ProductionBody();
 				ProductionRecords pro_r = new ProductionRecords();
-				//ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
+				// ArrayList<ProductionSN> pro_sn = new ArrayList<ProductionSN>();
 				List<ProductionBody> pro_bs = new ArrayList<ProductionBody>();
 				JSONObject data = (JSONObject) one;
 
@@ -813,7 +816,7 @@ public class ProductionHeaderService {
 					JSONArray sn_lists = new JSONArray();
 					if (data.getString("ph_type").equals("A511_no_and_has_sn") || data.getString("ph_type").equals("A511_has_sn")
 							|| data.getString("ph_type").equals("A521_no_and_has_sn") || data.getString("ph_type").equals("A521_has_sn")) {
-						
+
 					}
 
 					// 規格
