@@ -17,6 +17,7 @@ import javax.print.SimpleDoc;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -510,6 +511,7 @@ public class LabelListService {
 		object_follow.put("pr.getPrbomcid.BOM料號(客戶)");// BOM料號(客戶)
 		object_follow.put("pr.getPrname.產品品名");// 產品品名
 		object_follow.put("pr.getPrspecification.規格敘述");// 規格敘述
+		object_follow.put("pr.getPrbitem.規格內容(指定項目)");// 規格內容(指定項目)
 		object_follow.put("pr.getPrpmodel.產品型號");// 產品型號
 		object_follow.put("pr.getPrpv.產品版本");// 產品版本
 
@@ -1032,8 +1034,29 @@ public class LabelListService {
 								putValue = (String) in_method.invoke(ph);
 								break;
 							case "pr":
-								in_method = pr.getClass().getMethod(cell);
-								putValue = (String) in_method.invoke(pr);
+
+								// 特殊-產品規格核對
+								if (cell.equals("getPrbitem")) {
+									try {
+										/*
+										 * {"週邊-RS232":{"Qty":1,"Is":"Yes"}, "CPU":{"Qty":1,"Is":"intel J5040"},
+										 * "Adapter":{"Qty":1,"Is":"NｏrmalDC-in19V/65W"}, "FCCLabel":{"Qty":1,"Is":"有"},
+										 */
+										in_method = pr.getClass().getMethod(cell);
+										String putValueSpecification = (String) in_method.invoke(pr);
+										JSONObject specification = new JSONObject(putValueSpecification).getJSONObject(putValue);
+										String spVal = specification.getString("Is");
+										if (spVal != null) {
+											putValue = putValue + "：" + spVal;
+										}
+									} catch (JSONException e) {
+										// 不做任何事情
+									}
+								} else {
+									// 其他
+									in_method = pr.getClass().getMethod(cell);
+									putValue = (String) in_method.invoke(pr);
+								}
 								break;
 							case "pb":
 								in_method = pb.getClass().getMethod(cell);
