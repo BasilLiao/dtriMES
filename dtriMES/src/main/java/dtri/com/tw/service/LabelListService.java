@@ -1046,8 +1046,9 @@ public class LabelListService {
 										String putValueSpecification = (String) in_method.invoke(pr);
 										JSONObject specification = new JSONObject(putValueSpecification).getJSONObject(putValue);
 										String spVal = specification.getString("Is");
+										Integer spQty = specification.getInt("Qty");
 										if (spVal != null) {
-											putValue = putValue + "：" + spVal;
+											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
