@@ -1049,6 +1049,8 @@ public class LabelListService {
 										Integer spQty = specification.getInt("Qty");
 										if (spVal != null) {
 											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
+										} else if (spVal == null || spVal.equals("")) {
+											putValue = "";
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
