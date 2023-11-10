@@ -1047,13 +1047,14 @@ public class LabelListService {
 										JSONObject specification = new JSONObject(putValueSpecification).getJSONObject(putValue);
 										String spVal = specification.getString("Is");
 										Integer spQty = specification.getInt("Qty");
-										if (spVal != null) {
-											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
-										} else if (spVal == null || spVal.equals("")) {
+										if (spVal == null || spVal.equals("")) {
 											putValue = "";
+										} else if (spVal != null && !spVal.equals("")) {
+											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
+										putValue = "";
 									}
 								} else {
 									// 其他
