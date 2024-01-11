@@ -111,29 +111,46 @@ public class LabelListService {
 
 			// 標籤細節
 			obj_m = new JSONArray();
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_header", sys_header));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ll_id", ll_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ll_name", ll_name));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "製令單連動", "", FFM.Wri.W_Y, "col-md-2", true, n_val, "ll_g_name", ll_g_name));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_header", sys_header));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-2", true, n_val,
+					"ll_id", ll_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, n_val,
+					"ll_name", ll_name));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "製令單連動", "", FFM.Wri.W_Y, "col-md-2", true,
+					n_val, "ll_g_name", ll_g_name));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "UTF-8", "UTF-8", FFM.Wri.W_N, "col-md-1", true, n_val, "ll_ci", ll_ci));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_ll", ll_ll));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_pw", ll_pw));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "ll_lh", ll_lh));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "-30~+30", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_md", ll_md));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1~7", "", FFM.Wri.W_Y, "col-md-1", true, n_val, "ll_pr", ll_pr));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "UTF-8", "UTF-8", FFM.Wri.W_N, "col-md-1", true,
+					n_val, "ll_ci", ll_ci));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true,
+					n_val, "ll_ll", ll_ll));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1cm:200.", "", FFM.Wri.W_Y, "col-md-1", true,
+					n_val, "ll_pw", ll_pw));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val,
+					"ll_lh", ll_lh));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "-30~+30", "", FFM.Wri.W_Y, "col-md-1", true,
+					n_val, "ll_md", ll_md));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1~7", "", FFM.Wri.W_Y, "col-md-1", true, n_val,
+					"ll_pr", ll_pr));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "ll_xa", ll_xa));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false, n_val, "ll_fo_s", ll_fo_s));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false, n_val, "ll_a_json", ll_a_json));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val,
+					"ll_xa", ll_xa));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false,
+					n_val, "ll_fo_s", ll_fo_s));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "{}", "{}", FFM.Wri.W_N, "col-md-6", false,
+					n_val, "ll_a_json", ll_a_json));
 
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "開啟(正常)").put("key", "0"));
 			s_val.put((new JSONObject()).put("value", "關閉(作廢)").put("key", "1"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-1", true, s_val, "sys_status", sys_status));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "sys_note", sys_note));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", sys_m_date));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", sys_m_user));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-1", true, s_val,
+					"sys_status", sys_status));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val,
+					"sys_note", sys_note));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_m_date", sys_m_date));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_m_user", sys_m_user));
 
 			bean.setCell_modify(obj_m);
 
@@ -323,14 +340,16 @@ public class LabelListService {
 			}
 			// Step4-0. 可能是新增?(.特殊新增(必須而外再存一次))
 			if (label_set.getString("ll_id").equals("") && dubCheck) {
-				ArrayList<LabelList> save2_label_old = labelsDao.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
+				ArrayList<LabelList> save2_label_old = labelsDao
+						.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
 				if (save2_label_old.size() > 0) {
 					label_set.put("ll_id", save2_label_old.get(0).getLlid() + "");
 				}
 			}
 			// Step4. 可能是新增?
 			if (label_set.getString("ll_id").equals("")) {
-				ArrayList<LabelList> save_label_old = labelsDao.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
+				ArrayList<LabelList> save_label_old = labelsDao
+						.findAllByLlgnameAndLlname(label_set.getString("ll_name"), null, null);
 				// 如果跟舊的名稱一樣不可新增
 				if (save_label_old.size() > 0) {
 					resp.autoMsssage("LB006");
@@ -505,6 +524,8 @@ public class LabelListService {
 		object_follow.put("ph.getPhwcline.產線");// 產線
 		object_follow.put("ph.getSysnote.備註");// 備註
 		object_follow.put("pr.getPrid.製令單號");// 製令單號
+		object_follow.put("ph.getPhpqty.預計生產數");// 製令(預計生產數)
+		object_follow.put("ph.getPhpaokqty.生產完成數");// 製令(生產完成數)
 		// 製令規格
 		object_follow.put("na.na.====製令規格====");//
 		object_follow.put("pr.getPrbomid.BOM料號(公司)");// BOM料號(公司)
@@ -529,7 +550,8 @@ public class LabelListService {
 	 * 
 	 */
 	@Transactional
-	public boolean printerCustomized(PackageBean resp, PackageBean req, SystemUser user, Boolean testPrint, LabelList truePrint) {
+	public boolean printerCustomized(PackageBean resp, PackageBean req, SystemUser user, Boolean testPrint,
+			LabelList truePrint) {
 		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
@@ -558,15 +580,16 @@ public class LabelListService {
 					label_bean.setLlll(label_bean.getLlll().replace("{標籤長度(點)}", label_set.getString("ll_ll")));
 					label_bean.setLlmd(label_bean.getLlmd().replace("{打印暗度}", label_set.getString("ll_md")));
 					label_bean.setLlpr(label_bean.getLlpr().replace("{打印速度}", label_set.getString("ll_pr")));
-					label_bean.setLllh(
-							label_bean.getLllh().replace("{x,y起始打印座標(點)}", label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y")));
+					label_bean.setLllh(label_bean.getLllh().replace("{x,y起始打印座標(點)}",
+							label_set.getString("ll_lh_x") + "," + label_set.getString("ll_lh_y")));
 					// label_package
 					JSONObject label_package = label_json.getJSONObject("label_package");
 					label_bean.setLl_o_p_type(label_package.getString("ll_o_p_type").equals("multiple"));
 					if (label_package.getString("ll_o_p_type").equals("multiple")) {
 						label_bean.setLl_o_p_qty(Integer.parseInt(label_package.getString("ll_o_p_qty")));// 每箱多少台
 						label_bean.setLl_o_l_qty(Integer.parseInt(label_package.getString("ll_o_l_qty")));// 每箱多少台
-						label_bean.setLl_l_qty(label_bean.getLl_o_p_qty() / label_bean.getLl_o_l_qty());// 每次 幾張標籤(無條件進位)
+						label_bean.setLl_l_qty(label_bean.getLl_o_p_qty() / label_bean.getLl_o_l_qty());// 每次
+																										// 幾張標籤(無條件進位)
 						label_bean.setLl_l_now(1);
 						label_bean.setLl_o_h_b_name(label_package.getString("ll_o_h_b_name"));// 指定隱藏
 						label_bean.setLl_o_s_b_name(label_package.getString("ll_o_s_b_name"));// 指定重複
@@ -664,7 +687,8 @@ public class LabelListService {
 								case "char_type":
 									llfo = "";
 									// 文字
-									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									if (label_bean.isLl_o_p_type()
+											&& label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_fd_s[] = ll_fo_c.getString("ll_fd").split(" ");
 
@@ -687,7 +711,8 @@ public class LabelListService {
 												llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
 														ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
 																+ ll_fo_c.getString("ll_a_h") //
-																+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
+																+ (ll_fo_c.getString("ll_a_w").equals("") ? ""
+																		: "," + ll_fo_c.getString("ll_a_w")));
 												// 區塊屬性?
 												if (!ll_fo_c.getString("ll_fb_d").equals("")) {
 													llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
@@ -716,7 +741,8 @@ public class LabelListService {
 											llfo += label_bean.getLla().replace("{字型與角度,高,寬}", //
 													ll_fo_c.getString("ll_a_t") + ll_fo_c.getString("ll_a_c") + ","//
 															+ ll_fo_c.getString("ll_a_h") //
-															+ (ll_fo_c.getString("ll_a_w").equals("") ? "" : "," + ll_fo_c.getString("ll_a_w")));
+															+ (ll_fo_c.getString("ll_a_w").equals("") ? ""
+																	: "," + ll_fo_c.getString("ll_a_w")));
 											// 區塊屬性?
 											if (!ll_fo_c.getString("ll_fb_d").equals("")) {
 												llfo += label_bean.getLlfb().replace("{寬度(點),行數,行間高度,靠左右中,縮排}", //
@@ -728,7 +754,8 @@ public class LabelListService {
 											}
 											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+													label_block.getString("ll_fo_x") + ","
+															+ label_block.getString("ll_fo_y") + llfo);
 										}
 										label_bean.setFolist(llfo);
 									}
@@ -736,7 +763,8 @@ public class LabelListService {
 								case "img_type":
 									// 圖片
 									llfo = "";
-									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									if (label_bean.isLl_o_p_type()
+											&& label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定
 										String ll_gfa_s[] = ll_fo_c.getString("ll_gfa").split(" ");
 										// 複數區間
@@ -779,14 +807,16 @@ public class LabelListService {
 										}
 
 										llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}^FS", //
-												label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + imageString);
+												label_block.getString("ll_fo_x") + ","
+														+ label_block.getString("ll_fo_y") + imageString);
 									}
 									label_bean.setFolist(llfo);
 									break;
 								case "barcode_type":
 									// 一維條碼
 									llfo = "";
-									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									if (label_bean.isLl_o_p_type()
+											&& label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_bfd_s[] = ll_fo_c.getString("ll_bfd").split(" ");
 
@@ -811,15 +841,18 @@ public class LabelListService {
 												llfo = label_bean.getLlbfd().replace("{條碼文字}", ll_bfd);
 												// 條碼?
 												llfo += label_bean.getLlby().replace("{條碼窄線(點),條碼寬比}", //
-														ll_fo_c.getString("ll_by_m") + "," + ll_fo_c.getString("ll_by_w"));
+														ll_fo_c.getString("ll_by_m") + ","
+																+ ll_fo_c.getString("ll_by_w"));
 												// 類型?
 												String codeType = "";
 												if (ll_fo_c.getString("ll_b_x").equals("C")) {
 													// code128
-													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
+													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c")
+															+ ",";
 												} else {
 													// code39 or 11
-													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
+													codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c")
+															+ ",N,";
 												}
 												llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
 														codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
@@ -852,16 +885,19 @@ public class LabelListService {
 											String codeType = "";
 											if (ll_fo_c.getString("ll_b_x").equals("C")) {
 												// code128
-												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",";
+												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c")
+														+ ",";
 											} else {
 												// code39 or 11
-												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c") + ",N,";
+												codeType = ll_fo_c.getString("ll_b_x") + ll_fo_c.getString("ll_b_c")
+														+ ",N,";
 											}
 											llfo += label_bean.getLlb().replace("{類型與角度,N,條碼高度(點),N,N}", //
 													codeType + ll_fo_c.getString("ll_b_h") + ",N,N");
 											// 位置
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+													label_block.getString("ll_fo_x") + ","
+															+ label_block.getString("ll_fo_y") + llfo);
 											label_bean.setFolist(llfo);
 										}
 									}
@@ -869,7 +905,8 @@ public class LabelListService {
 								case "qr_code_type":
 									// 二維條碼
 									llfo = "";
-									if (label_bean.isLl_o_p_type() && label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
+									if (label_bean.isLl_o_p_type()
+											&& label_bean.getLl_o_s_b_name().indexOf(ll_fo_name) >= 0) {
 										// 一張標籤->多項->固定 or 跟隨?
 										String ll_bqfd_s[] = ll_fo_c.getString("ll_bqfd").split(" ");
 
@@ -891,7 +928,8 @@ public class LabelListService {
 
 												// 條碼?
 												llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
-														ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
+														ll_fo_c.getString("ll_bq_c") + ",2,"
+																+ ll_fo_c.getString("ll_bq_e"));
 
 												// 位置
 												llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
@@ -910,10 +948,12 @@ public class LabelListService {
 											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_bqfd);
 											// 條碼?
 											llfo += label_bean.getLlbq().replace("{角度,2,大小}", //
-													ll_fo_c.getString("ll_bq_c") + ",2," + ll_fo_c.getString("ll_bq_e"));
+													ll_fo_c.getString("ll_bq_c") + ",2,"
+															+ ll_fo_c.getString("ll_bq_e"));
 
 											llfo = label_bean.getLlfo().replace("{x,y區域位置座標(點)}", //
-													label_block.getString("ll_fo_x") + "," + label_block.getString("ll_fo_y") + llfo);
+													label_block.getString("ll_fo_x") + ","
+															+ label_block.getString("ll_fo_y") + llfo);
 											label_bean.setFolist(llfo);
 										}
 									}
@@ -922,7 +962,8 @@ public class LabelListService {
 							}
 						});
 						// Step4.編譯成ZPL
-						llxa += label_bean.getLlxa().replace("{ZPL打印內容}", label_bean.getLlheader() + label_bean.getLlbody()) + "\n";
+						llxa += label_bean.getLlxa().replace("{ZPL打印內容}",
+								label_bean.getLlheader() + label_bean.getLlbody()) + "\n";
 
 					}
 					// Step5.辨識標籤機
@@ -964,8 +1005,8 @@ public class LabelListService {
 	 * {"f_f_l":["A7777A0002"],"printer_c":"123","barcode_pe_q":0,"barcode_pt_q":"1","barcode_ll_q":0,"barcode_id":"6"}
 	 * 
 	 **/
-	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, int front_from_qty, ProductionHeader ph, ProductionRecords pr,
-			ProductionBody pb) {
+	public LabelList workstationToLabel(JSONObject label_json, JSONArray front_from_sn, int front_from_qty,
+			ProductionHeader ph, ProductionRecords pr, ProductionBody pb) {
 		LabelList labelList = new LabelList();
 		String label_id = label_json.getString("barcode_id");// ID
 
@@ -1031,7 +1072,16 @@ public class LabelListService {
 							switch (table) {
 							case "ph":
 								in_method = ph.getClass().getMethod(cell);
-								putValue = (String) in_method.invoke(ph);
+								if (in_method.getAnnotatedReturnType().toString().equals("java.lang.Integer")) {
+									// 數字?
+									Integer putValueNumber = (Integer) in_method.invoke(ph);
+									putValue = putValueNumber + "";
+								} else {
+									// 文字?
+									putValue = (String) in_method.invoke(ph);
+								}
+								System.out.println(putValue);
+
 								break;
 							case "pr":
 
@@ -1044,7 +1094,8 @@ public class LabelListService {
 										 */
 										in_method = pr.getClass().getMethod(cell);
 										String putValueSpecification = (String) in_method.invoke(pr);
-										JSONObject specification = new JSONObject(putValueSpecification).getJSONObject(putValue);
+										JSONObject specification = new JSONObject(putValueSpecification)
+												.getJSONObject(putValue);
 										String spVal = specification.getString("Is");
 										Integer spQty = specification.getInt("Qty");
 										if (spVal == null || spVal.equals("")) {
