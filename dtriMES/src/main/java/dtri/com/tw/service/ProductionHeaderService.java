@@ -1135,8 +1135,9 @@ public class ProductionHeaderService {
 				ProductionHeader one_header = headers.get(0);
 				ProductionRecords one_pecords = one_header.getProductionRecords();
 				if (headers.get(0).getSysstatus() != 1 && headers.get(0).getSysstatus() != 2) {
-					// 工作站資訊 (不同 工作站程序時 才作重製)
-					if (one_header.getPhwpid() != data.getLong("ph_wp_id")) {
+					// 工作站資訊 (不同 工作站程序時 才作重製) or 保固年
+					if (one_header.getPhwpid() != data.getLong("ph_wp_id")
+							|| one_header.getPhwyears() != data.getInt("ph_w_years")) {
 						JSONObject json_work = new JSONObject();
 						ArrayList<WorkstationProgram> programs = programDao
 								.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
@@ -1171,6 +1172,7 @@ public class ProductionHeaderService {
 					one_header.setProductionRecords(one_pecords);
 
 					// hearder
+					one_header.setPhwyears(data.getInt("ph_w_years"));
 					one_header.setSysstatus(data.getInt("sys_status"));
 					one_header.setPhmfgpno(data.getString("ph_mfg_p_no"));
 					one_header.setPhpsno(data.getString("ph_ps_no"));
@@ -1178,7 +1180,6 @@ public class ProductionHeaderService {
 					one_header.setPhpname(data.getString("ph_p_name"));
 					one_header.setPhschedule(data.getInt("ph_p_a_ok_qty") + "／" + one_header.getPhpqty());
 					one_header.setPhcname(data.getString("ph_c_name"));
-					one_header.setPhwyears(data.getInt("ph_w_years"));
 					one_header.setPhwcline(data.getString("ph_wc_line"));
 					one_header.setPhorderid(data.getString("ph_order_id"));
 					one_header.setPhesdate(data.getString("ph_e_s_date"));

@@ -11,8 +11,8 @@
 	<groupId>dtri.com.tw</groupId>
 	<artifactId>dtriMES</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dtriPMS</name>
-	<description>PMS server</description>
+	<name>dtriMES</name>
+	<description>MES server</description>
 	<properties>
 		<java.version>8</java.version>
 	</properties>
