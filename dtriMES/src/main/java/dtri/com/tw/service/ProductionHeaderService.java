@@ -1135,9 +1135,9 @@ public class ProductionHeaderService {
 				ProductionHeader one_header = headers.get(0);
 				ProductionRecords one_pecords = one_header.getProductionRecords();
 				if (headers.get(0).getSysstatus() != 1 && headers.get(0).getSysstatus() != 2) {
-					// 工作站資訊 (不同 工作站程序時 才作重製) or 保固年
-					if (one_header.getPhwpid() != data.getLong("ph_wp_id")
-							|| one_header.getPhwyears() != data.getInt("ph_w_years")) {
+					List<ProductionBody> pb_s = bodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
+					// 工作站資訊 (不同 工作站程序時 才作重製)
+					if (one_header.getPhwpid() != data.getLong("ph_wp_id")) {
 						JSONObject json_work = new JSONObject();
 						ArrayList<WorkstationProgram> programs = programDao
 								.findAllByWpgidAndSysheaderOrderBySyssortAsc(data.getLong("ph_wp_id"), false);
@@ -1154,13 +1154,19 @@ public class ProductionHeaderService {
 						}
 						// 更新產品 過站設定
 						JSONObject json_work_d = json_work;
-						List<ProductionBody> pb_s = bodyDao.findAllByPbgidOrderByPbsnAsc(one_header.getPhpbgid());
 						pb_s.forEach(s -> {
 							s.setPbschedule(json_work_d.toString());
-							s.setPbwyears(data.getInt("ph_w_years"));
 						});
-						bodyDao.saveAll(pb_s);
 					}
+					// 保固年
+					if (one_header.getPhwyears() != data.getInt("ph_w_years")) {
+						pb_s.forEach(r -> {
+							r.setPbwyears(data.getInt("ph_w_years"));
+						});
+						one_header.setPhwyears(data.getInt("ph_w_years"));
+					}
+					bodyDao.saveAll(pb_s);
+
 					// 否:生產中 & 以生產
 					// records
 					one_pecords.setPrbomcid(data.getString("pr_bom_c_id"));
@@ -1172,7 +1178,6 @@ public class ProductionHeaderService {
 					one_header.setProductionRecords(one_pecords);
 
 					// hearder
-					one_header.setPhwyears(data.getInt("ph_w_years"));
 					one_header.setSysstatus(data.getInt("sys_status"));
 					one_header.setPhmfgpno(data.getString("ph_mfg_p_no"));
 					one_header.setPhpsno(data.getString("ph_ps_no"));
@@ -1234,8 +1239,8 @@ public class ProductionHeaderService {
 						one_header.setSysnote(data.getString("sys_note"));
 					}
 					productionHeaderDao.save(one_header);
-
 					check = true;
+					
 				} else {
 					// 是:生產中 & 以生產
 					// 已經結束
