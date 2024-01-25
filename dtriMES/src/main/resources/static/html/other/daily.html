@@ -1,28 +1,28 @@
 <!-- 查詢項目 -->
 <style>
-.radio_size {
-	width: 22px;
-	height: 20px;
-}
+	.radio_size {
+		width: 22px;
+		height: 20px;
+	}
 
-.datalist {
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
+	.datalist {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-.datetimepicker {
-	margin-top: 50px;
-}
+	.datetimepicker {
+		margin-top: 50px;
+	}
 
-.fixed_cell {
-	position: sticky;
-}
+	.fixed_cell {
+		position: sticky;
+	}
 
-#customized .table-style {
-	min-height: 450px;
-	border-collapse: separate;
-	border-spacing: 0px;
-}
+	#customized .table-style {
+		min-height: 450px;
+		border-collapse: separate;
+		border-spacing: 0px;
+	}
 </style>
 <div id="customized">
 	<div class="shadow mt-0 text-left">
@@ -46,13 +46,39 @@
 			</div>
 		</div>
 		<div class="row justify-content-end p-0 m-0 search_example_button">
-			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
-				<div class="row col-md-5 m-1 p-0 pt-1">
-					<input id="search_30s" class="col-md-2 p-0" type="checkbox" style="width: 20px; height: 100%;">
-					<div class="col-md-10 p-0">自動查詢(30秒)</div>
+			<div class="col-12 row justify-content-between m-0 p-2">
+				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+					<input id="search_bodys_dp" class="col-md-2 p-0" type="checkbox" style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">每日 總產量</div>
 				</div>
-				<button id="search_btn" class="col-md-3 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
-				<button id="clear_btn" class="col-md-3 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+					<input id="search_bodys_dp_all" class="col-md-2 p-0" type="checkbox"
+						style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">每日 累計總產量</div>
+				</div>
+				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+					<input id="search_bodys_yield" class="col-md-2 p-0" type="checkbox"
+						style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">每日 產量良率</div>
+				</div>
+				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+					<input id="search_bodys_dwh" class="col-md-2 p-0" type="checkbox"
+						style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">每日 總工時</div>
+				</div>
+				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+					<input id="search_bodys_dnoe" class="col-md-2 p-0" type="checkbox"
+						style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">每日 總人力</div>
+				</div>
+				<div class="row col-md-2 m-1 p-0 pt-1" style="height: 28px;">
+					<input id="search_30s" class="col-md-2 p-0" type="checkbox" style="width: 20px; height: 100%;">
+					<div class="col-10 p-0">自動查詢(30秒)</div>
+				</div>
+				<div class="row col-md-2 m-0 justify-content-end p-0 pt-1">
+					<button id="search_btn" class="col-5 m-1 btn btn-primary btn-sm" type="submit">Search</button>
+					<button id="clear_btn" class="col-5 m-1 btn btn-warning btn-sm" type="button">Clear</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -67,14 +93,17 @@
 			</div>
 		</div>
 		<div class="m-1" id="dp_show">
-			<table id="dp_excel" class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" style="height: 630px;">
+			<table id="dp_excel"
+				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0"
+				style="height: 630px;">
 				<thead class="thead bg-dark table-dark dp_search_example_title" style="white-space: nowrap;">
 					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -82,7 +111,8 @@
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Handle</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -102,21 +132,25 @@
 	<div class="shadow mt-2">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
 			<div class="col-10 p-0">
-				<i class="bi bi-receipt mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily production cumulative Qty(每日 累計總產量)
+				<i class="bi bi-receipt mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily production cumulative
+				Qty(每日 累計總產量)
 			</div>
 			<div class="col-2">
 				<button id="dp_all_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="m-1" id="dp_all_show" style="display: none;">
-			<table id="dp_all_excel" class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" style="height: 630px;">
+			<table id="dp_all_excel"
+				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0"
+				style="height: 630px;">
 				<thead class="thead bg-dark table-dark dp_all_search_example_title" style="white-space: nowrap;">
 					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -124,7 +158,8 @@
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Handle</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -144,21 +179,25 @@
 	<div class="shadow mt-2">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
 			<div class="col-10 p-0">
-				<i class="bi bi-percent mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily production yield(每日 產量良率)
+				<i class="bi bi-percent mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily production yield(每日
+				產量良率)
 			</div>
 			<div class="col-2">
 				<button id="yield_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="m-1" id="yield_show" style="display: none;">
-			<table id="yield_excel" class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" style="height: 630px;">
+			<table id="yield_excel"
+				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0"
+				style="height: 630px;">
 				<thead class="thead bg-dark table-dark yield_search_example_title" style="white-space: nowrap;">
 					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -166,7 +205,8 @@
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Handle</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -178,7 +218,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="small col-md text-left text-danger p-1 font-weight-bold">說明 : 將會取得每日 [及時] 產品數 & 測試數 & 良率比例.</div>
+			<div class="small col-md text-left text-danger p-1 font-weight-bold">說明 : 將會取得每日 [及時] 產品數 & 測試數 & 良率比例.
+			</div>
 		</div>
 	</div>
 
@@ -193,14 +234,17 @@
 			</div>
 		</div>
 		<div class="m-1" id="dwh_show" style="display: none;">
-			<table id="dwh_excel" class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" style="height: 630px;">
+			<table id="dwh_excel"
+				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0"
+				style="height: 630px;">
 				<thead class="thead bg-dark table-dark dwh_search_example_title" style="white-space: nowrap;">
 					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -208,7 +252,8 @@
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Handle</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -220,7 +265,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="small col-md text-left text-danger p-1 font-weight-bold">說明 : 系統預設為0工時數 , 將於每日 [工作站-班別功能] 設置的時間段 [結算]資料 , 詳細請見 [工作站-班別功能].</div>
+			<div class="small col-md text-left text-danger p-1 font-weight-bold">說明 : 系統預設為0工時數 , 將於每日 [工作站-班別功能] 設置的時間段
+				[結算]資料 , 詳細請見 [工作站-班別功能].</div>
 		</div>
 	</div>
 
@@ -228,21 +274,25 @@
 	<div class="shadow mt-2 ">
 		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
 			<div class="col-10 p-0">
-				<i class="bi bi-person mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily number of employees(每日 總人力)
+				<i class="bi bi-person mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1"></i>Daily number of employees(每日
+				總人力)
 			</div>
 			<div class="col-2">
 				<button id="dnoe_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
 			</div>
 		</div>
 		<div class="m-1" id="dnoe_show" style="display: none;">
-			<table id="dnoe_excel" class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" style="height: 630px;">
+			<table id="dnoe_excel"
+				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0"
+				style="height: 630px;">
 				<thead class="thead bg-dark table-dark dnoe_search_example_title" style="white-space: nowrap;">
 					<tr class="fixed_cell bg-dark" style="top: 0px; z-index: 6;">
 						<th class="s_title_body noExl" style="min-width: 150px;">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Last</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -250,7 +300,8 @@
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Handle</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -267,899 +318,914 @@
 	</div>
 </div>
 <script type="text/javascript">
-//控制端
-customized = new Vue({
-	el: "#customized",
-	//資料區
-	data: {
-		//換頁樣式
-		page_total: main.page_total, //每次_總筆數
-		page_batch: main.page_batch, //每次_第幾批
+	//控制端
+	customized = new Vue({
+		el: "#customized",
+		//資料區
+		data: {
+			//換頁樣式
+			page_total: main.page_total, //每次_總筆數
+			page_batch: main.page_batch, //每次_第幾批
 
-		page_show_size: main.page_show_size, //目前_每分頁顯示數量
-		page_now_size: main.page_now_size, //目前_實際筆數
-		page_now: main.page_now, //目前_頁數
-		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
-		data_item_f_id: "", //父類別ID
-		list_son:{},// 群組-子類別
-		Interval_update30s:"",//30秒一次
-	},
-	//初始化
-	created() {
-		console.log("daily.html(created)");
-	},
-	//可呼叫方法
-	methods: {
-		setDataTitle(title, html_permission) {
-			//標題注入資訊
-			//排序
-			var title_dp = main.orderedSort(title['header_dp']);
-			for (var i = 0; i < Object.keys(title_dp).length - 1; i++) {
-				var one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_dp)[i];
-				var value_name = title_dp[Object.keys(title_dp)[i]].name;
-				var value_size = title_dp[Object.keys(title_dp)[i]].size;
-				var value_write = title_dp[Object.keys(title_dp)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".dp_search_example_title .s_title_last");
+			page_show_size: main.page_show_size, //目前_每分頁顯示數量
+			page_now_size: main.page_now_size, //目前_實際筆數
+			page_now: main.page_now, //目前_頁數
+			data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+			data_item_f_id: "", //父類別ID
+			list_son: {},// 群組-子類別
+			Interval_update30s: "",//30秒一次
+		},
+		//初始化
+		created() {
+			console.log("daily.html(created)");
+		},
+		//可呼叫方法
+		methods: {
+			setDataTitle(title, html_permission) {
+				//標題注入資訊
+				//排序
+				var title_dp = main.orderedSort(title['header_dp']);
+				for (var i = 0; i < Object.keys(title_dp).length - 1; i++) {
+					var one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
+					var key_id = Object.keys(title_dp)[i];
+					var value_name = title_dp[Object.keys(title_dp)[i]].name;
+					var value_size = title_dp[Object.keys(title_dp)[i]].size;
+					var value_write = title_dp[Object.keys(title_dp)[i]].write;
+					//console.log(key_id+" "+value_name);
+					one_item[0].className = "p-1 ";
+					one_item[0].id = key_id;
+					one_item[0].children[0].children[0].innerText = value_name;
+					one_item.insertBefore(".dp_search_example_title .s_title_last");
+					$("#dp_excel #" + key_id).css("min-width", value_size);
+					$("#dp_excel #" + key_id).css("max-width", value_size);
+					$("#dp_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+					//待修數
+					if (key_id.indexOf('pd_bad_qty') >= 0) {
+						$("#dp_excel #" + key_id).addClass("bg-danger");
+					}
+				}
+				//結尾
+				var key_id = Object.keys(title_dp)[Object.keys(title_dp).length - 1];
+				var value_name = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].name;
+				var value_write = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].write;
+				var value_size = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].size;
+				$(".dp_search_example_title .s_title_last").attr("id", key_id);
+				$(".dp_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dp_excel #" + key_id).css("min-width", value_size);
 				$("#dp_excel #" + key_id).css("max-width", value_size);
 				$("#dp_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-				//待修數
-				if(key_id.indexOf('pd_bad_qty')>=0){
-					$("#dp_excel #" + key_id).addClass("bg-danger"); 
+				//關閉範例
+				$(".dp_search_example_title .s_title_body").addClass("d-none");
+
+				//標題注入資訊
+				//排序
+				var title_dp_all = main.orderedSort(title['header_dp_all']);
+				for (var i = 0; i < Object.keys(title_dp_all).length - 1; i++) {
+					var one_item = $(".dp_all_search_example_title .s_title_body").clone(); //複製樣本
+					var key_id = Object.keys(title_dp_all)[i];
+					var value_name = title_dp_all[Object.keys(title_dp_all)[i]].name;
+					var value_size = title_dp_all[Object.keys(title_dp_all)[i]].size;
+					var value_write = title_dp_all[Object.keys(title_dp_all)[i]].write;
+					//console.log(key_id+" "+value_name);
+					one_item[0].className = "p-1 ";
+					one_item[0].id = key_id;
+					one_item[0].children[0].children[0].innerText = value_name;
+					one_item.insertBefore(".dp_all_search_example_title .s_title_last");
+					$("#dp_all_excel #" + key_id).css("min-width", value_size);
+					$("#dp_all_excel #" + key_id).css("max-width", value_size);
+					$("#dp_all_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+					//待修數
+					if (key_id.indexOf('pd_bad_qty') >= 0) {
+						$("#dp_all_excel #" + key_id).addClass("bg-danger");
+					}
 				}
-			}
-			//結尾
-			var key_id = Object.keys(title_dp)[Object.keys(title_dp).length - 1];
-			var value_name = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].name;
-			var value_write = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].write;
-			var value_size = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].size;
-			$(".dp_search_example_title .s_title_last").attr("id", key_id);
-			$(".dp_search_example_title .s_title_last .title_name").text(value_name);
-			$("#dp_excel #" + key_id).css("min-width", value_size);
-			$("#dp_excel #" + key_id).css("max-width", value_size);
-			$("#dp_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".dp_search_example_title .s_title_body").addClass("d-none");
-			
-			//標題注入資訊
-			//排序
-			var title_dp_all = main.orderedSort(title['header_dp_all']);
-			for (var i = 0; i < Object.keys(title_dp_all).length - 1; i++) {
-				var one_item = $(".dp_all_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_dp_all)[i];
-				var value_name = title_dp_all[Object.keys(title_dp_all)[i]].name;
-				var value_size = title_dp_all[Object.keys(title_dp_all)[i]].size;
-				var value_write = title_dp_all[Object.keys(title_dp_all)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".dp_all_search_example_title .s_title_last");
+				//結尾
+				var key_id = Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1];
+				var value_name = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].name;
+				var value_write = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].write;
+				var value_size = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].size;
+				$(".dp_all_search_example_title .s_title_last").attr("id", key_id);
+				$(".dp_all_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dp_all_excel #" + key_id).css("min-width", value_size);
 				$("#dp_all_excel #" + key_id).css("max-width", value_size);
 				$("#dp_all_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-				//待修數
-				if(key_id.indexOf('pd_bad_qty')>=0){
-					$("#dp_all_excel #" + key_id).addClass("bg-danger"); 
+				//關閉範例
+				$(".dp_all_search_example_title .s_title_body").addClass("d-none");
+
+				//標題注入資訊
+				//排序
+				var title_yield = main.orderedSort(title['header_yield']);
+				for (var i = 0; i < Object.keys(title_yield).length - 1; i++) {
+					var one_item = $(".yield_search_example_title .s_title_body").clone(); //複製樣本
+					var key_id = Object.keys(title_yield)[i];
+					var value_name = title_yield[Object.keys(title_yield)[i]].name;
+					var value_size = title_yield[Object.keys(title_yield)[i]].size;
+					var value_write = title_yield[Object.keys(title_yield)[i]].write;
+					//console.log(key_id+" "+value_name);
+					one_item[0].className = "p-1 ";
+					one_item[0].id = key_id;
+					one_item[0].children[0].children[0].innerText = value_name;
+					one_item.insertBefore(".yield_search_example_title .s_title_last");
+					$("#yield_excel #" + key_id).css("min-width", value_size);
+					$("#yield_excel #" + key_id).css("max-width", value_size);
+					$("#yield_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+					//測試數 良率
+					if (key_id.indexOf('pd_tt_') >= 0) {
+						$("#yield_excel #" + key_id).addClass("bg-secondary");
+					}
+					//生產數 良率
+					if (key_id.indexOf('pd_pr_tt_ok_qty') >= 0 ||
+						key_id.indexOf('pd_pr_yield') >= 0 ||
+						key_id.indexOf('pd_pr_bad_qty') >= 0) {
+						$("#yield_excel #" + key_id).addClass("bg-danger");
+					}
 				}
-			}
-			//結尾
-			var key_id = Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1];
-			var value_name = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].name;
-			var value_write =title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].write;
-			var value_size = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].size;
-			$(".dp_all_search_example_title .s_title_last").attr("id", key_id);
-			$(".dp_all_search_example_title .s_title_last .title_name").text(value_name);
-			$("#dp_all_excel #" + key_id).css("min-width", value_size);
-			$("#dp_all_excel #" + key_id).css("max-width", value_size);
-			$("#dp_all_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".dp_all_search_example_title .s_title_body").addClass("d-none");
-			
-			//標題注入資訊
-			//排序
-			var title_yield = main.orderedSort(title['header_yield']);
-			for (var i = 0; i < Object.keys(title_yield).length - 1; i++) {
-				var one_item = $(".yield_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_yield)[i];
-				var value_name = title_yield[Object.keys(title_yield)[i]].name;
-				var value_size = title_yield[Object.keys(title_yield)[i]].size;
-				var value_write = title_yield[Object.keys(title_yield)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".yield_search_example_title .s_title_last");
+				//結尾
+				var key_id = Object.keys(title_yield)[Object.keys(title_yield).length - 1];
+				var value_name = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].name;
+				var value_write = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].write;
+				var value_size = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].size;
+				$(".yield_search_example_title .s_title_last").attr("id", key_id);
+				$(".yield_search_example_title .s_title_last .title_name").text(value_name);
 				$("#yield_excel #" + key_id).css("min-width", value_size);
 				$("#yield_excel #" + key_id).css("max-width", value_size);
 				$("#yield_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-				//測試數 良率
-				if(key_id.indexOf('pd_tt_')>=0){
-					$("#yield_excel #" + key_id).addClass("bg-secondary"); 
+				//關閉範例
+				$(".yield_search_example_title .s_title_body").addClass("d-none");
+
+				//標題注入資訊
+				//排序
+				var title_dwh = main.orderedSort(title['header_dwh']);
+				for (var i = 0; i < Object.keys(title_dwh).length - 1; i++) {
+					var one_item = $(".dwh_search_example_title .s_title_body").clone(); //複製樣本
+					var key_id = Object.keys(title_dwh)[i];
+					var value_name = title_dwh[Object.keys(title_dwh)[i]].name;
+					var value_size = title_dwh[Object.keys(title_dwh)[i]].size;
+					var value_write = title_dwh[Object.keys(title_dwh)[i]].write;
+					//console.log(key_id+" "+value_name);
+					one_item[0].className = "p-1 ";
+					one_item[0].id = key_id;
+					one_item[0].children[0].children[0].innerText = value_name;
+					one_item.insertBefore(".dwh_search_example_title .s_title_last");
+					$("#dwh_excel #" + key_id).css("min-width", value_size);
+					$("#dwh_excel #" + key_id).css("max-width", value_size);
+					$("#dwh_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+
 				}
-				//生產數 良率
-				if(key_id.indexOf('pd_pr_tt_ok_qty')>=0 || 
-					key_id.indexOf('pd_pr_yield')>=0 || 
-					key_id.indexOf('pd_pr_bad_qty')>=0){
-					$("#yield_excel #" + key_id).addClass("bg-danger"); 
-				}
-			}
-			//結尾
-			var key_id = Object.keys(title_yield)[Object.keys(title_yield).length - 1];
-			var value_name = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].name;
-			var value_write =title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].write;
-			var value_size = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].size;
-			$(".yield_search_example_title .s_title_last").attr("id", key_id);
-			$(".yield_search_example_title .s_title_last .title_name").text(value_name);
-			$("#yield_excel #" + key_id).css("min-width", value_size);
-			$("#yield_excel #" + key_id).css("max-width", value_size);
-			$("#yield_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".yield_search_example_title .s_title_body").addClass("d-none");
-			
-			//標題注入資訊
-			//排序
-			var title_dwh =  main.orderedSort(title['header_dwh']);
-			for (var i = 0; i < Object.keys(title_dwh).length - 1; i++) {
-				var one_item = $(".dwh_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_dwh)[i];
-				var value_name = title_dwh[Object.keys(title_dwh)[i]].name;
-				var value_size = title_dwh[Object.keys(title_dwh)[i]].size;
-				var value_write = title_dwh[Object.keys(title_dwh)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".dwh_search_example_title .s_title_last");
+				//結尾
+				var key_id = Object.keys(title_dwh)[Object.keys(title_dwh).length - 1];
+				var value_name = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].name;
+				var value_write = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].write;
+				var value_size = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].size;
+
+				$(".dwh_search_example_title .s_title_last").attr("id", key_id);
+				$(".dwh_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dwh_excel #" + key_id).css("min-width", value_size);
 				$("#dwh_excel #" + key_id).css("max-width", value_size);
 				$("#dwh_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+				//關閉範例
+				$(".dwh_search_example_title .s_title_body").addClass("d-none");
 
-			}
-			//結尾
-			var key_id = Object.keys(title_dwh)[Object.keys(title_dwh).length - 1];
-			var value_name = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].name;
-			var value_write = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].write;
-			var value_size = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].size;
-			
-			$(".dwh_search_example_title .s_title_last").attr("id", key_id);
-			$(".dwh_search_example_title .s_title_last .title_name").text(value_name);
-			$("#dwh_excel #" + key_id).css("min-width", value_size);
-			$("#dwh_excel #" + key_id).css("max-width", value_size);
-			$("#dwh_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".dwh_search_example_title .s_title_body").addClass("d-none");
 
-			
-			
-			//標題注入資訊
-			//排序
-			var title_dnoe =  main.orderedSort(title['header_dnoe']);
-			for (var i = 0; i < Object.keys(title_dnoe).length - 1; i++) {
-				var one_item = $(".dnoe_search_example_title .s_title_body").clone(); //複製樣本
-				var key_id = Object.keys(title_dnoe)[i];
-				var value_name = title_dnoe[Object.keys(title_dnoe)[i]].name;
-				var value_size = title_dnoe[Object.keys(title_dnoe)[i]].size;
-				var value_write = title_dnoe[Object.keys(title_dnoe)[i]].write;
-				//console.log(key_id+" "+value_name);
-				one_item[0].className = "p-1 ";
-				one_item[0].id = key_id;
-				one_item[0].children[0].children[0].innerText = value_name;
-				one_item.insertBefore(".dnoe_search_example_title .s_title_last");
+
+				//標題注入資訊
+				//排序
+				var title_dnoe = main.orderedSort(title['header_dnoe']);
+				for (var i = 0; i < Object.keys(title_dnoe).length - 1; i++) {
+					var one_item = $(".dnoe_search_example_title .s_title_body").clone(); //複製樣本
+					var key_id = Object.keys(title_dnoe)[i];
+					var value_name = title_dnoe[Object.keys(title_dnoe)[i]].name;
+					var value_size = title_dnoe[Object.keys(title_dnoe)[i]].size;
+					var value_write = title_dnoe[Object.keys(title_dnoe)[i]].write;
+					//console.log(key_id+" "+value_name);
+					one_item[0].className = "p-1 ";
+					one_item[0].id = key_id;
+					one_item[0].children[0].children[0].innerText = value_name;
+					one_item.insertBefore(".dnoe_search_example_title .s_title_last");
+					$("#dnoe_excel #" + key_id).css("min-width", value_size);
+					$("#dnoe_excel #" + key_id).css("max-width", value_size);
+					$("#dnoe_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+				}
+				//結尾
+				var key_id = Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1];
+				var value_name = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].name;
+				var value_write = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].write;
+				var value_size = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].size;
+
+				$(".dnoe_search_example_title .s_title_last").attr("id", key_id);
+				$(".dnoe_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dnoe_excel #" + key_id).css("min-width", value_size);
 				$("#dnoe_excel #" + key_id).css("max-width", value_size);
 				$("#dnoe_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			}
-			//結尾
-			var key_id = Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1];
-			var value_name = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].name;
-			var value_write = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].write;
-			var value_size = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].size;
-			
-			$(".dnoe_search_example_title .s_title_last").attr("id", key_id);
-			$(".dnoe_search_example_title .s_title_last .title_name").text(value_name);
-			$("#dnoe_excel #" + key_id).css("min-width", value_size);
-			$("#dnoe_excel #" + key_id).css("max-width", value_size);
-			$("#dnoe_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
-			//關閉範例
-			$(".dnoe_search_example_title .s_title_body").addClass("d-none");
-			
-		},
-		setDataList(list, list_son, body_type) {
-			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
-			this.data_type = body_type.type;
-			//this.list_son = list_son;
-			console.log(Object.keys(list).length, body_type.type);
-			//console.log(new Date());
-			
-			//舊有資料清除
-			if (list.length < 1) {
-				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
-				if (this.page_batch >= 1) {
-					this.page_batch -= 1;
-				}
-				return false;
-			}
-			$(".search_example_list_son tr").remove();
-			$(".search_data_list").remove();
+				//關閉範例
+				$(".dnoe_search_example_title .s_title_body").addClass("d-none");
 
-			//ls_dp ==開始== 開啟樣式
-			$(".dp_search_example_list .s_list_body").removeClass("d-none");
-			$(".dp_search_example_content").removeClass("d-none");
-			
-			var fixed_cell_color = false;
-			var ls_dp = list['bodys_dp'];
-			for (var j = 0; j < ls_dp.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
+			},
+			setDataList(list, list_son, body_type) {
+				//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+				this.data_type = body_type.type;
+				//this.list_son = list_son;
+				console.log(Object.keys(list).length, body_type.type);
+				//console.log(new Date());
 
-				//排序
-				ls_dp[j] = main.orderedSort(ls_dp[j]);
-				
-				//資料筆數
-				var list_item = $(".dp_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".dp_search_example_list");
-				
-				//===每筆 資料欄位===
-				var fixed_cell_nb = 0;
-				var fixed_cell_wh = 1;
-				console.log( );
-				
-				for (var i = 0; i < Object.keys(ls_dp[j]).length; i++) {
-					var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_dp[j])[i];
-					var value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
-					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						//待修數
-						one_item[0].className = "datalist ";
-						if(key_id.indexOf('pd_bad_qty')>=0){
-							one_item[0].className = "datalist border-top-0 border-bottom-0 border-danger ";
-						}
-						//待修數結尾
-						if(key_id.indexOf('pd_bad_qty')>=0 && (j+1)== ls_dp.length){
-							one_item[0].className = "datalist border-top-0 border-danger ";
-						}
+				//舊有資料清除
+				if (list.length < 1) {
+					t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+					if (this.page_batch >= 1) {
+						this.page_batch -= 1;
 					}
+					return false;
+				}
+				$(".search_example_list_son tr").remove();
+				$(".search_data_list").remove();
 
-					//固定前2格
-					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+				//ls_dp ==開始== 開啟樣式
+				$(".dp_search_example_list .s_list_body").removeClass("d-none");
+				$(".dp_search_example_content").removeClass("d-none");
+				if ($("#search_bodys_dp[type=checkbox]").is(":checked")) {
+					var fixed_cell_color = false;
+					var ls_dp = list['bodys_dp'];
+
+					console.log("Loading bodys_dp:" + new Date());
+					for (var j = 0; j < ls_dp.length; j++) {
+						//固定顏色
 						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+							fixed_cell_color = false;
 						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+							fixed_cell_color = true;
 						}
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
-					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".dp_search_example_list #" + list_item[0].id + " .s_list_body");
-				}
-				
-				$(".dp_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
-			}
-			//關閉樣式
-			$(".dp_search_example_list .s_list_body").addClass("d-none");
-			$(".dp_search_example_content").addClass("d-none");
-			//ls_dp ==結束==
-				
-			//ls_dp_all ==開始== 開啟樣式
-			$(".dp_all_search_example_list .s_list_body").removeClass("d-none");
-			$(".dp_all_search_example_content").removeClass("d-none");
-			
-			var fixed_cell_color = false;
-			var ls_dp_all = list['bodys_dp_all'];
-			for (var j = 0; j < ls_dp.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
 
-				//排序
-				ls_dp_all[j] = main.orderedSort(ls_dp_all[j]);
-				
-				//資料筆數
-				var list_item = $(".dp_all_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".dp_all_search_example_list");
-				
-				//===每筆 資料欄位===
-				var fixed_cell_nb = 0;
-				var fixed_cell_wh = 1;
-				console.log( );
-				
-				for (var i = 0; i < Object.keys(ls_dp_all[j]).length; i++) {
-					var one_item = $(".dp_all_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_dp_all[j])[i];
-					var value_name = ls_dp_all[j][Object.keys(ls_dp_all[j])[i]];
-					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						one_item[0].className = "datalist ";
-					}
+						//排序
+						ls_dp[j] = main.orderedSort(ls_dp[j]);
 
-					//固定前2格
-					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-						}
-						$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
-					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".dp_all_search_example_list #" + list_item[0].id + " .s_list_body");
-				}
-				
-				$(".dp_all_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
-			}
-			//關閉樣式
-			$(".dp_all_search_example_list .s_list_body").addClass("d-none");
-			$(".dp_all_search_example_content").addClass("d-none");
-			//ls_dp_all ==結束==
-				
-			//ls_yield ==開始== 開啟樣式
-			$(".yield_search_example_list .s_list_body").removeClass("d-none");
-			$(".yield_search_example_content").removeClass("d-none");
-			
-			var fixed_cell_color = false;
-			var ls_yield = list['bodys_yield'];
-			for (var j = 0; j < ls_dp.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
+						//資料筆數
+						var list_item = $(".dp_search_example_content").clone(); //複製樣本
+						//是否為群組
+						list_item[0].className = "search_data_list";
+						list_item[0].id = "search_data_" + (j + 1);
+						list_item.appendTo(".dp_search_example_list");
 
-				//排序
-				ls_yield[j] = main.orderedSort(ls_yield[j]);
-				
-				//資料筆數
-				var list_item = $(".yield_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".yield_search_example_list");
-				
-				//===每筆 資料欄位===
-				var fixed_cell_nb = 0;
-				var fixed_cell_wh = 1;
-				console.log( );
-				
-				for (var i = 0; i < Object.keys(ls_yield[j]).length; i++) {
-					var one_item = $(".yield_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_yield[j])[i];
-					var value_name = ls_yield[j][Object.keys(ls_yield[j])[i]];
-					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						one_item[0].className = "datalist ";
-					}
+						//===每筆 資料欄位===
+						var fixed_cell_nb = 0;
+						var fixed_cell_wh = 1;
 
-					//固定前2格
-					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-						}
-						$("#yield_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
-					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".yield_search_example_list #" + list_item[0].id + " .s_list_body");
-				}
-				
-				$(".yield_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
-			}
-			//關閉樣式
-			$(".yield_search_example_list .s_list_body").addClass("d-none");
-			$(".yield_search_example_content").addClass("d-none");
-			//ls_yield ==結束==
-				
-					
-			//ls_dwh ==開始== 開啟樣式
-			$(".dwh_search_example_list .s_list_body").removeClass("d-none");
-			$(".dwh_search_example_content").removeClass("d-none");
-			
-			var fixed_cell_color = false;
-			var ls_dwh = list['bodys_dwh'];
-			for (var j = 0; j < ls_dwh.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
-				//排序
-				ls_dwh[j] = main.orderedSort(ls_dwh[j]);
-				//資料筆數
-				var list_item = $(".dwh_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".dwh_search_example_list");
-				
-				//===每筆 資料欄位===
-				var fixed_cell_nb = 0;
-				var fixed_cell_wh = 1;
-				console.log( );
-				
-				for (var i = 0; i < Object.keys(ls_dwh[j]).length; i++) {
-					var one_item = $(".dwh_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_dwh[j])[i];
-					var value_name = ls_dwh[j][Object.keys(ls_dwh[j])[i]];
-					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						one_item[0].className = "datalist ";
-					}
+						for (var i = 0; i < Object.keys(ls_dp[j]).length; i++) {
+							var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
+							var key_id = Object.keys(ls_dp[j])[i];
+							var value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
+							//取得title Size顯示
+							// console.log(key_id+" "+value_name);
+							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+							//取得title 是否顯示
+							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								one_item[0].className = "datalist d-none";
+							} else {
+								//待修數
+								one_item[0].className = "datalist ";
+								if (key_id.indexOf('pd_bad_qty') >= 0) {
+									one_item[0].className = "datalist border-top-0 border-bottom-0 border-danger ";
+								}
+								//待修數結尾
+								if (key_id.indexOf('pd_bad_qty') >= 0 && (j + 1) == ls_dp.length) {
+									one_item[0].className = "datalist border-top-0 border-danger ";
+								}
+							}
 
-					//固定前2格
-					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+							//固定前2格
+							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+								$("#dp_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+								$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+								$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+								one_item[0].className = "datalist fixed_cell ";
+								fixed_cell_wh += parseInt(value_size);
+								fixed_cell_nb += 1;
+							} else {
+								one_item[0].style = "max-width:" + value_size;
+							}
+							one_item[0].id = "";
+							one_item[0].title = key_id;
+							one_item[0].innerText = value_name;
+							one_item.insertBefore(".dp_search_example_list #" + list_item[0].id + " .s_list_body");
 						}
-						$("#dwh_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
-					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".dwh_search_example_list #" + list_item[0].id + " .s_list_body");
-				}
-				
-				$(".dwh_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
-			}
-			
-			//關閉樣式
-			$(".dwh_search_example_list .s_list_body").addClass("d-none");
-			$(".dwh_search_example_content").addClass("d-none");
-			//ls_dwh ==結束==
-				
-			//ls_dnoe ==開始== 開啟樣式
-			$(".dnoe_search_example_list .s_list_body").removeClass("d-none");
-			$(".dnoe_search_example_content").removeClass("d-none");
-			
-			var fixed_cell_color = false;
-			var ls_dnoe = list['bodys_dnoe'];
-			for (var j = 0; j < ls_dnoe.length; j++) {
-				//固定顏色
-				if (fixed_cell_color) {
-					fixed_cell_color = false;
-				} else {
-					fixed_cell_color = true;
-				}
 
-				//排序
-				ls_dnoe[j] = main.orderedSort(ls_dnoe[j]);
-				
-				//資料筆數
-				var list_item = $(".dnoe_search_example_content").clone(); //複製樣本
-				//是否為群組
-				list_item[0].className = "search_data_list";
-				list_item[0].id = "search_data_" + (j + 1);
-				list_item.appendTo(".dnoe_search_example_list");
-				
-				//===每筆 資料欄位===
-				var fixed_cell_nb = 0;
-				var fixed_cell_wh = 1;
-				console.log( );
-				
-				for (var i = 0; i < Object.keys(ls_dnoe[j]).length; i++) {
-					var one_item = $(".dnoe_search_example_content .s_list_body").clone(); //複製樣本
-					var key_id = Object.keys(ls_dnoe[j])[i];
-					var value_name = ls_dnoe[j][Object.keys(ls_dnoe[j])[i]];
-					//取得title Size顯示
-					// console.log(key_id+" "+value_name);
-					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-					//取得title 是否顯示
-					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						one_item[0].className = "datalist d-none";
-					} else {
-						one_item[0].className = "datalist ";
+						$(".dp_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
 					}
-
-					//固定前2格
-					if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-						if (fixed_cell_color) {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-						} else {
-							one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-						}
-						$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-						$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-						$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-						one_item[0].className = "datalist fixed_cell ";
-						fixed_cell_wh += parseInt(value_size);
-						fixed_cell_nb += 1;
-					} else {
-						one_item[0].style = "max-width:" + value_size;
-					}
-					one_item[0].id = "";
-					one_item[0].title = key_id;
-					one_item[0].innerText = value_name;
-					one_item.insertBefore(".dnoe_search_example_list #" + list_item[0].id + " .s_list_body");
-				}
-				
-				$(".dnoe_search_example_list #search_data_" + (j+1) + " .s_list_body").remove();
-			}
-			
-			//關閉樣式
-			$(".dnoe_search_example_list .s_list_body").addClass("d-none");
-			$(".dnoe_search_example_content").addClass("d-none");
-			//ls_dnoe ==結束==
-			
-		},
-		setSearch(search) {
-			//查詢注入資訊
-			console.log(search);
-			for (var i = 0; i < search.length; i++) {
-				switch (search[i].tag) {
-					case "input":
-						var search_input = $(".search_example_input").clone(); //複製樣本
-						search_input[0].className = search[i].col + " p-2 search_true";
-						search_input[0].id = "search_" + search[i].id;
-						search_input.appendTo(".search_example_finds");
-						$("#" + search_input[0].id + " .s_name").text(search[i].name);
-						//$("#" + search_input[0].id + " .s_value").val(search[i].value);
-						//時間類型
-						if (search[i].type == 'date') {
-							$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
-						}
-						//預設
-						if (search[i].value != "") {
-							$("#" + search_input[0].id + " .s_value").attr("placeholder", search[i].value);
-						}
-						break;
-					case "select":
-						//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
-						//id / value / type
-						var search_selsect = $(".search_example_selsect").clone(); //複製樣本
-						search_selsect[0].className = search[i].col + " p-2 search_true";
-						search_selsect[0].id = "search_" + search[i].id;
-						search_selsect.appendTo(".search_example_finds");
-						$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
-						for (var o = 0; o < search[i].values.length; o++) {
-							var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
-							one_option[0].id = "select_" + search[i]["values"][o]["key"];
-							one_option[0].value = search[i]["values"][o]["key"];
-							one_option[0].innerText = search[i]["values"][o]["value"];
-							one_option[0].className = "";
-							one_option.appendTo("#" + search_selsect[0].id + " select");
-						}
-						//關閉樣式
-						break;
-					default:
 				}
 				//關閉樣式
-				$(".example_select_one").addClass("d-none");
-				$(".search_example_input").addClass("d-none");
-				$(".search_example_selsect").addClass("d-none");
-				main.loading(false);
-			}
+				$(".dp_search_example_list .s_list_body").addClass("d-none");
+				$(".dp_search_example_content").addClass("d-none");
+				//ls_dp ==結束==
 
-			//時間格式
-			$('.datetimepicker_date').datetimepicker({
-				format: 'yyyy-mm-dd hh:ii:00',
-				pickerPosition: 'bottom-right',
-				//minView:1,
-				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
-				minuteStep: 30,
-				autoclose: true,
-				endDate: '+1d',
-				datesDisabled: '+1d',
-				todayBtn: true,
-				//......可以同上項目代碼自定義設置
-			});
+				//ls_dp_all ==開始== 開啟樣式
+				$(".dp_all_search_example_list .s_list_body").removeClass("d-none");
+				$(".dp_all_search_example_content").removeClass("d-none");
+				if ($("#search_bodys_dp_all[type=checkbox]").is(":checked")) {
 
-		},
-		selectAllInit() {
-			//監聽-同步相同屬性
-			$(document).on("click", "#search_btn", function (event) {
-				console.log("search_btn");
-				//是否每30秒觸發
-				if ($("#search_30s[type=checkbox]").is(":checked")) {
-					console.log("Start_search_30s");
-					clearInterval(customized.Interval_update30s);
-					customized.Interval_update30s = setInterval(customized.update30s, 30000);
-				}else{
+					var fixed_cell_color = false;
+					var ls_dp_all = list['bodys_dp_all'];
+					console.log("Loading bodys_dp_all:" + new Date());
+					for (var j = 0; j < ls_dp.length; j++) {
+						//固定顏色
+						if (fixed_cell_color) {
+							fixed_cell_color = false;
+						} else {
+							fixed_cell_color = true;
+						}
+
+						//排序
+						ls_dp_all[j] = main.orderedSort(ls_dp_all[j]);
+
+						//資料筆數
+						var list_item = $(".dp_all_search_example_content").clone(); //複製樣本
+						//是否為群組
+						list_item[0].className = "search_data_list";
+						list_item[0].id = "search_data_" + (j + 1);
+						list_item.appendTo(".dp_all_search_example_list");
+
+						//===每筆 資料欄位===
+						var fixed_cell_nb = 0;
+						var fixed_cell_wh = 1;
+						console.log();
+
+						for (var i = 0; i < Object.keys(ls_dp_all[j]).length; i++) {
+							var one_item = $(".dp_all_search_example_content .s_list_body").clone(); //複製樣本
+							var key_id = Object.keys(ls_dp_all[j])[i];
+							var value_name = ls_dp_all[j][Object.keys(ls_dp_all[j])[i]];
+							//取得title Size顯示
+							// console.log(key_id+" "+value_name);
+							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+							//取得title 是否顯示
+							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								one_item[0].className = "datalist d-none";
+							} else {
+								one_item[0].className = "datalist ";
+							}
+
+							//固定前2格
+							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+								one_item[0].className = "datalist fixed_cell ";
+								fixed_cell_wh += parseInt(value_size);
+								fixed_cell_nb += 1;
+							} else {
+								one_item[0].style = "max-width:" + value_size;
+							}
+							one_item[0].id = "";
+							one_item[0].title = key_id;
+							one_item[0].innerText = value_name;
+							one_item.insertBefore(".dp_all_search_example_list #" + list_item[0].id + " .s_list_body");
+						}
+
+						$(".dp_all_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
+					}
+				}
+				//關閉樣式
+				$(".dp_all_search_example_list .s_list_body").addClass("d-none");
+				$(".dp_all_search_example_content").addClass("d-none");
+				//ls_dp_all ==結束==
+
+				//ls_yield ==開始== 開啟樣式
+				$(".yield_search_example_list .s_list_body").removeClass("d-none");
+				$(".yield_search_example_content").removeClass("d-none");
+				if ($("#search_bodys_yield[type=checkbox]").is(":checked")) {
+
+					var fixed_cell_color = false;
+					var ls_yield = list['bodys_yield'];
+					console.log("Loading bodys_yield:" + new Date());
+					for (var j = 0; j < ls_dp.length; j++) {
+						//固定顏色
+						if (fixed_cell_color) {
+							fixed_cell_color = false;
+						} else {
+							fixed_cell_color = true;
+						}
+
+						//排序
+						ls_yield[j] = main.orderedSort(ls_yield[j]);
+
+						//資料筆數
+						var list_item = $(".yield_search_example_content").clone(); //複製樣本
+						//是否為群組
+						list_item[0].className = "search_data_list";
+						list_item[0].id = "search_data_" + (j + 1);
+						list_item.appendTo(".yield_search_example_list");
+
+						//===每筆 資料欄位===
+						var fixed_cell_nb = 0;
+						var fixed_cell_wh = 1;
+						console.log();
+
+						for (var i = 0; i < Object.keys(ls_yield[j]).length; i++) {
+							var one_item = $(".yield_search_example_content .s_list_body").clone(); //複製樣本
+							var key_id = Object.keys(ls_yield[j])[i];
+							var value_name = ls_yield[j][Object.keys(ls_yield[j])[i]];
+							//取得title Size顯示
+							// console.log(key_id+" "+value_name);
+							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+							//取得title 是否顯示
+							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								one_item[0].className = "datalist d-none";
+							} else {
+								one_item[0].className = "datalist ";
+							}
+
+							//固定前2格
+							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+								$("#yield_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+								$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+								$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+								one_item[0].className = "datalist fixed_cell ";
+								fixed_cell_wh += parseInt(value_size);
+								fixed_cell_nb += 1;
+							} else {
+								one_item[0].style = "max-width:" + value_size;
+							}
+							one_item[0].id = "";
+							one_item[0].title = key_id;
+							one_item[0].innerText = value_name;
+							one_item.insertBefore(".yield_search_example_list #" + list_item[0].id + " .s_list_body");
+						}
+
+						$(".yield_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
+					}
+				}
+				//關閉樣式
+				$(".yield_search_example_list .s_list_body").addClass("d-none");
+				$(".yield_search_example_content").addClass("d-none");
+				//ls_yield ==結束==
+
+				//ls_dwh ==開始== 開啟樣式
+				$(".dwh_search_example_list .s_list_body").removeClass("d-none");
+				$(".dwh_search_example_content").removeClass("d-none");
+				if ($("#search_bodys_dwh[type=checkbox]").is(":checked")) {
+
+					var fixed_cell_color = false;
+					var ls_dwh = list['bodys_dwh'];
+					console.log("Loading bodys_dwh:" + new Date());
+					for (var j = 0; j < ls_dwh.length; j++) {
+						//固定顏色
+						if (fixed_cell_color) {
+							fixed_cell_color = false;
+						} else {
+							fixed_cell_color = true;
+						}
+						//排序
+						ls_dwh[j] = main.orderedSort(ls_dwh[j]);
+						//資料筆數
+						var list_item = $(".dwh_search_example_content").clone(); //複製樣本
+						//是否為群組
+						list_item[0].className = "search_data_list";
+						list_item[0].id = "search_data_" + (j + 1);
+						list_item.appendTo(".dwh_search_example_list");
+
+						//===每筆 資料欄位===
+						var fixed_cell_nb = 0;
+						var fixed_cell_wh = 1;
+						console.log();
+
+						for (var i = 0; i < Object.keys(ls_dwh[j]).length; i++) {
+							var one_item = $(".dwh_search_example_content .s_list_body").clone(); //複製樣本
+							var key_id = Object.keys(ls_dwh[j])[i];
+							var value_name = ls_dwh[j][Object.keys(ls_dwh[j])[i]];
+							//取得title Size顯示
+							// console.log(key_id+" "+value_name);
+							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+							//取得title 是否顯示
+							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								one_item[0].className = "datalist d-none";
+							} else {
+								one_item[0].className = "datalist ";
+							}
+
+							//固定前2格
+							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+								one_item[0].className = "datalist fixed_cell ";
+								fixed_cell_wh += parseInt(value_size);
+								fixed_cell_nb += 1;
+							} else {
+								one_item[0].style = "max-width:" + value_size;
+							}
+							one_item[0].id = "";
+							one_item[0].title = key_id;
+							one_item[0].innerText = value_name;
+							one_item.insertBefore(".dwh_search_example_list #" + list_item[0].id + " .s_list_body");
+						}
+
+						$(".dwh_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
+					}
+
+				}
+				//關閉樣式
+				$(".dwh_search_example_list .s_list_body").addClass("d-none");
+				$(".dwh_search_example_content").addClass("d-none");
+				//ls_dwh ==結束==
+
+				//ls_dnoe ==開始== 開啟樣式
+				$(".dnoe_search_example_list .s_list_body").removeClass("d-none");
+				$(".dnoe_search_example_content").removeClass("d-none");
+				if ($("#search_bodys_dnoe[type=checkbox]").is(":checked")) {
+
+					var fixed_cell_color = false;
+					var ls_dnoe = list['bodys_dnoe'];
+					console.log("Loading bodys_dnoe:" + new Date());
+					for (var j = 0; j < ls_dnoe.length; j++) {
+						//固定顏色
+						if (fixed_cell_color) {
+							fixed_cell_color = false;
+						} else {
+							fixed_cell_color = true;
+						}
+
+						//排序
+						ls_dnoe[j] = main.orderedSort(ls_dnoe[j]);
+
+						//資料筆數
+						var list_item = $(".dnoe_search_example_content").clone(); //複製樣本
+						//是否為群組
+						list_item[0].className = "search_data_list";
+						list_item[0].id = "search_data_" + (j + 1);
+						list_item.appendTo(".dnoe_search_example_list");
+
+						//===每筆 資料欄位===
+						var fixed_cell_nb = 0;
+						var fixed_cell_wh = 1;
+						console.log();
+
+						for (var i = 0; i < Object.keys(ls_dnoe[j]).length; i++) {
+							var one_item = $(".dnoe_search_example_content .s_list_body").clone(); //複製樣本
+							var key_id = Object.keys(ls_dnoe[j])[i];
+							var value_name = ls_dnoe[j][Object.keys(ls_dnoe[j])[i]];
+							//取得title Size顯示
+							// console.log(key_id+" "+value_name);
+							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+							//取得title 是否顯示
+							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								one_item[0].className = "datalist d-none";
+							} else {
+								one_item[0].className = "datalist ";
+							}
+
+							//固定前2格
+							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+								one_item[0].className = "datalist fixed_cell ";
+								fixed_cell_wh += parseInt(value_size);
+								fixed_cell_nb += 1;
+							} else {
+								one_item[0].style = "max-width:" + value_size;
+							}
+							one_item[0].id = "";
+							one_item[0].title = key_id;
+							one_item[0].innerText = value_name;
+							one_item.insertBefore(".dnoe_search_example_list #" + list_item[0].id + " .s_list_body");
+						}
+
+						$(".dnoe_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
+					}
+
+				}
+				//關閉樣式
+				$(".dnoe_search_example_list .s_list_body").addClass("d-none");
+				$(".dnoe_search_example_content").addClass("d-none");
+				//ls_dnoe ==結束==
+			},
+			setSearch(search) {
+				//查詢注入資訊
+				console.log(search);
+				for (var i = 0; i < search.length; i++) {
+					switch (search[i].tag) {
+						case "input":
+							var search_input = $(".search_example_input").clone(); //複製樣本
+							search_input[0].className = search[i].col + " p-2 search_true";
+							search_input[0].id = "search_" + search[i].id;
+							search_input.appendTo(".search_example_finds");
+							$("#" + search_input[0].id + " .s_name").text(search[i].name);
+							//$("#" + search_input[0].id + " .s_value").val(search[i].value);
+							//時間類型
+							if (search[i].type == 'date') {
+								$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
+							}
+							//預設
+							if (search[i].value != "") {
+								$("#" + search_input[0].id + " .s_value").attr("placeholder", search[i].value);
+							}
+							break;
+						case "select":
+							//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+							//id / value / type
+							var search_selsect = $(".search_example_selsect").clone(); //複製樣本
+							search_selsect[0].className = search[i].col + " p-2 search_true";
+							search_selsect[0].id = "search_" + search[i].id;
+							search_selsect.appendTo(".search_example_finds");
+							$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
+							for (var o = 0; o < search[i].values.length; o++) {
+								var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+								one_option[0].id = "select_" + search[i]["values"][o]["key"];
+								one_option[0].value = search[i]["values"][o]["key"];
+								one_option[0].innerText = search[i]["values"][o]["value"];
+								one_option[0].className = "";
+								one_option.appendTo("#" + search_selsect[0].id + " select");
+							}
+							//關閉樣式
+							break;
+						default:
+					}
+					//關閉樣式
+					$(".example_select_one").addClass("d-none");
+					$(".search_example_input").addClass("d-none");
+					$(".search_example_selsect").addClass("d-none");
+					main.loading(false);
+				}
+
+				//時間格式
+				$('.datetimepicker_date').datetimepicker({
+					format: 'yyyy-mm-dd hh:ii:00',
+					pickerPosition: 'bottom-right',
+					//minView:1,
+					//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+					minuteStep: 30,
+					autoclose: true,
+					endDate: '+1d',
+					datesDisabled: '+1d',
+					todayBtn: true,
+					//......可以同上項目代碼自定義設置
+				});
+
+			},
+			selectAllInit() {
+				//監聽-同步相同屬性
+				$(document).on("click", "#search_btn", function (event) {
+					console.log("search_btn");
+					//是否每30秒觸發
+					if ($("#search_30s[type=checkbox]").is(":checked")) {
+						console.log("Start_search_30s");
+						clearInterval(customized.Interval_update30s);
+						customized.Interval_update30s = setInterval(customized.update30s, 30000);
+					} else {
+						console.log("Stop_search_30s");
+						clearInterval(customized.Interval_update30s);
+					}
+
+					//回歸
+					customized.page_total = main.page_total; //每次_總筆數
+					customized.page_batch = main.page_batch; //每次_第幾批
+					customized.page_show_size = main.page_show_size; //目前_每分頁顯示數量
+					customized.page_now_size = main.page_now_size; //目前_實際筆數
+					customized.page_now = main.page_now; //目前_頁數
+					customized.searchSend();
+				});
+
+				$(document).on("click", "#clear_btn", function (event) {
+					console.log("clear_btn");
 					console.log("Stop_search_30s");
+					$(".search_example_finds input").val("");
+					$(".search_example_finds select").val("");
 					clearInterval(customized.Interval_update30s);
-				}
-				
-				//回歸
-				customized.page_total = main.page_total; //每次_總筆數
-				customized.page_batch = main.page_batch; //每次_第幾批
-				customized.page_show_size = main.page_show_size; //目前_每分頁顯示數量
-				customized.page_now_size = main.page_now_size; //目前_實際筆數
-				customized.page_now = main.page_now; //目前_頁數
+				});
+				$(document).on("click", "#dp_export_btn", function (event) {
+					console.log("dp_export_btn");
+					//更新時間
+					var myDate = new Date();
+					var reportDate =
+						myDate.getFullYear() + '-' +
+						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+					$("#dp_excel").table2excel({
+						// exclude CSS class
+						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+						preserveColors: false,
+						exclude_img: true,
+						exclude_links: true,
+						exclude: ".noExl",
+						name: "Worksheet Name",
+						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+						fileext: ".xls" // file extension
+					});
+				});
+				$(document).on("click", "#dp_all_export_btn", function (event) {
+					console.log("dp_all_export_btn");
+					//更新時間
+					var myDate = new Date();
+					var reportDate =
+						myDate.getFullYear() + '-' +
+						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+					$("#dp_all_excel").table2excel({
+						// exclude CSS class
+						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+						preserveColors: false,
+						exclude_img: true,
+						exclude_links: true,
+						exclude: ".noExl",
+						name: "Worksheet Name",
+						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+						fileext: ".xls" // file extension
+					});
+				});
+				//良率
+				$(document).on("click", "#yield_export_btn", function (event) {
+					console.log("yield_export_btn");
+					//更新時間
+					var myDate = new Date();
+					var reportDate =
+						myDate.getFullYear() + '-' +
+						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+					$("#yield_excel").table2excel({
+						// exclude CSS class
+						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+						preserveColors: false,
+						exclude_img: true,
+						exclude_links: true,
+						exclude: ".noExl",
+						name: "Worksheet Name",
+						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+						fileext: ".xls" // file extension
+					});
+				});
+				$(document).on("click", "#dwh_export_btn", function (event) {
+					console.log("dwh_export_btn");
+					//更新時間
+					var myDate = new Date();
+					var reportDate =
+						myDate.getFullYear() + '-' +
+						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+					$("#dwh_excel").table2excel({
+						// exclude CSS class
+						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+						preserveColors: false,
+						exclude_img: true,
+						exclude_links: true,
+						exclude: ".noExl",
+						name: "Worksheet Name",
+						filename: "MES_Report_Daily_working_hours_" + reportDate, //do not include extension
+						fileext: ".xls" // file extension
+					});
+				});
+				$(document).on("click", "#dnoe_export_btn", function (event) {
+					console.log("dnoe_export_btn");
+					//更新時間
+					var myDate = new Date();
+					var reportDate =
+						myDate.getFullYear() + '-' +
+						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+					$("#dnoe_excel").table2excel({
+						// exclude CSS class
+						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+						preserveColors: false,
+						exclude_img: true,
+						exclude_links: true,
+						exclude: ".noExl",
+						name: "Worksheet Name",
+						filename: "MES_Report_Daily_Number_of_employees_" + reportDate, //do not include extension
+						fileext: ".xls" // file extension
+					});
+				});
+				$(document).on("click", ".bi-search", function (event) {
+					console.log("bi .bi-search");
+					$(".search_example_finds").slideToggle("fast");
+					$(".search_example_button").slideToggle("fast");
+				});
+				$(document).on("click", ".bi-list-ul", function (event) {
+					console.log("bi .bi-list-ul");
+					$("#dp_show").slideToggle("normal");
+				});
+				$(document).on("click", ".bi-receipt", function (event) {
+					console.log("bi .bi-receipt");
+					$("#dp_all_show").slideToggle("normal");
+				});
+				$(document).on("click", ".bi-percent", function (event) {
+					console.log("bi .bi-percent");
+					$("#yield_show").slideToggle("normal");
+				});
+				$(document).on("click", ".bi-hourglass", function (event) {
+					console.log("bi .bi-hourglass");
+					$("#dwh_show").slideToggle("normal");
+				});
+				$(document).on("click", ".bi-person", function (event) {
+					console.log("bi .bi-person");
+					$("#dnoe_show").slideToggle("normal");
+				});
+
+				//快速查詢 監聽確認
+				$(document).on("keypress", ".search_true input", function (event) {
+					if (event.which == 13) {
+						$('#search_btn').trigger('click');
+					}
+				});
+			},
+			//更新30s
+			update30s() {
+				console.log("search_30s");
 				customized.searchSend();
-			});
-			
-			$(document).on("click", "#clear_btn", function (event) {
-				console.log("clear_btn");
-				console.log("Stop_search_30s");
-				$(".search_example_finds input").val("");
-				$(".search_example_finds select").val("");
-				clearInterval(customized.Interval_update30s);
-			});
-			$(document).on("click", "#dp_export_btn", function (event) {
-				console.log("dp_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dp_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", "#dp_all_export_btn", function (event) {
-				console.log("dp_all_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dp_all_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			//良率
-			$(document).on("click", "#yield_export_btn", function (event) {
-				console.log("yield_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#yield_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", "#dwh_export_btn", function (event) {
-				console.log("dwh_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dwh_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_Daily_working_hours_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", "#dnoe_export_btn", function (event) {
-				console.log("dnoe_export_btn");
-				//更新時間
-				var myDate = new Date();
-				var reportDate =
-					myDate.getFullYear() + '-' +
-					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
-					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
-					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#dnoe_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Report_Daily_Number_of_employees_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
-			});
-			$(document).on("click", ".bi-search", function (event) {
-				console.log("bi .bi-search");
-				$(".search_example_finds").slideToggle("fast");
-				$(".search_example_button").slideToggle("fast");
-			});
-			$(document).on("click", ".bi-list-ul", function (event) {
-				console.log("bi .bi-list-ul");
-				$("#dp_show").slideToggle("normal");
-			});
-			$(document).on("click", ".bi-receipt", function (event) {
-				console.log("bi .bi-receipt");
-				$("#dp_all_show").slideToggle("normal");
-			});
-			$(document).on("click", ".bi-percent", function (event) {
-				console.log("bi .bi-percent");
-				$("#yield_show").slideToggle("normal");
-			});
-			$(document).on("click", ".bi-hourglass", function (event) {
-				console.log("bi .bi-hourglass");
-				$("#dwh_show").slideToggle("normal");
-			});
-			$(document).on("click", ".bi-person", function (event) {
-				console.log("bi .bi-person");
-				$("#dnoe_show").slideToggle("normal");
-			});
-
-			//快速查詢 監聽確認
-			$(document).on("keypress", ".search_true input", function (event) {
-				if (event.which == 13) {
-					$('#search_btn').trigger('click');
+			},
+			//search
+			searchSend() {
+				main.loading(true);
+				//查詢
+				//Ex:body:{search:{b:b,c:c}}
+				var search = {};
+				for (var s = 0; s < $(".search_true").length; s++) {
+					var key = $(".search_true")[s].id.replace("search_", "");
+					var value = $("#" + $(".search_true")[s].id + " .s_value").val();
+					//console.log(key+ " "+value);
+					search[key] = value;
 				}
-			});
-		},
-		//更新30s
-		update30s() {
-			console.log("search_30s");  
-			customized.searchSend();
-		},
-		//search
-		searchSend() {
-			main.loading(true);
-			//查詢
-			//Ex:body:{search:{b:b,c:c}}
-			var search = {};
-			for (var s = 0; s < $(".search_true").length; s++) {
-				var key = $(".search_true")[s].id.replace("search_", "");
-				var value = $("#" + $(".search_true")[s].id + " .s_value").val();
-				//console.log(key+ " "+value);
-				search[key] = value;
-			}
-			//包裝
-			var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
-			var s_type = "POST";
-			var s_data = {};
-			var req = {};
-			req.user = $('#name').text();
-			req.date = new Date();
-			req.action = "AR";
-			req.body = {};
-			req.body.search = search;
-			req.page_total = this.page_total;
-			req.page_batch = this.page_batch;
-			req.page_now_nb = this.page_now_nb;
-			req.html_body = "";
-			req.call_bk_fn = "customized_search";
-			req.call_bk_vals = {};
-			s_data.req_content = req;
+				//包裝
+				var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
+				var s_type = "POST";
+				var s_data = {};
+				var req = {};
+				req.user = $('#name').text();
+				req.date = new Date();
+				req.action = "AR";
+				req.body = {};
+				req.body.search = search;
+				req.page_total = this.page_total;
+				req.page_batch = this.page_batch;
+				req.page_now_nb = this.page_now_nb;
+				req.html_body = "";
+				req.call_bk_fn = "customized_search";
+				req.call_bk_vals = {};
+				s_data.req_content = req;
 
-			//console.log(s_url);
-			//傳送
-			main.ajaxSend(s_url, s_type, s_data);
+				//console.log(s_url);
+				console.log("searchService start:" + new Date());
+				//傳送
+				main.ajaxSend(s_url, s_type, s_data);
+			},
+			searchReturn() {
+				main.loading(false);
+				console.log("searchReturn start:" + new Date());
+				//有可能沒有下一頁
+				console.log();
+				if (main.allData.body != null) {
+					this.setDataList(main.allData.body.search,
+						main.allData.body.search_son,
+						main.allData.body_type);
+				}
+				console.log("searchReturn end:" + new Date());
+			},
 		},
-		searchReturn() {
-			main.loading(false);
-			console.log("searchReturn");
-			//有可能沒有下一頁
-			if (main.allData.body != null) {
-				this.setDataList(main.allData.body.search,
-					main.allData.body.search_son,
-					main.allData.body_type);				
-			} 
+		//移除監聽事件
+		beforeDestroy() {
+			console.log("daily.html(beforeDestroy)");
+			$(document).off("click", "#clear_btn");
+			$(document).off("click", "#search_btn");
+			$(document).off("click", "#export_btn");
+			$(document).off("click", "#dp_export_btn");
+			$(document).off("click", "#dp_all_export_btn");
+			$(document).off("click", "#yield_export_btn");
+			$(document).off("click", "#dwh_export_btn");
+			$(document).off("click", "#dnoe_export_btn");
+			$(document).off("click", ".bi-search");
+			$(document).off("click", ".bi-receipt");
+			$(document).off("click", ".bi-list-ul");
+			$(document).off("click", ".bi-percent");
+			$(document).off("click", ".bi-hourglass");
+			$(document).off("click", ".bi-person");
+
+			$(document).off("keypress", ".search_true input");
+			clearInterval(customized.Interval_update30s);
 		},
-	},
-	//移除監聽事件
-	beforeDestroy() {
-		console.log("daily.html(beforeDestroy)");
-		$(document).off("click", "#clear_btn");
-		$(document).off("click", "#search_btn");
-		$(document).off("click", "#export_btn");
-		$(document).off("click", "#dp_export_btn");
-		$(document).off("click", "#dp_all_export_btn");
-		$(document).off("click", "#yield_export_btn");
-		$(document).off("click", "#dwh_export_btn");
-		$(document).off("click", "#dnoe_export_btn");
-		$(document).off("click", ".bi-search");
-		$(document).off("click", ".bi-receipt");
-		$(document).off("click", ".bi-list-ul");
-		$(document).off("click", ".bi-percent");
-		$(document).off("click", ".bi-hourglass");
-		$(document).off("click", ".bi-person");
-		
-		$(document).off("keypress", ".search_true input");
-		clearInterval(customized.Interval_update30s);
-	},
-});
+	});
 </script>
