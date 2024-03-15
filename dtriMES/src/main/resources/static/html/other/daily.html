@@ -540,11 +540,11 @@
 				$(".search_data_list").remove();
 
 				//ls_dp ==開始== 開啟樣式
+				var ls_dp = list['bodys_dp'];
+				var fixed_cell_color = false;
 				$(".dp_search_example_list .s_list_body").removeClass("d-none");
 				$(".dp_search_example_content").removeClass("d-none");
 				if ($("#search_bodys_dp[type=checkbox]").is(":checked")) {
-					var fixed_cell_color = false;
-					var ls_dp = list['bodys_dp'];
 
 					console.log("Loading bodys_dp:" + new Date());
 					for (var j = 0; j < ls_dp.length; j++) {
