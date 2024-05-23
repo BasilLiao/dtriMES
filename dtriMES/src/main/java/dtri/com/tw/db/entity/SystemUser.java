@@ -72,7 +72,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  **/
 
 @Entity
-@Table(name = "system_user")
+@Table(name = "system_users")
 @EntityListeners(AuditingEntityListener.class)
 public class SystemUser {
 
