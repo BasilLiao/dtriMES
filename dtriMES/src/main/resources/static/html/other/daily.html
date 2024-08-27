@@ -47,26 +47,27 @@
 		</div>
 		<div class="row justify-content-end p-0 m-0 search_example_button">
 			<div class="col-12 row justify-content-between m-0 p-2">
-				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
-					<input id="search_bodys_dp" class="col-md-2 p-0" type="checkbox" style="width: 20px; height: 100%;">
+				<div class="row col-md-1 m-1 p-0 pt-1" style="height: 28px;">
+					<input id="search_bodys_dp" class="col-md-2 p-0" type="checkbox" style="width: 20px; height: 100%;"
+						checked>
 					<div class="col-10 p-0">每日 總產量</div>
 				</div>
-				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+				<div class="row col-md-1 m-1 p-0 pt-1" style="height: 28px;">
 					<input id="search_bodys_dp_all" class="col-md-2 p-0" type="checkbox"
 						style="width: 20px; height: 100%;">
-					<div class="col-10 p-0">每日 累計總產量</div>
+					<div class="col-10 p-0">每日 累計產量</div>
 				</div>
-				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+				<div class="row col-md-1 m-1 p-0 pt-1" style="height: 28px;">
 					<input id="search_bodys_yield" class="col-md-2 p-0" type="checkbox"
 						style="width: 20px; height: 100%;">
 					<div class="col-10 p-0">每日 產量良率</div>
 				</div>
-				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+				<div class="row col-md-1 m-1 p-0 pt-1" style="height: 28px;">
 					<input id="search_bodys_dwh" class="col-md-2 p-0" type="checkbox"
 						style="width: 20px; height: 100%;">
 					<div class="col-10 p-0">每日 總工時</div>
 				</div>
-				<div class="row col-5 col-md-2 m-1 p-0 pt-1">
+				<div class="row col-md-1 m-1 p-0 pt-1" style="height: 28px;">
 					<input id="search_bodys_dnoe" class="col-md-2 p-0" type="checkbox"
 						style="width: 20px; height: 100%;">
 					<div class="col-10 p-0">每日 總人力</div>
@@ -344,13 +345,13 @@
 			setDataTitle(title, html_permission) {
 				//標題注入資訊
 				//排序
-				var title_dp = main.orderedSort(title['header_dp']);
-				for (var i = 0; i < Object.keys(title_dp).length - 1; i++) {
-					var one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
-					var key_id = Object.keys(title_dp)[i];
-					var value_name = title_dp[Object.keys(title_dp)[i]].name;
-					var value_size = title_dp[Object.keys(title_dp)[i]].size;
-					var value_write = title_dp[Object.keys(title_dp)[i]].write;
+				let title_dp = main.orderedSort(title['header_dp']);
+				for (let i = 0; i < Object.keys(title_dp).length - 1; i++) {
+					let one_item = $(".dp_search_example_title .s_title_body").clone(); //複製樣本
+					let key_id = Object.keys(title_dp)[i];
+					let value_name = title_dp[Object.keys(title_dp)[i]].name;
+					let value_size = title_dp[Object.keys(title_dp)[i]].size;
+					let value_write = title_dp[Object.keys(title_dp)[i]].write;
 					//console.log(key_id+" "+value_name);
 					one_item[0].className = "p-1 ";
 					one_item[0].id = key_id;
@@ -365,10 +366,10 @@
 					}
 				}
 				//結尾
-				var key_id = Object.keys(title_dp)[Object.keys(title_dp).length - 1];
-				var value_name = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].name;
-				var value_write = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].write;
-				var value_size = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].size;
+				let key_id = Object.keys(title_dp)[Object.keys(title_dp).length - 1];
+				let value_name = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].name;
+				let value_write = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].write;
+				let value_size = title_dp[Object.keys(title_dp)[Object.keys(title_dp).length - 1]].size;
 				$(".dp_search_example_title .s_title_last").attr("id", key_id);
 				$(".dp_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dp_excel #" + key_id).css("min-width", value_size);
@@ -379,13 +380,13 @@
 
 				//標題注入資訊
 				//排序
-				var title_dp_all = main.orderedSort(title['header_dp_all']);
-				for (var i = 0; i < Object.keys(title_dp_all).length - 1; i++) {
-					var one_item = $(".dp_all_search_example_title .s_title_body").clone(); //複製樣本
-					var key_id = Object.keys(title_dp_all)[i];
-					var value_name = title_dp_all[Object.keys(title_dp_all)[i]].name;
-					var value_size = title_dp_all[Object.keys(title_dp_all)[i]].size;
-					var value_write = title_dp_all[Object.keys(title_dp_all)[i]].write;
+				let title_dp_all = main.orderedSort(title['header_dp_all']);
+				for (let i = 0; i < Object.keys(title_dp_all).length - 1; i++) {
+					let one_item = $(".dp_all_search_example_title .s_title_body").clone(); //複製樣本
+					let key_id = Object.keys(title_dp_all)[i];
+					let value_name = title_dp_all[Object.keys(title_dp_all)[i]].name;
+					let value_size = title_dp_all[Object.keys(title_dp_all)[i]].size;
+					let value_write = title_dp_all[Object.keys(title_dp_all)[i]].write;
 					//console.log(key_id+" "+value_name);
 					one_item[0].className = "p-1 ";
 					one_item[0].id = key_id;
@@ -400,10 +401,10 @@
 					}
 				}
 				//結尾
-				var key_id = Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1];
-				var value_name = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].name;
-				var value_write = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].write;
-				var value_size = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].size;
+				key_id = Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1];
+				value_name = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].name;
+				value_write = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].write;
+				value_size = title_dp_all[Object.keys(title_dp_all)[Object.keys(title_dp_all).length - 1]].size;
 				$(".dp_all_search_example_title .s_title_last").attr("id", key_id);
 				$(".dp_all_search_example_title .s_title_last .title_name").text(value_name);
 				$("#dp_all_excel #" + key_id).css("min-width", value_size);
@@ -414,13 +415,13 @@
 
 				//標題注入資訊
 				//排序
-				var title_yield = main.orderedSort(title['header_yield']);
-				for (var i = 0; i < Object.keys(title_yield).length - 1; i++) {
-					var one_item = $(".yield_search_example_title .s_title_body").clone(); //複製樣本
-					var key_id = Object.keys(title_yield)[i];
-					var value_name = title_yield[Object.keys(title_yield)[i]].name;
-					var value_size = title_yield[Object.keys(title_yield)[i]].size;
-					var value_write = title_yield[Object.keys(title_yield)[i]].write;
+				let title_yield = main.orderedSort(title['header_yield']);
+				for (let i = 0; i < Object.keys(title_yield).length - 1; i++) {
+					let one_item = $(".yield_search_example_title .s_title_body").clone(); //複製樣本
+					let key_id = Object.keys(title_yield)[i];
+					let value_name = title_yield[Object.keys(title_yield)[i]].name;
+					let value_size = title_yield[Object.keys(title_yield)[i]].size;
+					let value_write = title_yield[Object.keys(title_yield)[i]].write;
 					//console.log(key_id+" "+value_name);
 					one_item[0].className = "p-1 ";
 					one_item[0].id = key_id;
@@ -441,10 +442,10 @@
 					}
 				}
 				//結尾
-				var key_id = Object.keys(title_yield)[Object.keys(title_yield).length - 1];
-				var value_name = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].name;
-				var value_write = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].write;
-				var value_size = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].size;
+				key_id = Object.keys(title_yield)[Object.keys(title_yield).length - 1];
+				value_name = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].name;
+				value_write = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].write;
+				value_size = title_yield[Object.keys(title_yield)[Object.keys(title_yield).length - 1]].size;
 				$(".yield_search_example_title .s_title_last").attr("id", key_id);
 				$(".yield_search_example_title .s_title_last .title_name").text(value_name);
 				$("#yield_excel #" + key_id).css("min-width", value_size);
@@ -455,13 +456,13 @@
 
 				//標題注入資訊
 				//排序
-				var title_dwh = main.orderedSort(title['header_dwh']);
-				for (var i = 0; i < Object.keys(title_dwh).length - 1; i++) {
-					var one_item = $(".dwh_search_example_title .s_title_body").clone(); //複製樣本
-					var key_id = Object.keys(title_dwh)[i];
-					var value_name = title_dwh[Object.keys(title_dwh)[i]].name;
-					var value_size = title_dwh[Object.keys(title_dwh)[i]].size;
-					var value_write = title_dwh[Object.keys(title_dwh)[i]].write;
+				let title_dwh = main.orderedSort(title['header_dwh']);
+				for (let i = 0; i < Object.keys(title_dwh).length - 1; i++) {
+					let one_item = $(".dwh_search_example_title .s_title_body").clone(); //複製樣本
+					let key_id = Object.keys(title_dwh)[i];
+					let value_name = title_dwh[Object.keys(title_dwh)[i]].name;
+					let value_size = title_dwh[Object.keys(title_dwh)[i]].size;
+					let value_write = title_dwh[Object.keys(title_dwh)[i]].write;
 					//console.log(key_id+" "+value_name);
 					one_item[0].className = "p-1 ";
 					one_item[0].id = key_id;
@@ -473,10 +474,10 @@
 
 				}
 				//結尾
-				var key_id = Object.keys(title_dwh)[Object.keys(title_dwh).length - 1];
-				var value_name = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].name;
-				var value_write = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].write;
-				var value_size = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].size;
+				key_id = Object.keys(title_dwh)[Object.keys(title_dwh).length - 1];
+				value_name = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].name;
+				value_write = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].write;
+				value_size = title_dwh[Object.keys(title_dwh)[Object.keys(title_dwh).length - 1]].size;
 
 				$(".dwh_search_example_title .s_title_last").attr("id", key_id);
 				$(".dwh_search_example_title .s_title_last .title_name").text(value_name);
@@ -490,13 +491,13 @@
 
 				//標題注入資訊
 				//排序
-				var title_dnoe = main.orderedSort(title['header_dnoe']);
-				for (var i = 0; i < Object.keys(title_dnoe).length - 1; i++) {
-					var one_item = $(".dnoe_search_example_title .s_title_body").clone(); //複製樣本
-					var key_id = Object.keys(title_dnoe)[i];
-					var value_name = title_dnoe[Object.keys(title_dnoe)[i]].name;
-					var value_size = title_dnoe[Object.keys(title_dnoe)[i]].size;
-					var value_write = title_dnoe[Object.keys(title_dnoe)[i]].write;
+				let title_dnoe = main.orderedSort(title['header_dnoe']);
+				for (let i = 0; i < Object.keys(title_dnoe).length - 1; i++) {
+					let one_item = $(".dnoe_search_example_title .s_title_body").clone(); //複製樣本
+					let key_id = Object.keys(title_dnoe)[i];
+					let value_name = title_dnoe[Object.keys(title_dnoe)[i]].name;
+					let value_size = title_dnoe[Object.keys(title_dnoe)[i]].size;
+					let value_write = title_dnoe[Object.keys(title_dnoe)[i]].write;
 					//console.log(key_id+" "+value_name);
 					one_item[0].className = "p-1 ";
 					one_item[0].id = key_id;
@@ -507,10 +508,10 @@
 					$("#dnoe_excel #" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
 				}
 				//結尾
-				var key_id = Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1];
-				var value_name = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].name;
-				var value_write = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].write;
-				var value_size = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].size;
+				key_id = Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1];
+				value_name = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].name;
+				value_write = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].write;
+				value_size = title_dnoe[Object.keys(title_dnoe)[Object.keys(title_dnoe).length - 1]].size;
 
 				$(".dnoe_search_example_title .s_title_last").attr("id", key_id);
 				$(".dnoe_search_example_title .s_title_last .title_name").text(value_name);
@@ -539,395 +540,464 @@
 				$(".search_example_list_son tr").remove();
 				$(".search_data_list").remove();
 
-				//ls_dp ==開始== 開啟樣式
-				var ls_dp = list['bodys_dp'];
-				var fixed_cell_color = false;
-				$(".dp_search_example_list .s_list_body").removeClass("d-none");
-				$(".dp_search_example_content").removeClass("d-none");
-				if ($("#search_bodys_dp[type=checkbox]").is(":checked")) {
+				let bodys_dp = (other, list) => {
+					return new Promise((resolve, reject) => {
+						try {
+							//ls_dp ==開始== 開啟樣式
+							$(".dp_search_example_list .s_list_body").removeClass("d-none");
+							$(".dp_search_example_content").removeClass("d-none");
+							if ($("#search_bodys_dp[type=checkbox]").is(":checked")) {
+								let ls_dp = list['bodys_dp'];
+								let fixed_cell_color = false;
+								let jadd1 = 0;
+								console.log("Loading bodys_dp:" + new Date());
+								for (let j = 0; j < ls_dp.length; j++) {
+									//固定顏色
+									fixed_cell_color = fixed_cell_color ? false : true;
+									jadd1 = (j + 1);
+									//排序
+									ls_dp[j] = main.orderedSort(ls_dp[j]);
+									//資料筆數
+									let list_item = $(".dp_search_example_content").clone(); //複製樣本
+									//是否為群組
+									list_item.removeClass("dp_search_example_content");
+									list_item.addClass("search_data_list");
+									list_item.attr("id", "search_data_" + jadd1);
 
-					console.log("Loading bodys_dp:" + new Date());
-					for (var j = 0; j < ls_dp.length; j++) {
-						//固定顏色
-						if (fixed_cell_color) {
-							fixed_cell_color = false;
-						} else {
-							fixed_cell_color = true;
-						}
 
-						//排序
-						ls_dp[j] = main.orderedSort(ls_dp[j]);
-
-						//資料筆數
-						var list_item = $(".dp_search_example_content").clone(); //複製樣本
-						//是否為群組
-						list_item[0].className = "search_data_list";
-						list_item[0].id = "search_data_" + (j + 1);
-						list_item.appendTo(".dp_search_example_list");
-
-						//===每筆 資料欄位===
-						var fixed_cell_nb = 0;
-						var fixed_cell_wh = 1;
-
-						for (var i = 0; i < Object.keys(ls_dp[j]).length; i++) {
-							var one_item = $(".dp_search_example_content .s_list_body").clone(); //複製樣本
-							var key_id = Object.keys(ls_dp[j])[i];
-							var value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
-							//取得title Size顯示
-							// console.log(key_id+" "+value_name);
-							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-							//取得title 是否顯示
-							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								one_item[0].className = "datalist d-none";
-							} else {
-								//待修數
-								one_item[0].className = "datalist ";
-								if (key_id.indexOf('pd_bad_qty') >= 0) {
-									one_item[0].className = "datalist border-top-0 border-bottom-0 border-danger ";
-								}
-								//待修數結尾
-								if (key_id.indexOf('pd_bad_qty') >= 0 && (j + 1) == ls_dp.length) {
-									one_item[0].className = "datalist border-top-0 border-danger ";
+									//===每筆 資料欄位===
+									let fixed_cell_nb = 0;
+									let fixed_cell_wh = 1;
+									let key_id = "";
+									let key_id_rp = "";
+									let value_name = "";
+									let value_size = "0px";
+									for (let i = 0; i < Object.keys(ls_dp[j]).length; i++) {
+										let one_item = list_item.find('.s_list_body').clone();//複製樣本
+										one_item.removeClass("s_list_body");
+										key_id = Object.keys(ls_dp[j])[i];
+										key_id_rp = key_id.replace("_b__", "_h__");
+										value_name = ls_dp[j][Object.keys(ls_dp[j])[i]];
+										//取得title Size顯示
+										// console.log(key_id+" "+value_name);
+										value_size = $("#" + key_id_rp).css("maxWidth");
+										//取得title 是否顯示
+										if ($("#" + key_id_rp).hasClass('d-none')) {
+											one_item.addClass("datalist d-none");
+										} else {
+											//待修數
+											one_item.addClass("datalist");
+											if (key_id.indexOf('pd_bad_qty') >= 0) {
+												one_item.addClass("border-top-0 border-bottom-0 border-danger");
+											}
+											//待修數結尾
+											if (key_id.indexOf('pd_bad_qty') >= 0 && jadd1 == ls_dp.length) {
+												one_item.addClass("border-top-0 border-danger");
+											}
+										}
+										//固定前2格
+										if (fixed_cell_nb < 4 && !$("#" + key_id_rp).hasClass('d-none')) {
+											if (fixed_cell_color) {
+												one_item.attr("style", "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc");
+											} else {
+												one_item.attr("style", "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef");
+											}
+											$("#dp_excel #" + key_id_rp).css("left", fixed_cell_wh);
+											$("#dp_excel #" + key_id_rp).addClass("fixed_cell");
+											$("#dp_excel #" + key_id_rp).addClass("bg-dark");
+											one_item[0].className = "datalist fixed_cell ";
+											fixed_cell_wh += parseInt(value_size);
+											fixed_cell_nb += 1;
+										} else {
+											one_item.attr("style", "max-width:" + value_size);
+										}
+										one_item.attr("id", "").attr("title", key_id).text(value_name);
+										one_item.appendTo(list_item);
+									}
+									list_item.appendTo(".dp_search_example_list");
+									//去除多餘
+									$(".dp_search_example_list #search_data_" + jadd1 + " .s_list_body").remove();
 								}
 							}
-
-							//固定前2格
-							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								if (fixed_cell_color) {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-								} else {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-								}
-								$("#dp_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-								$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-								$("#dp_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-								one_item[0].className = "datalist fixed_cell ";
-								fixed_cell_wh += parseInt(value_size);
-								fixed_cell_nb += 1;
-							} else {
-								one_item[0].style = "max-width:" + value_size;
-							}
-							one_item[0].id = "";
-							one_item[0].title = key_id;
-							one_item[0].innerText = value_name;
-							one_item.insertBefore(".dp_search_example_list #" + list_item[0].id + " .s_list_body");
+							//關閉樣式
+							$(".dp_search_example_list .s_list_body").addClass("d-none");
+							$(".dp_search_example_content").addClass("d-none");
+							//ls_dp ==結束==
+							resolve("OK:bodys_dp");
+						} catch (error) {
+							reject("操作失敗:bodys_dp");
 						}
+					});
+				};
 
-						$(".dp_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
-					}
+				let bodys_dp_all = (other, list) => {
+					return new Promise((resolve, reject) => {
+						try {
+							//ls_dp_all ==開始== 開啟樣式
+							$(".dp_all_search_example_list .s_list_body").removeClass("d-none");
+							$(".dp_all_search_example_content").removeClass("d-none");
+							if ($("#search_bodys_dp_all[type=checkbox]").is(":checked")) {
+
+								let fixed_cell_color = false;
+								let ls_dp_all = list['bodys_dp_all'];
+								console.log("Loading bodys_dp_all:" + new Date());
+								for (let j = 0; j < ls_dp_all.length; j++) {
+									//固定顏色
+									if (fixed_cell_color) {
+										fixed_cell_color = false;
+									} else {
+										fixed_cell_color = true;
+									}
+
+									//排序
+									ls_dp_all[j] = main.orderedSort(ls_dp_all[j]);
+
+									//資料筆數
+									let list_item = $(".dp_all_search_example_content").clone(); //複製樣本
+									//是否為群組
+									list_item[0].className = "search_data_list";
+									list_item[0].id = "search_data_" + (j + 1);
+									list_item.appendTo(".dp_all_search_example_list");
+
+									//===每筆 資料欄位===
+									let fixed_cell_nb = 0;
+									let fixed_cell_wh = 1;
+									console.log();
+
+									for (let i = 0; i < Object.keys(ls_dp_all[j]).length; i++) {
+										let one_item = list_item.find('.s_list_body').clone(); //複製樣本
+										let key_id = Object.keys(ls_dp_all[j])[i];
+										let value_name = ls_dp_all[j][Object.keys(ls_dp_all[j])[i]];
+										//取得title Size顯示
+										// console.log(key_id+" "+value_name);
+										let value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+										//取得title 是否顯示
+										if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											one_item[0].className = "datalist d-none";
+										} else {
+											one_item[0].className = "datalist ";
+										}
+
+										//固定前2格
+										if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											if (fixed_cell_color) {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+											} else {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+											}
+											$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+											$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+											$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+											one_item[0].className = "datalist fixed_cell ";
+											fixed_cell_wh += parseInt(value_size);
+											fixed_cell_nb += 1;
+										} else {
+											one_item[0].style = "max-width:" + value_size;
+										}
+										one_item[0].id = "";
+										one_item[0].title = key_id;
+										one_item[0].innerText = value_name;
+										one_item.appendTo(list_item);
+									}
+									list_item.appendTo(".dp_all_search_example_list");
+									$(".dp_all_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
+								}
+							}
+							//關閉樣式
+							$(".dp_all_search_example_list .s_list_body").addClass("d-none");
+							$(".dp_all_search_example_content").addClass("d-none");
+							//ls_dp_all ==結束==
+							resolve("OK:bodys_dp_all");
+						} catch (error) {
+							reject("操作失敗:bodys_dp_all");
+						}
+					});
 				}
-				//關閉樣式
-				$(".dp_search_example_list .s_list_body").addClass("d-none");
-				$(".dp_search_example_content").addClass("d-none");
-				//ls_dp ==結束==
 
-				//ls_dp_all ==開始== 開啟樣式
-				$(".dp_all_search_example_list .s_list_body").removeClass("d-none");
-				$(".dp_all_search_example_content").removeClass("d-none");
-				if ($("#search_bodys_dp_all[type=checkbox]").is(":checked")) {
+				let bodys_yield = (other, list) => {
+					return new Promise((resolve, reject) => {
+						try {
+							//ls_yield ==開始== 開啟樣式
+							$(".yield_search_example_list .s_list_body").removeClass("d-none");
+							$(".yield_search_example_content").removeClass("d-none");
+							if ($("#search_bodys_yield[type=checkbox]").is(":checked")) {
+								let fixed_cell_color = false;
+								let ls_yield = list['bodys_yield'];
+								console.log("Loading bodys_yield:" + new Date());
+								for (let j = 0; j < ls_yield.length; j++) {
+									//固定顏色
+									if (fixed_cell_color) {
+										fixed_cell_color = false;
+									} else {
+										fixed_cell_color = true;
+									}
+									//排序
+									ls_yield[j] = main.orderedSort(ls_yield[j]);
 
-					var fixed_cell_color = false;
-					var ls_dp_all = list['bodys_dp_all'];
-					console.log("Loading bodys_dp_all:" + new Date());
-					for (var j = 0; j < ls_dp.length; j++) {
-						//固定顏色
-						if (fixed_cell_color) {
-							fixed_cell_color = false;
-						} else {
-							fixed_cell_color = true;
-						}
+									//資料筆數
+									let list_item = $(".yield_search_example_content").clone(); //複製樣本
+									//是否為群組
+									list_item[0].className = "search_data_list";
+									list_item[0].id = "search_data_" + (j + 1);
 
-						//排序
-						ls_dp_all[j] = main.orderedSort(ls_dp_all[j]);
+									//===每筆 資料欄位===
+									let fixed_cell_nb = 0;
+									let fixed_cell_wh = 1;
+									console.log();
 
-						//資料筆數
-						var list_item = $(".dp_all_search_example_content").clone(); //複製樣本
-						//是否為群組
-						list_item[0].className = "search_data_list";
-						list_item[0].id = "search_data_" + (j + 1);
-						list_item.appendTo(".dp_all_search_example_list");
+									for (let i = 0; i < Object.keys(ls_yield[j]).length; i++) {
+										let one_item = list_item.find(".s_list_body").clone(); //複製樣本
+										let key_id = Object.keys(ls_yield[j])[i];
+										let value_name = ls_yield[j][Object.keys(ls_yield[j])[i]];
+										//取得title Size顯示
+										// console.log(key_id+" "+value_name);
+										let value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+										//取得title 是否顯示
+										if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											one_item[0].className = "datalist d-none";
+										} else {
+											one_item[0].className = "datalist ";
+										}
 
-						//===每筆 資料欄位===
-						var fixed_cell_nb = 0;
-						var fixed_cell_wh = 1;
-						console.log();
-
-						for (var i = 0; i < Object.keys(ls_dp_all[j]).length; i++) {
-							var one_item = $(".dp_all_search_example_content .s_list_body").clone(); //複製樣本
-							var key_id = Object.keys(ls_dp_all[j])[i];
-							var value_name = ls_dp_all[j][Object.keys(ls_dp_all[j])[i]];
-							//取得title Size顯示
-							// console.log(key_id+" "+value_name);
-							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-							//取得title 是否顯示
-							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								one_item[0].className = "datalist d-none";
-							} else {
-								one_item[0].className = "datalist ";
-							}
-
-							//固定前2格
-							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								if (fixed_cell_color) {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-								} else {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+										//固定前2格
+										if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											if (fixed_cell_color) {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+											} else {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+											}
+											$("#yield_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+											$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+											$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+											one_item[0].className = "datalist fixed_cell ";
+											fixed_cell_wh += parseInt(value_size);
+											fixed_cell_nb += 1;
+										} else {
+											one_item[0].style = "max-width:" + value_size;
+										}
+										one_item[0].id = "";
+										one_item[0].title = key_id;
+										one_item[0].innerText = value_name;
+										one_item.appendTo(list_item);
+									}
+									list_item.appendTo(".yield_search_example_list");
+									$(".yield_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
 								}
-								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-								$("#dp_all_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-								one_item[0].className = "datalist fixed_cell ";
-								fixed_cell_wh += parseInt(value_size);
-								fixed_cell_nb += 1;
-							} else {
-								one_item[0].style = "max-width:" + value_size;
 							}
-							one_item[0].id = "";
-							one_item[0].title = key_id;
-							one_item[0].innerText = value_name;
-							one_item.insertBefore(".dp_all_search_example_list #" + list_item[0].id + " .s_list_body");
+							//關閉樣式
+							$(".yield_search_example_list .s_list_body").addClass("d-none");
+							$(".yield_search_example_content").addClass("d-none");
+							//ls_yield ==結束==
+							resolve("OK:bodys_yield");
+						} catch (error) {
+							reject("操作失敗:bodys_yield");
 						}
-
-						$(".dp_all_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
-					}
+					});
 				}
-				//關閉樣式
-				$(".dp_all_search_example_list .s_list_body").addClass("d-none");
-				$(".dp_all_search_example_content").addClass("d-none");
-				//ls_dp_all ==結束==
 
-				//ls_yield ==開始== 開啟樣式
-				$(".yield_search_example_list .s_list_body").removeClass("d-none");
-				$(".yield_search_example_content").removeClass("d-none");
-				if ($("#search_bodys_yield[type=checkbox]").is(":checked")) {
+				let bodys_dwh = (other, list) => {
+					return new Promise((resolve, reject) => {
+						try {
+							//ls_dwh ==開始== 開啟樣式
+							$(".dwh_search_example_list .s_list_body").removeClass("d-none");
+							$(".dwh_search_example_content").removeClass("d-none");
+							if ($("#search_bodys_dwh[type=checkbox]").is(":checked")) {
 
-					var fixed_cell_color = false;
-					var ls_yield = list['bodys_yield'];
-					console.log("Loading bodys_yield:" + new Date());
-					for (var j = 0; j < ls_dp.length; j++) {
-						//固定顏色
-						if (fixed_cell_color) {
-							fixed_cell_color = false;
-						} else {
-							fixed_cell_color = true;
-						}
+								let fixed_cell_color = false;
+								let ls_dwh = list['bodys_dwh'];
+								console.log("Loading bodys_dwh:" + new Date());
+								for (let j = 0; j < ls_dwh.length; j++) {
+									//固定顏色
+									if (fixed_cell_color) {
+										fixed_cell_color = false;
+									} else {
+										fixed_cell_color = true;
+									}
+									//排序
+									ls_dwh[j] = main.orderedSort(ls_dwh[j]);
+									//資料筆數
+									let list_item = $(".dwh_search_example_content").clone(); //複製樣本
+									//是否為群組
+									list_item[0].className = "search_data_list";
+									list_item[0].id = "search_data_" + (j + 1);
 
-						//排序
-						ls_yield[j] = main.orderedSort(ls_yield[j]);
-
-						//資料筆數
-						var list_item = $(".yield_search_example_content").clone(); //複製樣本
-						//是否為群組
-						list_item[0].className = "search_data_list";
-						list_item[0].id = "search_data_" + (j + 1);
-						list_item.appendTo(".yield_search_example_list");
-
-						//===每筆 資料欄位===
-						var fixed_cell_nb = 0;
-						var fixed_cell_wh = 1;
-						console.log();
-
-						for (var i = 0; i < Object.keys(ls_yield[j]).length; i++) {
-							var one_item = $(".yield_search_example_content .s_list_body").clone(); //複製樣本
-							var key_id = Object.keys(ls_yield[j])[i];
-							var value_name = ls_yield[j][Object.keys(ls_yield[j])[i]];
-							//取得title Size顯示
-							// console.log(key_id+" "+value_name);
-							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-							//取得title 是否顯示
-							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								one_item[0].className = "datalist d-none";
-							} else {
-								one_item[0].className = "datalist ";
-							}
-
-							//固定前2格
-							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								if (fixed_cell_color) {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-								} else {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+									//===每筆 資料欄位===
+									let fixed_cell_nb = 0;
+									let fixed_cell_wh = 1;
+									console.log();
+									for (let i = 0; i < Object.keys(ls_dwh[j]).length; i++) {
+										let one_item = list_item.find(".s_list_body").clone(); //複製樣本
+										let key_id = Object.keys(ls_dwh[j])[i];
+										let value_name = ls_dwh[j][Object.keys(ls_dwh[j])[i]];
+										//取得title Size顯示
+										// console.log(key_id+" "+value_name);
+										let value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+										//取得title 是否顯示
+										if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											one_item[0].className = "datalist d-none";
+										} else {
+											one_item[0].className = "datalist ";
+										}
+										//固定前2格
+										if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											if (fixed_cell_color) {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+											} else {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+											}
+											$("#dwh_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+											$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+											$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+											one_item[0].className = "datalist fixed_cell ";
+											fixed_cell_wh += parseInt(value_size);
+											fixed_cell_nb += 1;
+										} else {
+											one_item[0].style = "max-width:" + value_size;
+										}
+										one_item[0].id = "";
+										one_item[0].title = key_id;
+										one_item[0].innerText = value_name;
+										one_item.insertBefore(".dwh_search_example_list #" + list_item[0].id + " .s_list_body");
+										one_item.appendTo(list_item);
+									}
+									list_item.appendTo(".dwh_search_example_list");
+									$(".dwh_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
 								}
-								$("#yield_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-								$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-								$("#yield_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-								one_item[0].className = "datalist fixed_cell ";
-								fixed_cell_wh += parseInt(value_size);
-								fixed_cell_nb += 1;
-							} else {
-								one_item[0].style = "max-width:" + value_size;
 							}
-							one_item[0].id = "";
-							one_item[0].title = key_id;
-							one_item[0].innerText = value_name;
-							one_item.insertBefore(".yield_search_example_list #" + list_item[0].id + " .s_list_body");
+							//關閉樣式
+							$(".dwh_search_example_list .s_list_body").addClass("d-none");
+							$(".dwh_search_example_content").addClass("d-none");
+							//ls_dwh ==結束==
+							resolve("OK:bodys_dwh");
+						} catch (error) {
+							reject("操作失敗:bodys_dwh");
 						}
-
-						$(".yield_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
-					}
+					});
 				}
-				//關閉樣式
-				$(".yield_search_example_list .s_list_body").addClass("d-none");
-				$(".yield_search_example_content").addClass("d-none");
-				//ls_yield ==結束==
 
-				//ls_dwh ==開始== 開啟樣式
-				$(".dwh_search_example_list .s_list_body").removeClass("d-none");
-				$(".dwh_search_example_content").removeClass("d-none");
-				if ($("#search_bodys_dwh[type=checkbox]").is(":checked")) {
+				let bodys_dnoe = (other, list) => {
+					return new Promise((resolve, reject) => {
+						try {
+							//ls_dnoe ==開始== 開啟樣式
+							$(".dnoe_search_example_list .s_list_body").removeClass("d-none");
+							$(".dnoe_search_example_content").removeClass("d-none");
+							if ($("#search_bodys_dnoe[type=checkbox]").is(":checked")) {
 
-					var fixed_cell_color = false;
-					var ls_dwh = list['bodys_dwh'];
-					console.log("Loading bodys_dwh:" + new Date());
-					for (var j = 0; j < ls_dwh.length; j++) {
-						//固定顏色
-						if (fixed_cell_color) {
-							fixed_cell_color = false;
-						} else {
-							fixed_cell_color = true;
-						}
-						//排序
-						ls_dwh[j] = main.orderedSort(ls_dwh[j]);
-						//資料筆數
-						var list_item = $(".dwh_search_example_content").clone(); //複製樣本
-						//是否為群組
-						list_item[0].className = "search_data_list";
-						list_item[0].id = "search_data_" + (j + 1);
-						list_item.appendTo(".dwh_search_example_list");
+								let fixed_cell_color = false;
+								let ls_dnoe = list['bodys_dnoe'];
+								console.log("Loading bodys_dnoe:" + new Date());
+								for (let j = 0; j < ls_dnoe.length; j++) {
+									//固定顏色
+									if (fixed_cell_color) {
+										fixed_cell_color = false;
+									} else {
+										fixed_cell_color = true;
+									}
+									//排序
+									ls_dnoe[j] = main.orderedSort(ls_dnoe[j]);
+									//資料筆數
+									let list_item = $(".dnoe_search_example_content").clone(); //複製樣本
+									//是否為群組
+									list_item[0].className = "search_data_list";
+									list_item[0].id = "search_data_" + (j + 1);
 
-						//===每筆 資料欄位===
-						var fixed_cell_nb = 0;
-						var fixed_cell_wh = 1;
-						console.log();
+									//===每筆 資料欄位===
+									let fixed_cell_nb = 0;
+									let fixed_cell_wh = 1;
+									console.log();
+									for (let i = 0; i < Object.keys(ls_dnoe[j]).length; i++) {
+										let one_item = list_item.find(".s_list_body").clone(); //複製樣本
+										let key_id = Object.keys(ls_dnoe[j])[i];
+										let value_name = ls_dnoe[j][Object.keys(ls_dnoe[j])[i]];
+										//取得title Size顯示
+										// console.log(key_id+" "+value_name);
+										let value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+										//取得title 是否顯示
+										if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											one_item[0].className = "datalist d-none";
+										} else {
+											one_item[0].className = "datalist ";
+										}
 
-						for (var i = 0; i < Object.keys(ls_dwh[j]).length; i++) {
-							var one_item = $(".dwh_search_example_content .s_list_body").clone(); //複製樣本
-							var key_id = Object.keys(ls_dwh[j])[i];
-							var value_name = ls_dwh[j][Object.keys(ls_dwh[j])[i]];
-							//取得title Size顯示
-							// console.log(key_id+" "+value_name);
-							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-							//取得title 是否顯示
-							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								one_item[0].className = "datalist d-none";
-							} else {
-								one_item[0].className = "datalist ";
-							}
-
-							//固定前2格
-							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								if (fixed_cell_color) {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-								} else {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+										//固定前2格
+										if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+											if (fixed_cell_color) {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+											} else {
+												one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+											}
+											$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+											$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+											$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+											one_item[0].className = "datalist fixed_cell ";
+											fixed_cell_wh += parseInt(value_size);
+											fixed_cell_nb += 1;
+										} else {
+											one_item[0].style = "max-width:" + value_size;
+										}
+										one_item[0].id = "";
+										one_item[0].title = key_id;
+										one_item[0].innerText = value_name;
+										one_item.appendTo(list_item);
+									}
+									list_item.appendTo(".dnoe_search_example_list");
+									$(".dnoe_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
 								}
-								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-								$("#dwh_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-								one_item[0].className = "datalist fixed_cell ";
-								fixed_cell_wh += parseInt(value_size);
-								fixed_cell_nb += 1;
-							} else {
-								one_item[0].style = "max-width:" + value_size;
 							}
-							one_item[0].id = "";
-							one_item[0].title = key_id;
-							one_item[0].innerText = value_name;
-							one_item.insertBefore(".dwh_search_example_list #" + list_item[0].id + " .s_list_body");
+							//關閉樣式
+							$(".dnoe_search_example_list .s_list_body").addClass("d-none");
+							$(".dnoe_search_example_content").addClass("d-none");
+							//ls_dnoe ==結束==
+							resolve("OK:bodys_dnoe");
+						} catch (error) {
+							reject("操作失敗:bodys_dnoe");
 						}
+					});
+				};
 
-						$(".dwh_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
-					}
-
-				}
-				//關閉樣式
-				$(".dwh_search_example_list .s_list_body").addClass("d-none");
-				$(".dwh_search_example_content").addClass("d-none");
-				//ls_dwh ==結束==
-
-				//ls_dnoe ==開始== 開啟樣式
-				$(".dnoe_search_example_list .s_list_body").removeClass("d-none");
-				$(".dnoe_search_example_content").removeClass("d-none");
-				if ($("#search_bodys_dnoe[type=checkbox]").is(":checked")) {
-
-					var fixed_cell_color = false;
-					var ls_dnoe = list['bodys_dnoe'];
-					console.log("Loading bodys_dnoe:" + new Date());
-					for (var j = 0; j < ls_dnoe.length; j++) {
-						//固定顏色
-						if (fixed_cell_color) {
-							fixed_cell_color = false;
-						} else {
-							fixed_cell_color = true;
-						}
-
-						//排序
-						ls_dnoe[j] = main.orderedSort(ls_dnoe[j]);
-
-						//資料筆數
-						var list_item = $(".dnoe_search_example_content").clone(); //複製樣本
-						//是否為群組
-						list_item[0].className = "search_data_list";
-						list_item[0].id = "search_data_" + (j + 1);
-						list_item.appendTo(".dnoe_search_example_list");
-
-						//===每筆 資料欄位===
-						var fixed_cell_nb = 0;
-						var fixed_cell_wh = 1;
-						console.log();
-
-						for (var i = 0; i < Object.keys(ls_dnoe[j]).length; i++) {
-							var one_item = $(".dnoe_search_example_content .s_list_body").clone(); //複製樣本
-							var key_id = Object.keys(ls_dnoe[j])[i];
-							var value_name = ls_dnoe[j][Object.keys(ls_dnoe[j])[i]];
-							//取得title Size顯示
-							// console.log(key_id+" "+value_name);
-							var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
-							//取得title 是否顯示
-							if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								one_item[0].className = "datalist d-none";
-							} else {
-								one_item[0].className = "datalist ";
-							}
-
-							//固定前2格
-							if (fixed_cell_nb < 4 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
-								if (fixed_cell_color) {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
-								} else {
-									one_item[0].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
-								}
-								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
-								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
-								$("#dnoe_excel #" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
-								one_item[0].className = "datalist fixed_cell ";
-								fixed_cell_wh += parseInt(value_size);
-								fixed_cell_nb += 1;
-							} else {
-								one_item[0].style = "max-width:" + value_size;
-							}
-							one_item[0].id = "";
-							one_item[0].title = key_id;
-							one_item[0].innerText = value_name;
-							one_item.insertBefore(".dnoe_search_example_list #" + list_item[0].id + " .s_list_body");
-						}
-
-						$(".dnoe_search_example_list #search_data_" + (j + 1) + " .s_list_body").remove();
-					}
-
-				}
-				//關閉樣式
-				$(".dnoe_search_example_list .s_list_body").addClass("d-none");
-				$(".dnoe_search_example_content").addClass("d-none");
-				//ls_dnoe ==結束==
+				const promisesResult = [
+					this.syncEvent(bodys_dp, "bodys_dp", list),
+					this.syncEvent(bodys_dp_all, "bodys_dp_all", list),
+					this.syncEvent(bodys_yield, "bodys_yield", list),
+					this.syncEvent(bodys_dwh, "bodys_dwh", list),
+					this.syncEvent(bodys_dnoe, "bodys_dnoe", list),
+				];
+				//1-2 等待所有的 promisesResult 完成
+				Promise.all(promisesResult)
+					.then((results) => {
+						console.log("所有事件都已成功完成(Result):", results);
+					}).catch((error) => {
+						console.error("其中一個或多個事件失敗(Result):", error);
+					});
+			},
+			//==========================多程序執行==========================
+			//syncEvent(執行的方法/判斷類型/特定資料傳入)
+			syncEvent(event, eventName, eventVal) {
+				//異步執行: sync or async codes
+				return new Promise((resolve, reject) => {
+					// 設置超時檢查
+					const timeoutTimer = setTimeout(() => {
+						reject("操作超時:" + eventName);
+					}, 5000);
+					//異步-事後接續動作(then(成功)/catch(異常)/finally(都會進去))
+					setTimeout(() => {
+						event(eventName, eventVal).then(result => {
+							resolve(result);
+						}).catch(error => {
+							reject(error);
+						}).finally(() => {
+							clearTimeout(timeoutTimer); // 失敗/成功->時清除超時計時器
+						});
+					}, 0);
+				});
 			},
 			setSearch(search) {
 				//查詢注入資訊
 				console.log(search);
-				for (var i = 0; i < search.length; i++) {
+				for (let i = 0; i < search.length; i++) {
 					switch (search[i].tag) {
 						case "input":
-							var search_input = $(".search_example_input").clone(); //複製樣本
+							let search_input = $(".search_example_input").clone(); //複製樣本
 							search_input[0].className = search[i].col + " p-2 search_true";
 							search_input[0].id = "search_" + search[i].id;
 							search_input.appendTo(".search_example_finds");
@@ -945,13 +1015,13 @@
 						case "select":
 							//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
 							//id / value / type
-							var search_selsect = $(".search_example_selsect").clone(); //複製樣本
+							let search_selsect = $(".search_example_selsect").clone(); //複製樣本
 							search_selsect[0].className = search[i].col + " p-2 search_true";
 							search_selsect[0].id = "search_" + search[i].id;
 							search_selsect.appendTo(".search_example_finds");
 							$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
-							for (var o = 0; o < search[i].values.length; o++) {
-								var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							for (let o = 0; o < search[i].values.length; o++) {
+								let one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
 								one_option[0].id = "select_" + search[i]["values"][o]["key"];
 								one_option[0].value = search[i]["values"][o]["key"];
 								one_option[0].innerText = search[i]["values"][o]["value"];
@@ -1017,8 +1087,8 @@
 				$(document).on("click", "#dp_export_btn", function (event) {
 					console.log("dp_export_btn");
 					//更新時間
-					var myDate = new Date();
-					var reportDate =
+					let myDate = new Date();
+					let reportDate =
 						myDate.getFullYear() + '-' +
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
@@ -1038,8 +1108,8 @@
 				$(document).on("click", "#dp_all_export_btn", function (event) {
 					console.log("dp_all_export_btn");
 					//更新時間
-					var myDate = new Date();
-					var reportDate =
+					let myDate = new Date();
+					let reportDate =
 						myDate.getFullYear() + '-' +
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
@@ -1060,8 +1130,8 @@
 				$(document).on("click", "#yield_export_btn", function (event) {
 					console.log("yield_export_btn");
 					//更新時間
-					var myDate = new Date();
-					var reportDate =
+					let myDate = new Date();
+					let reportDate =
 						myDate.getFullYear() + '-' +
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
@@ -1081,8 +1151,8 @@
 				$(document).on("click", "#dwh_export_btn", function (event) {
 					console.log("dwh_export_btn");
 					//更新時間
-					var myDate = new Date();
-					var reportDate =
+					let myDate = new Date();
+					let reportDate =
 						myDate.getFullYear() + '-' +
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
@@ -1102,8 +1172,8 @@
 				$(document).on("click", "#dnoe_export_btn", function (event) {
 					console.log("dnoe_export_btn");
 					//更新時間
-					var myDate = new Date();
-					var reportDate =
+					let myDate = new Date();
+					let reportDate =
 						myDate.getFullYear() + '-' +
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
@@ -1163,18 +1233,18 @@
 				main.loading(true);
 				//查詢
 				//Ex:body:{search:{b:b,c:c}}
-				var search = {};
-				for (var s = 0; s < $(".search_true").length; s++) {
-					var key = $(".search_true")[s].id.replace("search_", "");
-					var value = $("#" + $(".search_true")[s].id + " .s_value").val();
+				let search = {};
+				for (let s = 0; s < $(".search_true").length; s++) {
+					let key = $(".search_true")[s].id.replace("search_", "");
+					let value = $("#" + $(".search_true")[s].id + " .s_value").val();
 					//console.log(key+ " "+value);
 					search[key] = value;
 				}
 				//包裝
-				var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
-				var s_type = "POST";
-				var s_data = {};
-				var req = {};
+				let s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
+				let s_type = "POST";
+				let s_data = {};
+				let req = {};
 				req.user = $('#name').text();
 				req.date = new Date();
 				req.action = "AR";
