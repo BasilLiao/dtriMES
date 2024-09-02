@@ -969,7 +969,10 @@
 						console.log("所有事件都已成功完成(Result):", results);
 					}).catch((error) => {
 						console.error("其中一個或多個事件失敗(Result):", error);
-					});
+					}).finally(() => {
+						main.loading(false);
+						console.log("Loading 關閉(Result):");
+					});;
 			},
 			//==========================多程序執行==========================
 			//syncEvent(執行的方法/判斷類型/特定資料傳入)
@@ -988,7 +991,6 @@
 							reject(error);
 						}).finally(() => {
 							clearTimeout(timeoutTimer); // 失敗/成功->時清除超時計時器
-							main.loading(false);
 						});
 					}, 0);
 				});
