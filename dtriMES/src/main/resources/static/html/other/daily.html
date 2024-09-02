@@ -988,6 +988,7 @@
 							reject(error);
 						}).finally(() => {
 							clearTimeout(timeoutTimer); // 失敗/成功->時清除超時計時器
+							main.loading(false);
 						});
 					}, 0);
 				});
@@ -1037,7 +1038,6 @@
 					$(".example_select_one").addClass("d-none");
 					$(".search_example_input").addClass("d-none");
 					$(".search_example_selsect").addClass("d-none");
-					main.loading(false);
 				}
 
 				//時間格式
@@ -1265,7 +1265,7 @@
 				main.ajaxSend(s_url, s_type, s_data);
 			},
 			searchReturn() {
-				main.loading(false);
+				//main.loading(false);
 				console.log("searchReturn start:" + new Date());
 				//有可能沒有下一頁
 				console.log();
