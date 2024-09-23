@@ -615,7 +615,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_id", productionHeader.getProductionRecords().getPrbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pr_bom_c_id", productionHeader.getProductionRecords().getPrbomcid());
 
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_shipping_date", one.getPbshippingdate() == null ? "" : one.getPbshippingdate());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_shipping_date", one.getPbshippingdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbshippingdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_position", one.getPbposition() == null ? "" : one.getPbposition());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_w_years", one.getPbwyears() == null ? "" : one.getPbwyears());
