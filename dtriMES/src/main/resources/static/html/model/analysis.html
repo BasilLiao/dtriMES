@@ -437,18 +437,22 @@
 
 				//========report========
 				$(document).on("click", "#export_excel_report", function (event) {
+
+					let ree = $("#report_excel_example").clone();
+
 					// 修改表格中的大數字，讓 Excel 以文字格式處理
-					$("#report_excel_example").find("td").each(function () {
+					ree.find("td").each(function () {
 						var cellText = $(this).text();
 						// 檢查是否是科學記號或純數字
-						if (/^\d+E[\+\-]?\d+$/i.test(cellText) || /^\d+$/.test(cellText)) {
+						if (cellText.length > 5 && (/^0\d+E[\+\-]?\d+$/i.test(cellText))) {
 							// 在數字前面加上單引號，讓 Excel 視為文字
+							$(this).text("'" + cellText);
+						} else if (cellText.length > 10 && /^00\d+$/i.test(cellText)) {
+							// 檢查是否是以 00 開頭的數字或科學記數法
 							$(this).text("'" + cellText);
 						}
 					});
-
-
-					$("#report_excel_example").table2excel({
+					ree.table2excel({
 						// exclude CSS class
 						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
 						preserveColors: false,
