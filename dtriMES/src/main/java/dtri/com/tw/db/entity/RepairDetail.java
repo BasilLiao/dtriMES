@@ -93,16 +93,16 @@ public class RepairDetail {
 	@JoinColumn(name = "rd_ro_id")
 	private RepairOrder order;
 
-	@Column(name = "rd_statement", nullable = false, columnDefinition = "varchar(250)")
+	@Column(name = "rd_statement", nullable = false, columnDefinition = "varchar(500)")
 	private String rdstatement;
 
-	@Column(name = "rd_true", columnDefinition = "varchar(250)")
+	@Column(name = "rd_true", columnDefinition = "varchar(500)")
 	private String rdtrue;
 
-	@Column(name = "rd_solve", columnDefinition = "varchar(250)")
+	@Column(name = "rd_solve", columnDefinition = "varchar(500)")
 	private String rdsolve;
 
-	@Column(name = "rd_experience", columnDefinition = "varchar(250)")
+	@Column(name = "rd_experience", columnDefinition = "varchar(500)")
 	private String rdexperience;
 
 	@Column(name = "rd_svg", columnDefinition = "text default ''")
