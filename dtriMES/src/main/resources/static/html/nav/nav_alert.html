@@ -69,10 +69,12 @@
 						$("#alert").addClass("alert-success");
 						//t_alert.alertSoundClose();
 						// 如果音效正在播放，先將它停止並重置
-						if (!$('#warning_sound_end').get(0).paused) {
-							$('#warning_sound_end').get(0).pause();
-							$('#warning_sound_end').get(0).currentTime = 0; // 重置到音效的開始位置
-						}
+						$("#warning_all").get(0).pause();
+						$("#warning_all").get(0).currentTime = 0;
+
+						$("#warning_sound_end").get(0).pause();
+						$("#warning_sound_end").get(0).currentTime = 0;
+
 						//過站成功[音效]?
 						if (info.search("WK020") > 0 && $('#set_success').is(":checked")) {
 							$('#success_pass_workstation').get(0).play();
