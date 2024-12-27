@@ -122,7 +122,7 @@ public class ProductionDailyService {
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "100px", FFM.Wri.W_Y));
+							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
@@ -149,7 +149,7 @@ public class ProductionDailyService {
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "100px", FFM.Wri.W_Y));
+							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_note",
 					FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
@@ -206,7 +206,7 @@ public class ProductionDailyService {
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "100px", FFM.Wri.W_Y));
+							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
@@ -232,7 +232,7 @@ public class ProductionDailyService {
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
 					object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "100px", FFM.Wri.W_Y));
+							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names",
 					FFS.h_t(pd_w_names, "550px", FFM.Wri.W_Y));
