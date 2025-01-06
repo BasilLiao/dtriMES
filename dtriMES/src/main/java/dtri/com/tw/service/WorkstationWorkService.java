@@ -1332,12 +1332,15 @@ public class WorkstationWorkService {
 						p_header.setPhpbschedule(json_ph_pb_schedule.toString());
 					}
 
-					// 此製令已完成(完成數/目標數)量
-					int f_nb = p_header.getPhpokqty();
-					int e_nb = p_header.getPhpqty();
-					if (check_end && (f_nb == e_nb)) {
+					// 此製令已完成(完成數/目標數)量 2025-01-06 取消檢查是否相同
+					// int f_nb = p_header.getPhpokqty();
+					// int e_nb = p_header.getPhpqty();
+					// if (check_end && (f_nb == e_nb)) {
+					if (check_end) {
 						p_header.setSysstatus(2);
 						p_header.setPhedate(new Date());
+						p_header.setSysmdate(new Date());
+						p_header.setSysmuser(user.getSuaccount() + "(" + user.getSuname() + ")");
 					}
 					phDao.save(p_header);
 					bodyDao.save(body_one_now);

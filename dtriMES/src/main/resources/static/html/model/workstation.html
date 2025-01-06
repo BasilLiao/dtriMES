@@ -1412,6 +1412,24 @@
 							workstation.check_end = true;
 							if ($("#w_focus_5").val() != "" && workstation.barcode_check) {
 								//Step3.存檔
+								const todayDate = (function getTodayDate() {
+									const today = new Date();
+									const year = today.getFullYear();
+									const month = String(today.getMonth() + 1).padStart(2, '0');
+									const day = String(today.getDate()).padStart(2, '0');
+									return `${year}-${month}-${day}`;
+								})(); // 執行函式，將結果存入 todayDate
+								let inputDate = prompt("請輸入今天的日期 (格式：YYYY-MM-DD):", "");
+
+								while (inputDate !== todayDate) {
+									if (inputDate === null) {
+										alert("操作取消。");
+										return;
+									}
+									alert("日期錯誤，請重新輸入！");
+									inputDate = prompt("請輸入今天的日期 (格式：YYYY-MM-DD):", "");
+								}
+								alert("日期正確！->執行結單");
 								workstation.sendSave();
 							}
 							return false;

@@ -322,12 +322,20 @@ public class ProductionDailyService {
 			// Step3. [準備]每工單的 最後一站的數量 今天的產出數量
 			Map<String, String> last_wcname = new HashMap<String, String>();
 			Map<String, Integer> wait_fix = new HashMap<String, Integer>();
+			// 被途中移除的清單(排除)
+			Map<String, Boolean> remove_prid = new HashMap<String, Boolean>();
+
 			for (ProductionDaily object : productionDailys) {
 				String prid = object.getPdprid();
 				if (!last_wcname.containsKey(prid)) {
 					ProductionRecords prs = new ProductionRecords();
 					prs.setPrid(prid);
 					List<ProductionHeader> headers = headerDao.findAllByProductionRecords(prs);
+					// 沒資料?可能被臨時移除
+					if (headers.size() == 0) {
+						remove_prid.put(prid, false);
+						continue;
+					}
 					Long wpid = headers.get(0).getPhwpid();// 取得 工作程序 ID
 					ArrayList<WorkstationProgram> pbwLast = programDao.findAllByWpgidOrderBySyssortAsc(wpid);
 					Long wpwgid = pbwLast.get(pbwLast.size() - 1).getWpwgid();
@@ -344,6 +352,10 @@ public class ProductionDailyService {
 			ProductionDailyBean dailyBean = new ProductionDailyBean();//
 			// Step4.每一筆日報表資料
 			for (ProductionDaily pdOne : productionDailys) {
+				// 被途中移除的清單(排除)
+				if (remove_prid.containsKey(pdOne.getPdprid())) {
+					continue;
+				}
 
 				// 同一天+同一條產線+同一班別+同一張工單
 				key = Fm_Time.to_y_M_d(pdOne.getSysmdate()) + "_" + pdOne.getPdwcline() + "_" + pdOne.getPdwcclass()
