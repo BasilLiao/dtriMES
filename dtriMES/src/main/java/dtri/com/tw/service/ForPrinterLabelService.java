@@ -1,9 +1,11 @@
 package dtri.com.tw.service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
-import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
@@ -111,14 +113,92 @@ public class ForPrinterLabelService {
 					Doc doc = new SimpleDoc(zpl_by, flavor, null);
 					DocPrintJob printJob = service.createPrintJob();
 					printJob.print(doc, null);
+					// (日後測試)打印狀態
+//					if (isPrinterQueueInError(service.getName())) {
+//						System.out.println("檢測到打印服務處於錯誤: " + service.getName());
+//						// 清除打印列隊
+//						clearPrintQueue(service.getName());
+//						// 停止執行
+//						return;
+//					}
+//					printJob.print(doc, null);
 
-				} catch (PrintException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		};
 		thread.start();
 		return true;
+	}
+
+	// 檢查打印列隊中是否存在錯誤的任務
+	private static boolean isPrinterQueueInError(String printerName) throws Exception {
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.contains("win")) {
+			// 使用 Windows 命令檢查打印任務狀態
+			Process process = new ProcessBuilder("cmd", "/c", "wmic printjob get Document,JobStatus,Status").start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("Error") || line.contains("Paused")) {
+					System.out.println("列隊狀態: " + line.trim());
+					return true;
+				}
+			}
+		} else if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
+			// 使用 Linux/macOS 命令檢查打印任務狀態
+			Process process = new ProcessBuilder("lpstat", "-o", printerName).start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("stopped") || line.contains("error")) {
+					System.out.println("列隊狀態: " + line.trim());
+					return true;
+				}
+			}
+		} else {
+			System.out.println("不支持的操作系統: " + osName);
+		}
+		return false;
+	}
+
+	// 清除打印列隊的方法
+	private void clearPrintQueue(String printerName) {
+		String osName = System.getProperty("os.name").toLowerCase();
+		try {
+			if (osName.contains("win")) {
+				// Windows 系統清除列隊
+				System.out.println("清除 Windows 打印機列隊: " + printerName);
+				runCommand("net stop spooler");
+				runCommand("cmd /c del /Q /F \"%systemroot%\\System32\\spool\\PRINTERS\\*\"");
+				runCommand("net start spooler");
+			} else if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
+				// Linux/macOS 系統清除列隊
+				System.out.println("清除 Unix 打印機列隊: " + printerName);
+				runCommand("cancel -a " + printerName);
+			} else {
+				System.out.println("不支持的操作系統: " + osName);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 執行命令的方法
+	private void runCommand(String command) throws Exception {
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.command(command.split(" "));
+		processBuilder.redirectErrorStream(true);
+
+		Process process = processBuilder.start();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
+		}
+		process.waitFor();
 	}
 
 	/**
@@ -142,16 +222,18 @@ public class ForPrinterLabelService {
 				left_size = 30 + (left_size * 5);
 				label_3X1_copy = label_3X1_copy.replace("${left}", left_size + "");
 				label_3X1_copy = label_3X1_copy.replace("${sn_1}", one.getString("sn_value"));
-				label_3X1_copy = label_3X1_copy.replace("${sn_2}", one.getString("sn_name") + " " + one.getString("sn_value"));
+				label_3X1_copy = label_3X1_copy.replace("${sn_2}",
+						one.getString("sn_name") + " " + one.getString("sn_value"));
 				label_3X1_copy = label_3X1_copy.replace("${part_no}", part_no);
 				part_no = "";
 				zpl += label_3X1_copy;
 				zpl += zpl_end;
 			}
 		}
-		
-		//System.out.println(" ".getBytes().length+"|"+" ".getBytes().length+"|"+"　".getBytes().length);
-		zpl =zpl.replaceAll(" "," ");//取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
+
+		// System.out.println(" ".getBytes().length+"|"+" ".getBytes().length+"|"+"
+		// ".getBytes().length);
+		zpl = zpl.replaceAll(" ", " ");// 取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
 		return zpl;
 	}
 
@@ -175,7 +257,8 @@ public class ForPrinterLabelService {
 			left_size_1 = 30 + (left_size_1 * 5);
 			label_3X2_copy = label_3X2_copy.replace("${left_1}", left_size_1 + "");
 			label_3X2_copy = label_3X2_copy.replace("${sn_1_1}", sn_list.getString("sn_value_1"));
-			label_3X2_copy = label_3X2_copy.replace("${sn_1_2}", sn_list.getString("sn_name_1") + " " + sn_list.getString("sn_value_1"));
+			label_3X2_copy = label_3X2_copy.replace("${sn_1_2}",
+					sn_list.getString("sn_name_1") + " " + sn_list.getString("sn_value_1"));
 			label_3X2_copy = label_3X2_copy.replace("${part_no}", part_no);
 			part_no = "";
 			// 第二區塊
@@ -183,14 +266,14 @@ public class ForPrinterLabelService {
 			left_size_2 = 30 + (left_size_2 * 5);
 			label_3X2_copy = label_3X2_copy.replace("${left_2}", left_size_2 + "");
 			label_3X2_copy = label_3X2_copy.replace("${sn_2_1}", sn_list.getString("sn_value_2"));
-			label_3X2_copy = label_3X2_copy.replace("${sn_2_2}", sn_list.getString("sn_name_2") + " " + sn_list.getString("sn_value_2"));
+			label_3X2_copy = label_3X2_copy.replace("${sn_2_2}",
+					sn_list.getString("sn_name_2") + " " + sn_list.getString("sn_value_2"));
 			label_3X2_copy = label_3X2_copy.replace("${part_no}", part_no);
 
 			zpl += label_3X2_copy;
 			zpl += zpl_end;
 		}
-		zpl =zpl.replaceAll(" "," ");//取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
+		zpl = zpl.replaceAll(" ", " ");// 取代特殊空白UTF8(輸入)->ASCII(系統) ,可能看不出來差異 就是不同
 		return zpl;
 	}
-
 }
