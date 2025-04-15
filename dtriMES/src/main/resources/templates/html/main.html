@@ -34,19 +34,19 @@
 
 <body id="main">
 	<!-- 開頭(header) -->
-	<div id="header_t_all"></div>
+	<div id="header_t_all"></div>   <!-- header_t_all：網站的頁首。 -->
 	<!-- 選單(nav) -->
-	<div id="nav_t_all"></div>
+	<div id="nav_t_all"></div>		<!--nav_t_all：導航菜單。-->
 	<!-- 讀取中(nav_loading) -->
-	<div id="nav_t_loading"></div>
+	<div id="nav_t_loading"></div>  	<!--nav_t_loading：載入中的提示。 -->
 	<!-- 登出中(nav_logout) -->
-	<div id="nav_t_logout"></div>
+	<div id="nav_t_logout"></div>	<!--nav_t_logout：登出過程中的顯示。 -->
 	<!-- 錯誤訊息(alert) -->
-	<div id="alert_t_all"></div>
+	<div id="alert_t_all"></div>	<!-- alert_t_all：顯示錯誤或提示訊息。 -->
 	<!-- 本體(body) -->
-	<div id="body_t_all" style="min-height: 90vh;"></div>
+	<div id="body_t_all"></div>		<!--body_t_all：主要內容區域-->
 	<!-- 底部(footer) -->
-	<div id="footer_t_all"></div>
+	<div id="footer_t_all"></div>	<!--footer_t_all：網站的頁尾 -->
 
 </body>
 <script type="text/javascript" th:inline="javascript">
@@ -126,6 +126,8 @@
 		methods: {
 			//請求模組
 			ajaxSend(s_url, s_type, s_data) {
+				s_data
+				console.log(s_data)
 				//排除{!=}/{複製上Tab}
 				var s_data = JSON.stringify(s_data).replaceAll("!", "").replaceAll("=", "").replaceAll("\\t", "");
 				//console.log("ajax to send:"+s_data);
@@ -183,7 +185,7 @@
 							if (customized != "")
 								customized.$destroy();
 							//console.log("./html/body/"+main.allData['html_body']);
-							//刷新_模板
+							//刷新_模板    //在 id="body_t_all " 下載入網頁
 							$("#body_t_all").load("./html/body/" + main.allData['html_body'], function () {
 								t_body.html_body = main.allData['html_body'];
 							});
@@ -192,7 +194,7 @@
 							switch (event['resp_content']['call_bk_fn']) {
 								case "search":
 									main.allData = event['resp_content'];
-									search.searchReturn();
+									search.searchReturn();								
 									break;
 								case "modify":
 									main.allData['call_bk_fn'] = event['resp_content']['call_bk_fn'];

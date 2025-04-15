@@ -1,0 +1,634 @@
+<!-- 查詢項目 -->
+<style>
+
+
+select {
+	border-width: 2px;
+}
+
+</style>
+<div id="customized">
+	<!-- 維修處理 -->
+	<div class="shadow m-0 row">
+		<div class="col-12 p-0 rounded-top">
+			<div class="text-left bg-white rounded-top m-0 pl-1 h6">
+				<div class="col p-0 pt-1 pb-1">
+					<!-- bi-tools  -->
+					<i	class="bi bi-tools mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1 shadow-sm"></i>RMA
+					Repair 資料
+				</div>
+			</div>
+			
+			<div id="repair_info" class="row p-0 m-0">
+			
+				<div class="col-md-6 m-0 p-2 text-left" style="min-height: 500px;">
+
+					<!--  -->
+					<div class="col-md-12 p-0 m-0 row">
+					
+						<div class="col-md-1 p-1 m-0 d-none" id="rma_list_id">
+							<div class="col p-0">id :</div>
+							<input class="col p-1 rounded detail_ri h6" type="text" value=""
+								disabled="disabled">
+						</div>
+					
+						<div class="col-md-2 p-1 m-0" id="rma_sn">
+							<div class="col p-0">RMA號碼 :</div>
+							<input class="col p-1 rounded detail_ri h6" type="text" value=""
+								disabled="disabled">
+						</div>
+
+						<div class="col-md-2 p-1 m-0" id="rma_guest">
+							<div class="col p-0">客戶 :</div>
+							<input class="col p-1 rounded detail_ri h6" type="text" value=""
+								disabled="disabled">
+						</div>
+
+						<div class="col-md-2 p-1 m-0" id="rma_model">
+							<div class="col p-0">產品型號 :</div>
+							<input class="col p-1 rounded detail_ri h6 enable_txt" type="text" value=""
+								disabled="disabled">
+						</div>
+						
+						<div class="col-md-2 p-1 m-0" id="rma_part_no">
+							<div class="col p-0">Part No :</div>
+							<input class="col p-1 rounded detail_ri h6 enable_txt" type="text" value=""
+								disabled="disabled">
+						</div>
+
+						<div class="col-md-2 p-1 m-0 search_true " id="rma_b_sn">
+							<div class="col p-0">產品(序號) :</div>
+							<input class="col p-1 rounded detail_ri h6" type="text" value=""
+								disabled="disabled">
+						</div>
+
+						<div class="col-md-2 p-1 m-0 search_true" id="rma_mb_sn">
+							<div class="col p-0">MB(序號) :</div>
+							<input class="col p-1 rounded detail_ri h6" type="text" value=""
+								disabled="disabled">
+						</div>
+
+						<div class="col-md-12 p-0 m-0 row">
+
+							<div class="col-md-12 m-0 p-1" id="rma_statement"
+								style="height: 115px">
+								<div class="col p-0">客戶問題敘述 :</div>
+								<textarea class="col rounded p-1 detail_ri h6" rows="3" cols=""
+									placeholder="客戶問題敘述" disabled="disabled"></textarea>
+							</div>
+						</div>
+
+						<div class="col-md-3 m-0 p-1" id="rma_pb_b_item">
+							<div class="col p-0">產品細節 :</div>
+							<textarea class="col rounded p-1 detail_ri h6" rows="20" cols=""
+								placeholder="暫無資料" disabled="disabled"></textarea>
+						</div>
+
+						<div class="col-md-3 m-0 p-1" id="pb_h_item">
+							<div class="col p-0">廠內維修紀錄 :</div>
+							<textarea class="col rounded p-1 detail_ri h6" rows="20" cols=""
+								placeholder="暫無資料" disabled="disabled"></textarea>
+						</div>
+
+
+						<div class="col-md-6 m-0 p-1" id="rma_list"	style="width: 600px; height: 417px; overflow: auto; border: 1px solid #ccc;">
+							<div class="col p-0">RMA清單 :</div>
+							<!-- 表格容器 -->
+							<div style="max-height: 370px; overflow-y: auto;">
+								<table id="dataTable" style="white-space: nowrap; width: 150px ;" class="table table-striped table-bordered" border="1">
+									<!-- 用了 position: sticky 來固定表頭 -->
+									<thead	style="position: sticky; top: 0; background: white; z-index: 2;  white-space: normal">
+										<tr>
+											<th style=" white-space: nowrap;" >No</th>
+											<th style=" white-space: nowrap;" >進度</th> <!-- 不要換行（no wrap） -->
+											<th style=" white-space: nowrap;" >機台序號</th>
+											<th style=" white-space: nowrap;" >MB序號</th>
+											<th style=" white-space: nowrap;" >不良原因</th>
+											<th style=" white-space: nowrap; " >型號</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- 動態數據將在此添加 -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- 另一半邊 -->
+				<div class="col-md-6 m-0 p-2 text-left" id="" style="min-height: 500px;">
+				
+					<div class="col-md-1 p-1 m-0 d-none" id="rma_repair_id">
+						<div class="col p-0">Repair id :</div>
+						<input class="col p-1 rounded detail_ri h6" type="text" value="" disabled="disabled">
+					</div>
+					
+					<div class="col-md-2 p-1 m-0" id="input_sn">
+						<div class="col p-0">輸入序號 :</div>
+						<input class="col p-1 rounded border-2 border-danger detail_ri " type="text" value="">
+					</div>
+
+					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 115px">
+						<div class="col p-0">復判不良原因 :</div>
+						<textarea
+							class="col rounded border-1 border-success p-1 detail_ri"
+							rows="3" cols=""
+							placeholder="故障原因(必填) Ex: &#xD 1.面板不亮 &#xD 2.無法開機"
+							style="border-width: 2px;"></textarea>
+					</div>
+
+					<div class="col-md-12 m-0 p-1" id="rd_solve" style="height: 115px">
+						<div class="col p-0">修復過程 :</div>
+						<textarea
+							class="col rounded border-1 border-success p-1 detail_ri"
+							rows="3" cols=""
+							placeholder="解決問題(必填) Ex: &#xD 1.更換面板OK &#xD 2.更換開機按鈕OK"
+							style="border-width: 2px;"></textarea>
+					</div>
+					<div class="col-md-12 m-0 p-1" id="rd_experience"
+						style="height: 115px">
+						<div class="col p-0">備註 :</div>
+						<textarea class="col rounded p-1 detail_ri" rows="3" cols=""
+							placeholder="備註事項(選填)"></textarea>
+					</div>
+
+					<div class="col-md-12 p-0 m-0 row">
+
+						<div class="col-md-3 p-1 m-0" id="rma_part_sn">
+							<div class="col p-0">MB料號 :</div>
+							<input class="col p-1 rounded border-primary detail_ri"
+								type="text" value="" placeholder="記錄返修的機台裡MB料號">
+						</div>
+
+						<div class="col-md-3 p-1 m-0" id="packing_list">
+							<div class="col p-0">單據號碼 :</div>
+							<input class="col p-1 rounded detail_ri" type="text" value=""
+								placeholder="領/退料單/一些資訊(選填)">
+						</div>
+
+						<div class="col-md-3 p-1 m-0 " id="rma_result">
+							<div class="col p-0">維修結果 :</div>
+							<select class="col p-1 rounded border-success detail_ri">
+								<option class="def" value="">select(必填)</option>
+								<option value="已修復">已修復</option>
+								<option value="無法修復">無法修復</option>
+								<option value="不修退回">不修退回</option>
+								<option value="報廢">報廢</option>
+							</select>
+						</div>
+
+						<div class="col-md-2 p-1 m-0" id="rma_user">
+							<div class="col p-0">維修人員 :</div>
+							<input class="col p-1 rounded " type="text" value=""
+								disabled="disabled">
+						</div>
+
+					</div>
+				</div>
+
+
+				<div id="fi_btn" class="col p-1 row m-0 justify-content-end">
+				
+					<div class="col-md-1 p-1 m-0">
+						<button id="enable_fi_btn" class="col btn btn-warning btn-sm" type="button">解除鎖定</button>
+					</div>
+					<div class="col-md-1 p-1 m-0 d-none">
+						<button class="col btn btn-secondary btn-sm repair_part_fi_btn"
+							type="button">Repair Part</button>
+					</div>
+					<div class="col-md-1 p-1 m-0 d-none">
+						<button class="col btn btn-info btn-sm project_content_fi_btn"
+							type="button">Project...</button>
+					</div>
+
+					<div class="col-md-8 p-1 m-0"></div>
+					<div class="col-md-1 p-1 m-0">
+						<button id="search_fi_btn" class="col btn btn-primary btn-sm" type="button">Search(S1)</button>
+					</div>
+					<div class="col-md-1 p-1 m-0">
+						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm"	type="button">Save(S2)</button>
+					</div>
+					<div class="col-md-1 p-1 m-0">
+						<button id="clear_fi_btn" class="col btn btn-warning btn-sm"
+							type="button">Clear</button>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   產品資訊 -->
+	<div class="shadow mt-2  border border-secondary rounded-top d-none">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+			<div class="col p-0 pt-1 pb-1">
+				<i
+					class="bi bi-grid-3x3-gap mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1 shadow-sm"></i>johnnyProject
+				Content
+			</div>
+		</div>
+		<div id="project_content" class="row p-0 m-0" style="display: none;">
+			<div class="col-md-12 row m-0 p-2 text-left" style="min-height: 450px">
+				<div class="col-md-3 m-0 p-1" id="pr_b_item">
+					<div class="col p-0">產品規格 :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="16" cols=""
+						placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+				<div class="col-md-3 m-0 p-1" id="pr_s_item">
+					<div class="col p-0">軟體定義 :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="16" cols=""
+						placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+				<div class="col-md-2 m-0 p-1" id="pb_i_item">
+					<div class="col p-0">登記內容 :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="16" cols=""
+						placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+				<div class="col-md-4 m-0 p-1" id="pb_h_item">
+					<div class="col p-0">維修紀錄 :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="16" cols=""
+						placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+			</div>
+			<div class=" col-12  row p-0 m-0 justify-content-end">
+				<div class="col-md-1 p-1 m-0">
+					<button class="col btn btn-secondary btn-sm repair_info_fi_btn"
+						type="button">Repair Info</button>
+				</div>
+				<div class="col-md-1 p-1 m-0">
+					<button class="col btn btn-info btn-sm repair_part_fi_btn"
+						type="button">Repair Part</button>
+				</div>
+				<div class="col-md-2 p-1 m-0"></div>
+				<div class="col-md-1 p-1 m-0"></div>
+				<div class="col-md-1 p-1 m-0"></div>
+				<div class="col-md-1 p-1 m-0"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+//123johnny
+//控制端
+customized = new Vue({
+	el: "#customized",
+	//資料區
+	data: {
+		//換頁樣式
+		page_total: main.page_total, //每次_總筆數
+		page_batch: main.page_batch, //每次_第幾批
+
+		page_show_size: main.page_show_size, //目前_每分頁顯示數量
+		page_now_size: main.page_now_size, //目前_實際筆數
+		page_now: main.page_now, //目前_頁數
+		//data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		//data_item_f_id: "", //父類別ID
+		//list_son:{},// 群組-子類別
+		nb_add:0,//子項目
+		//save data
+		modify_datas :{},
+
+	},
+	//初始化
+	created() {
+		console.log("repair_rma_list.html(created)");	
+	},
+	
+	//可呼叫方法
+	methods: {
+		setDataTitle(title,documents, html_permission) {
+			//console.log(title);
+			console.log(documents);
+			//標題注入資訊
+			//排序 
+			title = main.orderedSort(title);
+		},		
+		
+		setDataList(list, list_son, body_type) {
+			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+		},		
+		
+		setSearch(search) {
+			//查詢注入資訊
+			console.log(search);
+		},
+	
+		//圖片處理
+		file_reader_img(file,imgs){
+			
+		},	
+		
+		//初始化
+		selectAllInit() {
+			
+			$('#rma_user input').val(main.info_user["name"]);//進入此也頁面就把登入帳號放到維修人員
+
+			//查詢 RMA機台序號 或 MB序號
+			$(document).on("click", "#search_fi_btn", function (event) {
+				//傳送
+				var search = {};
+	
+				search.input_sn= $('#input_sn input').val(); //輸入機台號碼或MB號碼
+				
+				//搜尋之前先清空 實際故障原因 : 維修處理事項 :備註  MB料號 : 單據號碼 :維修結果 :								
+				customized.searchSend(search);				
+				console.log("search_fi_btn");				
+				$('#input_sn input').val(""); //搜尋好後清空資料
+			});
+	
+			//解除 欄位鎖定 以利更正資訊
+			$(document).on("click", "#enable_fi_btn", function (event) {
+				//$('#repair_info  input').removeAttr("disabled","");
+				$('#repair_info input').prop("disabled", false);
+			});
+	
+			//清除 維修資訊
+			$(document).on("click", "#clear_fi_btn", function (event) {
+				$('.detail_ri').val("");
+//				$('#rd_id input').removeAttr("disabled","");
+//				$('#rma_b_sn input').prop('disabled', false); //啟用 機台號碼輸入
+				//清除表格內容
+				 let tbody = document.querySelector("#dataTable tbody");
+			     tbody.innerHTML = ""; // 清空 tbody 內容
+				
+			});
+			
+			//清除問題敘述
+			$(document).on("click", "#rd_clear_btn", function (event) {
+				customized.removeAll();
+			});
+			
+			//存資料(可能:新增 可能修改)
+			$(document).on("click","#rd_save_btn", function (event) {
+							
+				//確認是否欄位都有資料  有資料才存資料
+				let fields = [
+					{ id: "#rma_sn input", message: "請確認 RMA號碼和機台號碼或MB ，不能為空！" },
+			        { id: "#rd_true textarea", message: "請輸入 復判不良原因 ，不能為空！" },
+			        { id: "#rd_solve textarea", message: "請輸入 修復過程 ，不能為空！" },
+			        { id: "#rma_result select", message: "請輸入 維修結果，不能為空！" }
+			    ];
+
+			    for (let field of fields) {
+			        if (!$(field.id).val()) {
+			            alert(field.message);
+			            return; // 阻止執行 sendSave()
+			        }
+			    }	
+	
+				$('#repair_info input').prop("disabled", true); //把欄位disabled 不給更改				
+				$('#input_sn input').prop("disabled", false);//解除後可輸入資料
+			    
+				customized.sendSave(); // 有值時才執行
+				
+			});
+			
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#customized .search_true input", function (event) {
+				if (event.which == 13) {
+					$('#search_fi_btn').trigger('click');
+				}
+			});
+			
+			//input 事件可以即時偵測輸入框的變化（例如使用者鍵入時），適用於需要即時回應的情境。
+//			$(document).on("input", "#input_sn input", function () {
+//			    let newValue = $(this).val().trim(); // 取得新的值
+//			    console.log("rma_b_sn 值變更為：", newValue);
+
+			    // 執行你的程式邏輯
+//			    customized.searchSend(search);	
+//			});
+
+		},
+		
+		//清除所有資訊
+		removeAll(){
+			//表單資料
+			$('.detail_ri').val("");
+//			$('#rr_sn input').removeAttr("disabled","");
+		},
+		
+				
+		//存檔
+		sendSave() {
+			main.loading(true);
+			console.log("sendSave");
+			var modify_repair = {};
+			modify_repair['rma_list_id'] =$('#rma_list_id input').val();  //RMA id
+			
+			modify_repair['rma_sn'] =$('#rma_sn input').val();  //RMA 號碼
+			modify_repair['rma_guest'] =$('#rma_guest input').val(); //客戶
+			modify_repair['rma_model'] =$('#rma_model input').val(); //產品型號
+			modify_repair['rma_part_no'] =$('#rma_part_no input').val(); // Part No
+			modify_repair['rma_b_sn'] =$('#rma_b_sn input').val(); //產品(序號)
+			modify_repair['rma_mb_sn'] =$('#rma_mb_sn input').val();//MB(序號)
+			modify_repair['rma_statement'] =$('#rma_statement textarea').val(); //客戶問題敘述
+			
+			modify_repair['rma_repair_id'] =$('#rma_repair_id input').val();  //RMA id
+			
+			modify_repair['rd_true'] =$('#rd_true textarea').val();		//實際故障原因 	
+			modify_repair['rd_solve'] =$('#rd_solve textarea').val();	//維修處理事項
+			modify_repair['rd_experience'] =$('#rd_experience textarea').val();	//備註 
+			modify_repair['rma_part_sn'] =$('#rma_part_sn input').val(); //MB料號
+			modify_repair['packing_list'] =$('#packing_list input').val();//單據號碼
+			modify_repair['rma_result']=$('#rma_result select').val(); //維修結果
+			modify_repair['rma_user'] =$('#rma_user input').val();//維修人員 
+					
+			var modify_detail=[];
+	
+			this.modify_datas['repair'] = modify_repair;
+			
+//			this.modify_datas['detail'] = modify_detail;
+			console.log(this.modify_datas);
+			
+			var action = "S2";
+			var	s_type = "PUT";
+			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+			var	s_data = {};
+			var req = {};
+			req.action=action;
+			req.user=$('#name').text();
+			req.date=new Date();
+			req.body={};
+			req.body['modify'] = this.modify_datas;
+			req.page_total=this.page_total;
+			req.page_batch=this.page_batch;
+			req.page_now_nb=this.page_now_nb;
+			req.html_body= "";
+			req.call_bk_fn="customized_save";
+			req.call_bk_vals={};
+			req.call_bk_vals['search']=true;
+			s_data.req_content = req;
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		
+		
+		//search
+		searchSend(search) {
+			console.log(search);
+			
+			if(search==null){
+				return null;
+			}
+			main.loading(true);
+			//查詢
+			//Ex:body:{search:{b:b,c:c}}
+			//search = {};			
+			//包裝
+			var action = "S1";
+			var s_type = "POST";
+			var s_url = (t_body.html_body + "."+action).replace("html", "basil").replace("body_", "");
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = action;
+			req.body = {};
+			req.body.search = search;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.page_now_nb = this.page_now_nb;
+			req.html_body = "";
+			req.call_bk_fn = "customized_search";
+			req.call_bk_vals = {};
+			req.call_bk_vals['search']=false;
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		
+		searchReturn() {
+			main.loading(false);
+			console.log("searchReturn repair_rma_list");			
+		
+			//有可能沒有下一頁
+			if (main.allData.body != null) {	
+				//表單資料
+				$('.detail_ri').val(""); //先清空原本資料
+				$('#repair_info input').prop("disabled", true); //把欄位disabled 不給更改
+			
+				$('#input_sn input').prop("disabled", false);//解除後可輸入資料
+				$('#rma_part_sn input').prop("disabled", false);//解除後可輸入資料
+				$('#packing_list input').prop("disabled", false);//解除後可輸入資料
+			
+				let Rmalist = main.allData.body.Customized_detail;//維修清單據資料					
+				
+				console.log("Rmalist",Rmalist);
+				
+				// 查詢資料 傳回維修頁面
+				$('#rma_list_id input').val(Rmalist['rma_list_id']);//RMAid
+				
+				$('#rma_sn input').val(Rmalist['rma_sn']);//RMA號碼
+				$('#rma_guest input').val(Rmalist['rma_guest']);//客戶
+				$('#rma_model input').val(Rmalist['rma_model']);//產品型號
+				$('#rma_part_no input').val(Rmalist['rma_part_no']);//產品型號
+				
+				$('#rma_b_sn input').val(Rmalist['rma_b_sn']);//機台號碼
+				$('#rma_mb_sn input').val(Rmalist['rma_mb_sn']);//MB號碼
+				$('#rma_statement textarea').val(Rmalist['rma_statement']);//問題敘述
+				
+				$('#rma_pb_b_item textarea').val(Rmalist['rma_pb_b_item']);//產品細節 :
+				$('#pb_h_item textarea').val(Rmalist['pb_h_item']);//廠內維修紀錄 :
+//				$('#rma_user input').val(Rmalist['rma_user']);//維修人員	//這位置可能需要修正應該放在	"有Repair_Rma_Detail物件傳回 維修頁面欄位"
+				
+				$('#input_sn input').focus(); //游標焦點放在機台號碼
+				
+//				$('#rma_b_sn input').prop('disabled', true);  //停用 防止把號碼更動到  
+
+				//若有Repair_Rma_Detail物件傳回 維修頁面欄位
+				if (main.allData.body.Customized_detail.Repair_Rma_Detail != null) {
+					let RepairRmaDetail = main.allData.body.Customized_detail.Repair_Rma_Detail;//維修紀錄資料
+					$('#rma_repair_id input').val(RepairRmaDetail['rma_repair_id']); //RMA repair id	
+				
+					$('#rd_true textarea').val(RepairRmaDetail['rd_true']);		//實際故障原因 	
+					$('#rd_solve textarea').val(RepairRmaDetail['rd_solve']);	//維修處理事項
+					$('#rd_experience textarea').val(RepairRmaDetail['rd_experience']);	//備註 
+					$('#rma_part_sn input').val(RepairRmaDetail['rma_part_sn']); //MB料號
+					$('#packing_list input').val(RepairRmaDetail['packing_list']);//單據號碼
+					$('#rma_result select').val(RepairRmaDetail['rma_result']); //維修結果
+				}
+   				let lists = main.allData.body.Customized_detail.rma_lists;  //維修單據資料	
+   				
+   				console.log("lists",lists);
+   				lists = Object.values(lists);  // 取得資料並轉換成陣列			
+			    populateTable();//馬上呼叫 populateTable() 函式  初始化表格數據  初始化並填充表格
+						    
+			 // 動態填充表格
+			    function populateTable() {
+			    	let tbody = document.querySelector("#dataTable tbody");// 取得表格的 tbody 找到 id 為 dataTable 的表格中的 <tbody> 部分。這個部分用來放置所有動態產生的資料列。
+			        tbody.innerHTML = ""; // 清空 <tbody> 中已有的內容，確保每次填充表格時都是從空白開始，避免累積重複的資料。
+					//迭代 lists 中的每一筆資料：
+			        lists.forEach((item, index) => {
+			            let row = document.createElement("tr");// 建立一個新的表格列
+			            // 將 rma_b_sn 的值作為 class 名稱的一部份，這裡假設不含特殊字元
+			            row.classList.add("rma_mb_sn_" + item.rma_b_sn);
+				        	// ${...} 是插值語法，其中的 JavaScript 表達式（例如 index + 1）會在字串生成時被計算，並替換成相應的值
+			            row.innerHTML = `
+			                <td>${index + 1}</td>
+			                <td>${item.state}</td>
+			                <td>${item.rma_b_sn}</td>
+			                <td>${item.rma_mb_sn}</td> 
+			                <td>${item.rma_statement}</td> 
+			                <td>${item.rma_model}</td> 
+			            `;
+			            
+			            tbody.appendChild(row);// 把建立好的列加到 tbody 中			           	
+
+			             // 加入點擊事件：點選這一列時，將資料顯示在下方區塊中
+			      		row.addEventListener("click", function() {
+			                	//點選的資料 機台號碼欄位給sndata
+			            	let sndata=	item.rma_b_sn;
+			            	if (!sndata) {
+			                		//判斷sndata為空值 表示 機台序號 沒有資料 把 MB號碼 給 輸入序號 欄位
+			            		$('#input_sn input').val(item.rma_mb_sn);//MB號碼 放在input				                							    				 
+			  				}else{
+			  					$('#input_sn input').val(item.rma_b_sn);//機台序號 放在input
+							}			                	  
+				    			
+							});			             
+			             
+//			            tbody.appendChild(row);// 把建立好的列加到 tbody 中			           	
+			        });			       
+			    }
+			 // 頁面載入時執行
+			 //  document.addEventListener("DOMContentLoaded", populateTable);
+			} 
+			
+			//可能是新建立
+			if(main.allData.call_bk_vals.search){
+//				console.log(main.allData.call_bk_vals);
+//				$('#rd_id input').val(main.allData.call_bk_vals.rd_id);
+//				$('#rr_sn input').val(main.allData.call_bk_vals.rr_sn);
+//				var search = {};
+//				search.rd_id = 	$('#rd_id input').val();
+//				search.rr_sn = 	$('#rr_sn input').val();
+//				customized.searchSend(search);
+			}
+		},
+		
+		saveReturn(){
+			main.loading(false);
+			console.log("saveReturn repair_rma_list");
+			
+			if(main.allData.info_color=="success"){
+				this.removeAll();
+			}
+		},
+	},
+	//////////////////////////////////////////////////////////////////////
+	//移除監聽事件
+	beforeDestroy() {
+		console.log("repair_rma_list.html(beforeDestroy)");
+		$(document).off("click", "#search_fi_btn");		
+		$(document).off("click", "#clear_fi_btn");		
+		$(document).off("click", "#rd_clear_btn");
+		$(document).off("click", "#rd_save_btn");
+
+		$(document).off("keypress", "#customized .search_true input");
+	},
+});
+</script>

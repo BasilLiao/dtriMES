@@ -28,6 +28,7 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 	// 查詢SN重複
 	List<ProductionBody> findAllByPbsn(String pbsn);
 
+
 	// 查詢燒錄 SN重複
 	List<ProductionBody> findAllByPbbsn(String pbbsn);
 
@@ -43,6 +44,16 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			+ "(b.pbbsn LIKE %:pbbsn% or b.pboldsn LIKE %:pboldsn% ) "// coalesce 回傳非NULL值
 			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
 	List<ProductionBody> findAllByPbgidAndPbbsnLikeOrPboldsnLike(Long pbgid, String pbbsn, String pboldsn);
+	
+	
+	
+	// 查詢SN and MB_uuid //johnny 故意使用 sysmuser 來對應RMA號碼 來造成查無資料
+	@Query("SELECT b FROM ProductionBody b WHERE "
+			   + "(:sysmuser is null or b.sysmuser  =:sysmuser) and "
+			   + "(:pbsn is null or b.pbsn  =:pbsn) and "
+		       + "(:pbvalue16 is null or b.pbvalue16 =:pbvalue16) ")			 
+	List<ProductionBody> findAllByPbsnAndpbvalue16(String  sysmuser ,String pbsn ,String pbvalue16);
+
 
 	// 查詢SN重複+群組
 	List<ProductionBody> findAllByPbsnAndPbgid(String pbsn, Long pbgid);

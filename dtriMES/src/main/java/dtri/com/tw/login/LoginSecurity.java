@@ -49,7 +49,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String workstation_disassemble = "/ajax/workstation_disassemble.basil";
 
 		String own_user = "/ajax/own_user.basil";
-		String customer = "/ajax/customer.basil";
+		String customer = "/ajax/customer.basil";	
+		String own_rma_mail = "/ajax/own_rma_mail.basil" ;
 
 		String repair_unit = "/ajax/repair_unit.basil";
 		String repair_code = "/ajax/repair_code.basil";
@@ -58,7 +59,10 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String repair_order_rma = "/ajax/repair_order_rma.basil";
 		String repair_list = "/ajax/repair_list.basil";
 		String repair_list_bat = "/ajax/repair_list_bat.basil";
+		String repair_rma_list_bat = "/ajax/repair_rma_list_bat.basil";
 
+		String repair_rma_list = "/ajax/repair_rma_list.basil";
+	
 		String label_list = "/ajax/label_list.basil";
 
 		String work_hours = "/ajax/work_hours.basil";
@@ -227,13 +231,13 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, repair_order_dtr + ".S2").hasAuthority(actionRole(repair_order_dtr, "S2"))// (客製化-修改)
 
 				// ----請求-repair_order_rma-(訪問) ----
-				.antMatchers(HttpMethod.POST, repair_order_rma).hasAuthority(actionRole(repair_order_rma, ""))//
-				.antMatchers(HttpMethod.POST, repair_order_rma + ".AR").hasAuthority(actionRole(repair_order_rma, "AR"))// (查詢)
-				.antMatchers(HttpMethod.POST, repair_order_rma + ".AC").hasAuthority(actionRole(repair_order_rma, "AC"))// (新增)
-				.antMatchers(HttpMethod.PUT, repair_order_rma + ".AU").hasAuthority(actionRole(repair_order_rma, "AU"))// (修改)
-				.antMatchers(HttpMethod.DELETE, repair_order_rma + ".AD").hasAuthority(actionRole(repair_order_rma, "AD"))// (移除)
-				.antMatchers(HttpMethod.POST, repair_order_rma + ".S1").hasAuthority(actionRole(repair_order_rma, "S1"))// (客製化-查詢)
-				.antMatchers(HttpMethod.PUT, repair_order_rma + ".S2").hasAuthority(actionRole(repair_order_rma, "S2"))// (客製化-修改)
+//				.antMatchers(HttpMethod.POST, repair_order_rma).hasAuthority(actionRole(repair_order_rma, ""))//
+//				.antMatchers(HttpMethod.POST, repair_order_rma + ".AR").hasAuthority(actionRole(repair_order_rma, "AR"))// (查詢)
+//				.antMatchers(HttpMethod.POST, repair_order_rma + ".AC").hasAuthority(actionRole(repair_order_rma, "AC"))// (新增)
+//				.antMatchers(HttpMethod.PUT, repair_order_rma + ".AU").hasAuthority(actionRole(repair_order_rma, "AU"))// (修改)
+//				.antMatchers(HttpMethod.DELETE, repair_order_rma + ".AD").hasAuthority(actionRole(repair_order_rma, "AD"))// (移除)
+//				.antMatchers(HttpMethod.POST, repair_order_rma + ".S1").hasAuthority(actionRole(repair_order_rma, "S1"))// (客製化-查詢)
+//				.antMatchers(HttpMethod.PUT, repair_order_rma + ".S2").hasAuthority(actionRole(repair_order_rma, "S2"))// (客製化-修改)
 
 				// ----請求-repair_history-(訪問) ----
 				.antMatchers(HttpMethod.POST, repair_history).hasAuthority(actionRole(repair_history, ""))//
@@ -252,11 +256,24 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, repair_list + ".S1").hasAuthority(actionRole(repair_list, "S1"))// (客製化-查詢)
 				.antMatchers(HttpMethod.PUT, repair_list + ".S2").hasAuthority(actionRole(repair_list, "S2"))// (客製化-修改)
 
+				// ----請求-repair_rma_list_bat-(訪問) johnny---通用-(RMA售後)維修單
+				.antMatchers(HttpMethod.POST, repair_rma_list_bat).hasAuthority(actionRole(repair_rma_list_bat, ""))//
+				.antMatchers(HttpMethod.POST, repair_rma_list_bat + ".AR").hasAuthority(actionRole(repair_rma_list_bat, "AR"))// (查詢)
+				.antMatchers(HttpMethod.PUT, repair_rma_list_bat + ".AU").hasAuthority(actionRole(repair_rma_list_bat, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, repair_rma_list_bat + ".AD").hasAuthority(actionRole(repair_rma_list_bat, "AD"))// (移除)
+				.antMatchers(HttpMethod.POST, repair_rma_list_bat + ".S1").hasAuthority(actionRole(repair_rma_list_bat, "S1"))// (客製化-查詢)
+				.antMatchers(HttpMethod.PUT, repair_rma_list_bat + ".S2").hasAuthority(actionRole(repair_rma_list_bat, "S2"))// (客製化-修改)				
+				
 				// ----請求-repair_list_bat-(訪問) ----
 				.antMatchers(HttpMethod.POST, repair_list_bat).hasAuthority(actionRole(repair_list_bat, ""))//
 				.antMatchers(HttpMethod.POST, repair_list_bat + ".AR").hasAuthority(actionRole(repair_list_bat, "AR"))// (查詢)
 				.antMatchers(HttpMethod.PUT, repair_list_bat + ".AU").hasAuthority(actionRole(repair_list_bat, "AU"))// (修改)
 
+				// ----請求-	repair_rma_list-(訪問) johnny----通用-RMA維修處理
+				.antMatchers(HttpMethod.POST, repair_rma_list).hasAuthority(actionRole(repair_rma_list, ""))//				
+				.antMatchers(HttpMethod.POST, repair_rma_list + ".S1").hasAuthority(actionRole(repair_rma_list, "S1"))// (客製化-查詢)
+				.antMatchers(HttpMethod.PUT, repair_rma_list + ".S2").hasAuthority(actionRole(repair_rma_list, "S2"))// (客製化-新增/修改)
+				
 				// ----請求-label_list-(訪問) ----
 				.antMatchers(HttpMethod.POST, label_list).hasAuthority(actionRole(label_list, ""))//
 				.antMatchers(HttpMethod.POST, label_list + ".AR").hasAuthority(actionRole(label_list, "AR"))// (查詢)
@@ -289,7 +306,14 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, own_user + ".AU").hasAuthority(actionRole(own_user, "AU"))// (修改)
 				// .antMatchers(HttpMethod.DELETE, own_user +
 				// ".AD").hasAuthority(actionRole(own_user, "AD"))// (移除)
-
+				
+				// ----請求-	own_rma_mail-(訪問) johnny---- 
+				.antMatchers(HttpMethod.POST, own_rma_mail).hasAuthority(actionRole(own_rma_mail, ""))//
+				.antMatchers(HttpMethod.POST, own_rma_mail + ".AR").hasAuthority(actionRole(own_rma_mail, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, own_rma_mail + ".AC").hasAuthority(actionRole(own_rma_mail, "AC"))// (新增)  			
+				.antMatchers(HttpMethod.PUT, own_rma_mail + ".AU").hasAuthority(actionRole(own_rma_mail, "AU"))// (修改)  
+				.antMatchers(HttpMethod.DELETE, own_rma_mail + ".AD").hasAuthority(actionRole(own_rma_mail, "AD"))// (移除) 
+				
 				// ----請求-work_type-(訪問) ----
 				.antMatchers(HttpMethod.POST, customer).hasAuthority(actionRole(customer, ""))//
 				.antMatchers(HttpMethod.POST, customer + ".AR").hasAuthority(actionRole(customer, "AR"))// (查詢)

@@ -76,14 +76,14 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.6</version>
 		</dependency>
-		<!-- Mail 寄件插件 -->
-		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
+			
+		<!-- 新增 spring-boot-starter-mail 依賴-->
+		<!--Mail 模塊-->
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.0</version>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-
+		
 		<!-- 熱部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

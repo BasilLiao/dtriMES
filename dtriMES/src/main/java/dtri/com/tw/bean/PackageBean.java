@@ -23,6 +23,7 @@ public class PackageBean {
 	public static final String info_warning_save = "[105] The command was executed (Save/存檔/Lưu trữ) [Warning/警告/Cảnh cáo]!!";
 	public static final String info_warning_check = "[106] The command was executed (Check/檢查/kiểm tra) [Warning/警告/Cảnh cáo]!!";
 	public static final String info_warning_same_data = "[107] The data is duplicated (資料重複)";
+	public static final String info_warning_error_data = "[108] 資料或格式錯誤";
 
 	public static final String info_warning1_NotFindUser = "[101] Unable to get user information [Warning]!!";
 	public static final String info_warning2_NotFind = "[102] Did not find any results (查無資料)[Warning]!!";
@@ -67,6 +68,7 @@ public class PackageBean {
 	public static final String info_Maint_warning03 = "[MT003] 無此 (維修單) 請再次檢查! [Warning]!!";
 	public static final String info_Maint_warning04 = "[MT004] 您非 (維修單位) 成員, 請向 管理者 申請! [Warning]!!";
 	public static final String info_Maint_warning05 = "[MT005] 此 (維修單) 資料填寫不完善 請再次檢查! [Warning]!!";
+	public static final String info_Maint_success06 = "[MT006] 此 (RMA單) 已全部處理完畢並系統通知信件寄出 [Successfully]!!";
 	
 	public static final String info_Label_warning05 = "[LB005] 此 (標籤設計) 資料填寫不完善 請再次檢查! [Warning]!!";
 	public static final String info_Label_warning06 = "[LB006] 此 (標籤設計) 名稱重複 請再次檢查! [Warning]!!";
@@ -145,6 +147,10 @@ public class PackageBean {
 		case "107":// 資料重複
 			this.info = info_warning_same_data + error_ms + " [Warning]!!";
 			break;
+		case "108":// 資料或格式錯誤
+			this.info = info_warning_error_data + error_ms + " [Warning]!!";
+			break;	
+			
 		case "WP001":// [WP001] 此工作站被使用中 , 請檢查(工作站-流程管理)! [Warning]!!"
 			this.info = info_work_p_warning1;
 			break;
@@ -254,6 +260,10 @@ public class PackageBean {
 		case "MT005":// [MT005] 此 (維修單) 資料填寫不完善 請再次檢查! [Warning]";
 			this.info = info_Maint_warning05;
 			break;
+		case "MT006"://[MT006] 此 (RMA單) 已全部處理完畢並系統通知信件寄出 [Successfully]!!"
+			this.info = info_Maint_success06;
+			this.info_color = info_color_success;
+			break;		
 		case "LB005":// [LB005] 此 (標籤設計) 資料填寫不完善 請再次檢查! [Warning]";
 			this.info = info_Label_warning05;
 			break;	

@@ -12,24 +12,24 @@ import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.RepairOrderRmaService;
+import dtri.com.tw.service.RepairRmaListService;
 
 @Controller
-public class RepairOrderRmaController extends AbstractController {
-	public RepairOrderRmaController() {
-		super("repair_order_rma.basil");// 功能
+public class RepairRmaListController extends AbstractController {
+	public RepairRmaListController() {
+		super("repair_rma_list.basil");// 功能
 	}
 
 	@Autowired
 	PackageService packageService;
 	@Autowired
-	RepairOrderRmaService orderRmaService;
+	RepairRmaListService repairRmaListService;
 
 	/**
 	 * 訪問
 	 */
-	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@ResponseBody    //按下menu下的單元會先執行訪問
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		showSYS_CM("access");
 		show(json_object);
@@ -43,8 +43,8 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderRmaService.getData(resp, req, user);
-		check = orderRmaService.getDataCustomized(resp, req, user);
+		check = repairRmaListService.getData(resp, req, user);
+		check = repairRmaListService.getDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -62,7 +62,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
 		showSYS_CM("search");
 		show(json_object);
@@ -75,7 +75,7 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderRmaService.getData(resp, req, user);
+		check = repairRmaListService.getData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -93,7 +93,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 新增
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
 		showSYS_CM("create");
 		show(json_object);
@@ -106,9 +106,9 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderRmaService.createData(resp, req, user);
+		check = repairRmaListService.createData(resp, req, user);
 		if (check) {
-			check = orderRmaService.save_asData(resp, req, user);
+			check = repairRmaListService.save_asData(resp, req, user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -127,7 +127,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		showSYS_CM("modify");
 		show(json_object);
@@ -141,9 +141,9 @@ public class RepairOrderRmaController extends AbstractController {
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
 		if (req.getCall_bk_fn().equals("customized_search")) {
-			check = orderRmaService.updateDataCustomized(resp, req, user);
+			check = repairRmaListService.updateDataCustomized(resp, req, user);
 		} else {
-			check = orderRmaService.updateData(resp, req, user);
+			check = repairRmaListService.updateData(resp, req, user);
 		}
 		// Step3.進行判定
 		if (check) {
@@ -162,7 +162,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 移除
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		showSYS_CM("delete");
 		show(json_object);
@@ -175,7 +175,7 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderRmaService.deleteData(resp, req, user);
+		check = repairRmaListService.deleteData(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -194,7 +194,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.S1" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.S1" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String searchCustomized(@RequestBody String json_object) {
 		showSYS_CM("searchCustomized");
 		show(json_object);
@@ -207,7 +207,7 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行查詢
-		check = orderRmaService.getDataCustomized(resp, req, user);
+		check = repairRmaListService.getDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳
@@ -225,7 +225,7 @@ public class RepairOrderRmaController extends AbstractController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/repair_order_rma.basil.S2" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/repair_rma_list.basil.S2" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modifyCustomized(@RequestBody String json_object) {
 		showSYS_CM("modifyCustomized");
 		show(json_object);
@@ -238,7 +238,7 @@ public class RepairOrderRmaController extends AbstractController {
 		// Step1.包裝解析
 		req = packageService.jsonToObj(new JSONObject(json_object));
 		// Step2.進行新增
-		check = orderRmaService.updateDataCustomized(resp, req, user);
+		check = repairRmaListService.updateDataCustomized(resp, req, user);
 		// Step3.進行判定
 		if (check) {
 			// Step4.包裝回傳

@@ -5,7 +5,7 @@
 		</h4>
 	</div>
 	<div class="p-1">
-		<ul class="nav nav-tabs shadow-sm" id="myTab" role="tablist">
+		<ul class="nav nav-tabs shadow-sm d-none" id="myTab" role="tablist">
 			<li class="nav-item"><a id="home_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="true" aria-controls="home_tab" href="#home_tab" id="tab-home"><i
 					class="bi bi-house mr-1"></i>Home</a></li>
 			<li class="nav-item"><a id="search_nav" class="p-1 mr-1 nav-link btn-sm" data-toggle="tab" role="tab" aria-selected="false" aria-controls="search_tab" href="#search_tab" id="tab-search"><i
@@ -53,6 +53,7 @@
 	</div>
 </div>
 <script type="text/javascript">
+//123johnny
 	//控制端
 	t_body = new Vue({
 		el : "#index",
@@ -62,7 +63,7 @@
 		},
 		//初始化前
 		created() {
-			console.log("body_repair_order_rma.html(created)");
+			console.log("body_repair_rma_list.html(created)");
 		},
 		//初始化後
 		mounted() {
@@ -76,22 +77,22 @@
                		main.info_user["status"], 
                		new Date());
 			});
-			//查詢-模板
-			$("#index #search_tab").load("./html/model/search.html", function() {
-				search.setDataTitle(main.allData.header['search_header'] ,main.allData.html_permission);
-				search.setDataList(main.allData.body.search,
-	            		   main.allData.body.search_son,
-	            		   main.allData.body_type);  
-				search.setSearch(main.allData.cell_searchs);
-				search.selectAllInit();
-			});
-			//編輯-模板
-			$("#index #modify_tab").load("./html/model/modify.html", function() {
-				modify.setDataTitle(main.allData.cell_modify,main.allData.html_permission);
-				modify.setDataGroupTitle(main.allData.cell_g_modify,main.allData.body_type);
-				modify.setDataTitleDelete(main.allData.header['search_header']);
-				modify.selectAllInit();
-			});
+//取消J			//查詢-模板
+//			$("#index #search_tab").load("./html/model/search.html", function() {
+//				search.setDataTitle(main.allData.header['search_header'] ,main.allData.html_permission);
+//				search.setDataList(main.allData.body.search,
+//	            		   main.allData.body.search_son,
+//	            		   main.allData.body_type);  
+//				search.setSearch(main.allData.cell_searchs);
+//				search.selectAllInit();
+//			});
+//取消J			//編輯-模板
+//			$("#index #modify_tab").load("./html/model/modify.html", function() {
+//				modify.setDataTitle(main.allData.cell_modify,main.allData.html_permission);
+//				modify.setDataGroupTitle(main.allData.cell_g_modify,main.allData.body_type);
+//				modify.setDataTitleDelete(main.allData.header['search_header']);
+//				modify.selectAllInit();
+//			});
 			//列印-模板
 			//$("#index #print_tab").load("./html/model/print.html");
 			//下載-模板
@@ -102,17 +103,22 @@
 			//$("#index #analysis_tab").load("./html/model/analysis.html");
 			//工作站-模板
 			//$("#index #workstation_tab").load("./html/model/workstation.html");
-			$("#index #customized_tab").load("./html/other/repair_rma.html", function() {
+			
+			//一開始轉跳時會先
+			$("#index #customized_tab").load("./html/other/repair_rma_list.html", function() {
+				console.log("main.allData_johnny");
+				console.log(main.allData);
+	
 				//帶入模板內資料 
-				customized.setDataTitle(
-						main.allData.header['customized_header'],
-						main.allData.header['customized_documents'],
-						main.allData.html_permission);
+//				customized.setDataTitle(
+//						main.allData.header['customized_header'],
+//						main.allData.header['customized_documents'],
+//						main.allData.html_permission);
 				
-				customized.setDataList(main.allData.body,
-	            		   main.allData.body.search_son,
-	            		   main.allData.body_type);  
-				customized.setSearch(main.allData.cell_searchs.maintain_rma);
+//				customized.setDataList(main.allData.body,
+//	            		main.allData.body.search_son,
+//	            		main.allData.body_type);  
+//				customized.setSearch(main.allData.cell_searchs.maintain_dtr);
 				customized.selectAllInit();	
 			});
 			
@@ -132,7 +138,7 @@
             $("#index #customized_tab").addClass("active");
             
             //單元名稱
-            $("#title_name").text(t_nav.nav_list['body_repair_order_rma']);
+            $("#title_name").text(t_nav.nav_list['body_repair_rma_list']);
 		},
 		//可呼叫方法
 		methods : {
@@ -140,7 +146,7 @@
 		},
 		//移除監聽事件
 		beforeDestroy() {
-			console.log("body_repair_order_rma.html(beforeDestroy)");
+			console.log("body_repair_rma_list.html(beforeDestroy)");
 
 		}
 	});
