@@ -10,28 +10,26 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.RmaList;
-import dtri.com.tw.db.entity.RmaMail;
+import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.RmaListDao;
-import dtri.com.tw.db.pgsql.dao.RmaMailListDao;
+import dtri.com.tw.db.pgsql.dao.SystemMailDao;
 
 @Service
 public class RepairRmaListBatService {
-//	@Autowired
-//	private RepairUnitDao unitDao;
 
 	@Autowired
 	private RmaListDao rmaListDao;
 
 	@Autowired
-	private RmaMailListDao rmaMailListDao;
+	private SystemMailDao rmaMailListDao;
 
 	@Autowired
 	BasicNotificationMailService mailService;
@@ -41,42 +39,29 @@ public class RepairRmaListBatService {
 	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
 		try {
 			JSONObject body = req.getBody();
-			JSONObject list = body.getJSONObject("modifyDelete");
+			JSONArray list = body.getJSONArray("modifyDelete");
 			System.out.println(list);
+			Long rmaid = null;
 
-			String rma_number = list.getString("modify_rmano");
-			rma_number = rma_number.equals("") ? null : rma_number;
+			for (Object object : list) {
+				JSONObject one = (JSONObject) object;
+				rmaid = (long) one.optInt("modify_id");
+				rmaid = (rmaid == -1) ? 0 : rmaid;
 
-			String serial_number = list.getString("modify_sn");
-			serial_number = serial_number.equals("") ? null : serial_number;
-
-			if (rma_number.length() > 0 && serial_number == null) {
-				// 排除1與2和3的紀錄,才不會搜尋到 以收到 或 處理完畢 和 已寄出 的資料 , 要刪除 在機台還沒收到前
-				List<RmaList> rls = rmaListDao.findAllBysnAndmb(null, rma_number, null, null, Arrays.asList(1, 2, 3));
+				List<RmaList> rls = rmaListDao.findAllBysnAndmb(rmaid, null, null, null, Arrays.asList(1, 2, 3));
 				if (rls.size() > 0) {
-					rmaListDao.deleteByrmaNumber(rma_number);
-					return true;
+					rmaListDao.deleteByid(rmaid);
 				} else {
 					resp.autoMsssage("102"); // 沒找到東西
 					return false;
-				}
-			} else if (rma_number.length() > 0 && serial_number != null) {
-				// 排除1與2和3的紀錄,才不會搜尋到 以收到 或 處理完畢 和 已寄出 的資料 , 要刪除 在機台還沒收到前
-				List<RmaList> rls = rmaListDao.findAllBysnAndmb(null, rma_number, serial_number, null,
-						Arrays.asList(1, 2, 3));
-				if (rls.size() > 0) {
-					rmaListDao.deleteByRmaNumberAndSerialNumber(rma_number, serial_number);
-					return true;
-				} else {
-					resp.autoMsssage("102"); // 沒找到東西
-					return false;
-				}
-			}
+				}				
+			}			
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
 		}
-		return false;
+		// 全部資料成功刪除
+		return true;
 	}
 
 	// 更新 資料清單
@@ -92,10 +77,9 @@ public class RepairRmaListBatService {
 		}
 		Long rmaid = null;
 		String rmano = null;
-		String rmaMachSn = null;
-		String rmaMbsn = null;
+		String customer = null;
 		Integer StateCheck = null;
-		String state = null;	
+		String state = null;
 		try {
 			for (Object object : list) {
 				JSONObject one = (JSONObject) object;
@@ -106,51 +90,43 @@ public class RepairRmaListBatService {
 					rmaid = (long) one.optInt("modify_id");
 					rmaid = (rmaid == -1) ? 0 : rmaid;
 				}
-				// 先確認 one 是否包"rma_mb_sn 物件
-				if (one.has("modify_sn")) {
-					rmaMachSn = one.getString("modify_sn");
-					rmaMachSn = rmaMachSn.equals("") ? null : rmaMachSn;
+				// 先確認 one 是否包"modify_customer 物件
+				if (one.has("modify_customer")) {
+					customer = one.getString("modify_customer");
+					customer = customer.equals("") ? null : customer;
 				}
-				// 先確認 one 是否包"rma_mb_sn 物件
-				if (one.has("rma_mb_sn")) {
-					rmaMbsn = one.getString("rma_mb_sn");
-					rmaMbsn = rmaMbsn.equals("") ? null : rmaMbsn;
-				}
-				StateCheck = one.getInt("modify_state_select"); // 取至SELECT 目前進度 所以在回圈內都是一樣的值
-				StateCheck = (StateCheck == -1) ? 0 : StateCheck;
-				state = one.getString("modify_state"); // 取的中文表示的狀態
+
+				state = one.getString("modify_state_select"); // 取的中文表示的狀態
 				state = state.equals("") ? null : state;
-				ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(rmaid, rmano, rmaMachSn, rmaMbsn, null,
-						null, null, null, null);
+
+				StateCheck = one.getInt("modify_state"); // //取TABLE的col-stateCheck那一筆資料的狀態欄的值 0/1/2/3/4
+				StateCheck = (StateCheck == -1) ? 0 : StateCheck;
+
+				ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(rmaid, null, null, null, null, null,	null, null);
+
 				if (rls.size() > 0) {
 					RmaList rl = rls.get(0);
-					rl.setState(one.getString("modify_state"));
-					rl.setStateCheck(one.getInt("modify_state_select"));
-					rl.setSysmuser(user.getSuaccount()); //修改人員
+					rl.setState(state);
+					rl.setStateCheck(StateCheck);
+
+					rl.setRecdtracknum(one.getString("modify_recd_track_num"));
+					rl.setRecddate(one.getString("modify_recd_date"));
+					// send_track_num
+					rl.setSendtracknum(one.getString("modify_send_track_num"));
+					rl.setSenddate(one.getString("modify_send_date"));
+
+					rl.setSysmuser(user.getSuaccount()); // 修改人員
 					rl.setSysmdate(new Date());
 					rmaListDao.save(rl);
 					check = true;
 				}
 			}
 
-			// *******************比較條件後(全部收到後)----> 準備寄信 ******************
-			ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmano, null, null, null, null, null,
-					StateCheck, null);
-			Long counts = rmaListDao.countByRmaNumber(rmano); // 取得這筆RMA裡的筆數
-			int x = (int) (counts * StateCheck); // 筆數 * 狀態欄
-			int c = 0;
-			// 計算RMA裡的 StateCheck 數 的總和多少 在與 X 做比較
-			for (int i = 0; i < rls.size(); i++) {
-				c = c + rls.get(i).getStateCheck();
-			}
-			System.out.println(c);
-			System.out.println(x);
-
-			// 若符合1收到貨 或 3已寄出 及 x(筆數＊狀態) ＝＝ c(狀態累加)
-			if ((StateCheck == 1 || StateCheck == 3) && (c == x)) {
+			// 若符合1收到貨 或 3已寄出
+			if (StateCheck == 1 || StateCheck == 3) {
 				// ************************** 取得 MAIL 清單 ***********************
 				// rmlds 就是一個 ArrayList<RmaMail> 型別的變數，存放查詢出來的所有RmaMail 物件。
-				ArrayList<RmaMail> rmlds = rmaMailListDao.findAll();
+				ArrayList<SystemMail> rmlds = rmaMailListDao.findAll();
 				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
 
 				// 符合收到貨 條件 取得需要寄信人員名單
@@ -161,20 +137,44 @@ public class RepairRmaListBatService {
 						}
 					});
 				}
+				if (StateCheck == 3) state = "已寄出";
 
 				// ************************** 寄信 ********************
 				String mailList = rmaMailList.toString(); // 轉換為 String
 				String[] toUser = mailList.split(";"); // 用 ";" 分割成 String 陣列
 				// String[] toUser = { "johnny_chuang@dtri.com", "ansolder@gmail.com" };
 				String[] toCcUser = { "" };
-				String subject = "RMA 通知" + rmano + state + "";
+				String subject = "RMA通知 " + rmano + " " + customer + "  " + state;
 				// 構建郵件內容
 				StringBuilder httpstr = new StringBuilder();
-				httpstr.append("Dear All, <br><br>").append("通知 ").append(rmano).append(state); // .append("請提領<br><br>");
+				httpstr.append("Dear All, <br><br>").append("通知 ").append(customer+" ").append(rmano).append(state)
+						.append("<br>"); // .append("請提領<br><br>");
 
+//				if (StateCheck == 1) {
+//					httpstr.append("<table border='1'><tr>").append("<th>RMA Number</th>" // RMA號碼
+//							+ "<th>Customer</th>" // RMA客戶
+//							+ "<th>Model</th>" // model
+//							+ "<th>Part No</th>" // Oracle part no
+//							+ "<th>Serial Number</th>" // Serial Number
+//							+ "<th>MB Number</th>" // MB Number
+//							+ "<th>Issue</th>" + "</tr>");
+//					ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmano, null, null, null, null,
+//							null, StateCheck, null);
+//					for (RmaList rl : rls) {
+//						httpstr.append("<tr>").append("<td>").append(rl.getRmaNumber()).append("</td>")// RMA號碼
+//								.append("<td>").append(rl.getCustomer()).append("</td>") // RMA客戶
+//								.append("<td>").append(rl.getModel()).append("</td>") // model
+//								.append("<td>").append(rl.getPartNo()).append("</td>") // Oracle part no
+//								.append("<td>").append(rl.getSerialNumber()).append("</td>") // Serial Number
+//								.append("<td>").append(rl.getMbNumber()).append("</td>") // MB Number
+//								.append("<td>").append(rl.getIssue()).append("</td>") // 客戶問題敘述
+//								.append("</tr>");
+//					}
+//					httpstr.append("</table>");
+//				}
+			
 				mailService.sendEmail(toUser, toCcUser, subject, httpstr.toString(), null, null);
 			}
-
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
@@ -195,7 +195,6 @@ public class RepairRmaListBatService {
 			return false;
 		}
 		List<RmaList> RmaList = new ArrayList<>();
-//		List<RmaList> x = rmaListDao.findByRmaNumberContaining(rmano);
 		// Set 集合的 contains() 方法 用來快速檢查是否已經有這個 rmano，效率比 List 高
 		Set<RmaList> x = rmaListDao.findByRmaNoContaining(rmano);
 		// 追蹤已出現的 serialNumber
@@ -273,8 +272,8 @@ public class RepairRmaListBatService {
 						}
 						existingmbNumbers.add(uniqueMb);
 					}
-					String syscuser = user.getSuaccount();	//建立人員
-					String sysmuser = user.getSuaccount();	//修改人員
+					String syscuser = user.getSuaccount(); // 建立人員
+					String sysmuser = user.getSuaccount(); // 修改人員
 					RmaList rma = new RmaList(rmano, model, guest, serialNumber, mbNumber, issue, partNo, wtyStatus,
 							syscuser, sysmuser);
 					RmaList.add(rma);
@@ -291,16 +290,16 @@ public class RepairRmaListBatService {
 		return false;
 	}
 
-	// 取得當前 資料清單
+	// search 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 
-		int page1 = req.getPage_batch(); // 取得請求中的當前頁數
-		int p_size1 = req.getPage_total(); // 取得每頁的筆數
+//		int page1 = req.getPage_batch(); // 取得請求中的當前頁數
+//		int p_size1 = req.getPage_total(); // 取得每頁的筆數
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		// 這裡直接覆蓋上面取得的值，讓分頁查詢變成 "不分頁"
-		page1 = 0;
-		p_size1 = 99999; // 設定為極大值，意味著一次查詢所有資料
-		PageRequest page_r = PageRequest.of(page1, p_size1, Sort.by("rmaNumber").descending());
+//		page1 = 0;
+//		p_size1 = 99999; // 設定為極大值，意味著一次查詢所有資料
+//		PageRequest page_r = PageRequest.of(page1, p_size1, Sort.by("rmaNumber").descending());
 		boolean check = false;
 
 		JSONObject body = req.getBody(); // 建立空的JSON格式
@@ -318,25 +317,17 @@ public class RepairRmaListBatService {
 		String state = body.getJSONObject("search").getString("state").trim();
 		state = state.equals("") ? null : state;
 
-		// ************************** 取得 MAIL 清單 ***********************
-		ArrayList<RmaMail> rmlds = rmaMailListDao.findAll(); // rmlds 就是一個 ArrayList<RmaMail> 型別的變數，存放查詢出來的所有 RmaMail物件。
-
-		StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
-		if (!rmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
-			rmlds.forEach(rl -> {
-				if ("Y".equals(rl.getSureceived())) {// 如果 sureceived 是 "Y"
-					rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
-				}
-			});
-		}
-
-		System.out.println(rmaMailList);
 		// ************************** 取得 RMA 清單 ************************
-		ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmaNO, rma_b_sn, rma_mb_sn, null, null,
-				state, null, page_r);
+		ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmaNO, rma_b_sn, rma_mb_sn, null, null,state, null);
+		
 		JSONObject search = new JSONObject();
 		JSONArray object_bodys = new JSONArray();
-
+		
+		if (rls == null || rls.isEmpty()) {
+			System.out.println("RMAList查無資料，結束執行。");
+			bean.autoMsssage("102"); // 回傳錯誤訊息
+			return check;
+		}
 		if (rls.size() > 0) {
 			rls.forEach(rl -> {
 				JSONObject object_body = new JSONObject();
@@ -353,25 +344,24 @@ public class RepairRmaListBatService {
 				object_body.put("rma_result", rl.getRrd_RmaResult());
 				object_body.put("stateCheck", rl.getStateCheck());
 				object_body.put("state", rl.getState()); // 未收到
-				
-				object_body.put("syscdate", rl.getSyscdate()); 	// 建立時間
-				object_body.put("syscuser", rl.getSyscuser());	//建立人
-				object_body.put("sysmdate", rl.getSysmdate());	//修改時間
-				object_body.put("sysmuser", rl.getSysmuser());	//修改人
-				
+
+				object_body.put("send_track_num", rl.getSendtracknum()); // 寄貨追蹤號碼
+				object_body.put("send_date", rl.getSenddate()); // 寄出日
+				object_body.put("recd_track_num", rl.getRecdtracknum()); // 到貨追蹤號碼
+				object_body.put("recd_date", rl.getRecddate()); // 收到日
+
+				object_body.put("syscdate", rl.getSyscdate()); // 建立時間
+				object_body.put("syscuser", rl.getSyscuser()); // 建立人
+				object_body.put("sysmdate", rl.getSysmdate()); // 修改時間
+				object_body.put("sysmuser", rl.getSysmuser()); // 修改人
 				// 0:未收到 1:已收到 2:處理完畢 3:已寄出
 				object_bodys.put(object_body);
-
 			});
-			// bean.setBody(new JSONObject().put("search", object_bodys));
 			search.put("search", object_bodys);
-			search.put("rmamail", rmaMailList);
 			bean.setBody(search);
-
 			return true;
 		}
-
-		System.out.println("RmaList查無資料，結束執行。");
+		System.out.println("xxxxRmaList查無資料，結束執行。");
 		bean.autoMsssage("102"); // 回傳錯誤訊息
 		return check;
 	}

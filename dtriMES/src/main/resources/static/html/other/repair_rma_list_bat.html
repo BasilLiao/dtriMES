@@ -6,10 +6,11 @@
 }
 
 .datalist {
-	overflow: hidden;
-	text-overflow: ellipsis;
+	overflow:hidden;
+	text-overflow:ellipsis ;
 }
 
+ 	 /* 日期及時間 */
 .datetimepicker {
 	margin-top: 50px;
 }
@@ -26,8 +27,21 @@
 }
 
 .search_example_title tr {
-	top: 0px;
-	z-index: 3;
+	top:0px;
+	z-index:3;
+}
+    /* 固定表頭
+    thead tr th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+   */
+.custom-size-checkbox {
+    width: 20px;  /* 你可以根據需要調整大小 */
+    height: 20px;
+    cursor: pointer;
 }
 </style>
 <div id="search">
@@ -78,7 +92,7 @@
 					<option class="example_select_one" value="未收到">未收到</option>
 					<option class="example_select_one" value="已收到">已收到</option>
 					<option class="example_select_one" value="處理完畢">處理完畢</option>
-					<option class="example_select_one" value="已寄出">已寄出</option>
+					<option class="example_select_one" value="已結案">已結案</option>
 
 				</select>
 			</div>
@@ -118,30 +132,43 @@
 		<div class="p-0  mt-0 text-left">
 			<div class="bg-white rounded-top m-0 pl-1 h4">
 				<i class="bi bi-pen mr-1"></i>Modify
-			</div>
-			
+			</div>			
 			<div class="col-md-12 p-0 m-0 row ">
-		
-				<div class="col-md-2 p-2 modify_example_input modify_rmano">
-					<div class="h6 col p-0">RMA號碼 :</div>					
-						<input class="col p-1 border border-dark rounded s_value" type="text">					
-				</div>
-				
-				<div class="col-md-2 p-2 m-0 modify_example_input modify_sn">
-					<div class="h6 col p-0">產品(序號) :</div>
-						<input class="col p-1 border border-dark rounded s_value" type="text">
-				</div>
-			
 				<div class="col-md-2 p-2 modify_example_selsect" id="modify_state_selsect">
 					<div class="h6 mb-1 s_name">目前進度</div>
 					<select class="col-12 custom-select custom-select-sm s_value s_value">
 						<option class="example_select_def" value="">select</option>
-						<option class="example_select_one" value="0">未收到</option>
-						<option class="example_select_one" value="1">已收到</option>
+						<option class="example_select_one" value="未收到">未收到</option>
+						<option class="example_select_one" value="已收到">已收到</option>
 
-						<option class="example_select_one" value="3">已寄出</option>
+						<option class="example_select_one" value="已結案/已寄出">已結案/已寄出</option>
+						<option class="example_select_one" value="已結案/已報廢">已結案/已報廢</option>
 					</select>
 				</div>
+				
+				<div class="col-md-2 p-2 modify_example_input" id="modify_send_date">
+					<div class="h6 mb-1 s_name">寄貨日</div> 
+					<div class="p-0">
+						<input type="text" class="col p-1 border border-dark rounded s_value datetimepicker_date" placeholder="2025-04-24 00:00:00">
+					</div>
+				</div>
+				
+				<div class="col-md-2 p-2 m-0 modify_example_input modify_send_track_num">
+					<div class="h6 mb-1 s_name">寄貨追蹤號碼:</div>
+						<input class="col p-1 border border-dark rounded s_value" type="text">
+				</div>
+				
+				<div class="col-md-2 p-2 modify_example_input" id="modify_recd_date">
+					<div class="h6 mb-1 s_name">收到日</div> 
+					<div class="p-0">
+						<input type="text" class="col p-1 border border-dark rounded s_value datetimepicker_date" placeholder="2025-04-24 00:00:00">
+					</div>
+				</div>
+				
+				<div class="col-md-2 p-2 m-0 modify_example_input modify_recd_track_num">
+					<div class="h6 mb-1 s_name">到貨追蹤號碼:</div>
+						<input class="col p-1 border border-dark rounded s_value" type="text">
+				</div>				
 			</div>
 			
 			<div class="row p-0 m-0 modify_example_finds d-none">
@@ -173,7 +200,6 @@
 					<button id="clear_modify_btn" class="col-md-2 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
 					
 					<button id="send_mail_btn" class="col-md-2 mt-1 btn btn-warning btn-sm d-none" type="button">寄信(到貨)</button>
-
 				</div>
 			</div>
 		</div>
@@ -185,20 +211,21 @@
 			<i class="bi bi-list-ul mr-1"></i>Result
 		</div>
 		<div class="p-2">
-
-			<table id="dataTable"
-				class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+			<table id="dataTable"	class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
 				<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
-					<tr class="fixed_cell bg-dark">
-
-						<th class="p-1 " style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__item">
+					<tr class="fixed_cell bg-dark">	
+									
+						<th class="p-0 fixed_cell bg-dark" style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__checkbox">
+								<input type="checkbox" id="checkAll" class="custom-size-checkbox ">    					
+						</th>
+												
+						<th class="p-1 fixed_cell bg-dark" style="min-width: 50px; max-width: 50px; left: 51px;" id="01_h__item">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">NO</div>	
 							</div>							
 						</th>
 
-
-						<th class="p-1 fixed_cell bg-dark " style="min-width: 100px; max-width: 100px;left: 1px;" id="09_h__state">
+						<th class="p-1 fixed_cell bg-dark" style="min-width: 150px; max-width: 150px;left: 101px;" id="09_h__state">
 						  <div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">目前進度</div>
 								<div class="title_order">
@@ -208,7 +235,7 @@
 							</div>
 						</th>
 						
-						<th class="p-1 fixed_cell bg-dark " style="min-width: 100px; max-width: 100px;left: 1px;" id="">
+						<th class="p-1 fixed_cell bg-dark" style="min-width: 100px; max-width: 100px;left: 251px;" id="">
 						  <div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">維修結果</div>
 								<div class="title_order">
@@ -218,17 +245,7 @@
 							</div>
 						</th>
 						
-
-						<th class="p-1 fixed_cell bg-dark " style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__id">
-							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">ID</div>
-								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
-								</div>
-							</div></th>
-
-						<th class="p-1 fixed_cell bg-dark"	style="min-width: 200px; max-width: 200px; left: 51px;"	id="02_h__rma_number">
+						<th class="p-1 fixed_cell bg-dark"style="min-width: 150px; max-width: 150px; left:351px; "id="02_h__rma_number">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">RMA號碼</div>
 								<div class="title_order">
@@ -237,6 +254,72 @@
 								</div>
 							</div>
 						</th>
+						<th class="p-1 fixed_cell bg-dark " style="min-width: 200px; max-width: 200px; left:501px;" id="05_h__serial_number">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">機台產品序號</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="06_h__mb_number">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">MB序號</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>						
+						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__send_date">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">寄出日</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+												
+						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__send_track_num">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">寄貨追蹤號碼</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+												
+						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__recd_date">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">收到日</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>						
+						
+						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__recd_track_num">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">到貨追蹤號碼</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>						
+						
+						<th class="p-1  bg-dark  d-none" style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__id">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">ID</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div></th>
 
 						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="03_h__customer">
 							<div class="row p-0 m-0 justify-content-between">
@@ -267,25 +350,7 @@
 								</div>
 							</div>
 						</th>
-						
-						<th class="p-1 " style="min-width: 250px; max-width: 250px;" id="05_h__serial_number">
-							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">機台產品序號</div>
-								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
-								</div>
-							</div>
-						</th>
-						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="06_h__mb_number">
-							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">MB序號</div>
-								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
-								</div>
-							</div>
-						</th>
+				
 						<th class="p-1 " style="min-width: 250px; max-width: 250px;" id="07_h__issue">
 						 <div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">描述問題</div>
@@ -346,11 +411,10 @@
 							</div>
 						</th>
 
-
 					</tr>
 				</thead>
 				<tbody class="search_example_list" style="white-space: nowrap;">
-					<tr class="search_example_content">
+					<tr class="search_example_content d-none">
 						<td title="" class="s_list_body">0</td>
 					</tr>
 				</tbody>
@@ -358,7 +422,6 @@
 		</div>
 	</div>
 <!--</div> - -->
-
 </div>
 <script type="text/javascript">
 //控制端
@@ -377,6 +440,7 @@ search = new Vue({
 		data_item_f_id: "", //父類別ID
 		list_son:{},// 群組-子類別
 		list_modify:[],
+		m_check:"",
 	},
 	//初始化
 	created() {
@@ -387,7 +451,7 @@ search = new Vue({
 		setDataTitle(title, html_permission) {
 			//標題注入資訊
 			//排序
-			console.log(title);		
+			console.log(title);	
 		},
 		//注入資料在頁面上及每一次SAVE後,都會執行此方法
 		setDataList(list, list_son, body_type) {
@@ -396,41 +460,45 @@ search = new Vue({
 		
 		setSearch(search) {
 			//查詢注入資訊
-			console.log(search);			
+			console.log(search);	
+			$('#search .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});	
+			//時間格式
 		},
 		
 		setModify(modify) {
 			//修改選項
-			console.log(modify);		
+			console.log(modify);
 		},
-		
+	
 		selectAllInit() {
 			//監聽-同步相同屬性
 			//選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6)
 			$(document).on("click", "#search_btn", function (event) {
 				console.log("search_btn");
-				search.searchSend();
-				//test 
-				//search.searchReturn();
-				
+				search.searchSend();			
 			});
+			
 			$(document).on("click", "#clear_btn", function (event) {
 				console.log("clear_btn");
 				$("#search .search_example_finds input").val("");
 				$("#search .search_example_finds select").val("");
 			});
 			
-			//快速查詢 監聽確認
-			$(document).on("keypress", "#search .search_true input", function (event) {
+			//快速查詢 監聽確認   --Enter鍵		
+			$(document).on("keypress", "#search .search_example_finds input", function (event) {
 				if (event.which == 13) {
 					$('#search_btn').trigger('click');
-				}
-			});
-			
-			//快速登記 監聽確認    --Enter鍵			
-			$(document).on("keypress", "#search #modify_t_serial_number", function (event) {
-				if (event.which == 13) {
-					$('#register_btn').trigger('click');
 				}
 			});
 			//登記修改
@@ -438,17 +506,32 @@ search = new Vue({
 				console.log("register_btn");
 				search.registerTemp();
 			});
+			
 			//有登記的存檔
 			$(document).on("click", "#save_all_btn", function (event) {
-				console.log("save_all_btn");
-				search.modifySend();			
+				if(m_check){
+					search.modifySend();				
+			    	console.log("save_all_btn");	
+				}
 			});
+			
+			//刪除RMA資料
+			$(document).on("click", "#delete_btn", function (event) {				
+				if (confirm("確定要執行刪除嗎？")) {
+				        // 按下 Yes
+					console.log("delete_btn");
+					search.deleteRmalistData();			
+				}	
+			});				
 			//清除修改 
 			$(document).on("click", "#clear_modify_btn", function (event) {
 				console.log("clear_modify_btn");
-				$("#search .modify_rmano .s_value").val("");
-				$("#search .modify_sn .s_value").val("");
-				$("#search select").val("");
+				$("#search .modify_example_input  input ").val("");
+				$("#search .modify_example_selsect select").val("");
+				$("#search #01_h__checkbox input").prop("checked", false);
+				$(".row-checkbox:checked").prop("checked", false);
+				search.list_delete=[];
+				search.list_modify = [];
 			});
 			
 			//已收到Mail
@@ -456,49 +539,46 @@ search = new Vue({
 				console.log("send_mail_btn_johnny");
 				search.sendMail();
 			});
-			
-			
+						
 			//上傳excel
 			$(document).on("click", "#excel_file_upload_btn", function (event) {
 				console.log("excel_file_upload_btn johnny");
 				search.excelUpload();
-			});
-			
-			//刪除RMA資料
-			$(document).on("click", "#delete_btn", function (event) {
-				console.log("delete_btn johnny");
-				search.deleteRmalistData();
 			});			
-			
-			$(document).on("click", 'tr', function (event) {
-				$("#search #modify_t_id input").val("id尚未填寫無法刪除!!");	
-			});			
-		},
 		
+			//勾選  (全選)
+			$(document).on("click", "#checkAll", function () {
+			    let checked = $(this).prop("checked");
+			    $(".row-checkbox").prop("checked", checked);
+			});	
+			
+			// 預設查詢 "目前進度" "未收到"
+			$('#search_state_selsect select').val('未收到');
+			search.searchSend();
+		},
+
 		//刪除
 		deleteRmalistData(){
 			console.log("刪除");
-			let check= true;
-			let modify_one={};
-	//		this.list_delete=[]; //這是ARRAY
-		
-			let modify_rmano=$("#search .modify_rmano input").val().trim();  // 取得輸入框的值
-			let modify_sn=$("#search .modify_sn input").val().trim();  // 取得輸入框的值
-			
-			if(!modify_rmano){
-				$("#search .modify_rmano input").val("RMA號碼尚未填寫無法刪除!!");	
-				check = false;
-			}else{
-				 modify_one['modify_rmano']=$("#search .modify_rmano input").val();
-				 modify_one['modify_sn']=$("#search .modify_sn input").val();
-				 
-				// search.list_delete.push(modify_one);	
-			};
+			let check =true;
+			search.list_delete=[]; //這是ARRAY
+			$(".row-checkbox:checked").each(function () {
+				let $row = $(this).closest("tr"); // 包著這個 <tr>... </tr> 的 jQuery 物件		
+				let modify_stateCell = $row.find(".col-stateCheck").text();
+				if (modify_stateCell >0) {
+					t_alert.alertshow("warning", "目前進度中有部分不是『未寄出』,無法刪除");				
+					check = false;					
+				}				
+			    search.list_delete.push({
+			    	modify_id: $row.find(".col-id").text().trim(),
+			    });
+			})
+			console.log(search.list_delete);	
 		
 			if(check){		
 					main.loading(true);
 					//修改
-					var modifyDelete = modify_one;       //    this.list_delete;//把list_modify 陣列 資料給modify
+					var modifyDelete = this.list_delete;   
 					//包裝
 					var s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
 					var s_type = "DELETE";
@@ -515,118 +595,104 @@ search = new Vue({
 					req.call_bk_fn = "search";
 					req.call_bk_vals = {};
 					s_data.req_content = req;
-					
 					console.log(req);
 					//console.log(s_url);
 					//傳送
-					main.ajaxSend(s_url, s_type, s_data);
-					main.loading(false);
-				}				
+					main.ajaxSend(s_url, s_type, s_data);			
+				}
 		},
 		
 		//登記
 		registerTemp(){
-						
-			 let rmano=$(".modify_rmano input").val().trim(); //RMA 號碼
-			 let modify_sn=$(".modify_sn input").val().trim();// 機台序號
-			 
-			 let stateCheck=$(".sn_"+rmano+" .col-stateCheck_"+modify_sn).text(); //取得輸入的機序號 在 table表 的狀態
-			 
+			 let check= false;
 			 let modify_state_select=$("#modify_state_selsect select").val();　//選擇目前進度
-			 let modif_state
+			 let modify_state_check
 			 if (modify_state_select !=""){				 
-				 var check= true; 			 
+				 check= true;
 				 switch (modify_state_select) {
-				 	case "0":
-					 	modify_state="未收到";
+				 	case "未收到":
+					 	modify_state_check="0";
 				 	 	break;
-					case "1":
-					 	modify_state="已收到";
-				 	 	break;				 	
-				  	case "3":
-					  	modify_state="已寄出";
+					case "已收到":
+						modify_state_check="1";
+				 	 	break;
+				  	case "已結案/已寄出":
+				  		modify_state_check="3";
 				 		break;
-				 }	
+				  	case "已結案/已報廢":
+				  		modify_state_check="4";
+				 		break;
+				 }
 			 }
-			 
+
+			let modify_recd_date=$("#modify_recd_date input").val().trim();//收貨日
+			let modify_recd_track_num=$(".modify_recd_track_num input").val().trim();//到貨追蹤號碼
+			let modify_send_date=$("#modify_send_date input").val().trim();//寄貨日
+			let modify_send_track_num=$(".modify_send_track_num input").val().trim();//寄貨追蹤號碼
+
 			//登記
 			if(check){
-				//RMA號碼 輸入框要資料才行
-				if(rmano !="" ){	
-					//col-state					
-					if( modify_state_select <=1 && modify_sn !="") { //選擇目前進度 和 取得輸入的機序號 在 table表 的狀態
-						//超過2表示 狀態是 處理完畢 或 已寄出 不能更改為 已收到  //col-stateCheck_58TW32249D005
-						if ($($(".sn_"+rmano+" .col-stateCheck_"+modify_sn)).text()>=2)  {
-							t_alert.alertshow("warning", "0 目前進度已過『處理完畢或已寄出』,無法更改為『已收到』");
-							return false;								
-							}	
-						
-						//單筆選擇 要有 (RMA號碼 狀態_SN) 做篩選
-						if($(".sn_"+rmano+" .col-state_"+modify_sn).length==1 )  {	
-							//符合條件之後都要新建一個物件用來存放						
-							modify_one = {}; 				
-							modify_one['modify_rmano'] = rmano;
-							modify_one['modify_sn'] = modify_sn;
-							modify_one['modify_state'] = modify_state;
-							modify_one['modify_state_select'] = modify_state_select;
-						
-							//直接寫在Result的table表上 col-serial					
-							$(".sn_"+rmano+" .col-state_"+modify_sn).text(modify_state);						   
-							$(".sn_"+rmano+" .col-stateCheck_"+modify_sn).text(modify_state_select);
-							
-							search.list_modify.push(modify_one);
-						}											
-										
-					}else if(modify_state_select <=1 ) {						
-						//let x=$(".sn_"+rmano+" .col-stateCheck").length;
-						//先確認有沒有無法更改 若有無法更改就跳出  若都可以更改就登記 即顯示
-						for(var k =0;k<$(".sn_"+rmano+" .col-stateCheck").length;k++){						
-							//超過2表示 狀態是 處理完畢 或 已寄出 不能更改為 已收到
-							if ($($(".sn_"+rmano+" .col-stateCheck")[k]).text()>=2)  {
-								t_alert.alertshow("warning", "1 目前進度中有部分已過『處理完畢』,無法更改");
-								return false;								
-								}	
-						}
-						
-						for(var k =0;k<$(".sn_"+rmano+" .col-stateCheck").length;k++){			
-							let modify_one = {};
-							modify_one['modify_rmano'] = rmano; //rma 號碼
-							modify_one['modify_id']=$($(".sn_"+rmano+" .col-id")[k]).text(); //取得TABLE表中的機台號碼
-							modify_one['modify_state'] = modify_state;
-							modify_one['modify_state_select'] = modify_state_select;																		
-							//直接寫在Result的table表上 col-serial								
-							$($(".sn_"+rmano+" .col-state")[k]).text(modify_state);						   
-							$($(".sn_"+rmano+" .col-stateCheck")[k]).text(modify_state_select);
-							search.list_modify.push(modify_one);
-						}
-						
-					}else if(modify_state_select ==3 ) {				
-						
-						for(var k =0;k<$(".sn_"+rmano+" .col-stateCheck").length;k++){							
-							//小於2 表示狀態為已收到 或 未收到 還沒有經過維修 不能設定為已寄出
-							if ($($(".sn_"+rmano+" .col-stateCheck")[k]).text() <2)  {
-								t_alert.alertshow("warning", "2 有目前進度中有部分不是『處理完畢』,無法更改為『已寄出』");
-								return false;	
-								}
-						}						
-						
-						for(var k =0;k<$(".sn_"+rmano+" .col-stateCheck").length;k++){	
-							let modify_one = {};
-							modify_one['modify_rmano'] = rmano; //rma 號碼
-							modify_one['modify_id']=$($(".sn_"+rmano+" .col-id")[k]).text(); //取得TABLE表中的機台號碼
-							modify_one['modify_state'] = modify_state;
-							modify_one['modify_state_select'] = modify_state_select;													
-							//直接寫在Result的table表上 col-serial								
-							$($(".sn_"+rmano+" .col-state")[k]).text(modify_state);						   
-							$($(".sn_"+rmano+" .col-stateCheck")[k]).text(modify_state_select);
-							search.list_modify.push(modify_one);
-						}
-						
-					}else{
-						t_alert.alertshow("warning", "無法登記 [WARNING]!!");
-						return false;
-					}	
-				}
+				search.list_modify = [];
+				m_check=true;
+				$(".row-checkbox:checked").each(function () {
+					let $row = $(this).closest("tr"); // 包著這個 <tr>... </tr> 的 jQuery 物件
+					let table_state = $row.find(".col-stateCheck").text(); //取TABLE的那一筆資料的狀態欄的值 0/1/2/3
+				    //更改目前進度-未收到
+					if(modify_state_check==0 &&  table_state <=1){
+					    $row.find(".col-state").text(modify_state_select); //$row.find(...) 是在這一行內部找，不是全表格都找。再把資料填入
+					    $row.find(".col-stateCheck").text(modify_state_check);				    
+
+				    	$row.find(".col-send_track_num").text(""); //寄貨追蹤號碼
+				    	$row.find(".col-send_date").text(""); 		//寄貨日
+				    	$row.find(".col-recd_track_num").text(""); 	//到貨追蹤號碼
+				    	$row.find(".col-recd_date").text("");//到貨追蹤號碼
+
+				    	 //更改目前進度-已收到
+				    }  else if(modify_state_check ==1 &&  table_state <=1 ) {
+					    $row.find(".col-state").text(modify_state_select); //$row.find(...) 是在這一行內部找，不是全表格都找。再把資料填入
+					    $row.find(".col-stateCheck").text(modify_state_check);				    
+
+				    	$row.find(".col-recd_track_num").text(modify_recd_track_num); //到貨追蹤號碼
+				    	$row.find(".col-recd_date").text(modify_recd_date);//到貨追蹤號碼
+				   
+				    	//更改目前進度-已結案/已寄出
+					} else if( modify_state_check ==3 && table_state >=2 ) {
+					    $row.find(".col-state").text(modify_state_select); //$row.find(...) 是在這一行內部找，不是全表格都找。再把資料填入
+					    $row.find(".col-stateCheck").text(modify_state_check);				    
+
+				    	$row.find(".col-send_track_num").text(modify_send_track_num); //寄貨追蹤號碼
+				    	$row.find(".col-send_date").text(modify_send_date); //寄貨日		
+				    	
+				    	//更改目前進度-已結案/已報廢
+					} else if( modify_state_check ==4 && table_state >=2 ) {
+					    $row.find(".col-state").text(modify_state_select); //$row.find(...) 是在這一行內部找，不是全表格都找。再把資料填入
+					    $row.find(".col-stateCheck").text(modify_state_check);	
+				    	$row.find(".col-send_track_num").text(""); //寄貨追蹤號碼
+				    	$row.find(".col-send_date").text(""); 		//寄貨日
+				    	
+				    }else{   
+				    	t_alert.alertshow("warning", "『更改目前進度』未符合『目前進度』的後面流程");
+				    	search.list_modify = [];//清空先前登記的資料
+				    	m_check=false;
+						return false;	
+				    }
+				    
+				    search.list_modify.push({
+				    	//直接取TABLE表上面的欄位資訊 放入 物件的value
+				    	modify_id: $row.find(".col-id").text().trim(),
+				    	modify_rmano: $row.find(".col-rma").text().trim(),
+				    	modify_customer: $row.find(".col-customer").text().trim(),
+				    					    					    	
+				    	modify_state_select: $row.find(".col-state").text().trim(), 	// "中文進進度 01未收到 1已收到 2已寄出
+				    	modify_state: $row.find(".col-stateCheck").text().trim(), 	 	// 1 2 3
+				    	
+				    	modify_send_track_num: $row.find(".col-send_track_num").text().trim(),  //寄貨追蹤號碼
+				    	modify_send_date: $row.find(".col-send_date").text().trim(),			//寄貨日
+				    	modify_recd_track_num: $row.find(".col-recd_track_num").text().trim(), //到貨追蹤號碼
+				    	modify_recd_date: $row.find(".col-recd_date").text().trim(),        //收到日
+				    });
+				})
+				console.log(search.list_modify);
 			}	
 		},
 		
@@ -639,7 +705,7 @@ search = new Vue({
 			search['rma_sn'] =$('#search_rma_sn input').val(); //rma號碼				
 			search['rma_b_sn'] =$('#search_rma_b_sn input').val();	//機台序號
 			search['rma_mb_sn'] =$('#search_rma_mb_sn input').val();	//mb序號
-			search['state'] =$('#search_state_selsect select').val();	//mb序號
+			search['state'] =$('#search_state_selsect select').val();	//
 			
 			console.log(search);			
 			//包裝
@@ -658,13 +724,14 @@ search = new Vue({
 			req.call_bk_fn = "search";
 			req.call_bk_vals = {};
 			s_data.req_content = req;
-
 			//console.log(s_url);
 			//傳送
-			main.ajaxSend(s_url, s_type, s_data);
+			main.ajaxSend(s_url, s_type, s_data);			
 		},
-		//modify
+		
+		//modify  (存檔按鈕的執行)
 		modifySend() {
+
 			main.loading(true);
 			var modify={}; //先初始化
 			//修改
@@ -686,16 +753,15 @@ search = new Vue({
 			req.call_bk_fn = "search";
 			req.call_bk_vals = {};
 			s_data.req_content = req;
-
 			//console.log(s_url);
 			//傳送
-			main.ajaxSend(s_url, s_type, s_data);
+			main.ajaxSend(s_url, s_type, s_data);	
 		},
 		
 		searchReturn() {
 			main.loading(false);
-			console.log("searchReturn repair_rma_list");			
-			 
+			console.log("searchReturn repair_rma_list");		
+		
 			//有可能沒有下一頁
 			if (main.allData.body != null) {	
 	
@@ -711,49 +777,74 @@ search = new Vue({
 					//迭代 lists 中的每一筆資料：
 			        lists.forEach((item, index) => {
 			            let row = document.createElement("tr");// 建立一個新的表格列
-			         
+			            // 計算行的背景顏色
+			            let bgColor = index % 2 === 0 ? 'rgb(248, 249, 252)' : 'rgb(235, 236, 239)';
+			            row.style.backgroundColor = bgColor;
+			            
 			            // 將 rma_b_sn 的值作為 class 名稱的一部份，這裡假設不含特殊字元
 			            row.classList.add(`sn_${item.rma_number}`,item.id); // 為 <tr> 設定 class
-			            
+			            row.id = `search_data_${index + 1}`;
+			   
 			        	// ${...} 是插值語法，其中的 JavaScript 表達式（例如 index + 1）會在字串生成時被計算，並替換成相應的值
 			        	// 建立 <td> 並讓 class 名稱來自 item 的變數
 			        	//<td class="col-${item.customer.replace(/\s+/g, '_')}">${item.customer}</td>  
 			        	//${item.customer.replace(/\s+/g, '_') 取變數名稱 及 (/\s+/g, '_')這樣可以把空格 ( ) 轉換成 _，避免 class 名稱有空格導致 CSS 或 JS 運行出錯。
 			            row.innerHTML = `
-			                <td class="col-index fixed_cell ">${index + 1}</td>
-			                <td class="col-state_${item.serial_number} fixed_cell col-state">${item.state}</td>
-			                <td class="col-rma_result">${item.rma_result}</td>
-			                <td class="col-id">${item.id}</td>
-			                <td class="col-rma">${item.rma_number}</td>
-			                <td class="col-customer">${item.customer}</td>
-			                <td class="col-model">${item.model}</td> 
-			                <td class="col-Part_No">${item.Part_No}</td>  
-			                <td class="col-serial">${item.serial_number}</td> 
-			                <td class="col-mb">${item.mb_number}</td>
-			                <td class="col-issue">${item.issue}</td>
-			                <td class="col-stateCheck_${item.serial_number} col-stateCheck">${item.stateCheck}</td>	
+			                <td class="col-check  datalist fixed_cell" style="min-width: 50px; max-width: 50px; left: 1px; background-color: ${bgColor};">			             								
+			                	<input type="checkbox" class="row-checkbox  custom-size-checkbox datalist fixed_cell" data-id="${item.id}">			                
+			            	</td>
+			                <td class="col-index datalit fixed_cell" style="min-width: 50px; max-width: 50px; left: 51px; background-color: ${bgColor};">
+			                	${index + 1}
+			                </td>			                
+			                <td class="col-state col-state_${item.serial_number} datalist  fixed_cell" style="min-width: 100px; max-width: 100px; left: 101px; background-color: ${bgColor};">			                
+			                	${item.state} 		                
+			                </td>			                
+			                <td class="col-rma_result datalist fixed_cell" style="min-width: 100px; max-width: 100px; left: 251px; background-color: ${bgColor};">
+			                	${item.rma_result}
+			                </td>			                
+			                <td class="col-rma datalist fixed_cell"style="min-width: 150px; max-width: 150px; left: 351px; background-color: ${bgColor};" >
+			                	${item.rma_number}
+			                </td>
+			                <td class="col-serial datalist fixed_cell"style="min-width: 200px; max-width: 200px; left: 501px; background-color: ${bgColor};">
+			                ${item.serial_number}
+			                </td> 
+			                <td class="col-mb datalist ">${item.mb_number}</td>	               
 			                
-			                <td class="col-syscdate">${item.syscdate}</td>
-			                <td class="col-syscuser">${item.syscuser}</td>			                
-			              
-			                <td class="col-sysmdate">${item.sysmdate}</td>
-			                <td class="col-sysmuser">${item.sysmuser}</td>
-			            `;
-			            
-			            tbody.appendChild(row);// 把建立好的列加到 tbody 中			           	
-		            
+			                <td class="col-send_date_${item.serial_number} col-send_date datalist">${item.send_date}</td>
+			                <td class="col-send_track_num_${item.serial_number} col-send_track_num datalist">${item.send_track_num}</td>
+			                <td class="col-recd_date_${item.serial_number} col-recd_date datalist">${item.recd_date}</td>
+			                <td class="col-recd_track_num_${item.serial_number} col-recd_track_num datalist">${item.recd_track_num}</td>
+			                
+			                <td class="col-id datalist d-none">${item.id}</td>
+			                
+			                <td class="col-customer datalist">${item.customer}</td>
+			                <td class="col-model datalist">${item.model}</td> 
+			                <td class="col-Part_No datalist">${item.Part_No}</td>
+			                <td class="col-issue datalist">${item.issue}</td>
+			                <td class="col-stateCheck_${item.serial_number} col-stateCheck datalist">${item.stateCheck}</td>				                
+			                <td class="col-syscdate datalist">${item.syscdate}</td>
+			                <td class="col-syscuser datalist">${item.syscuser}</td>	
+			                <td class="col-sysmdate datalist">${item.sysmdate}</td>
+			                <td class="col-sysmuser datalist">${item.sysmuser}</td>
+			            `;			            
+			            tbody.appendChild(row);// 把建立好的列加到 tbody 中	  		            
 			        });			   
-			    }
-			        
+			    }			        
 			} else {
 			//	let tbody = document.querySelector("#dataTable tbody");			
 			//	tbody.innerHTML = ""; // 清空 <tbody> 中已有的內容，確保每次填充表格時都是從空白開始，避免累積重複的資料。
+			//若不是warning 就 刷新頁面和clean modify 欄位
+				if ( main.allData.info_color != "warning") { 
+					$("#search_btn").trigger('click');	          
+					$("#clear_modify_btn").trigger('click');
+					console.log("<tbody> 刷新 ");
+				}
 			}
 			
 			//可能是新建立
 			if(main.allData.call_bk_vals.search){
-	
-			}
+				console.log("可能是新建立");		
+			}	
 		},
 		
 		//***** 目前沒有用 這段 JavaScript 程式碼的主要功能是sendMail， ********************************
@@ -766,14 +857,11 @@ search = new Vue({
 			let rmano=$("#search .modify_rmano input").val().trim(); //RMA 號碼
 			
 				//RMA號碼 輸入框要資料才行
-				if(rmano !="" ){
-					
-					modify_one['rma_sn'] =rmano; //rma號碼
-										
+				if(rmano !="" ){					
+					modify_one['rma_sn'] =rmano; //rma號碼										
 					modify_one['rma_b_sn'] = ""; //故意用成空的
 					modify_one['rma_mb_sn'] = "";
-					modify_one['state'] = "";
-					
+					modify_one['state'] = "";					
 				}else{
 					$("#search .modify_rmano input").val("RMA號碼尚未填寫無法記性通知!!");	
 					check = false;	
@@ -799,27 +887,33 @@ search = new Vue({
 		    	req.call_bk_fn = "search";
 		    	req.call_bk_vals = {};
 		    	s_data.req_content = req;
-
 		    	// 呼叫 main.ajaxSend 發送請求
 		    	main.ajaxSend(s_url, s_type, s_data);
 			}
 	//		main.loading(false);
-		},
-		
+		},		
 		
 		//*****這段 JavaScript 程式碼的主要功能是上傳 Excel 檔案，並解析內容為 JSON 格式，最後將資料發送到後端********************************
-		excelUpload() {
-			
+		excelUpload() {			
 			main.loading(true);
 			
 		    let fileInput = document.getElementById("excel_file"); //透過 id="excel_file" 取得檔案上傳的 <input> 元素。
 		    let file = fileInput.files[0];   //取得選擇的第一個檔案（File 物件）。
-
+		    
+		    let extension = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase(); // 取得副檔名，並轉小寫
+		    console.log("副檔名是：" + extension);
+		    
 		    if (!file) {    //如果沒有選擇檔案，就顯示提示訊息並結束函式，防止後續發生錯誤。
 		        alert("請選擇一個 Excel 文件！");
-		        return;
+		        main.loading(false);
+		        return ;
 		    }
-
+		    if (extension !="xlsx") {
+		        alert("Excel副檔名要為xlsx！");
+		        main.loading(false);
+		        return ;
+		    }
+		    
 		    let reader = new FileReader();   //FileReader 是瀏覽器內建的 API，能夠讀取文件內容
 		    reader.readAsArrayBuffer(file);  //以 二進位陣列（ArrayBuffer） 方式讀取檔案，適合用來解析 Excel 這類的二進位格式檔案。
 		    
@@ -835,16 +929,19 @@ search = new Vue({
 		        //var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 		        //呼叫 convertExcelToJson(worksheet, 14, 15) 來轉換 Excel 內容：
 		        let jsonData = convertExcelToJson(worksheet,14, 15); //第 14 行 (headerRowIndex=14) 當作 標題列（表頭）。從第 15 行 (startRowIndex=15) 開始讀取 數據列。        
-		      
 		        console.log("Excel 解析後的 JSON：", jsonData);
 		        
 		        // **拆分檔案名稱**
 		        let fileName = file.name.replace(/\.[^/.]+$/, ""); // 去掉副檔名
-		        let fileParts = fileName.split("_"); // 使用 `_` 分割
+		        let fileParts = fileName.split("_"); // 使用 `_` 分割        
 
 		        let rmaNO = fileParts[0]; // 第一部分
-		        let guest = fileParts.slice(1).join("_"); // 其餘部分合併回來
-
+		        let guest = fileParts.slice(1).join("_"); //(轉字串) 其餘部分合併回來  
+		        if (guest=="") {
+			        alert("檔名格式錯誤:要為『RM號碼_客戶名稱』");
+			        main.loading(false);
+			        return ;
+			    }
 		        // **將拆分後的檔案名稱與 JSON 存入**
 		        let finalJson = {
 		            fileFullName: file.name,  // 原始檔案名稱（含副檔名）
@@ -853,11 +950,9 @@ search = new Vue({
 		            data: jsonData            // Excel 轉換的 JSON 資料
 		        };
 
-		        // 以下是傳送邏輯	     
-
+		        // 以下是傳送邏輯	
 		        // 包裝請求資料 "repair_rma_list_bat.basil.S1"
-		        var s_url = (t_body.html_body + ".S1").replace("html", "basil").replace("body_", "");
-		     
+		        var s_url = (t_body.html_body + ".S1").replace("html", "basil").replace("body_", "");		     
 		        var s_type = "POST";
 		        var s_data = {};
 		        var req = {};
@@ -872,7 +967,6 @@ search = new Vue({
 		        req.call_bk_fn = "search";
 		        req.call_bk_vals = {};
 		        s_data.req_content = req;
-
 		        // 呼叫 main.ajaxSend 發送請求
 		        main.ajaxSend(s_url, s_type, s_data);
 		        main.loading(false);
@@ -896,38 +990,33 @@ search = new Vue({
 		            for (let j = 0; j < headers.length; j++) {
 		            	//headers[j] 當作 JSON Key，row[j] 當作 JSON Value，形成 JSON 物件
 		            	//obj[headers[j]] = row[j] || ""; // 若為 undefined 則設為 ""
-		                obj[headers[j]] = row[j] ? String(row[j]).trim() : "";     //去除前後空格，若為 undefined 則設為 ""
+		                //obj[headers[j]] = row[j] ? String(row[j]).trim() : "";     //去除前後空格，若為 undefined 則設為 ""
+		            	
+		               // 將多行合併成單行，換行符號轉成空格 20250416
+		                obj[headers[j]] = row[j] 
+		                    ? String(row[j]).replace(/\r?\n/g, " ").trim() 
+		                    : "";
 		            }
 		            result.push(obj);
 		        }
 		        return result;
 		    }
 		},
-
 	},
-	
-	
 	
 	//移除監聽事件
 	beforeDestroy() {
-		console.log("search.html(beforeDestroy)");
+		console.log("search.html(beforeDestroy)");		
+		$(document).off("click", "#search_btn");		
 		$(document).off("click", "#clear_btn");
-		$(document).off("click", "#search_btn");
-		$(document).off("click", "#clear_modify_btn");
-		
+		$(document).off("click", "#register_btn");		
+		$(document).off("click", "#save_all_btn");	
+		$(document).off("click", "#delete_btn");	
+		$(document).off("click", "#clear_modify_btn");	
 		$(document).off("click", "#send_mail_btn");
-		
-		
-		$(document).off("#excel_file");/////////
-		$(document).off("#excel_file_upload_btn");
-		
-		$(document).off("click", "#register_btn");
-		$(document).off("click", "#save_all_btn");
-		
-		$(document).off("click", "#delete_btn");
-		
-		$(document).off("keypress", "#search .search_true input");
-		$(document).off("keypress", "#search #modify_rd_rr_sn input");
+		$(document).off("click","#excel_file_upload_btn");
+		$(document).off("click", "#checkAll");
+		$(document).off("keypress", "#search .search_example_finds input");
 	},
 });
 </script>

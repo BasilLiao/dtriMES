@@ -111,131 +111,88 @@ public class ProductionDailyService {
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_wc_class", FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
-			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_p_model",
-					FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
-			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total",
-					FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
-			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_ok_qty",
-					FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_p_model",	FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_total",FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_pr_ok_qty",	FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_bad_qty", FFS.h_t(pd_bad_qty, "110px", FFM.Wri.W_Y));
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
-					object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
+					object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + w_one.getWcname(),FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dp.put(FFS.ord((ord_dp += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
 			// 總數量累計_header_dp_all
 			int ord_dp_all = 0;
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_m_date",
-					FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_line",
-					FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_class",
-					FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_id",
-					FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pr_bom_id",
-					FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_p_model",
-					FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_total",
-					FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_ok_qty",
-					FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_t_qty",
-					FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_m_date",	FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_line",	FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_wc_class",FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_id",	FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pr_bom_id",	FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_p_model",	FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_total", FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_pr_ok_qty",FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "pd_t_qty",	FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
-					object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
+					object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + w_one.getWcname(),FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
-			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_note",
-					FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
+			object_dp_all.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.H) + "sys_note",FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
 			// 良率_header_yield
 			int ord_yield = 0;
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "sys_m_date",
-					FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_wc_line",
-					FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_wc_class",
-					FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_id",
-					FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pr_bom_id",
-					FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_p_model",
-					FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_total",
-					FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "sys_m_date",	FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_wc_line",	FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_wc_class",	FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_id",		FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pr_bom_id",	FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_p_model",FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_total",	FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
 
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_qty",
-					FFS.h_t(pd_tt_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_bad_qty",
-					FFS.h_t(pd_tt_bad_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_yield",
-					FFS.h_t(pd_tt_yield, "150px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_tt_ok_qty",
-					FFS.h_t(pd_pr_tt_ok_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_bad_qty",
-					FFS.h_t(pd_pr_bad_qty, "130px", FFM.Wri.W_Y));
-			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_yield",
-					FFS.h_t(pd_pr_yield, "150px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_qty",	FFS.h_t(pd_tt_qty, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_bad_qty",FFS.h_t(pd_tt_bad_qty, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_tt_yield",	FFS.h_t(pd_tt_yield, "150px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_tt_ok_qty",FFS.h_t(pd_pr_tt_ok_qty, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_bad_qty",FFS.h_t(pd_pr_bad_qty, "130px", FFM.Wri.W_Y));
+			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "pd_pr_yield",	FFS.h_t(pd_pr_yield, "150px", FFM.Wri.W_Y));
 
 			object_yield.put(FFS.ord((ord_yield += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
 			// 總工時
 			int ord_dwh = 0;
-			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "sys_m_date",
-					FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "sys_m_date",FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_wc_line", FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
-			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_wc_class",
-					FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_wc_class",FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pr_bom_id", FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
-			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_p_model",
-					FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
-			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_total",
-					FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
-			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_ok_qty",
-					FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_p_model",FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_total",	FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_pr_ok_qty",	FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
-					object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
+					object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + w_one.getWcname(),FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
 			object_dwh.put(FFS.ord((ord_dwh += 1), FFM.Hmb.H) + "sys_note", FFS.h_t(sys_note, "80px", FFM.Wri.W_Y));
 
 			// 總人數
 			int ord_dnoe = 0;
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "sys_m_date",
-					FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_wc_line",
-					FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_wc_class",
-					FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "sys_m_date",	FFS.h_t(sys_m_date, "120px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_wc_line",	FFS.h_t(pd_wc_line, "80px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_wc_class",FFS.h_t(pd_wc_class, "80px", FFM.Wri.W_Y));
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_id", FFS.h_t(pd_pr_id, "150px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pr_bom_id",
-					FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_p_model",
-					FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_total",
-					FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_ok_qty",
-					FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pr_bom_id",	FFS.h_t(pr_bom_id, "150px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_p_model",	FFS.h_t(pd_pr_p_model, "120px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_total",FFS.h_t(pd_pr_total, "110px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_pr_ok_qty",FFS.h_t(pd_pr_ok_qty, "110px", FFM.Wri.W_Y));
 			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_t_qty", FFS.h_t(pd_t_qty, "110px", FFM.Wri.W_Y));
 
 			for (Workstation w_one : workstations) {
 				if (w_one.getWgid() != 0)
-					object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + w_one.getWcname(),
-							FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
+					object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + w_one.getWcname(),FFS.h_t(w_one.getWpbname(), "110px", FFM.Wri.W_Y));
 			}
-			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names",
-					FFS.h_t(pd_w_names, "550px", FFM.Wri.W_Y));
+			object_dnoe.put(FFS.ord((ord_dnoe += 1), FFM.Hmb.H) + "pd_w_names",	FFS.h_t(pd_w_names, "550px", FFM.Wri.W_Y));
 
 			object_header.put("header_dp", object_dp);
 			object_header.put("header_dp_all", object_dp_all);
@@ -252,16 +209,13 @@ public class ProductionDailyService {
 
 			// 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 00:00:00",
-					"col-md-2", "sys_s_date", "時間(起)", n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 23:59:00",
-					"col-md-2", "sys_e_date", "時間(終)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 00:00:00",	"col-md-2", "sys_s_date", "時間(起)", n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, Fm_Time.to_y_M_d(new Date()) + " 23:59:00",	"col-md-2", "sys_e_date", "時間(終)", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-1", "pd_wc_class", pd_wc_class, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-1", "pd_wc_line", pd_wc_line, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pd_pr_id", pd_pr_id, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pr_bom_id", pr_bom_id, n_val));
-			object_searchs
-					.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pd_pr_p_model", pd_pr_p_model, n_val));
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pd_pr_p_model", pd_pr_p_model, n_val));
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢

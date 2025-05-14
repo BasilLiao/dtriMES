@@ -32,6 +32,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String system_per = "/ajax/system_permission.basil";
 		String system_gro = "/ajax/system_group.basil";
 		String system_use = "/ajax/system_user.basil";
+		String system_mail = "/ajax/system_mail.basil" ;
+		
 		String production_head = "/ajax/production_header.basil";
 		String production_body = "/ajax/production_body.basil";
 		String production_reco = "/ajax/production_records.basil";
@@ -50,19 +52,18 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 
 		String own_user = "/ajax/own_user.basil";
 		String customer = "/ajax/customer.basil";	
-		String own_rma_mail = "/ajax/own_rma_mail.basil" ;
 
 		String repair_unit = "/ajax/repair_unit.basil";
 		String repair_code = "/ajax/repair_code.basil";
 		String repair_history = "/ajax/repair_history.basil";
 		String repair_order_dtr = "/ajax/repair_order_dtr.basil";
-		String repair_order_rma = "/ajax/repair_order_rma.basil";
+
 		String repair_list = "/ajax/repair_list.basil";
 		String repair_list_bat = "/ajax/repair_list_bat.basil";
 		String repair_rma_list_bat = "/ajax/repair_rma_list_bat.basil";
 
 		String repair_rma_list = "/ajax/repair_rma_list.basil";
-	
+		
 		String label_list = "/ajax/label_list.basil";
 
 		String work_hours = "/ajax/work_hours.basil";
@@ -116,7 +117,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, production_body + ".AC").hasAuthority(actionRole(production_body, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, production_body + ".AU").hasAuthority(actionRole(production_body, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, production_body + ".AD").hasAuthority(actionRole(production_body, "AD"))// (移除)
-				.antMatchers(HttpMethod.POST, production_body + ".RT").hasAuthority(actionRole(production_body, "RT"))// (報告)
+				.antMatchers(HttpMethod.POST, production_body + ".RT").hasAuthority(actionRole(production_body, "AR"))// (報告)
 
 				// ----請求-production_records-(訪問) ----
 				.antMatchers(HttpMethod.POST, production_reco).hasAuthority(actionRole(production_reco, ""))//
@@ -245,8 +246,8 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, repair_history + ".AC").hasAuthority(actionRole(repair_history, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, repair_history + ".AU").hasAuthority(actionRole(repair_history, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, repair_history + ".AD").hasAuthority(actionRole(repair_history, "AD"))// (移除)
-				.antMatchers(HttpMethod.POST, repair_history + ".RT").hasAuthority(actionRole(repair_history, "RT"))// (報告)
-
+				.antMatchers(HttpMethod.POST, repair_history + ".RT").hasAuthority(actionRole(repair_history, "AR"))// (報告)
+				
 				// ----請求-repair_list-(訪問) ----
 				.antMatchers(HttpMethod.POST, repair_list).hasAuthority(actionRole(repair_list, ""))//
 				.antMatchers(HttpMethod.POST, repair_list + ".AR").hasAuthority(actionRole(repair_list, "AR"))// (查詢)
@@ -269,11 +270,16 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, repair_list_bat + ".AR").hasAuthority(actionRole(repair_list_bat, "AR"))// (查詢)
 				.antMatchers(HttpMethod.PUT, repair_list_bat + ".AU").hasAuthority(actionRole(repair_list_bat, "AU"))// (修改)
 
-				// ----請求-	repair_rma_list-(訪問) johnny----通用-RMA維修處理
-				.antMatchers(HttpMethod.POST, repair_rma_list).hasAuthority(actionRole(repair_rma_list, ""))//				
+				// ----請求-	repair_rma_list-(訪問) johnny----通用-(RMA售後)維修處理
+				.antMatchers(HttpMethod.POST, repair_rma_list).hasAuthority(actionRole(repair_rma_list, ""))//					
+				.antMatchers(HttpMethod.POST, repair_rma_list + ".AR").hasAuthority(actionRole(repair_rma_list, "AR"))// (查詢)
+				//.antMatchers(HttpMethod.POST, repair_rma_list + ".AC").hasAuthority(actionRole(repair_rma_list, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, repair_rma_list + ".AU").hasAuthority(actionRole(repair_rma_list, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, repair_rma_list + ".AD").hasAuthority(actionRole(repair_rma_list, "AD"))// (移除)				
+				.antMatchers(HttpMethod.POST, repair_rma_list + ".RT").hasAuthority(actionRole(repair_rma_list, "AR"))// (報告)				
 				.antMatchers(HttpMethod.POST, repair_rma_list + ".S1").hasAuthority(actionRole(repair_rma_list, "S1"))// (客製化-查詢)
 				.antMatchers(HttpMethod.PUT, repair_rma_list + ".S2").hasAuthority(actionRole(repair_rma_list, "S2"))// (客製化-新增/修改)
-				
+			
 				// ----請求-label_list-(訪問) ----
 				.antMatchers(HttpMethod.POST, label_list).hasAuthority(actionRole(label_list, ""))//
 				.antMatchers(HttpMethod.POST, label_list + ".AR").hasAuthority(actionRole(label_list, "AR"))// (查詢)
@@ -307,12 +313,12 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				// .antMatchers(HttpMethod.DELETE, own_user +
 				// ".AD").hasAuthority(actionRole(own_user, "AD"))// (移除)
 				
-				// ----請求-	own_rma_mail-(訪問) johnny---- 
-				.antMatchers(HttpMethod.POST, own_rma_mail).hasAuthority(actionRole(own_rma_mail, ""))//
-				.antMatchers(HttpMethod.POST, own_rma_mail + ".AR").hasAuthority(actionRole(own_rma_mail, "AR"))// (查詢)
-				.antMatchers(HttpMethod.POST, own_rma_mail + ".AC").hasAuthority(actionRole(own_rma_mail, "AC"))// (新增)  			
-				.antMatchers(HttpMethod.PUT, own_rma_mail + ".AU").hasAuthority(actionRole(own_rma_mail, "AU"))// (修改)  
-				.antMatchers(HttpMethod.DELETE, own_rma_mail + ".AD").hasAuthority(actionRole(own_rma_mail, "AD"))// (移除) 
+				// ----請求-	system_mail-(訪問) johnny---- 
+				.antMatchers(HttpMethod.POST, system_mail).hasAuthority(actionRole(system_mail, ""))//
+				.antMatchers(HttpMethod.POST, system_mail + ".AR").hasAuthority(actionRole(system_mail, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, system_mail + ".AC").hasAuthority(actionRole(system_mail, "AC"))// (新增)  			
+				.antMatchers(HttpMethod.PUT, system_mail + ".AU").hasAuthority(actionRole(system_mail, "AU"))// (修改)  
+				.antMatchers(HttpMethod.DELETE, system_mail + ".AD").hasAuthority(actionRole(system_mail, "AD"))// (移除) 
 				
 				// ----請求-work_type-(訪問) ----
 				.antMatchers(HttpMethod.POST, customer).hasAuthority(actionRole(customer, ""))//

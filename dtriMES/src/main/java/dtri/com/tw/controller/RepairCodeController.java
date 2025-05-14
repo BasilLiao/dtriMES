@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
-import dtri.com.tw.service.RepairCodeService;
 import dtri.com.tw.service.PackageService;
+import dtri.com.tw.service.RepairCodeService;
 
 @Controller
 public class RepairCodeController extends AbstractController {

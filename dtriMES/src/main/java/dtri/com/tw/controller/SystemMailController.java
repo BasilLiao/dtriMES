@@ -12,12 +12,12 @@ import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemPermission;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.service.PackageService;
-import dtri.com.tw.service.SystemRmaMailListService;
+import dtri.com.tw.service.SystemMailService;
 import dtri.com.tw.service.SystemUserService;
 
 @Controller
-public class SystemRmaMailController extends AbstractController {
-	public SystemRmaMailController() {
+public class SystemMailController extends AbstractController {
+	public SystemMailController() {
 		super("system_user.basil");
 	}
 
@@ -27,12 +27,12 @@ public class SystemRmaMailController extends AbstractController {
 	SystemUserService userService;
 
 	@Autowired
-	SystemRmaMailListService rmaMailListService;
+	SystemMailService rmaMailListService;
 	/**
 	 * 訪問
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/own_rma_mail.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/system_mail.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		showSYS_CM("access");
 		show(json_object);
@@ -64,7 +64,7 @@ public class SystemRmaMailController extends AbstractController {
 	 * 查詢
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/own_rma_mail.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/system_mail.basil.AR" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String search(@RequestBody String json_object) {
 		showSYS_CM("search");
 		show(json_object);
@@ -95,7 +95,7 @@ public class SystemRmaMailController extends AbstractController {
 	 * 新增
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/own_rma_mail.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/system_mail.basil.AC" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String create(@RequestBody String json_object) {
 		showSYS_CM("create");
 		show(json_object);
@@ -129,7 +129,7 @@ public class SystemRmaMailController extends AbstractController {
 	 * 修改
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/own_rma_mail.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/system_mail.basil.AU" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 	public String modify(@RequestBody String json_object) {
 		showSYS_CM("modify");
 		show(json_object);
@@ -160,7 +160,7 @@ public class SystemRmaMailController extends AbstractController {
 	 * 移除
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/own_rma_mail.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/system_mail.basil.AD" }, method = { RequestMethod.DELETE }, produces = "application/json;charset=UTF-8")
 	public String delete(@RequestBody String json_object) {
 		showSYS_CM("delete");
 		show(json_object);

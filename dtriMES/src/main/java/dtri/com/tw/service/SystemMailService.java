@@ -12,22 +12,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
-import dtri.com.tw.db.entity.RmaMail;
+import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
-import dtri.com.tw.db.pgsql.dao.RmaMailListDao;
-import dtri.com.tw.db.pgsql.dao.SystemGroupDao;
-import dtri.com.tw.db.pgsql.dao.SystemUserDao;
+import dtri.com.tw.db.pgsql.dao.SystemMailDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
-public class SystemRmaMailListService {
-	@Autowired
-	private SystemUserDao userDao;
-	@Autowired
-	private SystemGroupDao groupDao;
+public class SystemMailService {
+//	@Autowired
+//	private SystemUserDao userDao;
+//	@Autowired
+//	private SystemGroupDao groupDao;
 	
 	@Autowired
-	private RmaMailListDao rmaMailListDao;
+	private SystemMailDao rmaMailListDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -35,9 +33,7 @@ public class SystemRmaMailListService {
 		JSONObject body = req.getBody();
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
-//		ArrayList<SystemUser> systemUsers = new ArrayList<SystemUser>();
-
-		ArrayList<RmaMail> rmaMail = new ArrayList<RmaMail>();
+		ArrayList<SystemMail> rmaMail = new ArrayList<SystemMail>();
 		
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
@@ -49,7 +45,7 @@ public class SystemRmaMailListService {
 		String su_name = null;
 		String su_position = null;
 		String status = "0";
-		Long susggid = 0L;
+//		Long susggid = 0L;
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("suid").descending());
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
@@ -161,7 +157,7 @@ public class SystemRmaMailListService {
 		}
 		// 全查
 //		if (user.getSusggid() == 1) {
-			rmaMail = rmaMailListDao.findAllByRmaMail(susggid, su_name, su_e_name,su_position, Integer.parseInt(status), page_r);
+			rmaMail = rmaMailListDao.findAllBySystemMail(su_name, su_e_name,su_position, Integer.parseInt(status), page_r);
 //		} else {
 //			rmaMail = rmaMailListDao.findAllByRmaMailNotAdmin(susggid, su_name, su_e_name, su_position, Integer.parseInt(status), page_r);
 //		}
@@ -213,7 +209,7 @@ public class SystemRmaMailListService {
 				// 物件轉換
 //				SystemUser sys_c = new SystemUser();
 //				ArrayList<RmaMail> rmaMail = new ArrayList<RmaMail>();
-				RmaMail rmaMail=new RmaMail();
+				SystemMail rmaMail=new SystemMail();
 				JSONObject data = (JSONObject) one;
 //				rmaMail.setSusggid(data.getLong("su_sg_g_id"));  //群組名稱 su_sg_g_id
 				
@@ -266,7 +262,7 @@ public class SystemRmaMailListService {
 			for (Object one : list) {
 				// 物件轉換
 			//	SystemUser sys_c = new SystemUser();
-				RmaMail rmaMail=new RmaMail();
+				SystemMail rmaMail=new SystemMail();
 				JSONObject data = (JSONObject) one;
 //				rmaMail.setSusggid(data.getLong("su_sg_g_id"));  //群組名稱 su_sg_g_id
 				
@@ -315,7 +311,7 @@ public class SystemRmaMailListService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				RmaMail sys_c = rmaMailListDao.findAllBySuid(data.getLong("su_id")).get(0); 
+				SystemMail sys_c = rmaMailListDao.findAllBySuid(data.getLong("su_id")).get(0); 
 				// 如果帳號重覆
 //				RmaMail oneUser = rmaMailListDao.findBySuaccount(data.getString("su_account")); //帳號
 //				if (oneUser != null && data.getLong("su_id") != oneUser.getSuid()) {
@@ -368,7 +364,7 @@ public class SystemRmaMailListService {
 			JSONArray list = body.getJSONArray("delete");
 			for (Object one : list) {
 				// 物件轉換
-				RmaMail sys_p = new RmaMail();
+				SystemMail sys_p = new SystemMail();
 				JSONObject data = (JSONObject) one;
 				sys_p.setSuid(data.getLong("su_id"));
 				// 不得刪除自己
@@ -390,7 +386,7 @@ public class SystemRmaMailListService {
 	// 取得當前 資料清單
 	public boolean getDataMail (PackageBean bean, PackageBean req, SystemUser user) {
 			
-		rmaMailListDao.findAllByRmaMail(null, null, null, null, null, null);
+		rmaMailListDao.findAllBySystemMail(null, null, null, null, null);
 		
 		return true;		
 	}

@@ -206,8 +206,8 @@ search = new Vue({
 				one_item_header[0].id = key_id;
 				one_item_header[0].children[0].children[0].innerText = value_name;
 				one_item_header.insertBefore("#search .s_title_last");
-				$("#" + key_id).css("min-width", value_size);
-				$("#" + key_id).css("max-width", value_size);
+				$("#" + key_id).css("min-width", value_size);   //修改 style 裡面 min-width 的值
+				$("#" + key_id).css("max-width", value_size);	//修改 style 裡面 max-width 的值
 				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
 				//body
 				var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
@@ -216,7 +216,7 @@ search = new Vue({
 				one_item_body.insertBefore("#search .s_list_body");
 			}
 			//結尾
-			var key_id = Object.keys(title)[Object.keys(title).length - 1];
+			var key_id = Object.keys(title)[Object.keys(title).length - 1]; //取得 title 物件的「最後一個 key 名稱」
 			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
 			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
 			//header

@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 //import dtri.com.tw.db.entity.RepairRmaDetail;
 import dtri.com.tw.db.entity.RmaList;
-
 
 public interface RmaListDao extends JpaRepository<RmaList, Long> {
 	
@@ -26,8 +24,7 @@ public interface RmaListDao extends JpaRepository<RmaList, Long> {
 	    
 	    @Query("SELECT r FROM RmaList r WHERE r.rmaNumber LIKE %:rmaNumber%")
 	    List<RmaList> findByRmaNumberContaining(@Param("rmaNumber") String rmaNumber);
-	
-	    
+		    
 	    @Query("SELECT r FROM RmaList r WHERE r.rmaNumber LIKE %:rmaNumber%")
 	    Set<RmaList> findByRmaNoContaining(String rmaNumber);
 	  		
@@ -37,20 +34,19 @@ public interface RmaListDao extends JpaRepository<RmaList, Long> {
 			       + "(:rmaNumber is null or d.rmaNumber LIKE %:rmaNumber%) and "
 			       + "(:serialNumber is null or d.serialNumber LIKE %:serialNumber%) and "
 			       + "(:mbNumber is null or d.mbNumber LIKE %:mbNumber%) and "
-			       + "(:issue is null or d.issue LIKE %:issue%)  and "	
-			       + "(:stateCheck is null or d.stateCheck =:stateCheck)  and "
-			       + "(:state is null or d.state =:state)  and "
-			       + "(:customer is null or d.customer LIKE %:customer%) " 
-				   + "order by d.rmaNumber asc ")		
-		ArrayList<RmaList> findAllByRdidAndRdruidBat1(Long id,String rmaNumber, String serialNumber, String mbNumber,String customer, String issue,String state,Integer stateCheck,Pageable pageable);
-		
-		
+			       + "(:customer is null or d.customer LIKE %:customer%) and " 		       
+			       + "(:issue is null or d.issue LIKE %:issue%) and "
+			       + "(:state is null or d.state LIKE %:state%) and "
+			       + "(:stateCheck is null or d.stateCheck =:stateCheck) "		       
+				   + "order by d.rmaNumber , d.stateCheck , d.serialNumber , d.sysmdate asc ")		//sysmdate
+		ArrayList<RmaList> findAllByRdidAndRdruidBat1(Long id,String rmaNumber, String serialNumber, String mbNumber,String customer, String issue,String state,Integer stateCheck);
+				
 		//維修頁面搜尋
 		@Query("SELECT d FROM RmaList d WHERE "
 				   + "(:id is null or d.id =:id) and "
 				   + "(:rmaNumber is null or d.rmaNumber  LIKE %:rmaNumber%) and "
 				   + "(:serialNumber is null or d.serialNumber =:serialNumber) and "
-			       + "(:mbNumber is null or d.mbNumber =:mbNumber)  and "
+			       + "(:mbNumber is null or d.mbNumber =:mbNumber) and "
 			       + "(COALESCE(:excludedStates, NULL) IS NULL OR d.stateCheck NOT IN (:excludedStates))")
 		List<RmaList> findAllBysnAndmb(Long id,String rmaNumber, String serialNumber, String mbNumber, List<Integer> excludedStates);
 		

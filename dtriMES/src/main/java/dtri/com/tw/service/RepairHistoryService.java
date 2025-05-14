@@ -510,8 +510,7 @@ public class RepairHistoryService {
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", one.getRegister().getRrexpired() == null ? "" : one.getRegister().getRrexpired());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", one.getRegister().getRrphwyears());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date",
-					one.getRegister().getRrpbsysmdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getRegister().getRrpbsysmdate()));
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date",one.getRegister().getRrpbsysmdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getRegister().getRrpbsysmdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_type", one.getRegister().getRrpbtype());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_v", one.getRegister().getRrv());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_f_ok", one.getRegister().getRrfok());

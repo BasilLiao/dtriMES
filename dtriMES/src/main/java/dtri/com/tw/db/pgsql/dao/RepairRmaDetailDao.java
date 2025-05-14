@@ -3,6 +3,7 @@ package dtri.com.tw.db.pgsql.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,20 +15,47 @@ public interface RepairRmaDetailDao extends JpaRepository<RepairRmaDetail, Strin
 //	ArrayList<RepairRmaDetail> findAll();
 //
 //	// 移除資料
-//	Long deleteByRdid(String rdid);
-	
-	
+	Long deleteByid(Long id);
+
 //	 查詢 rmasn RMA號碼+rmabsn機台序號+rmambsn MB序號
-		@Query("SELECT d FROM RepairRmaDetail d WHERE "//
-				+ "(:id is null or d.id =:id) and "//
-				+ "(:rmasn is null or d.rmasn =:rmasn) and "//
-				+ "(:rmabsn is null or d.rmabsn =:rmabsn) and "//
-				+ "(:rmambsn is null or d.rmambsn  = :rmambsn)")			
-			
-	List<RepairRmaDetail> findAllByRmasnAndRmasn(Long id,String rmasn,String rmabsn,String rmambsn);
-//	// 查詢 維修單項目ID
+	@Query("SELECT d FROM RepairRmaDetail d WHERE "//
+			+ "(:id is null or d.id =:id) and "//
+			+ "(:rmasn is null or d.rmasn =:rmasn) and "//
+			+ "(:rmabsn is null or d.rmabsn =:rmabsn) and "//
+			+ "(:rmambsn is null or d.rmambsn  = :rmambsn)")
+
+	List<RepairRmaDetail> findAllByRmasnAndRmasn(Long id, String rmasn, String rmabsn, String rmambsn);
+	
+//	// 查詢 維修RMA號碼
+	ArrayList<RepairRmaDetail> findByid(Long rmaid);
+//	// 查詢 維修RMA號碼
 	ArrayList<RepairRmaDetail> findAllByRmasn(String rmasn);
-//
+
+//	 查詢 rmasn RMA號碼+rmabsn機台序號+rmambsn MB序號
+	@Query("SELECT d FROM RepairRmaDetail d WHERE "//
+			+ "(:id is null or d.id =:id) and "//
+			+ "(:rmasn is null or d.rmasn LIKE %:rmasn%) and "//
+			
+			+ "(:rmaguest is null or d.rmaguest LIKE %:rmaguest%) and "//		
+			+ "(:rmamodel is null or d.rmamodel LIKE %:rmamodel%) and "//
+			
+			+ "(:rmabsn is null or d.rmabsn LIKE %:rmabsn%) and "//
+			+ "(:rmambsn is null or d.rmambsn LIKE %:rmambsn%) and "
+			+ "(:rmastatement is null or d.rmastatement LIKE %:rmastatement%) and "
+			+ "(:rdtrue is null or d.rdtrue LIKE %:rdtrue%) and "
+			+ "(:rdsolve is null or d.rdsolve LIKE %:rdsolve%) and "
+			+ "(:rdexperience is null or d.rdexperience LIKE %:rdexperience%) and "
+			+ "(:rmapartsn is null or d.rmapartsn LIKE %:rmapartsn%) and "
+			+ "(:packinglist is null or d.packinglist LIKE %:packinglist%) and "
+
+			+ "(:rmaresult is null or d.rmaresult LIKE %:rmaresult%)  and " 
+			+ "(:syscuser is null or d.syscuser LIKE %:syscuser%)  " 
+		
+			+ "order by d.id asc")
+	ArrayList<RepairRmaDetail> findAllByRepairRmaDetail(Long id, String rmasn,String rmaguest,String rmamodel, String rmabsn, String rmambsn,
+			String rmastatement, String rdtrue, String rdsolve, String rdexperience, String rmapartsn,
+			String packinglist, String rmaresult,String syscuser, Pageable pageable);
+
 //	// 查詢 負責對象+維修單項目ID+SN產品號
 //	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
 //			+ "(:rdid is null or d.rdid LIKE %:rdid%) and "//

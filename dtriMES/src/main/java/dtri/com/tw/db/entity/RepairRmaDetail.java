@@ -14,8 +14,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Basil
- * @see <br>
+ * @see---共用型---<br> 
+ *      sys_c_date : 創建時間<br>
+ *      sys_c_user : 創建人名<br>
+ *      sys_m_date : 修改時間<br>
+ *      sys_m_user : 修改人名<br>
+ *      sys_ver : 修改版本<br>
+ *      sys_note : 備註<br>
+ *      sys_status : 資料狀態<br>
+ *      sys_sort : 自訂排序<br>
  *      
+ *      id : 主key   <br>
  *      rma_sn : 單據編號 ex:RAM0123456789<br> 
  *      rma_guest : 客戶  <br>
  *      rma_model: 產品型號  <br>
@@ -27,18 +36,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      rd_true: 實際問題情況<br>  
  *      rd_solve: 維修處理事項<br>
  *      rd_experience: 備註 心得<br>
- *      rma_part_sn: 料號 <br>
+ *      rma_part_sn: mb料號 <br>
  *      packing_list : 領料單據 <br>
  *      rd_result :維修結果 <br>    
  *      rma_user:修復人<br>
- *      rd_u_qty:單位 數量 "自動為1"<br>       
- *            
- *            
- *    
- *       
- *      rd_check:檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢)
- *      5=已寄回(結單)<br>
- *      rd_finally:true =已解決 /false =尚未解決<br>
+ *      rd_u_qty:單位 數量 "自動為1"<br>      
+ *      
+ *      rd_check:檢核狀態 (1=已檢核) <br>
+
 
 
  * 

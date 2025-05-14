@@ -16,15 +16,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Basil
- * @see 系統設定<br>
+ * @see ---共用型---<br>
+ *      sys_c_date : 創建時間<br>
+ *      sys_c_user : 創建人名<br>
+ *      sys_m_date : 修改時間<br>
+ *      sys_m_user : 修改人名<br>
+ *      sys_ver : 修改版本<br>
+ *      sys_note : 備註<br>
+ *      sys_status : 資料狀態<br>
+ *      sys_sort : 自訂排序<br>
+ *      
+ *      id : 主key <br>     
  *      rma_number : rma號碼<br>
  *      model : 產品型號<br>
+ *      part_no : Oracle part no<br>
  *      customer : 產品型號<br>
  *      serial_number : 機器序號<br>
  *      mb_number : MB序號<br>
+ *      rrd_rma_result : RMA維修結果<br>
  *      issue : 客戶所述不良原因<br>
  *      state_check : 狀態確認<br>
  *      state : 目前狀態<br>
+ *      send_track_num : 寄貨追蹤號碼 <br>
+ *      send_date : 寄出日 <br>
+ *      recd_track_num :到貨追蹤號碼<br>
+ *      recd_date : 收到日 <br>
  */
 
 @Entity
@@ -55,7 +71,7 @@ public class RmaList {
 
 	@Column(name = "sys_status", columnDefinition = "int default 0")
 	private Integer sysstatus;
-
+	// nullable = false代表 這個欄位不能為 NULL
 	@Column(name = "sys_header", nullable = false, columnDefinition = "boolean default false")
 	private Boolean sysheader;
 
@@ -88,16 +104,28 @@ public class RmaList {
 
 	@Column(name = "issue", columnDefinition = "varchar(500) DEFAULT 'UNKNOWN'")
 	private String issue;
-	// nullable = false代表 這個欄位不能為 NULL
-	@Column(name = "rrd_rma_result", nullable = false)
+
+	@Column(name = "rrd_rma_result", columnDefinition = "varchar(10)")
 	private String rrd_RmaResult;
 
 	@Column(name = "state_check", columnDefinition = "int default 0")
 	private Integer stateCheck;
 
-	@Column(name = "state", nullable = false)
+	@Column(name = "state", columnDefinition = "varchar(10)")
 	private String state;
 
+	@Column(name = "send_track_num", columnDefinition = "varchar(25)")
+	private String sendtracknum;
+	
+	@Column(name = "send_date", columnDefinition = "varchar(25)")
+	private String senddate;
+	
+	@Column(name = "recd_track_num", columnDefinition = "varchar(25)")
+	private String recdtracknum;
+	
+	@Column(name = "recd_date", columnDefinition = "varchar(25)")
+	private String recddate;
+	
 	// 如果進來的值是null 或 空 的轉預設為N/A
 	@PrePersist
 	@PreUpdate
@@ -129,7 +157,23 @@ public class RmaList {
 		this.sysnote = "";
 		this.syssort = 0;
 		this.sysstatus = 0;
-		this.sysheader = false;
+		this.sysheader = false;		
+		this.rmaNumber = "";
+		this.model = "";
+		this.customer = "";
+		this.serialNumber = "";
+		this.mbNumber = "";
+		this.issue = "";
+		this.wtyStatus = "";
+		this.partNo = "";
+		this.rrd_RmaResult = "";
+		this.stateCheck = 0; // 預設 0
+		this.state = "未收到";
+		this.sendtracknum="";
+		this.senddate="";
+		this.recdtracknum="";
+		this.recddate="";
+		
 	}
 
 	public RmaList(String rmaNumber, String model, String customer, String serialNumber, String mbNumber, String issue,
@@ -156,6 +200,10 @@ public class RmaList {
 		this.rrd_RmaResult = "";
 		this.stateCheck = 0; // 預設 0
 		this.state = "未收到";
+		this.sendtracknum="";
+		this.senddate="";
+		this.recdtracknum="";
+		this.recddate="";
 	}
 
 	// 共用
@@ -326,6 +374,38 @@ public class RmaList {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getSendtracknum() {
+		return sendtracknum;
+	}
+
+	public void setSendtracknum(String sendtracknum) {
+		this.sendtracknum = sendtracknum;
+	}
+
+	public String getSenddate() {
+		return senddate;
+	}
+
+	public void setSenddate(String senddate) {
+		this.senddate = senddate;
+	}
+
+	public String getRecdtracknum() {
+		return recdtracknum;
+	}
+
+	public void setRecdtracknum(String recdtracknum) {
+		this.recdtracknum = recdtracknum;
+	}
+
+	public String getRecddate() {
+		return recddate;
+	}
+
+	public void setRecddate(String recddate) {
+		this.recddate = recddate;
 	}
 
 }

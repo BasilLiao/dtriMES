@@ -69,6 +69,7 @@ public class PackageBean {
 	public static final String info_Maint_warning04 = "[MT004] 您非 (維修單位) 成員, 請向 管理者 申請! [Warning]!!";
 	public static final String info_Maint_warning05 = "[MT005] 此 (維修單) 資料填寫不完善 請再次檢查! [Warning]!!";
 	public static final String info_Maint_success06 = "[MT006] 此 (RMA單) 已全部處理完畢並系統通知信件寄出 [Successfully]!!";
+	public static final String info_Maint_success07 = "[MT007] 此 (RMA單) 已全部處理完畢但無收件人資訊,無法寄信通知 請通知[管理員]";
 	
 	public static final String info_Label_warning05 = "[LB005] 此 (標籤設計) 資料填寫不完善 請再次檢查! [Warning]!!";
 	public static final String info_Label_warning06 = "[LB006] 此 (標籤設計) 名稱重複 請再次檢查! [Warning]!!";
@@ -263,7 +264,13 @@ public class PackageBean {
 		case "MT006"://[MT006] 此 (RMA單) 已全部處理完畢並系統通知信件寄出 [Successfully]!!"
 			this.info = info_Maint_success06;
 			this.info_color = info_color_success;
-			break;		
+			break;	
+		case "MT007"://[MT007] 此 (RMA單) 已全部處理完畢但無收件人資訊,無法寄信通知 請通知[管理員]
+			this.info = info_Maint_success07;
+			this.info_color = info_color_success;
+			break;				
+			
+			
 		case "LB005":// [LB005] 此 (標籤設計) 資料填寫不完善 請再次檢查! [Warning]";
 			this.info = info_Label_warning05;
 			break;	

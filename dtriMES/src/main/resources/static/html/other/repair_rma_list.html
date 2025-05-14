@@ -6,6 +6,9 @@ select {
 	border-width: 2px;
 }
 
+table:hover{
+	cursor:pointer;
+}
 </style>
 <div id="customized">
 	<!-- 維修處理 -->
@@ -90,9 +93,9 @@ select {
 								placeholder="暫無資料" disabled="disabled"></textarea>
 						</div>
 
-
-						<div class="col-md-6 m-0 p-1" id="rma_list"	style="width: 600px; height: 417px; overflow: auto; border: 1px solid #ccc;">
-							<div class="col p-0">RMA清單 :</div>
+						<div class="col-md-6 m-0 p-1">RMA清單 :
+						<div class="col p-0" id="rma_list"	style="width: 600px; height: 392px; overflow: auto; border: 1px solid #ccc;">
+							
 							<!-- 表格容器 -->
 							<div style="max-height: 370px; overflow-y: auto;">
 								<table id="dataTable" style="white-space: nowrap; width: 150px ;" class="table table-striped table-bordered" border="1">
@@ -113,7 +116,7 @@ select {
 								</table>
 							</div>
 						</div>
-
+						</div>
 					</div>
 				</div>
 
@@ -125,9 +128,9 @@ select {
 						<input class="col p-1 rounded detail_ri h6" type="text" value="" disabled="disabled">
 					</div>
 					
-					<div class="col-md-2 p-1 m-0" id="input_sn">
+					<div class="col-md-3 p-1 m-0" id="input_sn">
 						<div class="col p-0">輸入序號 :</div>
-						<input class="col p-1 rounded border-2 border-danger detail_ri " type="text" value="">
+						<input class="col p-1 rounded border-2 border-danger detail_ri " type="text" value="" placeholder="查詢:RMA序號/機台(M/B)序號 :">
 					</div>
 
 					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 115px">
@@ -172,8 +175,7 @@ select {
 							<div class="col p-0">維修結果 :</div>
 							<select class="col p-1 rounded border-success detail_ri">
 								<option class="def" value="">select(必填)</option>
-								<option value="已修復">已修復</option>
-								<option value="無法修復">無法修復</option>
+								<option value="已修復">已修復</option>								
 								<option value="不修退回">不修退回</option>
 								<option value="報廢">報廢</option>
 							</select>
@@ -181,8 +183,7 @@ select {
 
 						<div class="col-md-2 p-1 m-0" id="rma_user">
 							<div class="col p-0">維修人員 :</div>
-							<input class="col p-1 rounded " type="text" value=""
-								disabled="disabled">
+							<input class="col p-1 rounded " type="text" value="" disabled="disabled">
 						</div>
 
 					</div>
@@ -195,12 +196,10 @@ select {
 						<button id="enable_fi_btn" class="col btn btn-warning btn-sm" type="button">解除鎖定</button>
 					</div>
 					<div class="col-md-1 p-1 m-0 d-none">
-						<button class="col btn btn-secondary btn-sm repair_part_fi_btn"
-							type="button">Repair Part</button>
+						<button class="col btn btn-secondary btn-sm repair_part_fi_btn"	type="button">Repair Part</button>
 					</div>
 					<div class="col-md-1 p-1 m-0 d-none">
-						<button class="col btn btn-info btn-sm project_content_fi_btn"
-							type="button">Project...</button>
+						<button class="col btn btn-info btn-sm project_content_fi_btn" type="button">Project...</button>
 					</div>
 
 					<div class="col-md-8 p-1 m-0"></div>
@@ -211,12 +210,9 @@ select {
 						<button id="rd_save_btn" class="col m-0 btn btn-success btn-sm"	type="button">Save(S2)</button>
 					</div>
 					<div class="col-md-1 p-1 m-0">
-						<button id="clear_fi_btn" class="col btn btn-warning btn-sm"
-							type="button">Clear</button>
+						<button id="clear_fi_btn" class="col btn btn-warning btn-sm" type="button">Clear</button>
 					</div>
 				</div>
-
-
 			</div>
 		</div>
 	</div>
@@ -324,6 +320,13 @@ customized = new Vue({
 		selectAllInit() {
 			
 			$('#rma_user input').val(main.info_user["name"]);//進入此也頁面就把登入帳號放到維修人員
+			
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#customized #input_sn", function (event) {
+				if (event.which == 13) {
+					$('#search_fi_btn').trigger('click');
+				}
+			});
 
 			//查詢 RMA機台序號 或 MB序號
 			$(document).on("click", "#search_fi_btn", function (event) {
@@ -384,23 +387,7 @@ customized = new Vue({
 				customized.sendSave(); // 有值時才執行
 				
 			});
-			
-			//快速查詢 監聽確認
-			$(document).on("keypress", "#customized .search_true input", function (event) {
-				if (event.which == 13) {
-					$('#search_fi_btn').trigger('click');
-				}
-			});
-			
-			//input 事件可以即時偵測輸入框的變化（例如使用者鍵入時），適用於需要即時回應的情境。
-//			$(document).on("input", "#input_sn input", function () {
-//			    let newValue = $(this).val().trim(); // 取得新的值
-//			    console.log("rma_b_sn 值變更為：", newValue);
-
-			    // 執行你的程式邏輯
-//			    customized.searchSend(search);	
-//			});
-
+		
 		},
 		
 		//清除所有資訊
@@ -587,6 +574,7 @@ customized = new Vue({
 			            		$('#input_sn input').val(item.rma_mb_sn);//MB號碼 放在input				                							    				 
 			  				}else{
 			  					$('#input_sn input').val(item.rma_b_sn);//機台序號 放在input
+			  					$("#search_fi_btn").trigger('click');	 
 							}			                	  
 				    			
 							});			             
@@ -627,7 +615,7 @@ customized = new Vue({
 		$(document).off("click", "#clear_fi_btn");		
 		$(document).off("click", "#rd_clear_btn");
 		$(document).off("click", "#rd_save_btn");
-
+		$(document).off("keypress", "#customized #input_sn");
 		$(document).off("keypress", "#customized .search_true input");
 	},
 });
