@@ -68,7 +68,6 @@
 			<i class="bi bi-search mr-1"></i>Search
 		</div>
 
-
 		<div class="col-md-12 p-0 m-0 row ">
 			<div class="col-md-2 p-1 m-0 search_example_finds " id="search_rma_sn">
 				<div class="col p-0">RMA號碼 :</div>
@@ -920,7 +919,7 @@ search = new Vue({
 		    reader.onload = function (e) {
 		        let data = new Uint8Array(e.target.result);
 		        let workbook = XLSX.read(data, { type: "array" });      
-		        		        
+
 		        // 取得第一個工作表名稱
 		        let sheetName = workbook.SheetNames[0]; //取得第一個工作表的名稱（例如 "Sheet1"）。
 		        let worksheet = workbook.Sheets[sheetName]; //取得該工作表的內容
