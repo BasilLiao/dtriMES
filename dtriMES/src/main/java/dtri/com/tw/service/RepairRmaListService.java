@@ -249,6 +249,10 @@ public class RepairRmaListService {
 			search_packing_list = body.getJSONObject("search").getString("packing_list"); // 單據號碼
 			search_packing_list = search_packing_list.equals("") ? null : search_packing_list;
 			
+			search_rma_result = body.getJSONObject("search").getString("rma_result"); // 維修結果
+			search_rma_result = search_rma_result.equals("") ? null : search_rma_result;			
+			
+			
 			search_sys_c_user = body.getJSONObject("search").getString("sys_c_user"); // 建立人員
 			search_sys_c_user = search_sys_c_user.equals("") ? null : search_sys_c_user;
 		}
@@ -557,8 +561,9 @@ public class RepairRmaListService {
 				// ************************** 取得 MAIL 清單 ***********************
 				// rmlds 就是一個 ArrayList<RmaMail> 型別的變數，存放查詢出來的所有RmaMail 物件。
 				//搜尋"完成通知"的人員信箱資料
-				ArrayList<SystemMail> rmlds = rmaMailListDao.findByRmaMail(null,"Y",null);
-				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
+			//	ArrayList<SystemMail> rmlds = rmaMailListDao.findByRmaMail(null,"Y",null);
+				ArrayList<SystemMail> rmlds = rmaMailListDao.findAll();
+				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串				
 				// 符合收到貨 條件 取得需要寄信人員名單
 				if (!rmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
 					rmlds.forEach(rl -> {
@@ -566,15 +571,24 @@ public class RepairRmaListService {
 							rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
 						}
 					});					
-
+					if (rmaMailList.isEmpty()) {
+						resp.autoMsssage("MT007"); //[MT007] 此 (RMA單) 已全部處理完畢但無收件人資訊,無法寄信通知 請通知[管理員]
+						return false;
+					}
+					
 					// ************************** 寄信 ********************
 					String mailList = rmaMailList.toString(); // 轉換為 String
 					String[] toUser = mailList.split(";"); // 用 ";" 分割成 String 陣列
 					// String[] toUser = { "johnny_chuang@dtri.com"};
 					String[] toCcUser = { "" };
 					String subject = "RMA通知 " + rmasn + " "  + list.getString("rma_guest") + "  " + "維修報告 ";
-					// 構建郵件內容
+					//把TABLE表雙層格線變成單線
 					StringBuilder httpstr = new StringBuilder();
+					httpstr.append("<style>")
+				       .append("table { border-collapse: collapse; }")
+				       .append("table, th, td { border: 1px solid black; padding: 5px; }")
+				       .append("</style>");
+					// 構建郵件內容
 					httpstr.append("Dear All, <br><br>").append("通知 ").append(rmasn).append("處理完畢"); // .append("請提領<br><br>");
 					httpstr.append("<br>").append("維修紀錄如下");
 					httpstr.append("<table border='1'><tr>").append("<th>State</th>" //

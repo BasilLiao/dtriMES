@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import dtri.com.tw.service.ProductionDailyService;
+import dtri.com.tw.service.ProductionDailyYieldService;
 
 //https://polinwei.com/spring-boot-scheduling-tasks/
 @Component
@@ -19,6 +20,8 @@ public class ScheduledTasks {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
 	@Autowired
 	ProductionDailyService pdyService;
+	@Autowired
+	ProductionDailyYieldService pdyYieldService;
 
 	@Scheduled(fixedDelay = 600000)
 	public void autoDaily() {
@@ -26,6 +29,13 @@ public class ScheduledTasks {
 		pdyService.updateData();
 	}
 
+	
+	@Scheduled(cron = "0 30 19 * * ?")
+	public void runEveryDayAt730PM() {
+		pdyYieldService.getData();
+	    System.out.println("每天晚上 19:30 執行的任務：" + new java.util.Date());
+	}
+	
 	// fixedDelay = 60000 表示當前方法執行完畢 60000ms(1分鐘) 後，Spring scheduling會再次呼叫該方法
 	// @Scheduled(fixedDelay = 60000)
 	public void testFixDelay() {

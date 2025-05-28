@@ -1,6 +1,7 @@
 package dtri.com.tw.db.pgsql.dao;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,9 +25,13 @@ public interface SystemMailDao extends JpaRepository<SystemMail, Long> {
 			+ "WHERE "
 			+ "(:sureceived is null or c.sureceived  = :sureceived ) and "//
 			+ "(:surepairdone is null or c.surepairdone  = :surepairdone ) and "//
-			+ "(:suemail is null or c.suemail LIKE %:suemail% )  " )//
+			+ "(:suemail is null or c.suemail = :suemail )  " )//
 	ArrayList<SystemMail> findByRmaMail( String sureceived, String surepairdone,String suemail );
 	
+	
+    @Query("SELECT c FROM SystemMail c WHERE:suemail is null or c.suemail = :suemail")
+    Set<SystemMail> findBysuemailContaining(String suemail);
+	  
 	// 查詢全部含-頁數
 	@Query("SELECT c FROM SystemMail c "//
 			+ "WHERE (:suname is null or c.suname LIKE %:suname% ) and "//

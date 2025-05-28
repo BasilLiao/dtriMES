@@ -6,11 +6,11 @@
 }
 
 .datalist {
-	overflow:hidden;
-	text-overflow:ellipsis ;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
- 	 /* 日期及時間 */
+/* 日期及時間 */
 .datetimepicker {
 	margin-top: 50px;
 }
@@ -27,10 +27,10 @@
 }
 
 .search_example_title tr {
-	top:0px;
-	z-index:3;
+	top: 0px;
+	z-index: 3;
 }
-    /* 固定表頭
+/* 固定表頭
     thead tr th {
       position: sticky;
       top: 0;
@@ -39,13 +39,13 @@
 
    */
 .custom-size-checkbox {
-    width: 20px;  /* 你可以根據需要調整大小 */
-    height: 20px;
-    cursor: pointer;
+	width: 20px; /* 你可以根據需要調整大小 */
+	height: 20px;
+	cursor: pointer;
 }
 </style>
 <div id="search">
-<!--<div class="col-md-6 m-0 p-2 text-left" style="min-height: 450px;">-->
+	<!--<div class="col-md-6 m-0 p-2 text-left" style="min-height: 450px;">-->
 	<!-- ************************************以下為新增************************************************ -->
 
 	<div class="row justify-content-end p-0 m-0 search_example_button">
@@ -69,22 +69,26 @@
 		</div>
 
 		<div class="col-md-12 p-0 m-0 row ">
-			<div class="col-md-2 p-1 m-0 search_example_finds " id="search_rma_sn">
+			<div class="col-md-2 p-1 m-0 search_example_finds "
+				id="search_rma_sn">
 				<div class="col p-0">RMA號碼 :</div>
 				<input class="col p-1 rounded detail_ri h6" type="text" value="">
 			</div>
 
-			<div class="col-md-2 p-1 m-0 search_example_finds " id="search_rma_b_sn">
+			<div class="col-md-2 p-1 m-0 search_example_finds "
+				id="search_rma_b_sn">
 				<div class="col p-0">產品(序號) :</div>
 				<input class="col p-1 rounded detail_ri h6" type="text">
 			</div>
 
-			<div class="col-md-2 p-1 m-0 search_example_finds" id="search_rma_mb_sn">
+			<div class="col-md-2 p-1 m-0 search_example_finds"
+				id="search_rma_mb_sn">
 				<div class="col p-0">MB(序號) :</div>
 				<input class="col p-1 rounded detail_ri h6" type="text">
 			</div>
 
-			<div class="col-md-2 p-1 m-0 search_example_finds "id="search_state_selsect">
+			<div class="col-md-2 p-1 m-0 search_example_finds "
+				id="search_state_selsect">
 				<div class="h6 mb-1 s_name">目前進度</div>
 				<select class="col-12 custom-select custom-select-sm s_value">
 					<option class="example_select_def" value="" selected>select</option>
@@ -131,11 +135,13 @@
 		<div class="p-0  mt-0 text-left">
 			<div class="bg-white rounded-top m-0 pl-1 h4">
 				<i class="bi bi-pen mr-1"></i>Modify
-			</div>			
+			</div>
 			<div class="col-md-12 p-0 m-0 row ">
-				<div class="col-md-2 p-2 modify_example_selsect" id="modify_state_selsect">
+				<div class="col-md-2 p-2 modify_example_selsect"
+					id="modify_state_selsect">
 					<div class="h6 mb-1 s_name">目前進度</div>
-					<select class="col-12 custom-select custom-select-sm s_value s_value">
+					<select
+						class="col-12 custom-select custom-select-sm s_value s_value">
 						<option class="example_select_def" value="">select</option>
 						<option class="example_select_one" value="未收到">未收到</option>
 						<option class="example_select_one" value="已收到">已收到</option>
@@ -144,41 +150,50 @@
 						<option class="example_select_one" value="已結案/已報廢">已結案/已報廢</option>
 					</select>
 				</div>
-				
+
 				<div class="col-md-2 p-2 modify_example_input" id="modify_send_date">
-					<div class="h6 mb-1 s_name">寄貨日</div> 
+					<div class="h6 mb-1 s_name">寄貨日</div>
 					<div class="p-0">
-						<input type="text" class="col p-1 border border-dark rounded s_value datetimepicker_date" placeholder="2025-04-24 00:00:00">
+						<input type="text"
+							class="col p-1 border border-dark rounded s_value datetimepicker_date"
+							placeholder="2025-04-24 00:00:00">
 					</div>
 				</div>
-				
-				<div class="col-md-2 p-2 m-0 modify_example_input modify_send_track_num">
+
+				<div
+					class="col-md-2 p-2 m-0 modify_example_input modify_send_track_num">
 					<div class="h6 mb-1 s_name">寄貨追蹤號碼:</div>
-						<input class="col p-1 border border-dark rounded s_value" type="text">
+					<input class="col p-1 border border-dark rounded s_value"
+						type="text">
 				</div>
-				
+
 				<div class="col-md-2 p-2 modify_example_input" id="modify_recd_date">
-					<div class="h6 mb-1 s_name">收到日</div> 
+					<div class="h6 mb-1 s_name">收到日</div>
 					<div class="p-0">
-						<input type="text" class="col p-1 border border-dark rounded s_value datetimepicker_date" placeholder="2025-04-24 00:00:00">
+						<input type="text"
+							class="col p-1 border border-dark rounded s_value datetimepicker_date"
+							placeholder="2025-04-24 00:00:00">
 					</div>
 				</div>
-				
-				<div class="col-md-2 p-2 m-0 modify_example_input modify_recd_track_num">
+
+				<div
+					class="col-md-2 p-2 m-0 modify_example_input modify_recd_track_num">
 					<div class="h6 mb-1 s_name">到貨追蹤號碼:</div>
-						<input class="col p-1 border border-dark rounded s_value" type="text">
-				</div>				
+					<input class="col p-1 border border-dark rounded s_value"
+						type="text">
+				</div>
 			</div>
-			
+
 			<div class="row p-0 m-0 modify_example_finds d-none">
 				<!-- col-md-2/4/6/8/10/12 -->
 				<div class="col-md-2 p-2 modify_example_input">
-					<div class="h6 mb-1 s_name">Search1</div> 
+					<div class="h6 mb-1 s_name">Search1</div>
 					<div class="p-0">
-						<input class="col p-1 border border-dark rounded s_value"	type="text">
+						<input class="col p-1 border border-dark rounded s_value"
+							type="text">
 					</div>
 				</div>
-					
+
 				<div class="col-md-2 p-2 modify_example_selsect">
 					<div class="h6 mb-1 s_name">Search2</div>
 					<select class="col-12 custom-select custom-select-sm s_value">
@@ -187,18 +202,19 @@
 					</select>
 				</div>
 			</div>
-			
+
 			<!-- justify-content-end  （靠右） -->
 			<div class="row justify-content-end p-0 m-0 search_example_button">
 				<div class="col-12 col-md-6 row justify-content-between m-0 p-2">
 					<!--btn-primary顏色（藍色）  btn-success（綠色） btn-danger（紅色） btn-warning（黃色）-->
 					<!-- btn（預設標準大小，不加 -sm 或 -lg） btn-sm 代表「小尺寸按鈕」btn-lg（大按鈕）-->
-					<button id="register_btn" class="col-md-2 mt-1 btn btn-primary btn-sm" type="button">Register</button>
-					<button id="save_all_btn" class="col-md-2 mt-1 btn btn-success btn-sm" type="button">Save	All</button>
+					<button id="register_btn"class="col-md-2 mt-1 btn btn-primary btn-sm" type="button">Register</button>
+					<button id="save_all_btn"class="col-md-2 mt-1 btn btn-success btn-sm" type="button">Save All</button>
 					<button id="delete_btn" class="col-md-2 mt-1 btn btn-danger btn-sm"	type="button">Delete</button>
-					<button id="clear_modify_btn" class="col-md-2 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
-					
-					<button id="send_mail_btn" class="col-md-2 mt-1 btn btn-warning btn-sm d-none" type="button">寄信(到貨)</button>
+					<button id="clear_modify_btn"class="col-md-2 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+					<!--  <button id="table2excel_btn" class="col-md-2 mt-1 btn btn-primary btn-sm"type="button">匯出</button> 	-->
+ 				
+					<!-- <button id="send_mail_btn"class="col-md-2 mt-1 btn btn-warning btn-sm " type="button">寄信(到貨)</button>  -->
 				</div>
 			</div>
 		</div>
@@ -210,22 +226,21 @@
 			<i class="bi bi-list-ul mr-1"></i>Result
 		</div>
 		<div class="p-2">
-			<table id="dataTable"	class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
-				<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
-					<tr class="fixed_cell bg-dark">	
-									
-						<th class="p-0 fixed_cell bg-dark" style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__checkbox">
-								<input type="checkbox" id="checkAll" class="custom-size-checkbox ">    					
-						</th>
-												
-						<th class="p-1 fixed_cell bg-dark" style="min-width: 50px; max-width: 50px; left: 51px;" id="01_h__item">
+			<table id="dataTable"class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+				<thead class="thead bg-dark table-dark search_example_title"style="white-space: nowrap;">
+					<tr class="fixed_cell bg-dark">
+
+						<th class="p-0 fixed_cell bg-dark noExl "style="min-width: 50px; max-width: 50px; left: 1px;"
+							id="01_h__checkbox"><input type="checkbox" id="checkAll"class="custom-size-checkbox "></th>
+
+						<th class="p-1 fixed_cell bg-dark "style="min-width: 50px; max-width: 50px; left: 51px;"id="01_h__item">
 							<div class="row p-0 m-0 justify-content-between">
-								<div class="title_name">NO</div>	
-							</div>							
+								<div class="title_name">NO</div>
+							</div>
 						</th>
 
-						<th class="p-1 fixed_cell bg-dark" style="min-width: 150px; max-width: 150px;left: 101px;" id="09_h__state">
-						  <div class="row p-0 m-0 justify-content-between">
+						<th class="p-1 fixed_cell bg-dark"style="min-width: 150px; max-width: 150px; left: 101px;"id="09_h__state">
+							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">目前進度</div>
 								<div class="title_order">
 									<i class="bi bi-sort-alpha-down "></i> 
@@ -233,9 +248,9 @@
 								</div>
 							</div>
 						</th>
-						
-						<th class="p-1 fixed_cell bg-dark" style="min-width: 100px; max-width: 100px;left: 251px;" id="">
-						  <div class="row p-0 m-0 justify-content-between">
+
+						<th class="p-1 fixed_cell bg-dark"style="min-width: 100px; max-width: 100px; left: 251px;" id="">
+							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">維修結果</div>
 								<div class="title_order">
 									<i class="bi bi-sort-alpha-down "></i> 
@@ -243,8 +258,8 @@
 								</div>
 							</div>
 						</th>
-						
-						<th class="p-1 fixed_cell bg-dark"style="min-width: 150px; max-width: 150px; left:351px; "id="02_h__rma_number">
+
+						<th class="p-1 fixed_cell bg-dark"style="min-width: 150px; max-width: 150px; left: 351px;"id="02_h__rma_number">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">RMA號碼</div>
 								<div class="title_order">
@@ -253,16 +268,16 @@
 								</div>
 							</div>
 						</th>
-						<th class="p-1 fixed_cell bg-dark " style="min-width: 200px; max-width: 200px; left:501px;" id="05_h__serial_number">
+						<th class="p-1 fixed_cell bg-dark"style="min-width: 200px; max-width: 200px; left: 501px;"id="05_h__serial_number">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">機台產品序號</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
+									<i class="bi bi-sort-alpha-down "></i>
 									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
-						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="06_h__mb_number">
+						<th class="p-1 " style="min-width: 200px; max-width: 200px;"id="06_h__mb_number">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">MB序號</div>
 								<div class="title_order">
@@ -270,8 +285,8 @@
 									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
-						</th>						
-						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__send_date">
+						</th>
+						<th class="p-1 bg-dark"	style="min-width: 200px; max-width: 200px;" id="04_h__send_date">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">寄出日</div>
 								<div class="title_order">
@@ -280,132 +295,154 @@
 								</div>
 							</div>
 						</th>
-												
-						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__send_track_num">
+
+						<th class="p-1 bg-dark"
+							style="min-width: 200px; max-width: 200px;"
+							id="04_h__send_track_num">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">寄貨追蹤號碼</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
-												
-						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__recd_date">
+
+						<th class="p-1 bg-dark"
+							style="min-width: 200px; max-width: 200px;" id="04_h__recd_date">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">收到日</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
-						</th>						
-						
-						<th class="p-1 bg-dark" style="min-width: 200px; max-width: 200px;" id="04_h__recd_track_num">
+						</th>
+
+						<th class="p-1 bg-dark"
+							style="min-width: 200px; max-width: 200px;"
+							id="04_h__recd_track_num">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">到貨追蹤號碼</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
-						</th>						
-						
-						<th class="p-1  bg-dark  d-none" style="min-width: 50px; max-width: 50px; left: 1px;" id="01_h__id">
+						</th>
+
+						<th class="p-1  bg-dark  d-none"
+							style="min-width: 50px; max-width: 50px; left: 1px;"
+							id="01_h__id">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">ID</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
-							</div></th>
+							</div>
+						</th>
 
-						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="03_h__customer">
+						<th class="p-1 " style="min-width: 200px; max-width: 200px;"
+							id="03_h__customer">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">客戶名稱</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
 
-						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="04_h__model">
+						<th class="p-1 " style="min-width: 200px; max-width: 200px;"
+							id="04_h__model">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">產品型號</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
-						
-						<th class="p-1 " style="min-width: 200px; max-width: 200px;" id="03_h__Part_No">
+
+						<th class="p-1 " style="min-width: 200px; max-width: 200px;"
+							id="03_h__Part_No">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">Part_No</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
-				
-						<th class="p-1 " style="min-width: 250px; max-width: 250px;" id="07_h__issue">
-						 <div class="row p-0 m-0 justify-content-between">
+
+						<th class="p-1 " style="min-width: 250px; max-width: 250px;"
+							id="07_h__issue">
+							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">描述問題</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt  d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt  d-none"></i>
 								</div>
 							</div>
 						</th>
-						
-						<th class="p-1"	style="min-width: 100px; width: 100%; max-width: 100px;" id="08_h__stateCheck">
+
+						<th class="p-1"
+							style="min-width: 100px; width: 100%; max-width: 100px;"
+							id="08_h__stateCheck">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">狀態欄</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
 
-						<th class="p-1"	style="min-width: 100px; width: 100%; max-width: 100px;" id="09_h__syscdate">
+						<th class="p-1"
+							style="min-width: 100px; width: 100%; max-width: 100px;"
+							id="09_h__syscdate">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">建立時間</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
 
-						<th class="p-1"	style="min-width: 100px; width: 100%; max-width: 100px;" id="10_h__syscuser">
+						<th class="p-1"
+							style="min-width: 100px; width: 100%; max-width: 100px;"
+							id="10_h__syscuser">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">建立人</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
 
-						<th class="p-1"	style="min-width: 100px; width: 100%; max-width: 100px;" id="11_h__sysmuser">
+						<th class="p-1"
+							style="min-width: 100px; width: 100%; max-width: 100px;"
+							id="11_h__sysmuser">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">修改時間</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
 
-						<th class="p-1"	style="min-width: 100px; width: 100%; max-width: 100px;" id="12_h__sysmdate">
+						<th class="p-1"
+							style="min-width: 100px; width: 100%; max-width: 100px;"
+							id="12_h__sysmdate">
 							<div class="row p-0 m-0 justify-content-between">
 								<div class="title_name">修改人</div>
 								<div class="title_order">
-									<i class="bi bi-sort-alpha-down "></i> 
-									<i class="bi bi-sort-alpha-up-alt d-none"></i>
+									<i class="bi bi-sort-alpha-down "></i> <i
+										class="bi bi-sort-alpha-up-alt d-none"></i>
 								</div>
 							</div>
 						</th>
@@ -420,7 +457,7 @@
 			</table>
 		</div>
 	</div>
-<!--</div> - -->
+	<!--</div> - -->
 </div>
 <script type="text/javascript">
 //控制端
@@ -551,6 +588,29 @@ search = new Vue({
 			    $(".row-checkbox").prop("checked", checked);
 			});	
 			
+		
+//			$(document).on("click", "#table2excel_btn", function (event) {
+//				console.log("table2excel_btn");
+					//更新時間
+//				var myDate = new Date();
+//				var reportDate =
+//				myDate.getFullYear() + '-' +
+//				('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+//				('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+//				('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+//				$("#dataTable").table2excel({
+					// exclude CSS class
+					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+//				preserveColors: false,
+//				exclude_img: true,
+//				exclude_links: true,
+//				exclude: ".noExl",
+//				name: "Worksheet Name",
+//				filename: "MES_Repair_Report_" + reportDate, //do not include extension
+//				fileext: ".xls" // file extension
+//				});
+//			});
+
 			// 預設查詢 "目前進度" "未收到"
 			$('#search_state_selsect select').val('未收到');
 			search.searchSend();
@@ -789,7 +849,7 @@ search = new Vue({
 			        	//<td class="col-${item.customer.replace(/\s+/g, '_')}">${item.customer}</td>  
 			        	//${item.customer.replace(/\s+/g, '_') 取變數名稱 及 (/\s+/g, '_')這樣可以把空格 ( ) 轉換成 _，避免 class 名稱有空格導致 CSS 或 JS 運行出錯。
 			            row.innerHTML = `
-			                <td class="col-check  datalist fixed_cell" style="min-width: 50px; max-width: 50px; left: 1px; background-color: ${bgColor};">			             								
+			                <td class="col-check  datalist fixed_cell noExl" style="min-width: 50px; max-width: 50px; left: 1px; background-color: ${bgColor};">			             								
 			                	<input type="checkbox" class="row-checkbox  custom-size-checkbox datalist fixed_cell" data-id="${item.id}">			                
 			            	</td>
 			                <td class="col-index datalit fixed_cell" style="min-width: 50px; max-width: 50px; left: 51px; background-color: ${bgColor};">
@@ -853,19 +913,19 @@ search = new Vue({
 			var check= true;		
 			
 			let modify_one={};
-			let rmano=$("#search .modify_rmano input").val().trim(); //RMA 號碼
+//			let rmano=$("#search .modify_rmano input").val().trim(); //RMA 號碼
 			
 				//RMA號碼 輸入框要資料才行
-				if(rmano !="" ){					
-					modify_one['rma_sn'] =rmano; //rma號碼										
-					modify_one['rma_b_sn'] = ""; //故意用成空的
-					modify_one['rma_mb_sn'] = "";
-					modify_one['state'] = "";					
-				}else{
-					$("#search .modify_rmano input").val("RMA號碼尚未填寫無法記性通知!!");	
-					check = false;	
-					main.loading(false);
-				}			
+//				if(rmano !="" ){					
+//					modify_one['rma_sn'] =rmano; //rma號碼										
+//					modify_one['rma_b_sn'] = ""; //故意用成空的
+//					modify_one['rma_mb_sn'] = "";
+//					modify_one['state'] = "";					
+//				}else{
+//					$("#search .modify_rmano input").val("RMA號碼尚未填寫無法記性通知!!");	
+//					check = false;	
+//					main.loading(false);
+//				}			
 			
 			if(check){				
 			
@@ -1015,6 +1075,7 @@ search = new Vue({
 		$(document).off("click", "#send_mail_btn");
 		$(document).off("click","#excel_file_upload_btn");
 		$(document).off("click", "#checkAll");
+//		$(document).off("click","#table2excel_btn");
 		$(document).off("keypress", "#search .search_example_finds input");
 	},
 });

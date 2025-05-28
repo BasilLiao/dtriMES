@@ -383,10 +383,8 @@ customized = new Vue({
 			    }	
 	
 				$('#repair_info input').prop("disabled", true); //把欄位disabled 不給更改				
-				$('#input_sn input').prop("disabled", false);//解除後可輸入資料
-			    
-				customized.sendSave(); // 有值時才執行
-				
+				$('#input_sn input').prop("disabled", false);//解除後可輸入資料			    
+				customized.sendSave(); // 有值時才執行				
 			});
 		
 		},
@@ -572,7 +570,7 @@ customized = new Vue({
 			            	let sndata=	item.rma_b_sn;
 			            	if (!sndata) {
 			                		//判斷sndata為空值 表示 機台序號 沒有資料 把 MB號碼 給 輸入序號 欄位
-			            		$('#input_sn input').val(item.rma_mb_sn);//MB號碼 放在input				                							    				 
+			            	//	$('#input_sn input').val(item.rma_mb_sn);//MB號碼 放在input				                							    				 
 			  				}else{
 			  					$('#input_sn input').val(item.rma_b_sn);//機台序號 放在input
 			  					$("#search_fi_btn").trigger('click');	 

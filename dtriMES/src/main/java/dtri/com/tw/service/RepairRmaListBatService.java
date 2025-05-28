@@ -10,8 +10,8 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +21,7 @@ import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.RmaListDao;
 import dtri.com.tw.db.pgsql.dao.SystemMailDao;
+import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class RepairRmaListBatService {
@@ -68,6 +69,13 @@ public class RepairRmaListBatService {
 	@Transactional
 	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
+		int page1 = req.getPage_batch(); // 取得請求中的當前頁數
+		int p_size1 = req.getPage_total(); // 取得每頁的筆數
+		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
+		// 這裡直接覆蓋上面取得的值，讓分頁查詢變成 "不分頁"
+		page1 = 0;
+		p_size1 = 1000; // 設定為極大值，意味著一次查詢所有資料
+		PageRequest page_r = PageRequest.of(page1, p_size1, Sort.by("rmaNumber").descending());
 		boolean check = false;
 		JSONArray list = body.getJSONArray("modify");
 //		String serialNumber = jsonObject.getString("System S/N").trim(); // 去除前後空格
@@ -102,7 +110,7 @@ public class RepairRmaListBatService {
 				StateCheck = one.getInt("modify_state"); // //取TABLE的col-stateCheck那一筆資料的狀態欄的值 0/1/2/3/4
 				StateCheck = (StateCheck == -1) ? 0 : StateCheck;
 
-				ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(rmaid, null, null, null, null, null,	null, null);
+				ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(rmaid, null, null, null, null, null,	null, null,page_r);
 
 				if (rls.size() > 0) {
 					RmaList rl = rls.get(0);
@@ -293,13 +301,13 @@ public class RepairRmaListBatService {
 	// search 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 
-//		int page1 = req.getPage_batch(); // 取得請求中的當前頁數
-//		int p_size1 = req.getPage_total(); // 取得每頁的筆數
+		int page1 = req.getPage_batch(); // 取得請求中的當前頁數
+		int p_size1 = req.getPage_total(); // 取得每頁的筆數
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		// 這裡直接覆蓋上面取得的值，讓分頁查詢變成 "不分頁"
-//		page1 = 0;
-//		p_size1 = 99999; // 設定為極大值，意味著一次查詢所有資料
-//		PageRequest page_r = PageRequest.of(page1, p_size1, Sort.by("rmaNumber").descending());
+		page1 = 0;
+		p_size1 = 99999; // 設定為極大值，意味著一次查詢所有資料
+		PageRequest page_r = PageRequest.of(page1, p_size1, Sort.by("rmaNumber").descending());
 		boolean check = false;
 
 		JSONObject body = req.getBody(); // 建立空的JSON格式
@@ -318,7 +326,7 @@ public class RepairRmaListBatService {
 		state = state.equals("") ? null : state;
 
 		// ************************** 取得 RMA 清單 ************************
-		ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmaNO, rma_b_sn, rma_mb_sn, null, null,state, null);
+		ArrayList<RmaList> rls = rmaListDao.findAllByRdidAndRdruidBat1(null, rmaNO, rma_b_sn, rma_mb_sn, null, null,state, null,page_r);
 		
 		JSONObject search = new JSONObject();
 		JSONArray object_bodys = new JSONArray();
@@ -350,9 +358,9 @@ public class RepairRmaListBatService {
 				object_body.put("recd_track_num", rl.getRecdtracknum()); // 到貨追蹤號碼
 				object_body.put("recd_date", rl.getRecddate()); // 收到日
 
-				object_body.put("syscdate", rl.getSyscdate()); // 建立時間
+				object_body.put("syscdate", Fm_Time.to_yMd_Hms( rl.getSyscdate())); // 建立時間
 				object_body.put("syscuser", rl.getSyscuser()); // 建立人
-				object_body.put("sysmdate", rl.getSysmdate()); // 修改時間
+				object_body.put("sysmdate", Fm_Time.to_yMd_Hms(rl.getSysmdate())); // 修改時間
 				object_body.put("sysmuser", rl.getSysmuser()); // 修改人
 				// 0:未收到 1:已收到 2:處理完畢 3:已寄出
 				object_bodys.put(object_body);

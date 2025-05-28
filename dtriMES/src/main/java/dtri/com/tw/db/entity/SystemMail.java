@@ -34,6 +34,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      su_email : 使用者E mail<br>
  *      su_received : 收到貨通知(是否) <br>
  *     	su_repairdone : 維修完成通知(是否) <br>
+ *      su_dailyreport :測試日報通知(是否) <br>
  * 
  * @apiNote 標籤使用 @GeneratedValue<br>
  *          JPA提供的四種標準用法為TABLE，SEQUENCE，IDENTITY，AUTO。 <br>
@@ -83,8 +84,9 @@ public class SystemMail {
 		this.syssort = 0;
 		this.sysstatus = 0;
 		this.sysgheader = false;
-		this.sureceived="";
-		this.surepairdone="";
+		this.sureceived="N";
+		this.surepairdone="N";
+		this.sudailyreport="N";
 	}
 
 	// 共用型
@@ -133,16 +135,19 @@ public class SystemMail {
 
 	@Column(name = "su_position", columnDefinition = "varchar(50)")
 	private String suposition;
+
+	@Column(name = "su_email", columnDefinition = "varchar(200) default ''")
+	private String suemail;
 	
 	@Column(name = "su_received", columnDefinition = "varchar(10)") //收到通知
 	private String sureceived;
 	
 	@Column(name = "su_repairdone", columnDefinition = "varchar(10)")//完成通知
 	private String surepairdone;
-
-	@Column(name = "su_email", columnDefinition = "varchar(200) default ''")
-	private String suemail;
-
+	
+	@Column(name = "su_dailyreport", columnDefinition = "varchar(10)")//測試日報通知
+	private String sudailyreport;	
+	
 	public Boolean getSysgheader() {
 		return sysgheader;
 	}
@@ -269,6 +274,14 @@ public class SystemMail {
 
 	public void setSurepairdone(String surepairdone) {
 		this.surepairdone = surepairdone;
+	}
+
+	public String getSudailyreport() {
+		return sudailyreport;
+	}
+
+	public void setSudailyreport(String sudailyreport) {
+		this.sudailyreport = sudailyreport;
 	}
 
 }

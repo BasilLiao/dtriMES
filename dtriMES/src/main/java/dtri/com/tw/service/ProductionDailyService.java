@@ -94,7 +94,7 @@ public class ProductionDailyService {
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 			checkFirst = true;
-			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null);
+			workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null); 	// 查詢工作站代表
 
 			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
@@ -253,7 +253,7 @@ public class ProductionDailyService {
 
 		// [準備] 把每個工作站查詢出過站的資料 dailybeans
 		// Step1. 工作站[{"wcname":"D0001","wpbname":"加工站","qty":"50"},{},{}]
-		workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null);
+		workstations = workstationDao.findAllBySysheaderOrderByWcnameAsc(true, null); //查詢工作站代表
 		JSONArray pbwNewArr = new JSONArray();
 		for (Workstation w_one : workstations) {
 			if (w_one.getWgid() != 0) {
@@ -473,21 +473,20 @@ public class ProductionDailyService {
 				object_dp_all_one.put(FFS.ord((ord_dp_all += 1), FFM.Hmb.B) + "pd_t_qty", pdb_val.getPdtqty());
 
 				// 每日 良率
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_wc_line", pdb_val.getPdwcline());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_wc_class", pdb_val.getPdwcclass());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal());
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate()); //修改時間
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_wc_line", pdb_val.getPdwcline()); //產線(現別)
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_wc_class", pdb_val.getPdwcclass()); //今日:班別(早班/晚班/加班…)
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_id", pdb_val.getPdprid());//工單號
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bomid", pdb_val.getPdprbomid()); //產品BOM
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_p_model", pdb_val.getPdprpmodel());//產品型號
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_total", pdb_val.getPdprtotal()); //製令數量(工單總數)
 
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_qty", pdb_val.getPdttqty());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_bad_qty", pdb_val.getPdttbadqty());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_yield", pdb_val.getPdttyield());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_tt_ok_qty",
-						pdb_val.getPdprttokqty());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bad_qty", pdb_val.getPdprbadqty());
-				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_yield", pdb_val.getPdpryield());
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_qty", pdb_val.getPdttqty());   //測試(次數)
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_bad_qty", pdb_val.getPdttbadqty()); //測試故障(次數)
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_tt_yield", pdb_val.getPdttyield());  //測試(次數)良率
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_tt_ok_qty", pdb_val.getPdprttokqty());//生產測試通過數
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_bad_qty", pdb_val.getPdprbadqty());//生產故障數
+				object_yield_one.put(FFS.ord((ord_yield += 1), FFM.Hmb.B) + "pd_pr_yield", pdb_val.getPdpryield());//生產良率
 
 				// 每日總工時
 				object_dwh_one.put(FFS.ord((ord_dwh += 1), FFM.Hmb.B) + "sys_m_date", pdb_val.getSysmdate());
@@ -557,11 +556,11 @@ public class ProductionDailyService {
 		});
 		// 共有4張表 同時回傳
 		JSONObject all_json = new JSONObject();
-		all_json.put("bodys_dp", object_dp_bodys);
-		all_json.put("bodys_dp_all", object_dp_all_bodys);
-		all_json.put("bodys_yield", object_yield_bodys);
-		all_json.put("bodys_dwh", object_dwh_bodys);
-		all_json.put("bodys_dnoe", object_dnoe_bodys);
+		all_json.put("bodys_dp", object_dp_bodys); //每日 總產量
+		all_json.put("bodys_dp_all", object_dp_all_bodys); //每日 累計總產量
+		all_json.put("bodys_yield", object_yield_bodys); //每日 產量良率
+		all_json.put("bodys_dwh", object_dwh_bodys);    //每日 總工時
+		all_json.put("bodys_dnoe", object_dnoe_bodys);  //每日 總人力
 
 		bean.setBody(new JSONObject().put("search", all_json));
 
@@ -590,22 +589,20 @@ public class ProductionDailyService {
 		log.info("updateData 更新每日生產報告");
 		// 檢查[結算 每日 資料]
 		ArrayList<ProductionDaily> oldDailys = new ArrayList<ProductionDaily>();
-		oldDailys = dailyDao.findAllByProductionDailyCheck(null, null, null, null, null, null, null, 0);
+		oldDailys = dailyDao.findAllByProductionDailyCheck(null, null, null, null, null, null, null, 0); //(production_daily)  查詢 檢核  ( 0 = 正常 /1 = 結單)
 		for (ProductionDaily productionDaily : oldDailys) {
-			String wcc = productionDaily.getPdwcclass();
-			String wcl = productionDaily.getPdwcline();
-			String wcn = productionDaily.getPdwcname();
+			String wcc = productionDaily.getPdwcclass();  //早班 /加班 
+			String wcl = productionDaily.getPdwcline();	//4F/ 6F /散單
+			String wcn = productionDaily.getPdwcname(); //D0001 D0002 D0003 D0004 D0005 
 
 			// 取出 [所配班別]
-			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(wcc, wcl, wcn, null, null);
+			ArrayList<WorkstationClass> classes = classDao.findAllBySameClass(wcc, wcl, wcn, null, null);  // 查詢是否重複 同一線別+班別+工作站
 			if (classes.size() > 0) {
 				WorkstationClass oneClass = classes.get(0);
 				// 如果[目前時間] 大於 [結算時間]
 				Date n_Date = new Date();
-				Date s_Date = Fm_Time.toDateTime(
-						Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcstime() + ":00");
-				Date e_Date = Fm_Time.toDateTime(
-						Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcetime() + ":00");
+				Date s_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcstime() + ":00");
+				Date e_Date = Fm_Time.toDateTime(Fm_Time.to_y_M_d(productionDaily.getSyscdate()) + " " + oneClass.getWcetime() + ":00");
 
 				if (n_Date.after(e_Date)) {
 					// (時*分*秒*毫秒)(24 * 60 * 60 * 1000)

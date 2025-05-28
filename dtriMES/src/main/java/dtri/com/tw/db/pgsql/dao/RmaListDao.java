@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,7 +40,7 @@ public interface RmaListDao extends JpaRepository<RmaList, Long> {
 			       + "(:state is null or d.state LIKE %:state%) and "
 			       + "(:stateCheck is null or d.stateCheck =:stateCheck) "		       
 				   + "order by d.rmaNumber , d.stateCheck , d.serialNumber , d.sysmdate asc ")		//sysmdate
-		ArrayList<RmaList> findAllByRdidAndRdruidBat1(Long id,String rmaNumber, String serialNumber, String mbNumber,String customer, String issue,String state,Integer stateCheck);
+		ArrayList<RmaList> findAllByRdidAndRdruidBat1(Long id,String rmaNumber, String serialNumber, String mbNumber,String customer, String issue,String state,Integer stateCheck,Pageable pageable);
 				
 		//維修頁面搜尋
 		@Query("SELECT d FROM RmaList d WHERE "
