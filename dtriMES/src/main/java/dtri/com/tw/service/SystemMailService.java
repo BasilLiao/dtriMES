@@ -16,6 +16,7 @@ import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.SystemMailDao;
+//import dtri.com.tw.db.pgsql.dao.SystemUserDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
@@ -45,7 +46,8 @@ public class SystemMailService {
 		String su_e_name =null;
 		String su_name = null;
 		String su_position = null;
-		String status = "0";
+		String sys_note = null;
+//		String status = "0";
 //		Long susggid = 0L;
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("suid").descending());
 		// 初次載入需要標頭 / 之後就不用
@@ -85,8 +87,8 @@ public class SystemMailService {
 //			JSONArray groups = new JSONArray();
 			// (u些事admin專用)
 //			if (user.getSusggid() == 1) {
-//				groupDao.findAllBySysheader(true, PageRequest.of(0, 999)).forEach(s -> {
-//					groups.put((new JSONObject()).put("value", s.getSgname()).put("key", s.getSggid()));
+//				userDao.findAll( ).forEach(s -> {
+//					groups.put((new JSONObject()).put("value", s.getSuname()).put("key", s.getSuname()));	
 //				});
 //			} else {
 //				groupDao.findAllBySysheaderAndSgidNot(true, 1l, PageRequest.of(0, 999)).forEach(s -> {
@@ -106,7 +108,8 @@ public class SystemMailService {
 		
 			JSONArray values = new JSONArray();
 			values.put((new JSONObject()).put("value", "否").put("key", "N"));
-			values.put((new JSONObject()).put("value", "是").put("key", "Y"));
+			values.put((new JSONObject()).put("value", "主").put("key", "Y"));
+			values.put((new JSONObject()).put("value", "副").put("key", "C"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_received", "收發貨"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_repairdone", "維修完成"));			
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_dailyreport", "測試日報"));
@@ -135,7 +138,8 @@ public class SystemMailService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_name", "姓名", value));
 //			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TIME, "", "col-md-2", "su_sg_g_id", "群組名稱", groups)); //群組名稱 su_sg_g_id
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_position", "單位(部門)", value));
-
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "sys_note", "備註", value));
+			
 //			values = new JSONArray();
 //			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
 //			values.put((new JSONObject()).put("value", "異常").put("key", "1"));
@@ -150,14 +154,14 @@ public class SystemMailService {
 			su_name = su_name.equals("") ? null : su_name;
 			su_position = body.getJSONObject("search").getString("su_position");
 			su_position = su_position.equals("") ? null : su_position;
-//			status = body.getJSONObject("search").getString("sys_status");
-//			status = status.equals("") ? "0" : status;
+			sys_note = body.getJSONObject("search").getString("sys_note");
+			sys_note = sys_note.equals("") ? "" : sys_note;
 //			susggid = body.getJSONObject("search").getString("su_sg_g_id").equals("") ? //群組名稱 su_sg_g_id
 //					0L : body.getJSONObject("search").getLong("su_sg_g_id");
 		}
 		// 全查
 //		if (user.getSusggid() == 1) {
-			rmaMail = rmaMailListDao.findAllBySystemMail(su_name, su_e_name,su_position, Integer.parseInt(status), page_r);
+			rmaMail = rmaMailListDao.findAllBySystemMail(su_name, su_e_name,su_position, sys_note, page_r);
 //		} else {
 //			rmaMail = rmaMailListDao.findAllByRmaMailNotAdmin(susggid, su_name, su_e_name, su_position, Integer.parseInt(status), page_r);
 //		}

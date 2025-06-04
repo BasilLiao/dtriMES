@@ -563,12 +563,17 @@ public class RepairRmaListService {
 				//搜尋"完成通知"的人員信箱資料
 			//	ArrayList<SystemMail> rmlds = rmaMailListDao.findByRmaMail(null,"Y",null);
 				ArrayList<SystemMail> rmlds = rmaMailListDao.findAll();
-				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串				
+				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
+				StringBuilder cMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
 				// 符合收到貨 條件 取得需要寄信人員名單
 				if (!rmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
 					rmlds.forEach(rl -> {
 						if ("Y".equals(rl.getSurepairdone())) {// 如果 Surepairdone(處理好) 是 "Y"
 							rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
+						}
+						//副本炒送
+						if ("C".equals(rl.getSudailyreport())) {   //
+							cMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"						}		
 						}
 					});					
 					if (rmaMailList.isEmpty()) {
@@ -578,9 +583,11 @@ public class RepairRmaListService {
 					
 					// ************************** 寄信 ********************
 					String mailList = rmaMailList.toString(); // 轉換為 String
+					String c_mailList =cMailList.toString();
 					String[] toUser = mailList.split(";"); // 用 ";" 分割成 String 陣列
 					// String[] toUser = { "johnny_chuang@dtri.com"};
-					String[] toCcUser = { "" };
+					String[] toCcUser = c_mailList.split(";"); // 用 ";" 分割成 String 陣列
+					//String[] toCcUser = { "" };
 					String subject = "RMA通知 " + rmasn + " "  + list.getString("rma_guest") + "  " + "維修報告 ";
 					//把TABLE表雙層格線變成單線
 					StringBuilder httpstr = new StringBuilder();
@@ -615,6 +622,8 @@ public class RepairRmaListService {
 								.append("</tr>");
 					}
 					httpstr.append("</table>");
+					httpstr.append("<span style='color:red; font-weight:bold;'>※ 本信件由 MES 系統自動發送，請勿直接回覆。如需協助，請洽資訊部。※</span><br>");
+
 					mailService.sendEmail(toUser, toCcUser, subject, httpstr.toString(), null, null);
 					resp.autoMsssage("MT006"); // [MT006] 此 (RMA單) 已全部處理完畢並系統通知信件寄出 [Successfully]!!"
 				}else {

@@ -136,12 +136,16 @@ public class RepairRmaListBatService {
 				// rmlds 就是一個 ArrayList<RmaMail> 型別的變數，存放查詢出來的所有RmaMail 物件。
 				ArrayList<SystemMail> rmlds = rmaMailListDao.findAll();
 				StringBuilder rmaMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
-
+				StringBuilder cMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
 				// 符合收到貨 條件 取得需要寄信人員名單
 				if (!rmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
 					rmlds.forEach(rl -> {
 						if ("Y".equals(rl.getSureceived())) {// 如果 sureceived(收到貨) 是 "Y"
 							rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
+						}
+						//副本炒送
+						if ("C".equals(rl.getSudailyreport())) {   //
+							cMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"						}		
 						}
 					});
 				}
@@ -149,14 +153,18 @@ public class RepairRmaListBatService {
 
 				// ************************** 寄信 ********************
 				String mailList = rmaMailList.toString(); // 轉換為 String
+				String c_mailList =cMailList.toString();
 				String[] toUser = mailList.split(";"); // 用 ";" 分割成 String 陣列
 				// String[] toUser = { "johnny_chuang@dtri.com", "ansolder@gmail.com" };
-				String[] toCcUser = { "" };
+				String[] toCcUser = c_mailList.split(";"); // 用 ";" 分割成 String 陣列
+				//String[] toCcUser = { "" };
 				String subject = "RMA通知 " + rmano + " " + customer + "  " + state;
 				// 構建郵件內容
 				StringBuilder httpstr = new StringBuilder();
 				httpstr.append("Dear All, <br><br>").append("通知 ").append(customer+" ").append(rmano).append(state)
 						.append("<br>"); // .append("請提領<br><br>");
+				
+				httpstr.append("<span style='color:red; font-weight:bold;'>※ 本信件由 MES 系統自動發送，請勿直接回覆。如需協助，請洽資訊部。※</span><br>");
 
 //				if (StateCheck == 1) {
 //					httpstr.append("<table border='1'><tr>").append("<th>RMA Number</th>" // RMA號碼

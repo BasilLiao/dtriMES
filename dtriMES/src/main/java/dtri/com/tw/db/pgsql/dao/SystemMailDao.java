@@ -37,9 +37,9 @@ public interface SystemMailDao extends JpaRepository<SystemMail, Long> {
 			+ "WHERE (:suname is null or c.suname LIKE %:suname% ) and "//
 			+ "(:suename is null or c.suename LIKE %:suename% ) and "//
 			+ "(:suposition is null or c.suposition LIKE %:suposition% ) and "//
-			+ "( c.sysstatus = :sysstatus )  "//
+			+ "(:sysnote is null or c.sysnote LIKE %:sysnote% ) "//
 			+ "order by c.suposition asc, c.suname asc")
-	ArrayList<SystemMail> findAllBySystemMail( String suname, String suename, String suposition, Integer sysstatus, Pageable pageable);
+	ArrayList<SystemMail> findAllBySystemMail( String suname, String suename, String suposition,String sysnote, Pageable pageable);
 	
 	// 查詢全部含-頁數 不含ADMIN
 	@Query("SELECT c FROM SystemMail c "//
