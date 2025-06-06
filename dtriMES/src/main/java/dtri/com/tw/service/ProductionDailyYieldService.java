@@ -71,11 +71,11 @@ public class ProductionDailyYieldService {
 		if (!sysmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
 			sysmlds.forEach(rl -> {
 				if ("Y".equals(rl.getSudailyreport())) {// 如果 Surepairdone(處理好) 是 "Y"
-					MailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
+					MailList.append(rl.getSuemail().trim()).append(";"); // 加入 email，並在後面加 ";"
 				}
 				// 副本炒送
 				if ("C".equals(rl.getSudailyreport())) { //
-					cMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
+					cMailList.append(rl.getSuemail().trim()).append(";"); // 加入 email，並在後面加 ";"
 				}
 			});
 
@@ -90,7 +90,8 @@ public class ProductionDailyYieldService {
 		}
 		String mmdd = null;
 		mmdd = Fm_Time.to_y_M_d(new Date());
-		//mmdd = "2025-05-25";
+		System.out.println(mmdd);
+		//mmdd = "2025-06-05";
 		// String[] toUser = { "johnny_chuang@dtri.com" };
 		String mailList = MailList.toString(); // 轉換為 String
 		String c_mailList = cMailList.toString();
@@ -307,7 +308,7 @@ public class ProductionDailyYieldService {
 		StringBuilder httpstr = new StringBuilder();
 		// 把TABLE表雙層格線變成單線 CSS
 		httpstr.append("<style>").append("table { border-collapse: collapse; }")
-				.append("table, th, td { border: 1px solid black; padding: 5px; }").append("</style>");
+				.append("table, th, td { border: 2px solid black; padding: 5px; }").append("</style>");
 		// 構建寄件內容
 		httpstr.append("Dear All, <br><br>").append("通知 五股產線").append(mmdd).append("測試不良統計如下<br><br>")
 

@@ -572,7 +572,7 @@ public class RepairRmaListService {
 							rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
 						}
 						//副本炒送
-						if ("C".equals(rl.getSudailyreport())) {   //
+						if ("C".equals(rl.getSurepairdone())) {   //
 							cMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"						}		
 						}
 					});					
@@ -621,7 +621,7 @@ public class RepairRmaListService {
 								.append("<td>").append(rrd1.getRdexperience()).append("</td>") // 備註
 								.append("</tr>");
 					}
-					httpstr.append("</table>");
+					httpstr.append("</table> <br>");			
 					httpstr.append("<span style='color:red; font-weight:bold;'>※ 本信件由 MES 系統自動發送，請勿直接回覆。如需協助，請洽資訊部。※</span><br>");
 
 					mailService.sendEmail(toUser, toCcUser, subject, httpstr.toString(), null, null);

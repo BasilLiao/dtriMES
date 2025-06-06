@@ -144,7 +144,7 @@ public class RepairRmaListBatService {
 							rmaMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"
 						}
 						//副本炒送
-						if ("C".equals(rl.getSudailyreport())) {   //
+						if ("C".equals(rl.getSureceived())) {   //
 							cMailList.append(rl.getSuemail()).append(";"); // 加入 email，並在後面加 ";"						}		
 						}
 					});
@@ -163,7 +163,7 @@ public class RepairRmaListBatService {
 				StringBuilder httpstr = new StringBuilder();
 				httpstr.append("Dear All, <br><br>").append("通知 ").append(customer+" ").append(rmano).append(state)
 						.append("<br>"); // .append("請提領<br><br>");
-				
+				httpstr.append("<br>");
 				httpstr.append("<span style='color:red; font-weight:bold;'>※ 本信件由 MES 系統自動發送，請勿直接回覆。如需協助，請洽資訊部。※</span><br>");
 
 //				if (StateCheck == 1) {

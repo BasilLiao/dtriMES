@@ -15,16 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
+import dtri.com.tw.db.pgsql.dao.SystemGroupDao;
 import dtri.com.tw.db.pgsql.dao.SystemMailDao;
-//import dtri.com.tw.db.pgsql.dao.SystemUserDao;
+import dtri.com.tw.db.pgsql.dao.SystemUserDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class SystemMailService {
-//	@Autowired
-//	private SystemUserDao userDao;
-//	@Autowired
-//	private SystemGroupDao groupDao;
+	@Autowired
+	private SystemUserDao userDao;
+	@Autowired
+	private SystemGroupDao groupDao;
 	
 	@Autowired
 	private SystemMailDao rmaMailListDao;
@@ -84,25 +85,25 @@ public class SystemMailService {
 			JSONArray obj_m = new JSONArray();
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, new JSONArray(), "su_id", "ID"));
 
-//			JSONArray groups = new JSONArray();
+			JSONArray groups = new JSONArray();
 			// (u些事admin專用)
 //			if (user.getSusggid() == 1) {
-//				userDao.findAll( ).forEach(s -> {
-//					groups.put((new JSONObject()).put("value", s.getSuname()).put("key", s.getSuname()));	
-//				});
+				userDao.findAll( ).forEach(s -> {
+					groups.put((new JSONObject()).put("value", s.getSuname()+" | "+s.getSuename()+" | "+s.getSuposition()+" | "+s.getSuemail())
+							.put("key",  s.getSuname()+" | "+s.getSuename()+" | "+s.getSuposition()+" | "+s.getSuemail()));	
+				});
 //			} else {
 //				groupDao.findAllBySysheaderAndSgidNot(true, 1l, PageRequest.of(0, 999)).forEach(s -> {
 //					groups.put((new JSONObject()).put("value", s.getSgname()).put("key", s.getSggid()));
 //				});
 //			}
 			JSONArray value = new JSONArray();
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_name", "姓名"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_name", "姓名"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_e_name", "英文姓名"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, value, "su_account", "帳號"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_account", "帳號"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.PASS, "", "", FFM.Wri.W_N, "col-md-1", false, value, "su_password", "密碼"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, value, "su_position", "單位(部門)"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-3", true, value, "su_email", "Email"));
-			
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", true, value, "su_email", "Email"));			
 			
 //			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, groups, "su_sg_g_id", "群組名稱")); //群組名稱 su_sg_g_id
 		
@@ -110,9 +111,9 @@ public class SystemMailService {
 			values.put((new JSONObject()).put("value", "否").put("key", "N"));
 			values.put((new JSONObject()).put("value", "主").put("key", "Y"));
 			values.put((new JSONObject()).put("value", "副").put("key", "C"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_received", "收發貨"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_repairdone", "維修完成"));			
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "是", "是", FFM.Wri.W_Y, "col-md-1", true, values, "su_dailyreport", "測試日報"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "N", "N", FFM.Wri.W_Y, "col-md-1", true, values, "su_received", "收發貨"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "N", "N", FFM.Wri.W_Y, "col-md-1", true, values, "su_repairdone", "維修完成"));			
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "N", "N", FFM.Wri.W_Y, "col-md-1", true, values, "su_dailyreport", "測試日報"));
 
 //			JSONArray values = new JSONArray();
 //			values.put((new JSONObject()).put("value", "一般職員").put("key", "一般職員"));;
@@ -121,8 +122,7 @@ public class SystemMailService {
 //			values.put((new JSONObject()).put("value", "經理").put("key", "經理"));
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "一般職員", "一般職員", FFM.Wri.W_N, "col-md-1", true, values, "su_template", "階級"));
 
-
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-3", false, value, "sys_note", "備註"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, value, "sys_note", "備註"));
 
 //			values = new JSONArray();
 //			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
@@ -141,9 +141,13 @@ public class SystemMailService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "sys_note", "備註", value));
 			
 //			values = new JSONArray();
-//			values.put((new JSONObject()).put("value", "正常").put("key", "0"));
-//			values.put((new JSONObject()).put("value", "異常").put("key", "1"));
-//			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "sys_status", "狀態", values));
+//			values.put((new JSONObject()).put("value", "否").put("key", "N"));
+//			values.put((new JSONObject()).put("value", "主").put("key", "Y"));
+//			values.put((new JSONObject()).put("value", "副").put("key", "C"));
+//			
+//			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "su_received", "收發貨", values));
+//			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "su_repairdone", "維修完成", values));
+//			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1","su_dailyreport", "測試日報", values));
 			bean.setCell_searchs(object_searchs);
 		} else {
 			// 進行-特定查詢
@@ -156,6 +160,7 @@ public class SystemMailService {
 			su_position = su_position.equals("") ? null : su_position;
 			sys_note = body.getJSONObject("search").getString("sys_note");
 			sys_note = sys_note.equals("") ? "" : sys_note;
+			
 //			susggid = body.getJSONObject("search").getString("su_sg_g_id").equals("") ? //群組名稱 su_sg_g_id
 //					0L : body.getJSONObject("search").getLong("su_sg_g_id");
 		}
@@ -165,7 +170,6 @@ public class SystemMailService {
 //		} else {
 //			rmaMail = rmaMailListDao.findAllByRmaMailNotAdmin(susggid, su_name, su_e_name, su_position, Integer.parseInt(status), page_r);
 //		}
-
 			
 		//顯示在TABLE列表上		
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
