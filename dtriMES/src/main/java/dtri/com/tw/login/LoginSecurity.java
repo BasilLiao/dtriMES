@@ -69,6 +69,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String work_hours = "/ajax/work_hours.basil";
 		String work_type = "/ajax/work_type.basil";
 
+		String oqc_inspection="/ajax/oqc_inspection.basil";
 		http.authorizeRequests()
 				// thirdparty && img 資料夾靜態資料可 直接 存取 (預設皆有 訪問權限 資料可[匿名]存取)
 				.antMatchers(HttpMethod.GET, "/thirdparty/**", "/img/**", "/login.basil", "/login.html").permitAll()
@@ -327,6 +328,13 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, customer + ".AU").hasAuthority(actionRole(customer, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, customer + ".AD").hasAuthority(actionRole(customer, "AD"))// (移除)
 
+				// ----請求-oqc_inspection-(訪問) ----OQC設定檢測名稱
+				.antMatchers(HttpMethod.POST, oqc_inspection).hasAuthority(actionRole(oqc_inspection, ""))//
+				.antMatchers(HttpMethod.POST, oqc_inspection + ".AR").hasAuthority(actionRole(oqc_inspection, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, oqc_inspection + ".AC").hasAuthority(actionRole(oqc_inspection, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, oqc_inspection + ".AU").hasAuthority(actionRole(oqc_inspection, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, oqc_inspection + ".AD").hasAuthority(actionRole(oqc_inspection, "AD"))// (移除)
+				
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();
 		// 下列-登入位置

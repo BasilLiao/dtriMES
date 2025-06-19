@@ -119,8 +119,8 @@ public class SystemMail {
 
 	// 主體型
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_user_seq")
-	@SequenceGenerator(name = "system_user_seq", sequenceName = "system_user_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_mail_seq")
+	@SequenceGenerator(name = "system_mail_seq", sequenceName = "system_mail_seq", allocationSize = 1)
 	@Column(name = "su_id")
 	private Long suid;
 

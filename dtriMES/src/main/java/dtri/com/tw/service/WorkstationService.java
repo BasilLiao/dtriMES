@@ -259,9 +259,9 @@ public class WorkstationService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_format", one.getWformat() + "");
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust() + "");
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());  //"w_c_name", "工作站碼")
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname()); //"w_pb_name", "工作站[名稱]"
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell()); // "w_pb_cell", "工作站名稱"
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_name", one.getWsgname());

@@ -42,7 +42,7 @@ public class ProductionBodyService {
 		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
-		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0);
+		ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0); //取得pbid=0的所有資料 然後再取締一筆資料來用
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
 			page = 0;

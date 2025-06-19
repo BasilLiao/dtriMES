@@ -112,10 +112,10 @@ public class RepairRmaDetail {
 	@Column(name = "rma_part_no", columnDefinition = "varchar(30) DEFAULT 'UNKNOWN' ")
 	private String rmaPartNo;
 	
-	@Column(name = "rma_b_sn", columnDefinition = "varchar(20) DEFAULT 'UNKNOWN' ")
+	@Column(name = "rma_b_sn", columnDefinition = "varchar(50) DEFAULT 'UNKNOWN' ")
 	private String rmabsn;
 	
-	@Column(name = "rma_mb_sn", columnDefinition = "varchar(20) DEFAULT 'UNKNOWN' ")
+	@Column(name = "rma_mb_sn", columnDefinition = "varchar(50) DEFAULT 'UNKNOWN' ")
 	private String rmambsn;	
 	
 	@Column(name = "rma_statement", columnDefinition = "varchar(500)")
