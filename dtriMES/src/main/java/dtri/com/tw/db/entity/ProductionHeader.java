@@ -41,6 +41,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      ph_p_a_ok_qty = "加工完成數"<br>
  *      ph_e_s_date = "預計出貨日"<br>
  *      ph_wc_line : 產線<br>
+ *      ph_api_data : 傳遞API<br>
  */
 @Entity
 @Table(name = "production_header")
@@ -56,6 +57,7 @@ public class ProductionHeader {
 		this.syssort = 0;
 		this.sysstatus = 0;
 		this.sysheader = false;
+		this.phapidata = "";
 	}
 
 	// 共用型
@@ -156,6 +158,9 @@ public class ProductionHeader {
 
 	@Column(name = "ph_wc_line", columnDefinition = "varchar(50) default ''")
 	private String phwcline;
+
+	@Column(name = "ph_api_data", columnDefinition = "text default ''")
+	private String phapidata;
 
 	@Column(name = "ll_g_name", columnDefinition = "varchar(50)")
 	private String phllgname;
@@ -417,6 +422,14 @@ public class ProductionHeader {
 
 	public void setPhpsno(String phpsno) {
 		this.phpsno = phpsno;
+	}
+
+	public String getPhapidata() {
+		return phapidata;
+	}
+
+	public void setPhapidata(String phapidata) {
+		this.phapidata = phapidata;
 	}
 
 }

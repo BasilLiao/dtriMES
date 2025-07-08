@@ -115,7 +115,7 @@ public class ProductionHeaderService {
 				pr_s_sn = "產品序號(開始)", pr_e_sn = "產品序號(結束)", pr_s_b_sn = "燒錄序號(開始)", pr_e_b_sn = "燒錄序號(結束)";
 		// 固定-名稱編譯
 		String sys_c_date = "建立時間", sys_c_user = "建立人", sys_m_date = "修改時間", sys_m_user = "修改人", //
-				sys_note = "備註", sys_sort = "排序", sys_ver = "版本", sys_status = "狀態";
+				sys_note = "備註", sys_sort = "排序", sys_ver = "版本", sys_status = "狀態", ph_api_data = "API_Data";
 		List<Long> pbid = new ArrayList<Long>();
 		// 工作站
 		ArrayList<Workstation> w_s = workDao.findAllBySysheaderAndWidNot(true, 0L, PageRequest.of(0, 100));
@@ -191,6 +191,7 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t(sys_sort, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t(sys_ver, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t(sys_status, "100px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_api_data",FFS.h_t(ph_api_data, "250px", FFM.Wri.W_Y));
 			bean.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
@@ -325,6 +326,8 @@ public class ProductionHeaderService {
 			bean.setCell_modify(obj_m);
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val,
 					"sys_note", sys_note));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val,
+					"ph_api_data", ph_api_data));
 
 			// 放入包裝(search)
 			// 製令查詢
@@ -555,6 +558,8 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_api_data", one.getPhapidata());
+			
 			object_bodys.put(object_body);
 		});
 		object_bodys_all.put("search", object_bodys);
@@ -749,6 +754,8 @@ public class ProductionHeaderService {
 					pro_h.setPhwyears(data.getInt("ph_w_years"));
 					pro_h.setPhesdate(data.getString("ph_e_s_date"));
 					pro_h.setPhwcline(data.getString("ph_wc_line"));
+					pro_h.setPhapidata(body.toString());
+					
 					// 標籤?
 					if (data.has("ph_ll_g_name")) {
 						pro_h.setPhllgname(data.getString("ph_ll_g_name"));
@@ -1240,7 +1247,7 @@ public class ProductionHeaderService {
 					}
 					productionHeaderDao.save(one_header);
 					check = true;
-					
+
 				} else {
 					// 是:生產中 & 以生產
 					// 已經結束
