@@ -546,6 +546,7 @@ public class LabelListService {
 		object_follow.put("pr.getPrname.產品品名");// 產品品名
 		object_follow.put("pr.getPrspecification.規格敘述");// 規格敘述
 		object_follow.put("pr.getPrbitem.規格內容(指定項目)");// 規格內容(指定項目)
+		object_follow.put("pr.getPrsitem.軟體定義(指定項目)");// 規格-軟體版本內容(指定項目)
 		object_follow.put("pr.getPrpmodel.產品型號");// 產品型號
 		object_follow.put("pr.getPrpv.產品版本");// 產品版本
 
@@ -1117,6 +1118,29 @@ public class LabelListService {
 											putValue = "";
 										} else if (spVal != null && !spVal.equals("")) {
 											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
+										}
+									} catch (JSONException e) {
+										// 不做任何事情
+										putValue = "";
+									}
+								} else if (cell.equals("getPrsitem")) {
+									// 規格-軟體版本內容
+									try {
+										/*
+										 * {"BIOS ":{"Is":"N/A"}, "USER_Note2":{"Is":""}, "PM_Note":{"Is":""},
+										 * "NV_RAM":{"Is":"0"}, "M/B_Ver":{"Is":"R1.2"}, "M/B_Ver_ECN":{"Is":"0"},
+										 * "USER_note1":{"Is":""}, "OS ":{"Is":"N/A"}, "Model_In":{"Is":"DC300"}}
+										 * 
+										 */
+										in_method = pr.getClass().getMethod(cell);
+										String putValueSpecification = (String) in_method.invoke(pr);
+										JSONObject specification = new JSONObject(putValueSpecification)
+												.getJSONObject(putValue);
+										String spVal = specification.getString("Is");
+										if (spVal == null || spVal.equals("")) {
+											putValue = "";
+										} else if (spVal != null && !spVal.equals("")) {
+											putValue = putValue + " : " + spVal;
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
