@@ -1115,13 +1115,13 @@ public class LabelListService {
 										String spVal = specification.getString("Is");
 										Integer spQty = specification.getInt("Qty");
 										if (spVal == null || spVal.equals("")) {
-											putValue = "";
+											putValue = "N/A";
 										} else if (spVal != null && !spVal.equals("")) {
-											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
+											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "N/A");
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
-										putValue = "";
+										putValue = "N/A";
 									}
 								} else if (cell.equals("getPrsitem")) {
 									// 規格-軟體版本內容
@@ -1138,13 +1138,13 @@ public class LabelListService {
 												.getJSONObject(putValue);
 										String spVal = specification.getString("Is");
 										if (spVal == null || spVal.equals("")) {
-											putValue = "";
+											putValue = "N/A";
 										} else if (spVal != null && !spVal.equals("")) {
 											putValue = putValue + " : " + spVal;
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
-										putValue = "";
+										putValue = "N/A";
 									}
 								} else {
 									// 其他
