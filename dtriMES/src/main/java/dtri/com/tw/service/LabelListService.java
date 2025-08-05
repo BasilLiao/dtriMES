@@ -1114,14 +1114,14 @@ public class LabelListService {
 												.getJSONObject(putValue);
 										String spVal = specification.getString("Is");
 										Integer spQty = specification.getInt("Qty");
-										if (spVal == null || spVal.equals("")) {
-											putValue = "N/A";
+										if (spVal == null || spVal.equals("") || spQty == 0) {
+											putValue = putValue + " : N/A";
 										} else if (spVal != null && !spVal.equals("")) {
-											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "N/A");
+											putValue = putValue + " : " + spVal + (spQty > 1 ? "(x" + spQty + ")" : "");
 										}
 									} catch (JSONException e) {
 										// 不做任何事情
-										putValue = "N/A";
+										putValue = putValue + " : N/A";
 									}
 								} else if (cell.equals("getPrsitem")) {
 									// 規格-軟體版本內容
