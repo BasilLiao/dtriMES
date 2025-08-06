@@ -603,9 +603,7 @@ public class WorkstationWorkService {
 						return false;
 					}
 					// 防止上一台-故障代碼進入-下一台
-					if (!list.getString("pb_f_value").equals("") && list.getString("pb_f_value").indexOf("fix_code") > 0
-							&& //
-							(body_one_now.getPbfvalue() == null || body_one_now.getPbfvalue().equals(""))) {
+					if (body_one_old != null && !body_one_old.getPbfvalue().equals("")) {
 						log.info("WK019:" + list.getString("ph_pr_id") + ":" + list.getString("pb_b_sn"));
 						bean.autoMsssage("WK019");
 						return false;
