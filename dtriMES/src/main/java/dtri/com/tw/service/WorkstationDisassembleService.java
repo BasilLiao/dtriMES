@@ -144,9 +144,11 @@ public class WorkstationDisassembleService {
 				} else {
 					// 工作站資訊
 					JSONObject json_work = new JSONObject();
-					ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(pro_h.getPhwpid(), false);
+					ArrayList<WorkstationProgram> programs = programDao
+							.findAllByWpgidAndSysheaderOrderBySyssortAsc(pro_h.getPhwpid(), false);
 					for (WorkstationProgram p_one : programs) {
-						ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
+						ArrayList<Workstation> works = workDao
+								.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
 						JSONObject json_one = new JSONObject();
 						json_one.put("name", works.get(0).getWpbname());
 						json_one.put("type", works.get(0).getWcname() + "_N");
@@ -240,7 +242,8 @@ public class WorkstationDisassembleService {
 				}
 
 				// Step4. 進行-特定查詢(曾經工單)-> 指定的SN
-				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_old_sn, prArrayList_old.get(0).getPhpbgid());
+				List<ProductionBody> bodies_old = bodyDao.findAllByPbbsnAndPbgid(m_old_sn,
+						prArrayList_old.get(0).getPhpbgid());
 				// 檢查 SN 是否u效 (有效資料)
 				if (bodies_old.size() != 1) {
 					return false;
@@ -283,9 +286,11 @@ public class WorkstationDisassembleService {
 
 				// 新
 				JSONObject json_work = new JSONObject();
-				ArrayList<WorkstationProgram> programs = programDao.findAllByWpgidAndSysheaderOrderBySyssortAsc(pro_h.getPhwpid(), false);
+				ArrayList<WorkstationProgram> programs = programDao
+						.findAllByWpgidAndSysheaderOrderBySyssortAsc(pro_h.getPhwpid(), false);
 				for (WorkstationProgram p_one : programs) {
-					ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(), true);
+					ArrayList<Workstation> works = workDao.findAllByWgidAndSysheaderOrderBySyssortAsc(p_one.getWpwgid(),
+							true);
 					JSONObject json_one = new JSONObject();
 					json_one.put("name", works.get(0).getWpbname());
 					json_one.put("type", works.get(0).getWcname() + "_N");
@@ -540,7 +545,8 @@ public class WorkstationDisassembleService {
 				if (!all && part_vals.length() == 1) {
 					String name_get = part_vals.get(0).toString().replace("set", "get");
 					String name_set = part_vals.get(0).toString();
-					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue", "pb_value");
+					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue",
+							"pb_value");
 					// 查詢SN欄位
 					List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
 					String nativeQuery = "SELECT b.* FROM production_body b WHERE"; //
@@ -566,6 +572,8 @@ public class WorkstationDisassembleService {
 							pbb.setSysmuser(user.getSuaccount());
 							bodyDao.save(pbb);
 							check = true;
+						} else {
+							resp.autoMsssage("102");
 						}
 					}
 				}
@@ -642,7 +650,8 @@ public class WorkstationDisassembleService {
 				if (!all && part_vals.length() == 1) {
 					String name_get = part_vals.get(0).toString().replace("set", "get");
 					String name_set = part_vals.get(0).toString();
-					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue", "pb_value");
+					String pb_value_name = part_vals.get(0).toString().replace("set", "").replace("Pbvalue",
+							"pb_value");
 					// 查詢SN欄位
 					List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
 					String nativeQuery = "SELECT b.* FROM production_body b WHERE"; //
