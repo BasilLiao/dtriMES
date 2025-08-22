@@ -992,6 +992,7 @@ public class LabelListService {
 						}
 						// sendPrinter(pxa, pService);
 						// 採用序列方式
+						NewLabelListService();
 						printerManager.sendPrinter(pxa, pService);
 						check = true;
 					}
