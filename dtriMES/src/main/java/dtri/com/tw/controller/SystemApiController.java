@@ -28,10 +28,11 @@ public class SystemApiController extends AbstractController {
 	 * API-與延展系統串接
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/ajax/api.basil" }, method = { RequestMethod.POST }, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = { "/ajax/api.basil" }, method = {
+			RequestMethod.POST }, produces = "application/json;charset=UTF-8")
 	public String access(@RequestBody String json_object) {
 		showSYS_CM("modify");
-		show(json_object);
+		show(json_object);//{"action":"get_work_program"}
 		PackageBean req = new PackageBean();
 		PackageBean resp = new PackageBean();
 		boolean check = false;
@@ -60,7 +61,11 @@ public class SystemApiController extends AbstractController {
 			obj_return.put("wLine", apiService.getWorkstationLineList().toString());
 			obj_return.put("gLabel", apiService.getLabelGroup().toString());
 			obj_return.put("status", "ok");
-
+			break;
+		case "get_work_order":
+			// 取得-工作進度(限制存活工單 只需要 有效站別 整體完成度.)
+			obj_return.put("wOrderList", apiService.getWorkOrderList().toString());
+			obj_return.put("status", "ok");
 			break;
 		default:
 			obj_return.put("status", "fail");
