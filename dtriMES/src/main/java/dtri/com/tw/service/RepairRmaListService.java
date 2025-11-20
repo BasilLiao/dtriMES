@@ -72,8 +72,8 @@ public class RepairRmaListService {
 
 
 		String search_rma = null; // RMA號碼
-		String search_rd_guest = null; //客戶
-		String search_rd_model = null; //產品型號
+		String search_rd_guest = null; // 客戶
+		String search_rd_model = null; // 產品型號
 		String search_rma_b_sn = null; // 機台號碼
 		String search_rd_rr_mb = null; // MB號碼"
 		String search_rma_result = null; // 維修結果
@@ -847,7 +847,7 @@ public class RepairRmaListService {
 		return true;
 	}
 
-	// 報表 查詢 資料清單
+	// 報表 查詢 資料清單  **************給Analysis.html 用
 	@SuppressWarnings("unchecked")
 	public boolean getReportData(PackageBean bean, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();

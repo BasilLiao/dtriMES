@@ -1,0 +1,949 @@
+<!-- 查詢項目 -->
+<style>
+
+/* 固定檢查項目 的 table 高度   外層 div 控制高度 */
+.check-items .table-style {
+	height: calc(-385px + 100vh);
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+/* 檢測項目表單  <td> 層就處理垂直置中 */
+td.datalist {
+	vertical-align: middle !important;
+}
+
+#product-detail .create_example_pb {
+	height: calc(100vh - 385px);
+	overflow-x: hidden;
+}
+
+/* 固定表頭  真正固定表頭應該搭配position: sticky */
+.search_example_title tr {
+	position: sticky;
+	top: 0px;
+	z-index: 3;
+}
+
+/* tabel檢查表 "檢查內結果" "文字置中"  */
+td .center-checked {
+	margin: 0 auto !important;
+	text-align: center;
+	display: block; /* 確保能置中 */
+}
+</style>
+<div id="customized">
+	<div class="align-items-center border border-light mb-3 shadow">
+		<!--************************* 刷入 工單 叫出資料在 檢測項目  *********************************************************************-->
+		<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+			<i class="bi bi-search ml-1"></i>Search(查詢)
+		</div>
+		<div class="col-md-12 justify-content-between row m-0 p-0">
+			<div class="col-4 row">
+				<div class="col-0 p-1 mt-1">工單號:</div>
+				<div class="col-0 p-1">
+					<input type="text"
+						class="col p-1 border border-dark rounded detail_ri"
+						id="search_orlow" placeholder="工單號碼">
+				</div>
+			</div>
+			<div class="col-3 row m-0 p-1 align-items-end">
+				<div class="col-md-6 p-1">
+					<button type="submit" class="col-12 btn btn-primary btn-sm"
+						id="search_orlow_btn">Search</button>
+				</div>
+				<div class="col-md-6 p-1">
+					<button type="submit" class="col-12 btn btn-warning btn-sm"
+						id="search_clear_btn">Clear</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!--*************************刷入 機台序號 叫出產品細節  按下SAV 存入 查詢結果 *********************************************************************-->
+	<div class="align-items-center border border-light mb-3 shadow">
+		<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+			<i class="bi bi-list-ul ml-1"></i>Inspection SN(登記-檢驗產品序號)
+		</div>
+		<div
+			class="col-md-12 justify-content-between align-items-end row m-0 p-0">
+			<div class="col-md-1 p-1 m-0 row d-none" id="orl_oifid">
+				<!--*  <div class="col-md-4 p-1 text-right mt-1"> 對應 配對檢驗表的Key:</div>   ****-->
+				<div class="col ">
+					<input type="text" class="col p-1 border border-dark rounded">
+				</div>
+			</div>
+			<div class="col-md-1 p-1 m-0 row d-none" id="orl_ow">
+				<!--*  <div class="col-md-4 p-1 text-right mt-1">工單號:</div>   ****-->
+				<div class="col ">
+					<input type="text" class="col p-1 border border-dark rounded">
+				</div>
+			</div>
+			<div class="col-md-1 p-1 m-0 row d-none" id="orl_pnb">
+				<!--*  <div class="col-md-4 p-1 text-right mt-1">產品料號:</div>   ****-->
+				<div class="col ">
+					<input type="text" class="col p-1 border border-dark rounded">
+				</div>
+			</div>
+			<!-- ******** -->
+			<div class="col-md-2 m-0 p-1 row" id="orl_p_sn">
+				<div class="col-0 p-1 mt-1">產品序號:</div>
+				<div class="col-8 p-1 ">
+					<input type="text"
+						class="col-12 p-1 border border-dark rounded detail_ri"
+						placeholder="輸入產品序號">
+				</div>
+			</div>
+
+			<div class="col-md-2 m-0 p-1 row" id="testitem">
+				<div class="col-0 p-1 mt-1">檢驗項目:</div>
+				<div class="col-8 p-1">
+					<select class="col-12 custom-select custom-select-sm">
+						<option class="example_select_def" value="" selected>select</option>
+						<option class="example_select_one" value="功能(測試OS)">功能(測試OS)</option>
+						<option class="example_select_one" value="功能(出貨OS)">功能(出貨OS)</option>
+						<option class="example_select_one" value="只看OS版本/外觀">只看OS版本/外觀</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-2 m-0 p-1 row" id="testresult">
+				<div class="col-0 p-1 mt-1">檢驗結果:</div>
+				<div class="col-8 p-1">
+					<select class="col-12 custom-select custom-select-sm">
+						<option class="example_select_def" value="" selected>select</option>
+						<option class="example_select_one" value="PASS">PASS</option>
+						<option class="example_select_one" value="暫停">暫停</option>
+						<option class="example_select_one" value="NG">NG</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-2  m-0 p-1 row" id="sys_note">
+				<div class="col-0 p-1 mt-1">檢驗備註:</div>
+				<div class="col-8 p-1">
+					<input type="text"
+						class="col-12 p-1 border border-dark rounded detail_ri"
+						placeholder="備註">
+				</div>
+			</div>
+			<div class="col-md-4 m-0 p-1 row">
+				<div class="col-4 p-1">
+					<button id="R_search_btn" type="submit"
+						class="col-12 p-1 btn btn-primary btn-sm">Search(S1)</button>
+				</div>
+				<div class="col-4 p-1">
+					<button id="save_btn" type="submit"
+						class="col-12 p-1 btn btn-success btn-sm">Save(S2)</button>
+				</div>
+				<div class="col-4 p-1">
+					<button id="clear_btn" type="submit"
+						class="col-12 p-1 btn btn-warning btn-sm">Clear</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12 m-0 p-0 row border border-light shadow"
+		id="table">
+
+		<!-- ********************************** 檢驗產品清單 table  ************************** -->
+		<div class="col-md-3 p-0">
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+				<i class="bi bi-bookmark-check ml-1"></i>檢驗清單
+			</div>
+			<div class="m-0 row">
+				<div class="m-0 p-1 col-8 align-items-center row" id="orl-pass">
+					<div class="col-md-6  m-0 p-0 ">PASS數</div>
+					<div class="col-md-6  m-0 p-0 ">
+						<input
+							class="col pl-1 m-0 border border-dark rounded save_value text-center"
+							disabled="disabled" type="text">
+					</div>
+				</div>
+				<div class="m-0 p-1 col-4 text-right ">
+					<button id="excel_btn" type="submit"
+						class="col-12 p-1 btn btn-primary btn-sm">Excel</button>
+				</div>
+			</div>
+			<div class="m-0 border border-dark table-responsive"
+				style="height: calc(100vh - 424px); overflow-y: auto;">
+				<table id="result-dataTable"
+					class="table-style table table-sm table-hover table-striped table-bordered ">
+					<thead class="thead bg-dark table-dark search_example_title"
+						style="white-space: nowrap;">
+						<tr class=" bg-dark fixed_cell">
+							<th class="p-1 bg-dark"
+								style="min-width: 50px; max-width: 100px;" id="orl_n">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">項次</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 150px; max-width: 200px;" id="orl_psn">
+								<div class="row p-0 m-0 ">
+									<div class="title_name">產品SN號</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 125px; max-width: 200px;" id="orl_titem">
+								<div class="row p-0 m-0 ">
+									<div class="title_name">測試項目</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 100px; max-width: 200px;" id="orl_tresults">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">檢查內結果</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 150px; max-width: 250px;" id="orl_tdate">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">檢驗日期</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 100px; max-width: 250px;" id="orl_tuser">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">檢驗人</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 10px; max-width: 250px;" id="sys_note">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">備註</div>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody class="oqc_resultlist" style="white-space: nowrap;">
+						<tr class="search_example_content d-none">
+							<td title="" class="s_list_body">0</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- -***************************** 檢測項目 table ************-->
+		<div class="col-md-6 p-0">
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+				<i class="bi bi-calendar-check"></i>檢測項目
+			</div>
+			<div class="m-0 check-items" style="height: calc(100vh - 385px);">
+				<table id="check-dataTable"
+					class=" border border-dark table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+					<thead class="thead bg-dark table-dark search_example_title"
+						style="white-space: nowrap;">
+						<tr class="bg-dark fixed_cell">
+							<th class="p-1  bg-dark"
+								style="min-width: 70px; max-width: 160px;" id="oii_check_name">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">檢查項目</div>
+								</div>
+							</th>
+							<th class="p-1 bg-dark"
+								style="min-width: 325px; max-width: 345px;" id="oii_check_val">
+								<div class="row p-0 m-0 ">
+									<div class="title_name">檢查內容</div>
+								</div>
+							</th>
+							<th class="p-1  bg-dark"
+								style="min-width: 100px; max-width: 290px;" id="oii_check_val">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">檢查內結果</div>
+								</div>
+							</th>
+							<th class="p-1  bg-dark"
+								style="min-width: 250px; width: 100%; max-width: 100px;"
+								id="oii_check_val">
+								<div class="row p-0 m-0 justify-content-between">
+									<div class="title_name">備註</div>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody class="edit_oqc_list" style="white-space: nowrap;">
+						<!-- * nowrap  防止內容換行 */-->
+						<tr class="search_example_content d-none">
+							<td title="" class="s_list_body">0</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- ********************************** 產品細節 table  ************************** -->
+		<div class="col-md-3 p-0 m-0  pbcreate_example" id="product-detail">
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+				<i class="bi bi-box-arrow-in-down-right ml-1"></i>產品細節
+			</div>
+			<div
+				class="p-0 m-0 create_example_pb border border-dark row text-left">
+				<div class="p-0 m-0 create_example_input ">
+					<div class="pl-1 m-0 h6 save_as_name">Name</div>
+					<div class="p-0 m-0">
+						<input class="col pl-1 m-0 border border-dark rounded save_value"
+							type="text">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ********************************************* -->
+</div>
+
+<script type="text/javascript">
+//123johnny
+//控制端
+customized = new Vue({
+	el: "#customized",
+	//資料區
+	data: {
+		//換頁樣式
+		page_total: main.page_total, //每次_總筆數
+		page_batch: main.page_batch, //每次_第幾批
+		page_show_size: main.page_show_size, //目前_每分頁顯示數量
+		page_now_size: main.page_now_size, //目前_實際筆數
+		page_now: main.page_now, //目前_頁數
+		//data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		//data_item_f_id: "", //父類別ID
+		//list_son:{},// 群組-子類別
+		//nb_add:0,//子項目
+		//save data
+		modify_datas :{},		
+		//克隆-(功能區塊)
+	//	detail_example_tr:"",
+	//	create_example_tr:"",
+	//	save_as_example_tr:"",
+	//	modify_example_tr:"",		
+	//	delete_example_tr:"",	
+	},
+	//初始化
+	created() {
+		console.log("oqc_result_list.html(created)");	
+	},
+	
+	//可呼叫方法
+	methods: {
+		setDataTitle(title,html_permission){
+			//標題注入資訊(Detail / Create / Modify)
+		if (main.allData.body != null) {		
+				console.log("建立產品細節");
+				
+				let title=main.allData.cell_g_modify;
+				//標題注入資訊(Detail / Create / Modify)
+				for(var d =0;d<title.length;d++){
+					/**				
+					 * @param none        :是否顯示
+					 * @param tag         : 標籤 INP=input,TTA=textarea,SEL=select,CHE=checkbox
+					 * @param type        : 類型 EXT=text,NUMB=number,PASS=password,DATE=date
+					 * @param placeholder : 預設文字
+					 * @param value       : 預設值
+					 * @param write       : disabled/write 寫入?
+					 * @param col         : 規格
+					 * @param required    : 是否必寫
+					 * @param values      : 多選項select 才需要[{key:value,key:value}]
+					 * @param id          : ID
+					 * @param name        : 名稱
+					 * 						 
+						//console.log(title[d]);
+						title[d].id;
+						title[d].placeholder;
+						title[d].required;
+						title[d].write;
+						title[d].tag;
+						title[d].type;
+						title[d].values;
+						title[d].col;
+					 **/ 
+					 //產品細節
+					switch(title[d].tag){
+					case "input":
+											
+						//另存模板
+						input =$(".pbcreate_example .create_example_input").clone();
+						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
+						input.appendTo(".create_example_pb");
+						$(".pbcreate_example ."+title[d].id+" .save_as_name").text(title[d].name); //修改 名稱
+					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("type",title[d].type); // 修改 
+					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
+					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("value",title[d].value);												
+						break;
+					}
+					// $(".pbcreate_example .m__pb_value11 .save_as_name").text("CPU Board_166CR"); //修改 名稱					 
+				}				
+				$(".pbcreate_example .create_example_input").remove();
+			}		
+			//關閉/移除樣本
+	//		$(".detail_example_select .example_select_one").remove();
+		 	//權限設置
+			if(html_permission!=null){
+				if(html_permission['cr']!=1){
+					//$(".detail_example_add").addClass(" d-none");
+					//$("#m_create_all").addClass(" d-none");
+				}
+			}
+			//時間格式
+			$('#customized .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});				
+		},	
+		
+		setDataList(list, list_son, body_type) {				
+			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+		},		
+		
+		setSearch(search) {
+			//查詢注入資訊
+			console.log(search);
+		},
+	
+		//圖片處理
+		file_reader_img(file,imgs){			
+		},	
+		
+		//初始化
+		selectAllInit() {			
+		
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#customized #search_orlow", function (event) {
+				if (event.which == 13) {
+					$('#search_orlow_btn').trigger('click');
+				}
+			});
+			
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#customized #orl_p_sn", function (event) {
+				if (event.which == 13) {
+					$('#R_search_btn').trigger('click');
+				}
+			});
+
+			let locKed = false;
+			//查詢工單	
+			$(document).on("click", "#search_orlow_btn", function (event) {
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
+			    //  若鎖定中就直接跳出，不執行
+			    if (locKed) {
+			        console.log("工單搜尋鎖定中! 請稍候,請勿重複送出！");
+			        return;
+			    }			
+			    locKed = true;				
+				//確認是否欄位都有資料  有資料才存資料
+				if($('#search_orlow').val()==""){
+					t_alert.alertshow("warning", "工單號碼欄位不能為空！");	
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}			
+				//傳送
+				let search = {};	
+				search.input_orlow= $('#search_orlow').val().trim(); //輸入工單號碼	
+				//搜尋之前先清空 							
+				customized.searchSend(search);	
+				console.log("工單號碼");
+				// 1 秒後解除鎖定false（可調整） 所有內容送出後，再解鎖
+				setTimeout(() => {
+					locKed = false;
+				}, 1000)
+			});	
+			
+			//clear 工單
+			$(document).on("click", "#search_clear_btn", function (event) {	
+				$('#search_orlow').val("");
+			});	
+			
+			//查詢機台產品明細	
+			$(document).on("click", "#R_search_btn", function (event) {	
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
+			    //  若鎖定中就直接跳出，不執行
+			    if (locKed) {
+			        console.log("搜尋鎖定中! 請稍候,請勿重複送出！");
+			        return;
+			    }			
+			    locKed = true;				
+				if($('#orl_p_sn input').val()==""){
+					t_alert.alertshow("warning", "，產品序號欄位請輸入機台號碼 ，產品序號欄位不能為空！");
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}			
+				//傳送
+				let search = {};	
+				search.orl_p_sn= $('#orl_p_sn input').val().trim()|| "";  //輸入機台號碼	
+				search.orl_ow= $('#orl_ow input').val().trim()|| "";  //工單	
+				//搜尋之前先清空 							
+				customized.searchSend(search);	
+				console.log("工單號碼");
+				// 1 秒後解除鎖定false（可調整） 所有內容送出後，再解鎖
+				setTimeout(() => {
+					locKed = false;
+				}, 1000);
+			});	
+			
+			//SAVE
+			$(document).on("click", "#save_btn", function (event) {	
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）
+				//locKed為true 中斷執行save
+				if (locKed) { 
+					console.log("SAVE鎖定中! 請稍候,請勿重複送出！");
+					return;
+				}			
+				locKed = true;
+			 
+				//確認是否欄位都有資料  有資料才存資料
+				if($('#orl_ow input').val()==""){
+					t_alert.alertshow("warning", "請確認有 工單號碼 ，有搜尋過！");
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}
+				
+				if($('#orl_p_sn input').val()==""){
+					t_alert.alertshow("warning", "請輸入 機台號碼 ，不能為空！");
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}
+				
+				if($('#testitem select').val()==""){
+					t_alert.alertshow("warning", "請輸入 測試項目 ，不能為空！");
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}
+				
+				if($('#testresult select').val()==""){
+					t_alert.alertshow("warning", "請輸入 測試結果，不能為空！"); 
+					setTimeout(() => { locKed = false; }, 1000);
+					return false;	   
+				}
+
+			customized.savereault();
+			customized.sendSave();
+			console.log("儲存檢查紀錄 檢測產品序號碼");
+			// 1 秒後解除鎖定（可調整） 所有內容送出後，再解鎖
+			setTimeout(() => {
+				locKed = false;
+			}, 1000);
+				
+			});	
+			
+			//clear 刷入序號  機台號碼  測試項目 測試結果 備註
+			$(document).on("click", "#clear_btn", function (event) {	
+				$('#orl_p_sn input').val(""); // 機台號碼
+				$('#customized #testitem select').val(""); // 測試項目
+				$('#customized #testresult select').val(""); //測試結果
+				$('#sys_note input').val(""); //備註
+			});	
+			
+			//Excel 下載
+			$(document).on("click", "#excel_btn", function (event) {
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
+				console.log("改成 SheetJS (xlsx) 版本");
+					//更新時間
+				let myDate = new Date();
+				let reportDate =
+				myDate.getFullYear() + '-' +
+				('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+				('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+				('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+				
+			    // 1. 把 table 轉成 worksheet
+			    let table = document.getElementById("result-dataTable");
+			    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+			    // 2. 強制所有 cell 都轉成文字格式
+			    for (let cellAddr in ws) {
+			        if (!ws.hasOwnProperty(cellAddr)) continue;
+			        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+			        let cell = ws[cellAddr];
+			        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+			        cell.t = "s"; // 設定為 string
+			        cell.z = "@"; // Excel 格式：文字
+			    }
+			    // 3. 建立 workbook 並加入 worksheet
+			    let wb = XLSX.utils.book_new();
+			    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+			    // 4. 下載檔案（副檔名改成 .xlsx）
+			    XLSX.writeFile(wb, "MES_Repair_Report_" + reportDate + ".xlsx");
+			});
+						
+		},
+			
+		//清除所有資訊
+		removeAll(){
+			//表單資料
+			$('#customized .detail_ri').val("");
+			$('#customized #testitem select').val(""); // 測試項目
+			$('#customized #testresult select').val(""); //測試結果		
+			//清除表格內容
+			// let tbody = document.querySelector("#dataTable tbody");
+		    // tbody.innerHTML = ""; // 清空 tbody 內容
+		},
+		
+		searchSubmit(){
+			console.log("searchSubmit");
+		},
+		
+		savereault(){
+			//傳送
+			let oqc_resultsave = {};
+			oqc_resultsave['orl_oif_id']= $('#orl_oifid input').val().trim();	 //KEY
+			oqc_resultsave['orl_ow']= $('#orl_ow input').val().trim();  //工單
+			oqc_resultsave['orl_p_nb']= $('#orl_pnb input').val().trim();  //產品料號
+			oqc_resultsave['orl_p_sn']= $('#orl_p_sn input').val().trim();  //輸入機台號碼
+			oqc_resultsave['orl_t_item']= $('#testitem select').val().trim(); //測試項目
+			oqc_resultsave['orl_t_results']= $('#testresult select').val().trim(); //測試結果	 sys_note
+			oqc_resultsave['sys_note']= $('#sys_note input').val().trim()|| "";  //備註
+			this.modify_datas=oqc_resultsave;	
+			
+			console.log("儲存 savereault ");
+		},
+		
+		//存檔 或 更新
+		sendSave() {
+			main.loading(true);
+			//this.modify_datas.save;			
+			console.log("sendSave");	
+			var action = "S2";  
+			var	s_type ="PUT" ;    // 後端程式碼會辨別新增或更新 跟 MODIFY.HTML沒關
+			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+			var	s_data = {};
+			var req = {}; //定義req為空物件後 準備添加資料
+			req.action=action; 
+			req.user=$('#name').text();
+			req.date=new Date();
+			req.body={};
+			req.body.oqc = this.modify_datas;
+			req.page_total=this.page_total;
+			req.page_batch=this.page_batch;
+			req.page_now_nb=this.page_now_nb;
+			req.html_body= "";
+			req.call_bk_fn="customized_save";   //會在main裡判斷返回後還須執行那些函式	// 參數 會在main裡面判斷後執行 main.allData = event['resp_content']及customized.saveReturn()
+			req.call_bk_vals={};
+			req.call_bk_vals['search']=true;   //
+			s_data.req_content = req;
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		
+		//定義req為空物件後 準備添加資料
+		//會在main裡判斷返回後還須執行那些函式	/
+		
+		//search 表單資料
+		searchSend(search) {
+			console.log(search);
+			
+			if(search==null){
+				return null;
+			}
+			main.loading(true);
+			//查詢
+			//Ex:body:{search:{b:b,c:c}}
+			//search = {};			
+			//包裝
+			var action = "S1";
+			var s_type = "POST";
+			var s_url = (t_body.html_body + "."+action).replace("html", "basil").replace("body_", "");
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = action;
+			req.body = {};
+			req.body.search = search;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.page_now_nb = this.page_now_nb;
+			req.html_body = "";
+			req.call_bk_fn = "customized_search";
+			req.call_bk_vals = {};
+			req.call_bk_vals['search']=false;
+			s_data.req_content = req;
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+			search=null;
+		},
+		
+		searchReturn() {
+			main.loading(false);
+			console.log("searchReturn oqc_list");		
+		//	$('#orl-pass input').val(""); //PASS數量
+			
+			if (main.allData.body ==null){
+				return 
+			}
+			//有可能沒有下一頁
+			if (main.allData.body.Customized_detail != null) {			
+	
+ 				let lists = main.allData.body.Customized_detail;  //OQCitems資料
+ 	
+ 				let oqcdata = lists.detail?.oif_oii_data || "[]"; //配置項目
+ 				// 先解析 JSON 字串為 JS 陣列
+	 			try {
+	 			    oqcdata = JSON.parse(oqcdata);	 ;
+	 			} catch (e) {
+	 			    console.error(" 解析 oqcdata 失敗，格式不是合法 JSON：", e);
+	 			    oqcdata = []; // 避免後面爆錯
+	 			}
+	 			$('#orl_oifid input').val(lists.detail["oif_id"]); // 配對製表檢驗單的id Key
+	 			$('#orl_ow input').val(lists.detail["oif_ow"]); //工單號
+	 			$('#orl_pnb input').val(lists.detail["oif_p_nb"]); //產品料號
+	 			
+ 				let retrievedHtmlString = lists.detail["oif_oii_form"]; //HTML
+ 				
+ 				//***************把資料庫配置到前端*******************
+ 				this.oqc_inspection_form(retrievedHtmlString,oqcdata); 			
+ 				
+ 				let results = main.allData.body.OqcResultList;  //取出 OQC result資料
+ 				results = Object.values(results);  // 取得資料並轉換成陣列			
+			    populateTable();//馬上呼叫 populateTable() 函式  初始化表格數據  初始化並填充表格						
+			    
+			  //***************把資料庫的檢驗的清單丟到 檢驗清單 table*******************
+			 // 動態填充表格
+			    function populateTable() {
+			    	let tbody = document.querySelector("#result-dataTable tbody");// 取得表格的 tbody 找到 id 為 result-dataTable 的表格中的 <tbody> 部分。這個部分用來放置所有動態產生的資料列。
+			        tbody.innerHTML = ""; // 清空 <tbody> 中已有的內容，確保每次填充表格時都是從空白開始，避免累積重複的資料。
+		      		        
+					//迭代 lists 中的每一筆資料：
+			        results.forEach((result, index) => {
+			            let row = document.createElement("tr");// 建立一個新的表格列
+			            // 計算行的背景顏色
+			            let bgColor = index % 2 === 0 ? 'rgb(248, 249, 252)' : 'rgb(235, 236, 239)';
+			            row.style.backgroundColor = bgColor;
+			            
+			            // 將 rma_b_sn 的值作為 class 名稱的一部份，這裡假設不含特殊字元
+			            row.classList.add(`sn_${results.rma_number}`,results.id); // 為 <tr> 設定 class
+			            row.id = `search_data_${index + 1}`;
+			        	// ${...} 是插值語法，其中的 JavaScript 表達式（例如 index + 1）會在字串生成時被計算，並替換成相應的值
+			        	// 建立 <td> 並讓 class 名稱來自 item 的變數
+			        	//<td class="col-${item.customer.replace(/\s+/g, '_')}">${item.customer}</td>  
+			        	//${item.customer.replace(/\s+/g, '_') 取變數名稱 及 (/\s+/g, '_')這樣可以把空格 ( ) 轉換成 _，避免 class 名稱有空格導致 CSS 或 JS 運行出錯。
+			            row.innerHTML = `
+			           
+			                <td class="col-index fixed_cell"> ${index + 1} </td>		              
+			                <td class="col-serial fixed_cell"> ${result.orl_p_sn} </td> 			                
+			                <td class="col-orl_t_item">${result.orl_t_item} </td>	  
+			                <td class="col-orl_t_results"> ${result.orl_t_results} </td>			                
+			                <td class="col-orl_t_date">${result.orl_t_date}</td>
+			                <td class="col-orl_t_user">${result.orl_t_user}</td>
+			                <td class="col-sys_note" >${result.sys_note}</td>
+			            `;			            
+			            tbody.appendChild(row);// 把建立好的列加到 tbody 中	  		            
+			        });
+			        scrollToBottom();// 滾動 Table資料表底部
+			    }	
+ 				
+			    $('.save_key input').val(""); //工單號碼搜尋後 要清掉 產品細節的內容
+			  	let x=  lists.detail["oif_sys_status"]
+			    if(x!=0){
+			    	$('#customized').find('#orl_p_sn input').prop('disabled', true); //不給刷序號 (反白)
+			    	$('#customized').find('#sys_note input').prop('disabled', true); //不給刷序號 (反白)
+			    	$('#customized').find('select').prop('disabled', true);	
+			    }else{
+			    	$('#customized').find('#orl_p_sn input').prop('disabled', false); //給刷序號 
+			    	$('#customized').find('#sys_note input').prop('disabled', false); //給輸入欄位
+			    	$('#customized').find('select').prop('disabled', false);	
+			    }
+			
+			}
+			    
+			//滾動 檢驗清單 Table資料表底部   
+			function scrollToBottom() {
+				let wrapper = document.querySelector('#result-dataTable').parentElement;
+				let thead = wrapper.querySelector('thead');
+				let headerHeight = thead ? thead.offsetHeight : 0;
+
+			    setTimeout(() => {
+			        wrapper.scrollTop = wrapper.scrollHeight - wrapper.clientHeight + headerHeight;
+			    }, 0);
+			}    
+			
+			// 將物件轉成陣列，依 key 前面的數字排序（例如 "01_..."、"02_..."）
+			function objToArrayByLeadingNumber(obj) {
+			  return Object.keys(obj)
+			    .sort((a, b) => {
+			      // 從 key 開頭擷取數字（處理前導 0）
+			      let ma = a.match(/^0*(\d+)/);
+			      let mb = b.match(/^0*(\d+)/);
+			      let na = ma ? parseInt(ma[1], 10) : Number.MAX_SAFE_INTEGER;
+			      let nb = mb ? parseInt(mb[1], 10) : Number.MAX_SAFE_INTEGER;
+
+			      if (na !== nb) return na - nb;
+			      // 如果前綴一樣（不太可能），用字串序作後備
+			      return a.localeCompare(b);
+			    })
+			    .map(k => obj[k]);
+			}
+			
+			// ********************  把後端資資料依順序填入***產品細節欄位  ********************
+			if (main.allData.body.productionbodyvaule != null) {
+
+				let listObj = main.allData.body.productionbodyvaule;
+			  // 如果已經是陣列就不用轉；若是物件則用我們的轉法
+			  	let listArr = Array.isArray(listObj) ? listObj : objToArrayByLeadingNumber(listObj);
+			  // （選擇性）先清空欄位，避免殘留
+			  	$("#product-detail input[type=text]").val("");
+			  // 依序填入			  
+			  	$("#product-detail input[type=text]").each(function(index) {
+			    	if (index < listArr.length) {
+			      	$(this).val(listArr[index]);
+			    	}
+			  	});			
+			}
+			// ********************  把後端資資料填入***PASS 數量欄位  ********************
+			if (main.allData.body.OqcPassQty != null) {							
+				$('#orl-pass input').val(main.allData.body.OqcPassQty ); //PASS數量
+			}
+			
+			//可能是新建立
+			if(main.allData.call_bk_vals.search){
+				console.log("可能是新建立");		
+			}
+			// 讓欄位文字反白選取 (標記/反白)
+			$('#orl_p_sn input').select();
+			
+			//檢查產品細節有無故障警告m__pb_f_value			
+			if($('.m__pb_f_value input').val()!=""){
+			alert("warning", "此產品有故障"); 								   
+		}	
+
+		},
+		
+		
+		//********************把資料庫配置到前端**********************
+		oqc_inspection_form(retrievedHtmlString, oqcdata) {
+		    // ⚡ 如果這個 function 是在 DOM ready 後呼叫的，就不需要再包 $(document).ready
+		    if (retrievedHtmlString) {
+		        // 更換為資料庫紀錄的 原始檢驗項目 HTML
+		        $('tbody.edit_oqc_list').replaceWith(retrievedHtmlString);
+		
+		        // 移除不要的 <td>
+		        $("td.col-check.datalist.noExl").remove();
+		        $("td.col-index.datalist").remove();
+		
+		        // 配置資料進每一列
+		        $(".edit_oqc_list .custom-row").each(function (index) {
+		            let rowData = oqcdata[index]; // 取出資料
+		            if (!rowData) return;		
+		            let $row = $(this);
+		            
+		            let textContent = rowData["檢查內容"] || "";			       
+		            let splitText = textContent.split("~is~")[1] || ""; //以~is~為切割取值
+		            
+		          //1.input輸入框
+		            $row.find(".text-content").val(splitText); //找到 Class= text-content後 放入輸入框
+		
+			         // 2. 檢查內容（支援單值或多值 checkbox）
+		         	//會把字串用逗號作分割,逐一把每個字串 去除前後空白,checkItems 最後是一個乾淨的陣列，用來比對要勾選的選項
+		            let checkItems = splitText.split(",").map(str => str.trim());  // 即使只有一個值也會變成陣列	
+			        //在目前這一行（$row）裡面，找到所有class名叫.chk-content對每一個 checkbox 做一次處理
+		            $row.find(".chk-content").each(function () { 
+		                let checkboxVal = $(this).val().trim();	//取得目前這個 checkbox 的 value  
+		                //判斷 checkbox的value是否出現在checkItems陣列內,如果有把checkbox勾起來
+		                if (checkItems.includes(checkboxVal)) {  
+		                    $(this).prop("checked", true);
+		                }
+	           		 });
+		            
+		          //3.select
+		            $row.find("select").val(splitText); //select設定成某個值
+		            
+		            // radio 配置
+		            $row.find(".chk-result").each(function () {
+		                const val = $(this).parent().text().trim();
+		                $(this).val(val);
+		                if (val === rowData["檢查內容結果"]) {
+		                    $(this).prop("checked", true)
+		                    //將文字置中
+		                    .parent().addClass("center-checked");		                    
+		                }else{
+		                    // 移除未被勾選的 radio + label 文字
+		                    $(this).parent().remove();
+		                }
+		            });
+		
+		            // 備註
+		            $row.find(".oii_check_note textarea").val(rowData["備註"] || "");
+		        });		
+		        //  呼叫 lockInput 鎖定輸入框 禁止被更改
+		        let $tbody = $("#table");
+		        this.lockInputs($tbody);		
+		    }
+		},
+		
+		//***********************************鎖定不給改*******************************
+		lockInputs($tbody) {
+		    let lockTip = "此欄位已鎖定，無法編輯";
+		
+		    // 1. input & textarea → readonly
+		    $tbody.find("input[type='text'], textarea")
+		        .prop("readonly", true)
+		        .attr("title", lockTip);
+		
+		    // 2. select → 禁用互動但保持樣式
+		    $tbody.find("select").css({
+		        "pointer-events": "none",
+		        "background-color": "#fff",
+		        "color": "#000",
+		        "opacity": 1
+		    }).attr("title", lockTip);
+		
+		    // 3. checkbox → 阻止勾選
+		    $tbody.find("input[type='checkbox']").on("click.lock", function (e) {
+		        e.preventDefault();
+		    }).css({
+		        "opacity": 1,
+		        "filter": "grayscale(0%)",
+		        "pointer-events": "auto"
+		    }).attr("title", lockTip);
+		
+		    // 4. radio → 阻止點選
+		    $tbody.find("input[type='radio']").on("click.lock", function (e) {
+		        e.preventDefault();
+		    }).css({
+		        "opacity": 1,
+		        "filter": "grayscale(0%)",
+		        "pointer-events": "auto"
+		    }).attr("title", lockTip);
+		},
+	
+		
+		saveReturn(){
+			main.loading(false);
+			console.log("saveReturn OQC");
+			
+			if(main.allData.info_color=="success"){				
+				//儲存後 再搜尋工單資料庫資料的資料往前端送
+				let search = {};	
+				search.input_orlow= $('#orl_ow input').val(); //輸入工單號碼	
+				//搜尋之前先清空 							
+				customized.searchSend(search);	
+				console.log("工單號碼");				
+				//this.removeAll();
+			}
+		},
+	},
+	//////////////////////////////////////////////////////////////////////
+	//移除監聽事件 
+	beforeDestroy() {
+		console.log("OQC.html(beforeDestroy)");
+		$(document).off("click", "#search_orlow_btn");	//未正確移除 或 寫錯會導致去再按下按鈕後再去其他頁面後回來再按下按鈕導致後端會重複執行,若多次來回按鈕,後端多次執行		
+		$(document).off("click", "#search_clear_btn");
+		
+		$(document).off("click", "#R_search_btn"); //搜尋機台號碼  產品細節
+		$(document).off("click", "#save_btn");  //save
+		$(document).off("click", "#clear_btn");		
+		
+		$(document).off("click", "#excel_btn");	
+		$(document).off("keypress", "#customized #search_orlow");
+		$(document).off("keypress", "#customized #R_search_btn");
+
+	},
+});
+</script>

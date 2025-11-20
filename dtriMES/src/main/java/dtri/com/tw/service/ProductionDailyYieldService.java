@@ -91,7 +91,7 @@ public class ProductionDailyYieldService {
 		String mmdd = null;
 		mmdd = Fm_Time.to_y_M_d(new Date());
 		System.out.println(mmdd);
-		//mmdd = "2025-06-05";
+		//mmdd = "2025-07-12";
 		// String[] toUser = { "johnny_chuang@dtri.com" };
 		String mailList = MailList.toString(); // 轉換為 String
 		String c_mailList = cMailList.toString();
@@ -296,7 +296,7 @@ public class ProductionDailyYieldService {
 					dailyBean.setPdpryield(pdOne.getPdpryield()); // j測試總數(不良率) // 工單 [當日]測試數 良率比
 
 					dailybeans.put(key, dailyBean);
-					// System.out.println("123");
+				
 				}
 			}
 		} else {
@@ -326,9 +326,10 @@ public class ProductionDailyYieldService {
 		// 1做排序 將 Map entries 轉為 List
 		List<Map.Entry<String, ProductionDailyBean>> sortedList = new ArrayList<>(dailybeans.entrySet());
 
-		// 2. 排序：依 getPdttqty() 由大到小 //**(compareTo() 對 String 做排序，不會得到真正的數字順序)
+		// 2. 排序：依 getPdttqty() 由大到小 //**(所以：compareTo() 對 String 做排序，不會得到真正的數字順序！),正確做法（建議）：先轉成 int 再比較！
 		sortedList.sort((e1, e2) -> {
 			try {
+				//如果要排序的是「百分比」，像是 "98.7%"、"100%"、"87.65%" 這種字串格式，那你必須先去掉 % 符號並轉成數值（double），才能正確排序。
 				double qty1 = Double.parseDouble(e1.getValue().getPdttyield().replace("%", "").trim());
 				double qty2 = Double.parseDouble(e2.getValue().getPdttyield().replace("%", "").trim());
 				return Double.compare(qty2, qty1); // descending
@@ -369,9 +370,13 @@ public class ProductionDailyYieldService {
 							.append("</tr>");
 				}
 			}
-		}
-		;
-
+	//		System.out.println("印出"+x);
+		};
+	//	if (x==0) {
+	//		System.out.println("印出"+x);
+	//		System.out.println("dailybeans無資料");
+	//		return false;
+	//	}
 		httpstr.append("</table> <br>");
 
 		System.out.println("測試狀況不良率");
@@ -395,10 +400,12 @@ public class ProductionDailyYieldService {
 		try {
 			Query query = em.createNativeQuery(nativeQuery, RepairDetail.class);
 			details = query.getResultList();
-//			if (details.size() > 25000) {
-//				System.out.println("資料大於25000");
-//				return false;
-//			}
+			
+			if (details.size() ==0) {
+				System.out.println("當維修故障資料為0,不寄送郵件");
+				return false;
+			}
+			
 		} catch (Exception e) {
 
 			return false;

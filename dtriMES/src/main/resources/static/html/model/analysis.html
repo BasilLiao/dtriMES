@@ -438,39 +438,49 @@
 				//========report========
 				$(document).on("click", "#export_excel_report", function (event) {
 
-					let ree = $("#report_excel_example").clone();
+				//	let ree = $("#report_excel_example").clone();
 
 					// 修改表格中的大數字，讓 Excel 以文字格式處理
-					ree.find("td").each(function () {
-						var cellText = $(this).text().trim();
-						// 檢查是否是科學記號或純數字
-						//if (cellText.length > 5 && (/^0\d+E[\+\-]?\d+$/i.test(cellText))) {
-							// 在數字前面加上單引號，讓 Excel 視為文字
-						//	$(this).text("'" + cellText);
-						//} else if (cellText.length > 10 && /^00\d+$/i.test(cellText)) {
-							// 檢查是否是以 00 開頭的數字或科學記數法
-						//	$(this).text("'" + cellText);
-						if (cellText.length > 11 && cellText.charAt(10).toUpperCase() === 'E') {
-  						  // 特殊處理 避免 Excel 把整個字串當作科學記號吃掉 E 後面的部分
-							$(this).text('="' + '\u200B' + cellText + '"');  						  
-						}else if (/^\d{10,}$/.test(cellText)) {
-							 // 如果是純數字，長度超過10（例如手機、編號）
-						    // 一般資料仍以文字公式方式處理
-						    $(this).text('="' + cellText.replace(/"/g, '""') + '"');
-						}				
+				//	ree.find("td").each(function () {
+				//		var cellText = $(this).text().trim();
+				//		if (cellText.length > 11 && cellText.charAt(10).toUpperCase() === 'E') {
+  				//		  // 特殊處理 避免 Excel 把整個字串當作科學記號吃掉 E 後面的部分
+				//			$(this).text('="' + '\u200B' + cellText + '"');  						  
+				//		}else if (/^\d{10,}$/.test(cellText)) {
+				//			 // 如果是純數字，長度超過10（例如手機、編號）
+				//		    // 一般資料仍以文字公式方式處理
+				//		    $(this).text('="' + cellText.replace(/"/g, '""') + '"');
+				//		}				
 	
-					});
-					ree.table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_" + analysis.reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+				//	});
+				//	ree.table2excel({
+				//		preserveColors: false,
+				//		exclude_img: true,
+				//		exclude_links: true,
+				//		exclude: ".noExl",
+				//		name: "Worksheet Name",
+				//		filename: "MES_Report_" + analysis.reportDate, //do not include extension
+				//		fileext: ".xls" // file extension
+				//	});
+				
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("report_excel_example");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Repair_Report_"  + analysis.reportDate + ".xlsx");				
 				});
 			},
 			proBar(total, nowqty) {

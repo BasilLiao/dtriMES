@@ -53,18 +53,17 @@ public class FFS {
 	public static JSONObject h_m(Dno none, Tag tag, Type type, String placeholder, String value, Wri write, String col, boolean required,
 			JSONArray values, String id, String name) {
 		JSONObject object_value = new JSONObject();
-		object_value.put("name", name);
-		object_value.put("id", FFM.choose(FFM.Hmb.M.toString()) + id);// id
+		object_value.put("d_none", FFM.choose(none.toString()));// 顯示?
 		object_value.put("tag", FFM.choose(tag.toString()));// 類型
 		object_value.put("type", FFM.choose(type.toString()));// 驗證格式
-		object_value.put("required", required);// 是否必寫
 		object_value.put("placeholder", placeholder);// 預設文字
 		object_value.put("value", value);// 預設值
 		object_value.put("write", FFM.choose(write.toString()));// 可填寫??
-		object_value.put("d_none", FFM.choose(none.toString()));// 顯示?
-
 		object_value.put("col", col);// 寬度?
+		object_value.put("required", required);// 是否必寫
 		object_value.put("values", values);// 多選項select (可能有)
+		object_value.put("id", FFM.choose(FFM.Hmb.M.toString()) + id);// id
+		object_value.put("name", name);
 		return object_value;
 	}
 

@@ -136,6 +136,7 @@ public class ProductionBody implements Serializable {
 		this.pbfvalue ="";
 		this.pbfnote="";
 
+		this.pblnoteoqc=""; // 標記被OQC檢驗的機台 檢驗的內容
 	}
 
 	// 共用型
@@ -394,7 +395,10 @@ public class ProductionBody implements Serializable {
 
 	@Column(name = "pb_l_path_oqc", columnDefinition = "varchar(255) default ''")
 	private String pblpathoqc;
-
+	// 新增標記被OQC檢驗的機台 檢驗的內容
+	@Column(name = "pb_l_note_oqc", columnDefinition = "varchar(255) default ''")
+	private String pblnoteoqc;
+	
 	@Column(name = "pb_l_size")
 	private String pblsize;
 
@@ -1363,6 +1367,14 @@ public class ProductionBody implements Serializable {
 
 	public void setPblpath(String pblpath) {
 		this.pblpath = pblpath;
+	}
+	// 標記被OQC檢驗的機台 檢驗的內容
+	public String getPblnoteoqc() {
+		return pblnoteoqc;
+	}
+
+	public void setPblnoteoqc(String pblnoteoqc) {
+		this.pblnoteoqc = pblnoteoqc;
 	}
 
 	public String getPblpathoqc() {

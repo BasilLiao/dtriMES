@@ -69,7 +69,10 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String work_hours = "/ajax/work_hours.basil";
 		String work_type = "/ajax/work_type.basil";
 
-		String oqc_inspection="/ajax/oqc_inspection.basil";
+		String oqc_inspection_items="/ajax/oqc_inspection_items.basil";
+		String oqc_inspection_form="/ajax/oqc_inspection_form.basil";
+		String oqc_result_list="/ajax/oqc_result_list.basil";
+		
 		http.authorizeRequests()
 				// thirdparty && img 資料夾靜態資料可 直接 存取 (預設皆有 訪問權限 資料可[匿名]存取)
 				.antMatchers(HttpMethod.GET, "/thirdparty/**", "/img/**", "/login.basil", "/login.html").permitAll()
@@ -328,12 +331,31 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, customer + ".AU").hasAuthority(actionRole(customer, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, customer + ".AD").hasAuthority(actionRole(customer, "AD"))// (移除)
 
-				// ----請求-oqc_inspection-(訪問) ----OQC設定檢測名稱
-				.antMatchers(HttpMethod.POST, oqc_inspection).hasAuthority(actionRole(oqc_inspection, ""))//
-				.antMatchers(HttpMethod.POST, oqc_inspection + ".AR").hasAuthority(actionRole(oqc_inspection, "AR"))// (查詢)
-				.antMatchers(HttpMethod.POST, oqc_inspection + ".AC").hasAuthority(actionRole(oqc_inspection, "AC"))// (新增)
-				.antMatchers(HttpMethod.PUT, oqc_inspection + ".AU").hasAuthority(actionRole(oqc_inspection, "AU"))// (修改)
-				.antMatchers(HttpMethod.DELETE, oqc_inspection + ".AD").hasAuthority(actionRole(oqc_inspection, "AD"))// (移除)
+				// ----請求-oqc_inspection_items-(訪問) ----OQC設定檢測名稱 202507
+				.antMatchers(HttpMethod.POST, oqc_inspection_items).hasAuthority(actionRole(oqc_inspection_items, ""))//
+				.antMatchers(HttpMethod.POST, oqc_inspection_items + ".AR").hasAuthority(actionRole(oqc_inspection_items, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, oqc_inspection_items + ".AC").hasAuthority(actionRole(oqc_inspection_items, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, oqc_inspection_items + ".AU").hasAuthority(actionRole(oqc_inspection_items, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, oqc_inspection_items + ".AD").hasAuthority(actionRole(oqc_inspection_items, "AD"))// (移除)
+				
+				// ----請求-oqc_inspection_from-(訪問) ----OQC通用-製表檢驗單 202507
+				.antMatchers(HttpMethod.POST, oqc_inspection_form).hasAuthority(actionRole(oqc_inspection_form, ""))//
+				.antMatchers(HttpMethod.POST, oqc_inspection_form + ".AR").hasAuthority(actionRole(oqc_inspection_form, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, oqc_inspection_form + ".AC").hasAuthority(actionRole(oqc_inspection_form, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, oqc_inspection_form + ".AU").hasAuthority(actionRole(oqc_inspection_form, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, oqc_inspection_form + ".AD").hasAuthority(actionRole(oqc_inspection_form, "AD"))// (移除)
+				.antMatchers(HttpMethod.POST, oqc_inspection_form + ".S1").hasAuthority(actionRole(oqc_inspection_form, "S1"))// 查詢
+				.antMatchers(HttpMethod.PUT, oqc_inspection_form + ".S2").hasAuthority(actionRole(oqc_inspection_form, "S2"))// SAVE/UPDATE
+				.antMatchers(HttpMethod.PUT, oqc_inspection_form + ".S3").hasAuthority(actionRole(oqc_inspection_form, "S3"))// 審核
+			
+				// ----請求-oqc_result_list-(訪問) ----OQC通用-檢驗登記清單 202509
+				.antMatchers(HttpMethod.POST, oqc_result_list).hasAuthority(actionRole(oqc_result_list, ""))//
+				.antMatchers(HttpMethod.POST, oqc_result_list + ".AR").hasAuthority(actionRole(oqc_result_list, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, oqc_result_list + ".AC").hasAuthority(actionRole(oqc_result_list, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, oqc_result_list + ".AU").hasAuthority(actionRole(oqc_result_list, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, oqc_result_list + ".AD").hasAuthority(actionRole(oqc_result_list, "AD"))// (移除)
+				.antMatchers(HttpMethod.POST, oqc_result_list + ".S1").hasAuthority(actionRole(oqc_result_list, "S1"))// 查詢
+				.antMatchers(HttpMethod.PUT, oqc_result_list + ".S2").hasAuthority(actionRole(oqc_result_list, "S2"))// SAVE/UPDATE
 				
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();

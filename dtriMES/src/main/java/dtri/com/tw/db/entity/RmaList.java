@@ -175,7 +175,7 @@ public class RmaList {
 		this.recddate="";
 		
 	}
-
+	//上傳EXCEL資料的方法
 	public RmaList(String rmaNumber, String model, String customer, String serialNumber, String mbNumber, String issue,
 			String partNo, String wtyStatus,String syscuser, String sysmuser) {
 		this.syscdate = new Date();

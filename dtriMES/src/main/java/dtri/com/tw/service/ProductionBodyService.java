@@ -98,6 +98,7 @@ public class ProductionBodyService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_l_path", FFS.h_t("檢測Log位置", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_l_size", FFS.h_t("檢測Log大小", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_l_dt", FFS.h_t("上傳Log時間", "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_l_note_oqc", FFS.h_t("OQC檢驗的內容", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pb_schedule", FFS.h_t("過站設定", "150px", FFM.Wri.W_Y));
 
 			// sn關聯表
@@ -135,7 +136,7 @@ public class ProductionBodyService {
 					e.printStackTrace();
 				}
 			}
-
+			
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_m_date", FFS.h_t("修改時間", "180px", FFM.Wri.W_Y));
@@ -227,7 +228,9 @@ public class ProductionBodyService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pb_l_path", "檢測Log位置"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pb_l_size", "檢測Log大小"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pb_l_dt", "上傳Log時間"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", false, n_val, "pb_position", "最後位置"));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "pb_l_note_oqc", "OQC檢驗的內容"));
+			
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", false, n_val, "pb_position", "最後位置"));		
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", "備註"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "sys_ver", "版本"));
@@ -364,6 +367,7 @@ public class ProductionBodyService {
 		String nativeQuery = "SELECT b.* FROM production_body b " + //
 				"join production_header h on b.pb_g_id = h.ph_pb_g_id " + //
 				"join production_records p on h.ph_pr_id = p.pr_id WHERE ";
+		
 		if (!pb_sn_value.equals("")) {
 			nativeQuery += " (:pb_sn_value='' or " + pb_sn_name + " LIKE :pb_sn_value) and ";
 		}
@@ -461,6 +465,8 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_size", one.getPblsize() == null ? "" : one.getPblsize());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_dt", one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbldt()));
 
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_note_oqc", one.getPblnoteoqc() == null ? "" : one.getPblnoteoqc()); //OQC標記檢驗內容
+			
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_schedule", one.getPbschedule() == null ? "" : one.getPbschedule());
 			try {
 				// 有效設定的欄位
@@ -622,7 +628,7 @@ public class ProductionBodyService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_f_value", one.getPbfvalue() == null ? "" : one.getPbfvalue());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_check", one.getPbcheck());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_dt", one.getPbldt() == null ? "" : Fm_Time.to_yMd_Hms(one.getPbldt()));
-
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pb_l_note_oqc", one.getPblnoteoqc()); //"OQC檢驗的內容"
 			try {
 				// 有效設定的欄位
 				for (int k = 0; k < 50; k++) {

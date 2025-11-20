@@ -53,6 +53,12 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			   + "(:pbsn is null or b.pbsn  =:pbsn) and "
 		       + "(:pbvalue16 is null or b.pbvalue16 =:pbvalue16) ")			 
 	List<ProductionBody> findAllByPbsnAndpbvalue16(String  sysmuser ,String pbsn ,String pbvalue16);
+	
+	// 查詢工單裡面的號碼"old"  可找出轉單數量資料johnny
+	@Query("SELECT b FROM ProductionBody b WHERE "			 
+			   + "(:pbsn is null or b.pbsn  LIKE %:pbsn%) and "
+		       + "(:pbgid is null or b.pbgid =:pbgid) ")			 
+	List<ProductionBody> findAllByOldAndPbgid(String pbsn, Long pbgid);
 
 
 	// 查詢SN重複+群組

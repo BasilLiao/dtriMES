@@ -140,7 +140,7 @@ public class PackageBean {
 			this.info = info_warning1_NotFindUser;
 			break;
 		case "102":// 沒找到東西
-			this.info = info_warning2_NotFind;
+			this.info = info_warning2_NotFind + error_ms;
 			break;
 		case "103":// SQL查詢格式異常
 			this.info = info_warning3_SQLNotRight;
@@ -151,7 +151,9 @@ public class PackageBean {
 		case "108":// 資料或格式錯誤
 			this.info = info_warning_error_data + error_ms + " [Warning]!!";
 			break;	
-			
+		case "109":// 特定錯誤
+			this.info = error_ms + " [Warning]!!";
+			break;	
 		case "WP001":// [WP001] 此工作站被使用中 , 請檢查(工作站-流程管理)! [Warning]!!"
 			this.info = info_work_p_warning1;
 			break;
