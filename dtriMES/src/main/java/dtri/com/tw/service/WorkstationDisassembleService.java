@@ -550,8 +550,8 @@ public class WorkstationDisassembleService {
 					// 查詢SN欄位
 					List<ProductionBody> productionBodies = new ArrayList<ProductionBody>();
 					String nativeQuery = "SELECT b.* FROM production_body b WHERE"; //
-					nativeQuery += " (b." + pb_value_name + " LIKE :pb_value)";
-					nativeQuery += "and (b.pb_b_sn NOT LIKE '%old%')";
+					nativeQuery += " (b." + pb_value_name + " =:pb_value)";  //在 變數pb_value_name 欄位 模糊搜尋pb_value值
+					nativeQuery += "AND (b.pb_b_sn NOT LIKE '%old%')";  //pb_b_sn 是機台號碼的欄位
 					Query query = em.createNativeQuery(nativeQuery, ProductionBody.class);
 					query.setParameter("pb_value", "%" + pb_value + "%");
 					productionBodies = query.getResultList();

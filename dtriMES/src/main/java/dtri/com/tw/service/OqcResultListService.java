@@ -31,10 +31,10 @@ import dtri.com.tw.tools.Fm_Time;
 @Service
 public class OqcResultListService {
 	@Autowired // 通用-製令內容
-	ProductionHeaderDao headerDao;
+	private ProductionHeaderDao headerDao;
 
 	@Autowired // 產品細節
-	ProductionBodyDao bodyDao;
+	private ProductionBodyDao bodyDao;
 
 	@Autowired
 	private OqcInspectionFormDao oifDao;
@@ -65,6 +65,8 @@ public class OqcResultListService {
 		String orl_t_user=null;
 		String orl_t_date_s=null;
 		String orl_t_date_e=null;
+		String orl_t_item=null;
+		String orl_t_results=null;
 		int sys_status = -1;
 
 		// 初次載入需要標頭 / 之後就不用
@@ -114,8 +116,9 @@ public class OqcResultListService {
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "功能(測試OS)").put("key", "功能(測試OS)"));
-			a_val.put((new JSONObject()).put("value", "功能(出貨OS)").put("key", "功能(出貨OS)"));
-			a_val.put((new JSONObject()).put("value", "只看OS版本/外觀").put("key", "只看OS版本/外觀"));
+			a_val.put((new JSONObject()).put("value", "功能(T2 OS)").put("key", "功能(T2 OS)"));
+			a_val.put((new JSONObject()).put("value", "Check T2 OS").put("key", "Check T2 OS"));
+			a_val.put((new JSONObject()).put("value", "外觀/包裝檢驗").put("key", "外觀/包裝檢驗"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "orl_t_item", "測試項目"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, a_val, "orl_t_item_m", "測試項目(修)"));
 
@@ -138,12 +141,21 @@ public class OqcResultListService {
 			
 			bean.setCell_modify(obj_m);
 			
-	
-			//*********************** 設置 產品細節的輸入欄位名稱 資訊到前端 ********************************************************** 
+//**********************在 客製化頁面設置	*********************************
+			
+			JSONArray obj_t = new JSONArray();				
+			a_val = new JSONArray();
+			a_val.put((new JSONObject()).put("value", "功能(測試OS)").put("key", "功能(測試OS)"));
+			a_val.put((new JSONObject()).put("value", "功能(T2 OS)").put("key", "功能(T2 OS)"));
+			a_val.put((new JSONObject()).put("value", "Check T2 OS").put("key", "Check T2 OS"));
+			a_val.put((new JSONObject()).put("value", "外觀/包裝檢驗").put("key", "外觀/包裝檢驗"));		
+			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", true, a_val, "orl_t_item", "測試項目"));
+			
+			//*********************** 設置 產品細節的輸入欄位名稱 資訊到前端 ********************************** 
 			ProductionBody pb = bodyDao.findAllByPbid(0l).get(0); //取得pbid=0的所有資料 然後再取締一筆資料來用
 			int j = 0;		
 			Method method;
-			JSONArray obj_t = new JSONArray();	
+			
 			// sn關聯表
 			for (j = 0; j < 50; j++) {
 				String m_name = "getPbvalue" + String.format("%02d", j + 1);
@@ -166,7 +178,8 @@ public class OqcResultListService {
 			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_size", "檢測Log大小"));
 			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pb_l_dt", "上傳Log時間"));
 			//obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "pb_position", "最後位置"));
-			//obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "sys_note", "備註"));			
+			//obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", false, n_val, "sys_note", "備註"));		
+		
 			bean.setCell_g_modify(obj_t);
 	
 			// *********************************************************** 放入包裝(search)
@@ -175,16 +188,28 @@ public class OqcResultListService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "orl_ow", "工單號碼", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "orl_p_sn", "產品SN號", n_val));
 			
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "orl_t_user", "最後檢驗人", n_val));		
+			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-1", "orl_t_user", "最後檢驗人", n_val));		
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "orl_t_date_s", "檢驗日(起)", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "orl_t_date_e", "檢驗日(終)", n_val));
-
+			
 			a_val = new JSONArray();
-			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-			a_val.put((new JSONObject()).put("value", "鎖定").put("key", "1"));
-			a_val.put((new JSONObject()).put("value", "作廢").put("key", "2"));
-			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "sys_status", "資料狀態", a_val));
-
+			a_val.put((new JSONObject()).put("value", "功能(測試OS)").put("key", "功能(測試OS)"));
+			a_val.put((new JSONObject()).put("value", "功能(T2 OS)").put("key", "功能(T2 OS)"));
+			a_val.put((new JSONObject()).put("value", "Check T2 OS").put("key", "Check T2 OS"));
+			a_val.put((new JSONObject()).put("value", "外觀/包裝檢驗").put("key", "外觀/包裝檢驗"));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-2", "orl_t_item", "測試項目", a_val));
+			
+			a_val = new JSONArray();
+			a_val.put((new JSONObject()).put("value", "PASS").put("key", "PASS"));
+			a_val.put((new JSONObject()).put("value", "暫停").put("key", "暫停"));
+			a_val.put((new JSONObject()).put("value", "NG").put("key", "NG"));
+			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "orl_t_results", "測測試結果", a_val));
+		//	*************** 資料狀態 先不用顯示 *********
+		//	a_val = new JSONArray();
+		//	a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
+		//	a_val.put((new JSONObject()).put("value", "鎖定").put("key", "1"));
+		//	a_val.put((new JSONObject()).put("value", "作廢").put("key", "2"));
+		//	object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "sys_status", "資料狀態", a_val));
 			bean.setCell_searchs(object_searchs);
 
 		} else {
@@ -202,6 +227,9 @@ public class OqcResultListService {
 			//orl_t_date_s = (orl_t_date_s== null) ? "": orl_t_date_s;			
 			orl_t_date_e = body.getJSONObject("search").getString("orl_t_date_e"); // "檢驗日(終)"
 			//orl_t_date_e = (orl_t_date_e== null) ? "" : orl_t_date_e;
+			
+			orl_t_item = body.getJSONObject("search").getString("orl_t_item"); // "測試項目"
+			orl_t_results = body.getJSONObject("search").getString("orl_t_results"); // "測測試結果"
 
 			sys_status = body.getJSONObject("search").optInt("sys_status", -1); // "資料狀態
 
@@ -226,6 +254,8 @@ public class OqcResultListService {
 		
 		nativeQuery+=  " (:orltuser='' OR d.orl_t_user LIKE :orltuser) AND ";// "最後檢驗人"			
 		nativeQuery+=  " (:orlpsn='' OR d.orl_p_sn LIKE :orlpsn) AND "; // "產品SN號"
+		nativeQuery+=  " (:orltitem='' OR d.orl_t_item LIKE :orltitem) AND "; // "測試項目"
+		nativeQuery+=  " (:orltresults='' OR d.orl_t_results LIKE :orltresults) AND "; // "測測試結果"
 		nativeQuery+=  " (:sysstatus = -1 or d.sys_status =:sysstatus )  "; // "資料狀態"
 
 		Query query = em.createNativeQuery(nativeQuery, OqcResultList.class);
@@ -233,11 +263,6 @@ public class OqcResultListService {
 		orl_ow = (orl_ow== null) ? "" : orl_ow;		// 工單
 		query.setParameter("orlow", "%" + orl_ow + "%");
 
-		System.out.println(orl_t_date_s);
-		if(!orl_t_date_s.equals("")) {
-			System.out.println(Fm_Time.toDateTime(orl_t_date_s));		
-		}
-		
 		// "檢驗日(起)" "檢驗日(終)"
 		if(!orl_t_date_s.equals("") && !orl_t_date_e.equals("")) { 
 			query.setParameter("orltdates",  Fm_Time.toDateTime(orl_t_date_s));
@@ -249,6 +274,12 @@ public class OqcResultListService {
 		
 		orl_t_user = (orl_t_user== null) ? "" : orl_t_user;  // "最後檢驗人"
 		query.setParameter("orltuser", "%" + orl_t_user + "%");
+		
+		orl_t_item = (orl_t_item== null) ? "" : orl_t_item; //"測試項目"
+		query.setParameter("orltitem", "%" + orl_t_item + "%");
+		
+		orl_t_results = (orl_t_results== null) ? "" : orl_t_results; //測測試結果
+		query.setParameter("orltresults", "%" + orl_t_results + "%");
 		
 		query.setParameter("sysstatus", sys_status); // "資料狀態"
 
@@ -282,8 +313,7 @@ public class OqcResultListService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
-			System.out.println(object_body);
-
+		
 			object_bodys.put(object_body);
 
 		});
@@ -343,7 +373,7 @@ public class OqcResultListService {
 				oRL = orlDao.findAllByOrlid(data.getLong("orl_id")).get(0);
 				orl_p_sn=data.getString("orl_p_sn");
 				//PASS 不能修改
-				if (!data.getString("orl_t_results").equals("PASS") && data.getInt("sys_status")==0) {
+				if (!data.getString("orl_t_results").equals("PASS") && data.getInt("sys_status")<2) {
 					oRL.setOrltitem(data.getString("orl_t_item_m"));
 					oRL.setOrltresults(data.getString("orl_t_results_m"));
 					oRL.setSysnote(data.getString("sys_note")); // 備註				
@@ -411,7 +441,6 @@ public class OqcResultListService {
 		List<OqcResultList> OqcResultLists = new ArrayList<OqcResultList>();
 		String orl_ow = null; // "工單號"
 		String orl_p_sn = null; // "機台號碼"
-		//int sys_status = -1;
 		int sys_status = 0;  //"資料狀態"
 		// 建立 object_body 物件 為最上層, 用於存放各個資訊
 		JSONObject object_body = new JSONObject();
@@ -423,66 +452,77 @@ public class OqcResultListService {
 		try {
 				//**************  取出 檢核表單 及 檢驗的資料清單 *********************
 			if (body.getJSONObject("search").has("input_orlow")) {
-				System.out.println("input_orlow test");
-
+				
 				orl_ow = body.getJSONObject("search").getString("input_orlow"); // "工單號"
 				orl_ow = orl_ow.equals("") ? null : orl_ow;
-
-				//sys_status = body.getJSONObject("search").optInt("sys_status", -1); // "資料狀態
+			
 				// step1 先用工單搜尋有無建立檢核表單存在
 				OqcInspectionForms = oifDao.findByOifow(orl_ow);
-				if (OqcInspectionForms.isEmpty()) {
-					System.out.println("無資料存在");
-					resp.setError_ms("無此工單號" + orl_ow);
+				if (OqcInspectionForms.isEmpty()) {				
+					resp.setError_ms("無此(工單號)檢核表單" + orl_ow);
 					resp.autoMsssage("102"); // 回傳錯誤訊息
 					return check;
 				}
-				// step2.用工單搜尋有資料庫有無已經有檢驗的資料清單 存在 (完全比對) ,資料狀態=0 , 只搜尋 "資料狀態"為"正常"的資料
-				OqcResultLists = orlDao.findByOrlowAndOrlpsn(orl_ow, null, sys_status);
+				OqcInspectionForm oif = OqcInspectionForms.get(0);
+				long x= oif.getSysstatus();
+				if(x==2) {
+					resp.setError_ms("已審核過，無法再檢驗登記");
+					resp.autoMsssage("109"); // 回傳錯誤訊息
+				}
+				if(x==3) {
+					resp.setError_ms("此單已作廢，無法再檢驗登記");
+					resp.autoMsssage("109"); // 回傳錯誤訊息
+				}				
+				// step2.用工單搜尋有資料庫有無已經有檢驗的資料清單 存在 (完全比對) ,資料狀態=0 , 只搜尋 "資料狀態sys_status"為"正常"或已結單的資料
+				OqcResultLists = orlDao.findByOrlowAndOrlpsn(orl_ow, null);
 
 				if (OqcResultLists == null || OqcResultLists.isEmpty() || OqcResultLists.get(0) == null) {
 					System.out.println("no data,就只會 OqcInspectionForms 資料庫取出 檢查資料表");
-					//
-					OqcInspectionForm oif = OqcInspectionForms.get(0);
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號
-
 					object_detail.put("oif_oii_data", oif.getOifoiidata());// 配置的檢驗項目 JSON
 					object_detail.put("oif_oii_form", oif.getOifoiiform());// 配置的HTML form項目
 					object_detail.put("oif_sys_status", oif.getSysstatus());
 					object_details.put("detail", object_detail);
 					object_body.put("Customized_detail", object_details);
-					System.out.println("往前端送資料");
-					
+					System.out.println("往前端送資料");					
 				} else {
 					System.out.println("有資料,就從step1 OqcInspectionForms資料庫取出檢查資料表 step2. OqcResultLists資料庫取出檢驗登記清單");
 					// step 1.
-					OqcInspectionForm oif = OqcInspectionForms.get(0);
+					//OqcInspectionForm oif = OqcInspectionForms.get(0);
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號
-
 					object_detail.put("oif_oii_data", oif.getOifoiidata());// 配置的檢驗項目 JSON
 					object_detail.put("oif_oii_form", oif.getOifoiiform());// 配置的HTML form項目
-					object_detail.put("oif_sys_status", oif.getSysstatus()); //狀態 (若不是0) 為審核後鎖定 給前端判定要不要鎖 產品序號欄位
-					long x= oif.getSysstatus();
-					if(x!=0) {
-						resp.setError_ms("已審核過，無法再檢驗登記");
-						resp.autoMsssage("109"); // 回傳錯誤訊息
-					}
-
+					object_detail.put("oif_sys_status", oif.getSysstatus()); //狀態 (若是2) 為審核後鎖定 給前端判定要不要鎖 產品序號欄位
 					object_details.put("detail", object_detail);
 					object_body.put("Customized_detail", object_details);
 					
-					//*********************** 計算指定工單號碼下，每個 SN 的最後一筆檢查結果為 PASS 的數量。 ****************************************			
-					long count = orlDao.countLastPassByOrlow(orl_ow);
-					System.out.println("PASS數量: "+count);					
-					object_body.put("OqcPassQty", count);
+					//*********************** 計算指定工單號碼下，每個測試項目 SN 的最後一筆檢查結果為 PASS 的數量。 ****************************************	
+					long count = orlDao.countLastPassByOrlow(orl_ow);					
+					object_body.put("OqcPassQty", count);		
+					
+					String orltitem="功能(測試OS)";
+					count = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);									
+					object_body.put("OqcFTOs", count);
+					
+					orltitem="功能(T2 OS)";
+					count = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);									
+					object_body.put("OqcFT2Os", count);
+					
+					orltitem="Check T2 OS";
+					count = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);									
+					object_body.put("OqcCT2Os", count);
+					
+					orltitem="外觀/包裝檢驗";
+					count = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);										
+					object_body.put("OqcAPI", count);					
+					
 					//*********************************************************************	
 					OqcResultLists.forEach(orl -> {
-						JSONObject object_orl = new JSONObject();
-						// object_orl.put("orl_n", orl.getOrln()); //項次
+						JSONObject object_orl = new JSONObject();			
 						object_orl.put("orl_p_sn", orl.getOrlpsn()); // 產品SN號
 						object_orl.put("orl_t_item", orl.getOrltitem()); // 測試項目
 						object_orl.put("orl_t_results", orl.getOrltresults()); // 測試結果
@@ -491,22 +531,17 @@ public class OqcResultListService {
 						object_orl.put("sys_note", orl.getSysnote()); // 備註
 						object_results.put(object_orl);
 					});
-
 				}
-
 				check = true;
-				object_body.put("OqcResultList", object_results);
-				
+				object_body.put("OqcResultList", object_results);				
 				resp.setBody(object_body);
-				System.out.println(object_body);
+			
 			}
 			//**************  取出產品細節資料 *********************
 			if (body.getJSONObject("search").has("orl_p_sn")) {
-
-				System.out.println("orl_p_sn testtest");
-				orl_p_sn = body.getJSONObject("search").getString("orl_p_sn"); // "產品序號"
-				orl_p_sn = orl_p_sn.equals("") ? null : orl_p_sn;
 				
+				orl_p_sn = body.getJSONObject("search").getString("orl_p_sn"); // "產品序號"
+				orl_p_sn = orl_p_sn.equals("") ? null : orl_p_sn;				
 				orl_ow = body.getJSONObject("search").getString("orl_ow"); // "工單號"
 				orl_ow = orl_ow.equals("") ? null : orl_ow;
 				
@@ -514,13 +549,13 @@ public class OqcResultListService {
 				// A.用機台號碼搜尋有無資料
 				List<ProductionBody> check_Bodys = bodyDao.findAllByPbsnAndpbvalue16(null, orl_p_sn, null);
 				if (check_Bodys.isEmpty()) {
-					System.out.println("無資料存在");
-					resp.autoMsssage("102"); // 回傳錯誤訊息
+		
+					resp.autoMsssage("102"); // 回傳錯誤訊息(無資料存在)
 					return check;
 				}
 				// B. 在 ProductionBody 資料表取得 "群組對應製令ID"
 				ProductionBody cb = check_Bodys.get(0);// 取得產品細節資料
-				System.out.println(cb.getPbgid()); // 取得 群組對應製令ID
+			
 				// C. 用" 群組對應製令ID" 取得 對應的 表頭資料
 				List<ProductionHeader> phs = headerDao.findAllByPhpbgid(cb.getPbgid());
 				ProductionHeader ph = phs.get(0);// 取得 產品表頭資料
@@ -528,16 +563,19 @@ public class OqcResultListService {
 				// D. 在表頭資料取得 "ProductionRecords"關聯表資料
 				ProductionRecords pr = ph.getProductionRecords();
 				// E. 在ProductionRecords 取的工單號碼
-				String ow = pr.getPrid().trim();
-				System.out.println(ow);
+				String ow = pr.getPrid().trim();		
 				//F. 比對資料庫取得的工單號碼 與 輸入工單號碼是否相同
 				if (ow == null || !ow.equals(orl_ow)) {
 					resp.setError_ms("機台號碼不在此工單中");
 					resp.autoMsssage("102"); // 回傳錯誤訊息
 					return check;
 				}				
+				if(pr.getSysstatus() ==2 ) {
+					resp.setError_ms("已審核無法儲存");
+					resp.autoMsssage("102"); // 回傳錯誤訊息
+					return check;
+				}
 				
-				System.out.println("產品細節資料 test");
 	
 				//***************** 產品細節 *** sn關聯表
 				
@@ -571,8 +609,7 @@ public class OqcResultListService {
 				}				
 				
 				object_body.put("productionbodyvaule", productionbodyvaule);
-				resp.setBody(object_body);
-				System.out.println(object_body);						
+				resp.setBody(object_body);									
 				check = true;
 			}			
 			
@@ -585,8 +622,8 @@ public class OqcResultListService {
 
 	// ==============客製化==============
 
-	// 更新/新增 資料清單 Customized mode "S2"
-	@Transactional // 存RMA維修資料johnny
+	// 更新/新增 資料清單 Customized mode "S2"  
+	@Transactional  
 	public boolean updateDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
 		JSONObject list = body.getJSONObject("oqc");
@@ -602,23 +639,22 @@ public class OqcResultListService {
 			// STEP1. 先確認SN是否屬與此工單
 			// A.用機台號碼搜尋有無資料
 			List<ProductionBody> check_Bodys = bodyDao.findAllByPbsnAndpbvalue16(null, orl_p_sn, null);
-			if (check_Bodys.isEmpty()) {
-				System.out.println("無資料存在");
-				resp.autoMsssage("102"); // 回傳錯誤訊息
+			if (check_Bodys.isEmpty()) {			
+				resp.autoMsssage("102"); // 回傳錯誤訊息("無資料存在")
 				return check;
 			}
 			// B. 在 ProductionBody 資料表取得 "群組對應製令ID"
 			ProductionBody cb = check_Bodys.get(0);// 取得產品細節資料
-			System.out.println(cb.getPbgid()); // 取得 群組對應製令ID
+	
 			// C. 用" 群組對應製令ID" 取得 對應的 表頭資料
 			List<ProductionHeader> phs = headerDao.findAllByPhpbgid(cb.getPbgid());
 			ProductionHeader ph = phs.get(0);// 取得 產品表頭資料
-
+			
 			// D. 在表頭資料取得 "ProductionRecords"關聯表資料
 			ProductionRecords pr = ph.getProductionRecords();
+			
 			// E. 在ProductionRecords 取的工單號碼
-			String ow = pr.getPrid().trim();
-			System.out.println(ow);
+			String ow = pr.getPrid().trim();		
 
 			if (ow == null || !ow.equals(orl_ow)) {
 				resp.setError_ms("機台號碼不在此工單中");
@@ -635,7 +671,6 @@ public class OqcResultListService {
 			oRL.setOrltdate(new Date()); // 檢驗日期
 			oRL.setOrltuser(user.getSuaccount()); // 檢驗人
 			oRL.setSysnote(list.getString("sys_note")); // 備註
-
 			oRL.setSyscuser(user.getSuaccount());// 創建者(帳號)
 			oRL.setSysmdate(new Date());// 修改時間
 			oRL.setSysmuser(user.getSuaccount());// 修改者(帳號)

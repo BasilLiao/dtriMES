@@ -18,7 +18,7 @@ import dtri.com.tw.db.entity.OqcInspectionItems;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionHeader;
 import dtri.com.tw.db.entity.ProductionRecords;
-//import dtri.com.tw.db.entity.SystemMail;
+import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.pgsql.dao.OqcInspectionFormDao;
 import dtri.com.tw.db.pgsql.dao.OqcInspectionItemsDao;
@@ -26,23 +26,34 @@ import dtri.com.tw.db.pgsql.dao.OqcResultListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
+import dtri.com.tw.db.pgsql.dao.SystemMailDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
-public class OqcInspectionFormService {
+public class OqcReviewFormService {
 	@Autowired
-	private OqcInspectionFormDao oifDao;	
+	private OqcInspectionFormDao oifDao;
+	
 	@Autowired
 	private OqcResultListDao orlDao;
+
 	@Autowired
 	private ProductionRecordsDao prDao;
+
 	@Autowired
 	private OqcInspectionItemsDao oIIDao;
+
 	// 主產品製程表頭 (通用-製令內容)
 	@Autowired
 	private ProductionHeaderDao headerDao;
+
 	@Autowired  // 產品細節
 	private ProductionBodyDao bodyDao;
+	
+	@Autowired // 寄信清單
+	private SystemMailDao sysMailListDao;
+	@Autowired // 系統寄信
+	BasicNotificationMailService mailService;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -51,7 +62,7 @@ public class OqcInspectionFormService {
 		// int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<OqcInspectionForm> OqcInspectionForms = new ArrayList<OqcInspectionForm>();
-		List<OqcInspectionItems> Oiis = new ArrayList<OqcInspectionItems>();
+//		List<OqcInspectionItems> Oiis = new ArrayList<OqcInspectionItems>();
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
 			// page = 0;
@@ -83,7 +94,7 @@ public class OqcInspectionFormService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_p_qty", FFS.h_t("出貨數", "150px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_t_qty", FFS.h_t("抽樣數", "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_p_ver", FFS.h_t("版本資訊", "150px", FFM.Wri.W_N));
+		//	object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_p_ver", FFS.h_t("版本資訊", "150px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_title", FFS.h_t("標題值", "150px", FFM.Wri.W_Y));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_c_date", FFS.h_t("製表日", "150px", FFM.Wri.W_Y));
@@ -93,7 +104,7 @@ public class OqcInspectionFormService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_f_date", FFS.h_t("審核日", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_f_user", FFS.h_t("審核人", "100px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_oii_data", FFS.h_t("配置的檢驗項目", "150px", FFM.Wri.W_N));
+		//	object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "oif_oii_data", FFS.h_t("配置的檢驗項目", "150px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_date", FFS.h_t("建立時間", "150px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_c_user", FFS.h_t("建立人", "100px", FFM.Wri.W_Y));
@@ -131,8 +142,8 @@ public class OqcInspectionFormService {
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_e_date", "最後檢驗日"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_e_user", "最後檢驗人"));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", true, n_val, "oif_p_ver", "版本資訊"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", true, n_val, "oif_oii_data", "配置的檢驗項目"));
+	//		obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-4", true, n_val, "oif_p_ver", "版本資訊"));
+	//		obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", true, n_val, "oif_oii_data", "配置的檢驗項目"));
 
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", true, n_val,"sys_note", "備註"));			
 
@@ -141,7 +152,7 @@ public class OqcInspectionFormService {
 			a_val.put((new JSONObject()).put("value", "已結單").put("key", "1"));
 			a_val.put((new JSONObject()).put("value", "已審核").put("key", "2"));
 			a_val.put((new JSONObject()).put("value", "作廢").put("key", "3"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-1", true, a_val, "sys_status", "資料狀態"));			
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, a_val, "sys_status", "資料狀態"));			
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_f_date", "審核日"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_f_user", "審核人"));
 
@@ -150,21 +161,22 @@ public class OqcInspectionFormService {
 			//////////////////// 給Customized mode 用
 			//////////////////// 抓出以記錄的標題各一個給select///////////////////////////////
 
-			JSONArray obj_t = new JSONArray();
-			JSONArray t_val = new JSONArray();
+//			JSONArray obj_t = new JSONArray();
+//			JSONArray t_val = new JSONArray();
 			// t_val = new JSONArray();
-			Oiis = oIIDao.findMinIdPerTitle();
-			if (Oiis != null && Oiis.size() > 0) { // 如果資料筆數大於 0 才進行處理。
-				for (OqcInspectionItems Oii : Oiis) {
-					JSONObject obj = new JSONObject();
-					obj.put("value", Oii.getOiititleval());
-					obj.put("key", Oii.getOiititleval());
-					t_val.put(obj);
-				}
-			}
-			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, t_val,	"oif_title", "標題值"));
+//			Oiis = oIIDao.findMinIdPerTitle();
+//			if (Oiis != null && Oiis.size() > 0) { // 如果資料筆數大於 0 才進行處理。
+//				for (OqcInspectionItems Oii : Oiis) {
+//					JSONObject obj = new JSONObject();
+//					obj.put("value", Oii.getOiititleval());
+//					obj.put("key", Oii.getOiititleval());
+//					t_val.put(obj);
+//					System.out.println(obj);
+//				}
+//			}
+//			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, t_val,	"oif_title", "標題值"));
 
-			bean.setCell_g_modify(obj_t);
+//			bean.setCell_g_modify(obj_t);
 			
 			// *********************************************************** 放入包裝(search)
 			JSONArray object_searchs = new JSONArray();
@@ -199,7 +211,13 @@ public class OqcInspectionFormService {
 		// ******* 放入包裝(body) [01
 		// 是排序][_b__***********資料顯示在SEARCH頁面下的TABLE表單資料***********
 		// 是分割直][資料庫欄位名稱]
-		OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status);
+		
+		if (body.isEmpty()) {
+			//****************  讓第一次進入頁面會先搜尋'已結單   ********************
+			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, 1);
+		}else{
+			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status);
+		}
 		JSONArray object_bodys = new JSONArray();
 		OqcInspectionForms.forEach(one -> {
 			int ord = 0;
@@ -217,7 +235,7 @@ public class OqcInspectionFormService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_p_sn", one.getOifpsn()); // 產品序號區間
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_p_qty", one.getOifpqty()); // 出貨數
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_t_qty", one.getOiftqty()); // 抽樣數
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_p_ver", one.getOifpver()); // 版本資訊
+	//		object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_p_ver", one.getOifpver()); // 版本資訊
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_title", one.getOiftitle()); // 標題值
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_c_date", one.getOifcdate());// 製表日
@@ -229,7 +247,7 @@ public class OqcInspectionFormService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_f_date", one.getOiffdate() == null ? "" :one.getOiffdate());// 審核日
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_f_user", one.getOiffuser() == null ? "" :one.getOiffuser());// 審核人
 
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_oii_data", one.getOifoiidata());// "配置的檢驗項目
+		//	object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "oif_oii_data", one.getOifoiidata());// "配置的檢驗項目
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_date", Fm_Time.to_yMd_Hms(one.getSyscdate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_c_user", one.getSyscuser());
@@ -238,7 +256,7 @@ public class OqcInspectionFormService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_sort", one.getSyssort());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_note", one.getSysnote());
-	
+
 			object_bodys.put(object_body);
 
 		});
@@ -285,29 +303,66 @@ public class OqcInspectionFormService {
 		return check;
 	}
 
-	// 更新 資料清單 ************* 給modify使用**** 但 權限一般QC人員目前被設定無法使用 ************
+	// 更新 資料清單 ************* 給modify使用* 與 審核按鈕 使用 ************
 	@Transactional
 	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
 		boolean check = false;
+		JSONArray list = null;
 
-		try {
-			JSONArray list = body.getJSONArray("modify");
+		try {			
 			OqcInspectionForm oIF = new OqcInspectionForm();
-			for (Object one : list) {
-				// 物件轉換
-				JSONObject data = (JSONObject) one;
-//				oIF = oifDao.findAllByOifid(data.getLong("oif_id")).get(0);	
-//				oIF.setSysstatus(data.getInt("sys_status")); // 資料狀態
-//				oIF.setSysmdate(new Date());// 修改時間
-//				oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
-//
-//				oifDao.save(oIF);
-//				check = true;
+			if (body.has("modify")){  //一般模式
+				list = body.getJSONArray("modify");
+				for (Object one : list) {
 				
-			}
-			resp.setError_ms("未開放此功能");
-			resp.autoMsssage("109"); // 回傳錯誤訊息
+					// 物件轉換
+					JSONObject data = (JSONObject) one;
+					oIF = oifDao.findAllByOifid(data.getLong("oif_id")).get(0);
+								
+					if(data.getInt("sys_status") == 2) { //如果 狀態:審核
+						oIF.setSysstatus(data.getInt("sys_status")); // 資料狀態
+						oIF.setOiffuser(user.getSuaccount()); //審核人
+						oIF.setOiffdate(new Date()); // 審核日
+					}else {
+						//不是審核 就清空審核日跟人
+						oIF.setSysstatus(data.getInt("sys_status")); // 資料狀態
+						oIF.setOiffuser(""); //審核人
+						oIF.setOiffdate(null); // 審核日
+					}
+
+					oIF.setSysmdate(new Date());// 修改時間
+					oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
+					oifDao.save(oIF);
+					check = true;
+				}				
+				
+			}else if(body.has("oqc")){  	//直接審核
+				list = body.getJSONArray("oqc");
+				for (Object one : list) {				
+					// 物件轉換
+					JSONObject data = (JSONObject) one;
+					oIF = oifDao.findAllByOifid(data.getLong("oif_id")).get(0);
+					if(data.getInt("sys_status")==1)	{ //必須為 已結單 才能 審核
+						oIF.setSysstatus(2); // 資料狀態 
+						oIF.setOiffuser(user.getSuaccount()); //審核人
+						oIF.setOiffdate(new Date()); // 審核日
+						oIF.setSysmdate(new Date());// 修改時間
+						oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
+
+					}else {
+						resp.setError_ms("此工單並未結單");
+						resp.autoMsssage("109"); // 回傳錯誤訊息
+					}
+
+					oifDao.save(oIF);
+					check = true;		
+				}
+			}	
+		
+
+		//	resp.setError_ms("未開放此功能");
+		//	resp.autoMsssage("109"); // 回傳錯誤訊息
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
@@ -315,7 +370,7 @@ public class OqcInspectionFormService {
 		return check;
 	}
 
-	// 移除 資料清單****************不能刪除已審核的單據 *********
+	// 移除 資料清單****************不給oqc刪除  但要給使用alex(目前不使用)*********
 	@Transactional
 	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
@@ -327,13 +382,12 @@ public class OqcInspectionFormService {
 				JSONObject data = (JSONObject) one;
 					
 				//再增加判斷是否已審核 有審核不能刪除
-				Long status= data.optLong("sys_status");
-				if(status==1) {
-					resp.setError_ms("已結單無法刪除");
-					resp.autoMsssage("109"); // 回傳錯誤訊息
-					check = false ;					
-					return check;
-				}else if(status==2) {
+				//Long status= data.optLong("sys_status");
+				OqcInspectionForm oIF= new OqcInspectionForm();
+				oIF=oifDao.findByOifow(data.optString("oif_ow")).get(0);
+				//*********不取前端的狀態值做判斷,避免人畫面的資料與資料庫不符(頁面沒刷新)
+				int status =oIF.getSysstatus();
+				if(status==2) {
 					resp.setError_ms("已審核無法刪除");
 					resp.autoMsssage("109"); // 回傳錯誤訊息
 					check = false ;
@@ -343,10 +397,10 @@ public class OqcInspectionFormService {
 					resp.autoMsssage("109"); // 回傳錯誤訊息
 					check = false ;
 					return check;
-				}
+				}				
 				
 				Long dataID = data.getLong("oif_id");
-			
+							
 				//*********要清除產敏細節的 OQC檢驗的內容 的資訊*********
 				// 用工單取出<ProductionRecords>訂單規格的資料 
 				String oif_ow=data.optString("oif_ow");
@@ -356,19 +410,18 @@ public class OqcInspectionFormService {
 				ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
 				Long xx=ph.getPhpbgid(); //工單代號id
 				List<ProductionBody>pbs=bodyDao.findAllByOldAndPbgid(null,xx);	
-				//**清除這張工單在產品細節的欄位 OQC檢驗的內容 的資料**
+				//清除這張工單在產品細節的欄位 OQC檢驗的內容 的資料
 				for(ProductionBody pb : pbs) {
 					pb.setPblnoteoqc("");
 					bodyDao.save(pb);
 				}	
-
+				
 				if(orlDao.existsById(dataID)) { //刪前先確認資料存在
 					orlDao.deleteByOrloifid(dataID); //刪除登記機台資料
 				}
 				if(oifDao.existsById(dataID)) { //刪前先確認資料存在
 					oifDao.deleteById(dataID);		//刪除from表單	
-				}
-						
+				}		
 			}
 			check = true;
 		//	resp.setError_ms("未開放此功能");
@@ -380,7 +433,7 @@ public class OqcInspectionFormService {
 		return check;
 	}
 
-	// ==============客製化==============
+	// ==============客製化  *** (目前沒使用)****     ==============
 
 	// 取得 - Customized 當前表單式查詢資料 (資料庫有資料存在-取出資料 或 開始建立 新檢測單據)
 	@Transactional
@@ -414,11 +467,12 @@ public class OqcInspectionFormService {
 //			    resp.autoMsssage("102"); // 回傳錯誤訊息
 //				return check;
 //			}		
-				if (oifs == null || oifs.isEmpty()) {			
-					resp.autoMsssage("102"); // 回傳錯誤訊息("no data")
+				if (oifs == null || oifs.isEmpty()) {
+					System.out.println("no data");
+					resp.autoMsssage("102"); // 回傳錯誤訊息
 					return check;
 				} else {
-					if (oifs.get(0) != null) {						
+					if (oifs.get(0) != null) {
 						// 正常處理資料 *************資料庫有資料存在-取出資料
 						OqcInspectionForm oif = oifs.get(0);
 
@@ -440,17 +494,12 @@ public class OqcInspectionFormService {
 
 						object_detail.put("oif_c_user", oif.getOifcuser());// 製表人
 						object_detail.put("oif_c_date", Fm_Time.to_yMd_Hms(oif.getOifcdate()));// 製表日
+
+						object_detail.put("oif_e_user", oif.getOifeuser());// 最後鑑驗人
+						object_detail.put("oif_e_date", Fm_Time.to_yMd_Hms(oif.getOifedate()));// 最後鑑驗日
 						
-						object_detail.put("oif_e_user", oif.getOifeuser());// 最後鑑驗人						
-						if(oif.getOifedate()!=null) { //防止空值引發錯誤
-							object_detail.put("oif_e_date", Fm_Time.to_yMd_Hms(oif.getOifedate()));// 最後鑑驗日
-						}	
-						
-						object_detail.put("oif_f_user", oif.getOiffuser());// 審核人						
-						if (oif.getOiffdate()!=null) {
-							object_detail.put("oif_f_date", Fm_Time.to_yMd_Hms(oif.getOiffdate()));// 審核日
-						}						
-					
+						object_detail.put("oif_f_date", oif.getOiffdate());// 審核日
+						object_detail.put("oif_f_user", oif.getOiffuser());// 審核人
 						object_detail.put("sys_note", oif.getSysnote());//備註						
 						object_detail.put("sys_status", oif.getSysstatus());// 資料狀態
 						long x= oif.getSysstatus();
@@ -480,6 +529,7 @@ public class OqcInspectionFormService {
 						object_oiiitem.put("oii_check_val", oii.getOiicheckval());// 檢查內容值
 						object_oiiitem.put("oii_check_type", oii.getOiichecktype());// 檢查輸入類型 0.空白 1.一般入 2.下拉式選單 3.勾選式
 						object_oiiitem.put("oill_check_options", oii.getOiicheckoptions());// 可自訂值如果是下拉式/勾選 請用,區隔 Ex:[key_val,key_val]
+
 						object_oiiitems.put(object_oiiitem);
 				
 					});
@@ -487,15 +537,15 @@ public class OqcInspectionFormService {
 				}
 
 			} else {
-				//      **********************   開始建立 新檢測單據   *********************
-				// 第1步驟 先確認是否重複 ,取出 工單基本資料	
+				// 開始建立 新檢測單據
+				// 第1步驟 先確認是否重複 ,取出 工單基本資料
+				System.out.println("build data");
 
 				oifow = body.getJSONObject("search").getString("input_ow");// 取得工單號碼
 				title = body.getJSONObject("search").getString("input_title");// 取得標題
 
 				oifs = oifDao.findByOifow(oifow); // 要先確認Form表單資庫有無資料
-				if (oifs.size() > 0) {
-			
+				if (oifs.size() > 0) {			
 					resp.setError_ms("此工單號[" + oifow + "] 已經被使用-無法重複建立OQC製表檢驗單");
 					resp.autoMsssage("107"); // 回傳錯誤訊息
 					return check;
@@ -505,7 +555,8 @@ public class OqcInspectionFormService {
 				prs = prDao.findAllByPrid(oifow, null);
 				// 判斷有無此工單號碼存在
 				if (prs.isEmpty()) {
-					resp.autoMsssage("102"); // 回傳錯誤訊息("無資料存在");
+					System.out.println("無資料存在");	
+					resp.autoMsssage("102"); // 回傳錯誤訊息
 				}
 				// prs.get(0);
 				if (prs.size() > 0) {
@@ -517,7 +568,8 @@ public class OqcInspectionFormService {
 					// 查詢工單裡面的轉單old機台數量(查詢SN重複+群組)
 					List<ProductionBody> pbs = bodyDao.findAllByOldAndPbgid("old", phOrder);
 					object_detail.put("oif_q_old", pbs.size());// 轉單old機台數量
-					
+				
+					// ProductionHeader ph = pr.getHeader();
 					object_detail.put("oif_title", title);// 標題
 					object_detail.put("pr_id", pr.getPrid());// 工單
 					object_detail.put("ph_c_name", ph.getPhcname());// 客戶名稱
@@ -537,7 +589,7 @@ public class OqcInspectionFormService {
 					JSONArray prbArr = new JSONArray("[" + prbitem + "]");
 
 					List<String> lines = new ArrayList<>();
-					// *************************** 版本資訊 **************************************
+
 					lines.add("\n" + "*****************************軟體定義*****************************");
 					// 處理 prsitem
 					for (int i = 0; i < prsArr.length(); i++) {
@@ -561,11 +613,10 @@ public class OqcInspectionFormService {
 						}
 					}
 					// 將結果放入 object_detail
-					object_detail.put("oif_p_ver", lines);	//版本資訊			
+					object_detail.put("oif_p_ver", lines);				
 					object_detail.put("oif_c_user", user.getSuename());/// 製表人
-				
-					object_details.put("detail", object_detail);
-					
+					object_detail.put("oif_e_user", user.getSuename());/// 檢驗人
+					object_details.put("detail", object_detail);			
 				}
 
 				// 第2步驟 把基本檢測項目丟到前端 檢測項目編輯的table供後續OQC編輯檢驗
@@ -583,12 +634,12 @@ public class OqcInspectionFormService {
 				
 				});
 				object_details.put("oiiitems", object_oiiitems);
-			
+
 			}
 			check = true;
 			object_body.put("Customized_detail", object_details);
 			resp.setBody(object_body);
-			
+;
 		} catch (Exception e) {
 			System.out.println(e);
 			return check;
@@ -596,7 +647,7 @@ public class OqcInspectionFormService {
 		return check;
 	}
 
-	// ==============客製化==============
+	// ==============客製化  *** (目前沒使用)****  ==============
 
 	// 更新/新增 資料清單 Customized mode
 	@Transactional // 存RMA維修資料johnny
@@ -615,7 +666,6 @@ public class OqcInspectionFormService {
 				System.out.println("資料已存在進行更新");
 				// ******************* 更新資料
 				oIF = oifs.get(0);
-
 				int status = oIF.getSysstatus();// 抓取資料庫狀態值
 				if (status ==2 ) { // 大於0不可更改
 					resp.setError_ms("此工單號[" + oifow + "] 已經審核後鎖定,如需修正請洽QC主管");
@@ -634,18 +684,14 @@ public class OqcInspectionFormService {
 				oIF.setOifpname(title.getString("oif_p_name")); // 產品名稱
 				oIF.setOifpmodel(title.getString("oif_p_model")); // 產品品名(產品型號)
 				// oIF.setOifpspecification(title.getString("oif_p_specification").toString());
-				// //產品規格 (暫時取消)
+				// //產品規格 (取消)
 				oIF.setOifpsn(title.getString("oif_p_sn")); // 產品序號區間
 				oIF.setOifpqty(title.optInt("oif_p_qty")); // 出貨數
 				oIF.setOiftqty(title.optInt("oif_t_qty")); // 抽樣數
 				oIF.setOifpver(title.getString("oif_p_ver")); // 版本資訊 JSON 格式:
-				// 誰修改就換是誰為制表人 ,(但最先創建製表人的資料是不會變) ( 採用)
-				oIF.setOifcdate(new Date()); // 製表日期
-				oIF.setOifcuser(user.getSuaccount()); // 製表人
 				
-				//後鑑驗人只用在 誰按 結單按鈕 就是 最後鑑驗人
-			//	oIF.setOifedate(new Date()); // 最後鑑驗日
-			//	oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
+				oIF.setOifedate(new Date()); // 最後鑑驗日
+				oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
 				oIF.setSysnote(title.getString("sys_note"));//備註
 
 				oIF.setOifoiidata(oif_oii_data); // 配置的檢驗項目 //配置的檢驗項目 JSON
@@ -654,7 +700,7 @@ public class OqcInspectionFormService {
 				// 後端：收到後要 decode
 				String htmlEncoded = title.getString("oif_oii_form");
 				String html = URLDecoder.decode(htmlEncoded, "UTF-8"); // 還原回 HTML
-				
+
 				oIF.setOifoiiform(html); // oif_oii_form:原始的HTML項目
 
 				oIF.setSysmdate(new Date());// 修改時間
@@ -669,20 +715,15 @@ public class OqcInspectionFormService {
 				oIF.setOifpnb(title.getString("oif_p_nb")); // 產品料號
 				oIF.setOifpname(title.getString("oif_p_name")); // 產品名稱
 				oIF.setOifpmodel(title.getString("oif_p_model")); // 產品品名(產品型號)
-
 				oIF.setOifpsn(title.getString("oif_p_sn")); // 產品序號區間
 				oIF.setOifpqty(title.optInt("oif_p_qty")); // 出貨數
 				oIF.setOiftqty(title.optInt("oif_t_qty")); // 抽樣數
 				oIF.setOifpver(title.getString("oif_p_ver")); // 版本資訊 JSON 格式:
-
-				oIF.setOiftitle(title.getString("oif_title")); // 標題值
-				
+				oIF.setOiftitle(title.getString("oif_title")); // 標題值				
 				oIF.setSysnote(title.getString("sys_note"));//備註
 				
 				oIF.setOifcdate(new Date()); // 製表日期
-				oIF.setOifcuser(user.getSuaccount()); // 製表人
-				
-				//後鑑驗人只用在 誰按 結單按鈕 就是 最後鑑驗人
+				oIF.setOifcuser(user.getSuaccount()); // 製表人				
 				//oIF.setOifedate(new Date()); // 最後鑑驗日	
 				//oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
 
@@ -692,7 +733,6 @@ public class OqcInspectionFormService {
 				// 後端：收到後要 decode
 				String htmlEncoded = title.getString("oif_oii_form");
 				String html = URLDecoder.decode(htmlEncoded, "UTF-8"); // 還原回 HTML
-		
 				oIF.setOifoiiform(html); // oif_oii_form:原始的HTML項目
 
 				oIF.setSyscdate(new Date());// 創建時間
@@ -709,100 +749,94 @@ public class OqcInspectionFormService {
 		}
 		return check;
 	}
-
-	// ************S3 結案按鈕 (對 "工單" 作結單)(更改 "通用-製令內容"裡的狀態為"已完成"***** ******************** Customized
-	// mode
-	@Transactional // 
-	public boolean reviewCustomized(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+	
+	//=================== 寫已結單但未審核的工單名單 for mail內容  =====================
+	@Transactional 
+	public boolean getDataOqc() {	
 		boolean check = false;
-
-		String oifow = body.getJSONObject("oqc").getString("oif_ow");// 取得工單號碼
-
-		List<OqcInspectionForm> oifs = oifDao.findByOifow(oifow); // 要先確認Form表單資庫有無資料
-		OqcInspectionForm oIF = new OqcInspectionForm();	
-
-		JSONObject title = body.getJSONObject("oqc");
-	//	String oif_oii_data = body.getJSONObject("oqc").getJSONArray("oif_oii_data").toString();
-
+		List<OqcInspectionForm> oifs = oifDao.findByoifowAndoifcnameAndoifonb(null,null,null,1); //  取出OQCForm資料狀態結單(工單結單)清單
+	
 		try {
-			if (oifs.size() > 0) {
-				System.out.println("資料已存在進行更新");
-				// ******************* 更新資料
-				oIF = oifs.get(0);
+			ArrayList<SystemMail> sysmlds = sysMailListDao.findAll();
+			StringBuilder MailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
+			StringBuilder cMailList = new StringBuilder(); // 使用 StringBuilder 來累加字串
+			// 符合收到貨 條件 取得需要寄信人員名單
+			if (!sysmlds.isEmpty()) { // 用 `isEmpty()` 取代 `size() > 0`
+				sysmlds.forEach(rl -> {
+					if ("Y".equals(rl.getSuoqcdone())) {// 如果 Surepairdone(處理好) 是 "Y"
+						MailList.append(rl.getSuemail().trim()).append(";"); // 加入 email，並在後面加 ";"
+					}
+					// 副本炒送
+					if ("C".equals(rl.getSuoqcdone())) { //
+						cMailList.append(rl.getSuemail().trim()).append(";"); // 加入 email，並在後面加 ";"
+					}
+				});
 
-				int status = oIF.getSysstatus();// 抓取資料庫狀態值
-				if (status >= 2) { // 大於1不可更改
-					resp.setError_ms("此工單號[" + oifow + "] 已經審核後鎖定,如需修正請洽QC主管");
-					resp.autoMsssage("108"); // 回傳錯誤訊息 資料已鎖定或作廢
-					return check;
-				} // 資料狀態
-
-				//*********************** 計算指定工單號碼下，每一個測試項目 每個SN的最後一筆檢查結果為 PASS 的數量。 ****************************************			
-				//long count = orlDao.countLastPassByOrlow(oifow);
-				String orltitem="功能(測試OS)";
-				long count1 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);
-				orltitem="功能(T2 OS)";
-				long count2 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);
-				long count =count1+count2;
-				orltitem="外觀/包裝檢驗";
-				long count3 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);	
-							
-				long oty=title.optInt("oif_t_qty");
-				
-				if (oty > count) {
-					resp.setError_ms("此工單『功能』檢驗數未達抽樣數量,不能結單");
-					resp.autoMsssage("109"); // 回傳錯誤訊息 資料已鎖定或作廢
-					return check;
-				}else if(oty > count3) {
-					resp.setError_ms("此工單『外觀/包裝檢驗』檢驗數未達抽樣數量,不能結單");
-					resp.autoMsssage("109"); // 回傳錯誤訊息 資料已鎖定或作廢
-					return check;
-				}
-				
-				//*********************************************************************		
-			//	oIF.setOifcname(title.getString("oif_c_name")); // 客戶名稱
-			//	oIF.setOifonb(title.getString("oif_o_nb")); // 訂單號
-			//	oIF.setOifpnb(title.getString("oif_p_nb")); // 產品料號
-			//	oIF.setOifpname(title.getString("oif_p_name")); // 產品名稱
-			//	oIF.setOifpmodel(title.getString("oif_p_model")); // 產品品名(產品型號)
-			//	oIF.setOifpsn(title.getString("oif_p_sn")); // 產品序號區間
-			//	oIF.setOifpqty(title.optInt("oif_p_qty")); // 出貨數
-			//	oIF.setOiftqty(title.optInt("oif_t_qty")); // 抽樣數
-			//	oIF.setOifpver(title.getString("oif_p_ver")); // 版本資訊 JSON 格式:
-				oIF.setSysstatus(1); //0:正常 1:已結單
-				oIF.setOifedate(new Date()); // 最後鑑驗日	
-				oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
-			//	oIF.setSysnote(title.getString("sys_note"));//備註				
-			//	oIF.setOifoiidata(oif_oii_data); // 配置的檢驗項目 //配置的檢驗項目 JSON
-				// "="被吃掉，是因為「沒有進行編碼 (encoding) 就把 HTML 放進 JSON 傳送」。
-				// 後端：收到後要 decode
-			//	String htmlEncoded = title.getString("oif_oii_form");
-			//	String html = URLDecoder.decode(htmlEncoded, "UTF-8"); // 還原回 HTML
-			//	System.out.println("接收到的 HTML: " + html);
-			//	oIF.setOifoiiform(html); // oif_oii_form:原始的HTML項目
-				oIF.setSysmdate(new Date());// 修改時間
-				oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
-			}else {
-				resp.setError_ms("此工單號[" + oifow + "]製表鑑驗單尚未建立在資料庫中");
-				resp.autoMsssage("108"); // 回傳錯誤訊息 資料已鎖定或作廢
-				return check;
+			} else {
+				System.out.println("SystemMail空的");
+				return false;
 			}
-			oifDao.save(oIF);
+
+			if (MailList.isEmpty()) {
+				System.out.println("無寄件者名單");
+				return false;
+			}
 			
-			//****************************************對 工單制令作結單動作 *************************
-			// 用工單取出<ProductionRecords>訂單規格的資料 
-			String oif_ow=title.optString("oif_ow");
-			List<ProductionRecords> prs = prDao.findAllByPrid(oif_ow, null);
-			ProductionRecords pr=prs.get(0); //取出第一筆table表
-			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
-			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
-			ph.setSysstatus(2);  //2:已完成( 為結單)
-			//對製令內容 修改人與時間做更正
-			ph.setSysmdate(new Date());
-			ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
-			headerDao.save(ph);		
+			//String yMd = null;
+			String yMd = Fm_Time.to_y_M_d(new Date());
+			//yMd = "2025-07-12";
+			// ************************** 寄信 ********************
+			String mailList = MailList.toString(); // 轉換為 String
+			String c_mailList =cMailList.toString();
+			String[] toUser = mailList.split(";"); // 用 ";" 分割成 String 陣列
+			// String[] toUser = { "johnny_chuang@dtri.com"};
+			String[] toCcUser = c_mailList.split(";"); // 用 ";" 分割成 String 陣列
+			//String[] toCcUser = { "" };
+			String subject = "OQC每周已結單清單"+ "(" +yMd + ")" ;
+			//把TABLE表雙層格線變成單線
+			StringBuilder httpstr = new StringBuilder();			
 			
+			if (oifs.isEmpty()) {
+				System.out.println("無結單資料");				
+				httpstr.append("Dear All, <br><br>").append("本周無結單資料 <br>"); // .append("請提領<br><br>");				
+				
+			}else {
+				
+				httpstr.append("<style>")
+				   .append("table { border-collapse: collapse; }")
+				   .append("table, th, td { border: 1px solid black; padding: 5px; }")
+				   .append("</style>");
+				
+				// 構建郵件內容
+				httpstr.append("Dear All, <br><br>").append("通知 "); // .append("請提領<br><br>");
+				httpstr.append("<br>").append("已結單清單");
+				httpstr.append("<table border='1'><tr>")
+						.append("<th>工單號碼</th>" // 工單號碼
+						+ "<th>客戶名稱</th>" // 客戶名稱
+						+ "<th>訂單號碼</th>" 
+						+ "<th>產品名稱</th>" 
+						+ "<th>出貨數</th>"
+						+ "<th>抽樣數</th>" 
+						+ "<th>備註</th>" 
+						+ "</tr>");
+				// 取得維修資料
+				for (OqcInspectionForm oIF : oifs) {
+					httpstr.append("<tr>")							
+							.append("<td>").append(oIF.getOifow()).append("</td>") // 工單號碼
+							.append("<td>").append(oIF.getOifcname()).append("</td>") // 客戶名稱
+							.append("<td>").append(oIF.getOifonb()).append("</td>") // 訂單號碼
+							.append("<td>").append(oIF.getOifpname()).append("</td>") // 產品名稱
+							.append("<td>").append(oIF.getOifpqty()).append("</td>") // 出貨數
+							.append("<td>").append(oIF.getOiftqty()).append("</td>") // 抽樣數
+							.append("<td>").append(oIF.getSysnote()).append("</td>") // 備註					
+							.append("</tr>");
+				}
+				httpstr.append("</table> <br>");	
+			}		
+			httpstr.append("<span style='color:red; font-weight:bold;'>※ 本信件由 MES 系統自動發送，請勿直接回覆。如需協助，請洽資訊部。※</span><br>");
+			
+			mailService.sendEmail(toUser, toCcUser, subject, httpstr.toString(), null, null);
+	
 			check = true;
 		} catch (Exception e) {
 			System.out.println(e);

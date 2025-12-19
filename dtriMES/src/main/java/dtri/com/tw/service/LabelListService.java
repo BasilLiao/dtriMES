@@ -6,16 +6,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintException;
 import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -45,17 +37,8 @@ public class LabelListService {
 	private LabelListDao labelsDao;
 	@Autowired
 	private ProductionBodyDao bodyDao;
-
-	// 打印序列
-	private PrinterManager printerManager;
-
-	public void NewLabelListService() {
-		printerManager = new PrinterManager();
-	}
-
-	public PrinterManager getPrinterManager() {
-		return printerManager;
-	}
+	@Autowired
+	private LabelPrinterManagerService printerManager;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -981,7 +964,7 @@ public class LabelListService {
 
 					}
 					// Step5.辨識標籤機
-					PrintService pService = getPrinterService(printName);
+					PrintService pService = printerManager.getPrinterService(printName);
 					// Step5.送出
 					System.out.println(llxa);
 					if (pService != null && printQty >= 1) {
@@ -992,7 +975,7 @@ public class LabelListService {
 						}
 						// sendPrinter(pxa, pService);
 						// 採用序列方式
-						NewLabelListService();
+						printerManager.NewLabelListService();
 						printerManager.sendPrinter(pxa, pService);
 						check = true;
 					}
@@ -1049,12 +1032,14 @@ public class LabelListService {
 					String putName = "";
 					String putValue = "";
 					String putSpace = "";
+					String putSubstring = "";
 					switch (block.getString("label_block_type")) {
 					case "char_type":
 						// 文字模式
 						// 跟隨機制?
 						putName = "ll_fd";
 						putValue = block.getString(putName);
+						putSubstring = block.optString("ll_fd_substring", "");
 						if (!block.getString("ll_fd_f").equals("")) {
 							table = block.getString("ll_fd_f").split("\\.")[0];
 							cell = block.getString("ll_fd_f").split("\\.")[1];
@@ -1065,6 +1050,7 @@ public class LabelListService {
 						// 跟隨機制?
 						putName = "ll_bfd";
 						putValue = block.getString(putName);
+						putSubstring = block.optString("ll_bfd_substring", "");
 						if (!block.getString("ll_bfd_f").equals("")) {
 							table = block.getString("ll_bfd_f").split("\\.")[0];
 							cell = block.getString("ll_bfd_f").split("\\.")[1];
@@ -1075,10 +1061,12 @@ public class LabelListService {
 						// 跟隨機制?
 						putName = "ll_bqfd";
 						putValue = block.getString(putName);
+						putSubstring = block.optString("ll_bqfd_substring", "");
 						if (!block.getString("ll_bqfd_f").equals("")) {
 							table = block.getString("ll_bqfd_f").split("\\.")[0];
 							cell = block.getString("ll_bqfd_f").split("\\.")[1];
 						}
+
 						break;
 					default:
 						break;
@@ -1115,6 +1103,29 @@ public class LabelListService {
 												.getJSONObject(putValue);
 										String spVal = specification.getString("Is");
 										Integer spQty = specification.getInt("Qty");
+										// 有切割方式,? 取得分段指定
+										if (!putSubstring.isEmpty() && spVal != null && !spVal.isEmpty()) {
+											// 1️>先切割 putValue
+											String[] parts = spVal.split(",");
+											StringBuilder result = new StringBuilder();
+											for (char c : putSubstring.toCharArray()) {
+												// 2>確保是數字
+												if (!Character.isDigit(c)) {
+													continue;
+												}
+												int index = Character.getNumericValue(c) - 1; // 減 1 轉為陣列 index
+												// 3️>邊界檢查，避免 ArrayIndexOutOfBounds
+												if (index >= 0 && index < parts.length) {
+													if (result.length() > 0) {
+														result.append(",");
+													}
+													result.append(parts[index]);
+												}
+											}
+											// result.toString() 即為處理後的結果
+											spVal = result.toString();
+										}
+										//
 										if (spVal == null || spVal.equals("") || spQty == 0) {
 											putValue = putValue + " : N/A";
 										} else if (spVal != null && !spVal.equals("")) {
@@ -1138,6 +1149,29 @@ public class LabelListService {
 										JSONObject specification = new JSONObject(putValueSpecification)
 												.getJSONObject(putValue);
 										String spVal = specification.getString("Is");
+										// 有切割方式,? 取得分段指定
+										if (!putSubstring.isEmpty() && spVal != null && !spVal.isEmpty()) {
+											// 1️>先切割 putValue
+											String[] parts = spVal.split(",");
+											StringBuilder result = new StringBuilder();
+											for (char c : putSubstring.toCharArray()) {
+												// 2>確保是數字
+												if (!Character.isDigit(c)) {
+													continue;
+												}
+												int index = Character.getNumericValue(c) - 1; // 減 1 轉為陣列 index
+												// 3️>邊界檢查，避免 ArrayIndexOutOfBounds
+												if (index >= 0 && index < parts.length) {
+													if (result.length() > 0) {
+														result.append(",");
+													}
+													result.append(parts[index]);
+												}
+											}
+											// result.toString() 即為處理後的結果
+											spVal = result.toString();
+										}
+										//
 										if (spVal == null || spVal.equals("")) {
 											putValue = "N/A";
 										} else if (spVal != null && !spVal.equals("")) {
@@ -1213,96 +1247,4 @@ public class LabelListService {
 		return labelList;
 	}
 
-	/**
-	 * 取得相對應->標籤機代碼
-	 * 
-	 * @param printName 服務名稱
-	 **/
-	private PrintService getPrinterService(String printName) {
-		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-		for (final PrintService service : services) {
-			if (service.getName().equals(printName)) {
-				System.out.println(service.getName());
-				return service;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * 完成傳送指令
-	 **/
-//	private boolean sendPrinter(String zpl, PrintService service) {
-//		// 用網路串流可能用到
-//		// byte[] buf = new byte[1024];
-//		// Socket socket = new Socket("127.0.0.1", 9100);
-//		// OutputStream out = socket.getOutputStream();
-//
-//		// 紙張大小
-//		// DocFlavor flavor = INPUT_STREAM.AUTOSENSE;
-//		Thread thread = new Thread() {
-//			public void run() {
-//				try {
-//					byte[] zpl_by = zpl.getBytes();
-//					DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-//					Doc doc = new SimpleDoc(zpl_by, flavor, null);
-//					DocPrintJob printJob = service.createPrintJob();
-//					printJob.print(doc, null);
-//
-//				} catch (PrintException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		};
-//		thread.start();
-//		return true;
-//	}
-
-	public class PrinterManager {
-		// 單線程執行緒池，用於順序執行打印任務
-		private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-		/**
-		 * 發送打印指令到指定打印服務。
-		 *
-		 * @param zpl     ZPL 格式的打印指令
-		 * @param service 打印服務 (如打印機)
-		 * @return 如果成功提交打印任務則返回 true
-		 */
-		public boolean sendPrinter(String zpl, PrintService service) {
-			// 提交打印任務到執行緒池
-			executor.submit(() -> {
-				try {
-					// 將 ZPL 指令轉換為字節數組
-					byte[] zpl_by = zpl.getBytes();
-
-					// 設置打印格式為自動檢測
-					DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-
-					// 創建打印文檔
-					Doc doc = new SimpleDoc(zpl_by, flavor, null);
-
-					// 創建打印任務
-					DocPrintJob printJob = service.createPrintJob();
-
-					// 執行打印
-					printJob.print(doc, null);
-
-					// 打印完成後輸出提示
-					System.out.println("打印完成: " + zpl);
-				} catch (PrintException e) {
-					// 打印過程中出現異常時輸出錯誤資訊
-					e.printStackTrace();
-				}
-			});
-			return true; // 任務提交成功
-		}
-
-		/**
-		 * 關閉執行緒池，釋放資源。 應在程式結束前調用。
-		 */
-		public void shutdown() {
-			executor.shutdown(); // 關閉執行緒池，不再接受新任務
-		}
-	}
 }

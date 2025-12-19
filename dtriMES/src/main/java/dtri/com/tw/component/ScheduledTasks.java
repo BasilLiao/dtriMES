@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import dtri.com.tw.service.OqcReviewFormService;
 import dtri.com.tw.service.ProductionDailyService;
 import dtri.com.tw.service.ProductionDailyYieldService;
 
@@ -22,6 +23,8 @@ public class ScheduledTasks {
 	ProductionDailyService pdyService;
 	@Autowired
 	ProductionDailyYieldService pdyYieldService;
+	@Autowired
+	OqcReviewFormService oqcRviewFormService;
 
 	@Scheduled(fixedDelay = 600000)
 	public void autoDaily() {
@@ -31,10 +34,17 @@ public class ScheduledTasks {
 
 	@Scheduled(cron = "0 30 19 * * ?")
 	public void runEveryDayAt730PM() {
-		pdyYieldService.getData();
+		pdyYieldService.getData(); //每日不良率
 		System.out.println("每天晚上 19:30 執行的任務：" + new java.util.Date());
 	}
 
+	//OQC 每周五 18:00 寄送 OQC已結單的資料
+	@Scheduled(cron = "0 00 18 ? * FRI")
+	public void runWEveryFridayAt1800PM() {
+		oqcRviewFormService.getDataOqc(); //每周已審核清單
+		System.out.println("每周五晚上 18:00 執行的任務：" + new java.util.Date());
+	}
+		
 	// fixedDelay = 60000 表示當前方法執行完畢 60000ms(1分鐘) 後，Spring scheduling會再次呼叫該方法
 	// @Scheduled(fixedDelay = 60000)
 	public void testFixDelay() {

@@ -42,19 +42,15 @@ td .center-checked {
 			<div class="col-4 row">
 				<div class="col-0 p-1 mt-1">工單號:</div>
 				<div class="col-0 p-1">
-					<input type="text"
-						class="col p-1 border border-dark rounded detail_ri"
-						id="search_orlow" placeholder="工單號碼">
+					<input type="text" class="col p-1 border border-dark rounded detail_ri" id="search_orlow" placeholder="工單號碼">
 				</div>
 			</div>
 			<div class="col-3 row m-0 p-1 align-items-end">
 				<div class="col-md-6 p-1">
-					<button type="submit" class="col-12 btn btn-primary btn-sm"
-						id="search_orlow_btn">Search</button>
+					<button type="submit" class="col-12 btn btn-primary btn-sm" id="search_orlow_btn">Search</button>
 				</div>
 				<div class="col-md-6 p-1">
-					<button type="submit" class="col-12 btn btn-warning btn-sm"
-						id="search_clear_btn">Clear</button>
+					<button type="submit" class="col-12 btn btn-warning btn-sm" id="search_clear_btn">Clear</button>
 				</div>
 			</div>
 		</div>
@@ -89,12 +85,10 @@ td .center-checked {
 			<div class="col-md-2 m-0 p-1 row" id="orl_p_sn">
 				<div class="col-0 p-1 mt-1">產品序號:</div>
 				<div class="col-8 p-1 ">
-					<input type="text"
-						class="col-12 p-1 border border-dark rounded detail_ri"
-						placeholder="輸入產品序號">
+					<input type="text"class="col-12 p-1 border border-dark rounded detail_ri" placeholder="輸入產品序號">
 				</div>
 			</div>
-
+<!-- 
 			<div class="col-md-2 m-0 p-1 row" id="testitem">
 				<div class="col-0 p-1 mt-1">檢驗項目:</div>
 				<div class="col-8 p-1">
@@ -106,10 +100,21 @@ td .center-checked {
 					</select>
 				</div>
 			</div>
+ -->			
+			<div class="col-md-2 m-0 p-1 row" id="testitem">
+				<div class="col-0 p-1 mt-1 testitem s_name">Search2:</div>
+				<div class="col-8 p-1 oqcresult_detail_example_select">
+					<select	class="col-12 custom-select custom-select-sm save_value detail_ri">
+						<option class="example_select_def" value="" selected>select</option>
+						<option class=" oqcresult_example_select_one" value="1">One</option>
+					</select>
+				</div>
+			</div>			
+			
 			<div class="col-md-2 m-0 p-1 row" id="testresult">
 				<div class="col-0 p-1 mt-1">檢驗結果:</div>
 				<div class="col-8 p-1">
-					<select class="col-12 custom-select custom-select-sm">
+					<select class="col-12 custom-select custom-select-sm detail_ri">
 						<option class="example_select_def" value="" selected>select</option>
 						<option class="example_select_one" value="PASS">PASS</option>
 						<option class="example_select_one" value="暫停">暫停</option>
@@ -121,30 +126,24 @@ td .center-checked {
 			<div class="col-md-2  m-0 p-1 row" id="sys_note">
 				<div class="col-0 p-1 mt-1">檢驗備註:</div>
 				<div class="col-8 p-1">
-					<input type="text"
-						class="col-12 p-1 border border-dark rounded detail_ri"
-						placeholder="備註">
+					<input type="text" class="col-12 p-1 border border-dark rounded detail_ri" placeholder="備註">
 				</div>
 			</div>
 			<div class="col-md-4 m-0 p-1 row">
 				<div class="col-4 p-1">
-					<button id="R_search_btn" type="submit"
-						class="col-12 p-1 btn btn-primary btn-sm">Search(S1)</button>
+					<button id="R_search_btn" type="submit" class="col-12 p-1 btn btn-primary btn-sm">Search(S1)</button>
 				</div>
 				<div class="col-4 p-1">
-					<button id="save_btn" type="submit"
-						class="col-12 p-1 btn btn-success btn-sm">Save(S2)</button>
+					<button id="save_btn" type="submit" class="col-12 p-1 btn btn-success btn-sm">Save(S2)</button>
 				</div>
 				<div class="col-4 p-1">
-					<button id="clear_btn" type="submit"
-						class="col-12 p-1 btn btn-warning btn-sm">Clear</button>
+					<button id="clear_btn" type="submit" class="col-12 p-1 btn btn-warning btn-sm">Clear</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-md-12 m-0 p-0 row border border-light shadow"
-		id="table">
+	<div class="col-md-12 m-0 p-0 row border border-light shadow" id="table">
 
 		<!-- ********************************** 檢驗產品清單 table  ************************** -->
 		<div class="col-md-3 p-0">
@@ -152,64 +151,75 @@ td .center-checked {
 				<i class="bi bi-bookmark-check ml-1"></i>檢驗清單
 			</div>
 			<div class="m-0 row">
-				<div class="m-0 p-1 col-8 align-items-center row" id="orl-pass">
-					<div class="col-md-6  m-0 p-0 ">PASS數</div>
-					<div class="col-md-6  m-0 p-0 ">
-						<input
-							class="col pl-1 m-0 border border-dark rounded save_value text-center"
-							disabled="disabled" type="text">
+				<div class="m-0 p-1 col-4  row" id="orl_OqcFTOs">
+					<div class="col-0  m-0 p-0 ">功能(測試OS)</div>
+					<div class="col-0  m-0 p-0 ">
+						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center"	disabled="disabled" type="text">
 					</div>
 				</div>
-				<div class="m-0 p-1 col-4 text-right ">
-					<button id="excel_btn" type="submit"
-						class="col-12 p-1 btn btn-primary btn-sm">Excel</button>
+				<div class="m-0 p-1 col-4  row" id="orl_OqcFT2Os">
+					<div class="col-0  m-0 p-0 ">功能(T2 OS)</div>
+					<div class="col-0  m-0 p-0 ">
+						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center"	disabled="disabled" type="text">
+					</div>
+				</div>
+				<div class="m-0 p-1 col-4  row" id="orl_OqcCT2Os">
+					<div class="col-0  m-0 p-0 ">Check T2 OS</div>
+					<div class="col-0  m-0 p-0 ">
+						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center"	disabled="disabled" type="text">
+					</div>
+				</div>
+				<div class="m-0 p-1 col-4  row" id="orl_OqcAPI">
+					<div class="col-0  m-0 p-0 ">外觀/包裝檢驗</div>
+					<div class="col-0  m-0 p-0 ">
+						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center"	disabled="disabled" type="text">
+					</div>
+				</div>
+				<div class="m-0 p-1 col-4  row " >
+					<div class="col-0  m-0 p-0 "></div>
+					<div class="col-0  m-0 p-0 d-none">
+						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center "	disabled="disabled" type="text">
+					</div>
+				</div>
+				<div class="mt-2 pt-3 p-1 col-4 text-right ">
+					<button id="excel_btn" type="submit" class="col-12 p-1 btn btn-primary btn-sm">Excel</button>
 				</div>
 			</div>
-			<div class="m-0 border border-dark table-responsive"
-				style="height: calc(100vh - 424px); overflow-y: auto;">
-				<table id="result-dataTable"
-					class="table-style table table-sm table-hover table-striped table-bordered ">
-					<thead class="thead bg-dark table-dark search_example_title"
-						style="white-space: nowrap;">
+			<div class="m-0 border border-dark table-responsive" style="height: calc(100vh - 504px); overflow-y: auto;">
+				<table id="result-dataTable" class="table-style table table-sm table-hover table-striped table-bordered ">
+					<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
 						<tr class=" bg-dark fixed_cell">
-							<th class="p-1 bg-dark"
-								style="min-width: 50px; max-width: 100px;" id="orl_n">
+							<th class="p-1 bg-dark"	style="min-width: 50px; max-width: 100px;" id="orl_n">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">項次</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 150px; max-width: 200px;" id="orl_psn">
+							<th class="p-1 bg-dark" style="min-width: 150px; max-width: 200px;" id="orl_psn">
 								<div class="row p-0 m-0 ">
 									<div class="title_name">產品SN號</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 125px; max-width: 200px;" id="orl_titem">
+							<th class="p-1 bg-dark" style="min-width: 125px; max-width: 200px;" id="orl_titem">
 								<div class="row p-0 m-0 ">
 									<div class="title_name">測試項目</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 100px; max-width: 200px;" id="orl_tresults">
+							<th class="p-1 bg-dark" style="min-width: 100px; max-width: 200px;" id="orl_tresults">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢查內結果</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 150px; max-width: 250px;" id="orl_tdate">
+							<th class="p-1 bg-dark"	style="min-width: 150px; max-width: 250px;" id="orl_tdate">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢驗日期</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 100px; max-width: 250px;" id="orl_tuser">
+							<th class="p-1 bg-dark"	style="min-width: 100px; max-width: 250px;" id="orl_tuser">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢驗人</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 10px; max-width: 250px;" id="sys_note">
+							<th class="p-1 bg-dark"	style="min-width: 10px; max-width: 250px;" id="sys_note">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">備註</div>
 								</div>
@@ -227,36 +237,28 @@ td .center-checked {
 
 		<!-- -***************************** 檢測項目 table ************-->
 		<div class="col-md-6 p-0">
-			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
-				<i class="bi bi-calendar-check"></i>檢測項目
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">	<i class="bi bi-calendar-check"></i>檢測項目
 			</div>
-			<div class="m-0 check-items" style="height: calc(100vh - 385px);">
-				<table id="check-dataTable"
-					class=" border border-dark table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
-					<thead class="thead bg-dark table-dark search_example_title"
-						style="white-space: nowrap;">
+			<div class="m-0 check-items">
+				<table id="check-dataTable" class=" border border-dark table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+					<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
 						<tr class="bg-dark fixed_cell">
-							<th class="p-1  bg-dark"
-								style="min-width: 70px; max-width: 160px;" id="oii_check_name">
+							<th class="p-1  bg-dark" style="min-width: 70px; max-width: 160px;" id="oii_check_name">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢查項目</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark"
-								style="min-width: 325px; max-width: 345px;" id="oii_check_val">
+							<th class="p-1 bg-dark" style="min-width: 325px; max-width: 345px;" id="oii_check_val">
 								<div class="row p-0 m-0 ">
 									<div class="title_name">檢查內容</div>
 								</div>
 							</th>
-							<th class="p-1  bg-dark"
-								style="min-width: 100px; max-width: 290px;" id="oii_check_val">
+							<th class="p-1 bg-dark" style="min-width: 100px; max-width: 290px;" id="oii_check_val">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢查內結果</div>
 								</div>
 							</th>
-							<th class="p-1  bg-dark"
-								style="min-width: 250px; width: 100%; max-width: 100px;"
-								id="oii_check_val">
+							<th class="p-1 bg-dark" style="min-width: 250px; width: 100%; max-width: 100px;" id="oii_check_val">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">備註</div>
 								</div>
@@ -277,13 +279,11 @@ td .center-checked {
 			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
 				<i class="bi bi-box-arrow-in-down-right ml-1"></i>產品細節
 			</div>
-			<div
-				class="p-0 m-0 create_example_pb border border-dark row text-left">
+			<div class="p-0 m-0 create_example_pb border border-dark row text-left">
 				<div class="p-0 m-0 create_example_input ">
 					<div class="pl-1 m-0 h6 save_as_name">Name</div>
 					<div class="p-0 m-0">
-						<input class="col pl-1 m-0 border border-dark rounded save_value"
-							type="text">
+						<input class="col pl-1 m-0 border border-dark rounded save_value" type="text">
 					</div>
 				</div>
 			</div>
@@ -358,8 +358,7 @@ customized = new Vue({
 					 **/ 
 					 //產品細節
 					switch(title[d].tag){
-					case "input":
-											
+					case "input":											
 						//另存模板
 						input =$(".pbcreate_example .create_example_input").clone();
 						input[0].className="p-2 save_key "+title[d].col+" "+title[d].id;
@@ -368,14 +367,31 @@ customized = new Vue({
 					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("type",title[d].type); // 修改 
 					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
 					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("value",title[d].value);												
-						break;
+						break;				
+						
+					case "select":
+						//example_select_one					
+						$(".testitem.s_name").text(title[d].name);//改名字						
+						for(var o =0; o<title[d].values.length ;o++){							
+							var one_option = $(".oqcresult_example_select_one").clone();//複製樣本
+							one_option[0].id="select_"+title[d]['values'][o]["key"];
+							one_option[0].value = title[d]['values'][o]["key"];   //
+							one_option[0].innerText = title[d]['values'][o]["value"];						
+							one_option[0].className = "";
+							one_option.appendTo(".oqcresult_detail_example_select .custom-select");	
+						}
+						
+						break;		
 					}
+				
 					// $(".pbcreate_example .m__pb_value11 .save_as_name").text("CPU Board_166CR"); //修改 名稱					 
-				}				
+				}
+				//關閉/移除樣本
+				$(".oqcresult_detail_example_select .oqcresult_example_select_one").remove();
 				$(".pbcreate_example .create_example_input").remove();
+
 			}		
-			//關閉/移除樣本
-	//		$(".detail_example_select .example_select_one").remove();
+
 		 	//權限設置
 			if(html_permission!=null){
 				if(html_permission['cr']!=1){
@@ -412,17 +428,17 @@ customized = new Vue({
 		},	
 		
 		//初始化
-		selectAllInit() {			
-		
+		selectAllInit() {	
 			//快速查詢 監聽確認
 			$(document).on("keypress", "#customized #search_orlow", function (event) {
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
 				if (event.which == 13) {
 					$('#search_orlow_btn').trigger('click');
 				}
-			});
-			
+			});			
 			//快速查詢 監聽確認
 			$(document).on("keypress", "#customized #orl_p_sn", function (event) {
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）				
 				if (event.which == 13) {
 					$('#R_search_btn').trigger('click');
 				}
@@ -436,7 +452,12 @@ customized = new Vue({
 			    if (locKed) {
 			        console.log("工單搜尋鎖定中! 請稍候,請勿重複送出！");
 			        return;
-			    }			
+			    }		
+				$('#orl_p_sn input').val(""); // 機台號碼
+				$('#customized #testitem select').val(""); // 測試項目
+				$('#customized #testresult select').val(""); //測試結果
+				$('#sys_note input').val(""); //備註					
+				$('.save_value').val("");
 			    locKed = true;				
 				//確認是否欄位都有資料  有資料才存資料
 				if($('#search_orlow').val()==""){
@@ -459,6 +480,9 @@ customized = new Vue({
 			//clear 工單
 			$(document).on("click", "#search_clear_btn", function (event) {	
 				$('#search_orlow').val("");
+				$('.detail_ri').val("");
+				$('.save_value').val("");
+				
 			});	
 			
 			//查詢機台產品明細	
@@ -466,7 +490,7 @@ customized = new Vue({
 				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
 			    //  若鎖定中就直接跳出，不執行
 			    if (locKed) {
-			        console.log("搜尋鎖定中! 請稍候,請勿重複送出！");
+			        console.log("產品序號 搜尋鎖定中! 請稍候,請勿重複送出！");
 			        return;
 			    }			
 			    locKed = true;				
@@ -539,12 +563,15 @@ customized = new Vue({
 				$('#customized #testitem select').val(""); // 測試項目
 				$('#customized #testresult select').val(""); //測試結果
 				$('#sys_note input').val(""); //備註
+				$('.save_value').val("");
 			});	
 			
 			//Excel 下載
 			$(document).on("click", "#excel_btn", function (event) {
 				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
 				console.log("改成 SheetJS (xlsx) 版本");
+				//*文件編號*
+				let footerText = "版本:B  表單編號:OR-801-01";
 					//更新時間
 				let myDate = new Date();
 				let reportDate =
@@ -566,6 +593,25 @@ customized = new Vue({
 			        cell.t = "s"; // 設定為 string
 			        cell.z = "@"; // Excel 格式：文字
 			    }
+			    
+			    // ✅ 取得目前資料的最後一列 
+			    let range = XLSX.utils.decode_range(ws["!ref"]);
+			    let lastRow = range.e.r + 1; // 下一列（0-based）
+
+			    // ✅ 在最後一列第1欄(A欄)加入你的版本說明
+			    let footerCell = XLSX.utils.encode_cell({ r: lastRow, c: 0 });
+			    ws[footerCell] = {
+			        t: "s",
+			        v: footerText,
+			        z: "@"
+			    };
+
+			    // ✅ 更新範圍（避免 Excel 讀不到最後一列）
+			    ws["!ref"] = XLSX.utils.encode_range({
+			        s: range.s,
+			        e: { r: lastRow, c: range.e.c }
+			    });			    
+			    
 			    // 3. 建立 workbook 並加入 worksheet
 			    let wb = XLSX.utils.book_new();
 			    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
@@ -740,8 +786,9 @@ customized = new Vue({
 			    }	
  				
 			    $('.save_key input').val(""); //工單號碼搜尋後 要清掉 產品細節的內容
-			  	let x=  lists.detail["oif_sys_status"]
-			    if(x!=0){
+			    //************ 已審核 要鎖定輸入框 禁止輸入
+			  	let x=  lists.detail["oif_sys_status"] //2為已審核
+			    if(x >=2){
 			    	$('#customized').find('#orl_p_sn input').prop('disabled', true); //不給刷序號 (反白)
 			    	$('#customized').find('#sys_note input').prop('disabled', true); //不給刷序號 (反白)
 			    	$('#customized').find('select').prop('disabled', true);	
@@ -798,7 +845,11 @@ customized = new Vue({
 			}
 			// ********************  把後端資資料填入***PASS 數量欄位  ********************
 			if (main.allData.body.OqcPassQty != null) {							
-				$('#orl-pass input').val(main.allData.body.OqcPassQty ); //PASS數量
+				$('#orl_OqcFTOs input').val(main.allData.body.OqcFTOs); //功能(測試OS)數量
+				$('#orl_OqcFT2Os input').val(main.allData.body.OqcFT2Os ); //功能(T2 OS)數量
+				$('#orl_OqcCT2Os input').val(main.allData.body.OqcCT2Os ); //Check T2 OS 數量
+				$('#orl_OqcAPI input').val(main.allData.body.OqcAPI ); //外觀/包裝檢驗數量
+				//$('#orl-pass input').val(main.allData.body.OqcPassQty ); //PASS數量
 			}
 			
 			//可能是新建立
@@ -873,7 +924,7 @@ customized = new Vue({
 		        });		
 		        //  呼叫 lockInput 鎖定輸入框 禁止被更改
 		        let $tbody = $("#table");
-		        this.lockInputs($tbody);		
+		        this.lockInputs($tbody);	
 		    }
 		},
 		

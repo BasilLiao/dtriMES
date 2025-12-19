@@ -83,6 +83,9 @@ public class WorkstationWorkService {
 	private LabelListService labelNService;
 
 	@Autowired
+	private LabelPrinterManagerService printerManager;
+
+	@Autowired
 	private SystemConfigDao sysDao;
 
 	@Autowired
@@ -317,14 +320,21 @@ public class WorkstationWorkService {
 							String pb_w = pb_w_pass;
 							// 取得測試LOG資訊
 							pTests = testDao.findAllByTest(pb_b_sn, null, null, null, null, null, PageRequest.of(0, 1));
-							String pb_l_dt = pTests.size() == 1 && pTests.get(0).getPtldt() != null
-									? Fm_Time.to_yMd_Hms(pTests.get(0).getPtldt())
-									: "";
-							String pb_l_size = pTests.size() == 1 ? pTests.get(0).getPtlsize() : "";
-							String pb_l_path = pTests.size() == 1 ? pTests.get(0).getPtlpath() : "";
-							String pb_l_text = pTests.size() == 1 ? pTests.get(0).getPtltext() : "";
+							String pb_l_dt = "";
+							String pb_l_size = "";
+							String pb_l_path = "";
+							String pb_l_text = "";
+							if (pTests.size() == 1) {
+								ProductionTest pTestOne = pTests.get(0);
+								pb_l_dt = pTests.get(0).getPtldt() != null
+										? Fm_Time.to_yMd_Hms(pTests.get(0).getPtldt())
+										: "";
+								pb_l_size = pTestOne.getPtlsize();
+								pb_l_path = pTestOne.getPtlpath();
+								pb_l_text = pTestOne.getPtltext();
+							}
 
-							ph_all.forEach(one -> {
+							for (ProductionHeader one : ph_all) {
 								JSONObject object_body = new JSONObject();
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "ph_s_date",
 										one.getPhsdate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhsdate()));
@@ -352,15 +362,16 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_dt", pb_l_dt);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_size", pb_l_size);
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_path", pb_l_path);
-
-								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text", pb_l_text);
+								// 避免資料太大
+								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text",
+										pb_l_text.length() > 50000 ? "PLT_size>50000 略過顯示!" : pb_l_text);
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_b_item",
 										one.getProductionRecords().getPrbitem());
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_s_item",
 										one.getProductionRecords().getPrsitem());
 								object_doc.put(object_body);
-							});
+							}
 							object_body_all.put("search", object_doc);
 
 							// 取得標籤區塊
@@ -1500,7 +1511,7 @@ public class WorkstationWorkService {
 						// 有跟隨資料機制
 						if (printer.getJSONArray("label_list").length() > 0) {
 							// 打印序列
-							labelNService.NewLabelListService();
+							printerManager.NewLabelListService();
 							for (Object label_list : printer.getJSONArray("label_list")) {
 								JSONObject label_json = (JSONObject) label_list;
 								f_f_sn = new JSONArray();
@@ -1522,13 +1533,12 @@ public class WorkstationWorkService {
 								labelList = labelNService.workstationToLabel(label_json, f_f_sn, f_f_q, ph_one, pr_one,
 										pb_one);
 								check = labelNService.printerCustomized(resp, req, user, false, labelList);
-
 								System.out.println("");
 							}
 							// 執行打印序列
-							if (labelNService.getPrinterManager() != null) {
+							if (printerManager.getPrinterManager() != null) {
 								Runtime.getRuntime()
-										.addShutdownHook(new Thread(labelNService.getPrinterManager()::shutdown));
+										.addShutdownHook(new Thread(printerManager.getPrinterManager()::shutdown));
 							}
 						}
 					}

@@ -35,6 +35,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      su_received : 收到貨通知(是否) <br>
  *     	su_repairdone : 維修完成通知(是否) <br>
  *      su_dailyreport :測試日報通知(是否) <br>
+ *      su_oqcdone : OQC結單通知(是否) <br>
  * 
  * @apiNote 標籤使用 @GeneratedValue<br>
  *          JPA提供的四種標準用法為TABLE，SEQUENCE，IDENTITY，AUTO。 <br>
@@ -87,6 +88,7 @@ public class SystemMail {
 		this.sureceived="N";
 		this.surepairdone="N";
 		this.sudailyreport="N";
+		this.suoqcdone="N";
 	}
 
 	// 共用型
@@ -147,6 +149,10 @@ public class SystemMail {
 	
 	@Column(name = "su_dailyreport", columnDefinition = "varchar(10)")//測試日報通知
 	private String sudailyreport;	
+	
+	@Column(name = "su_oqcdone", columnDefinition = "varchar(10)")//oqc結單通知
+	private String suoqcdone;	
+	
 	
 	public Boolean getSysgheader() {
 		return sysgheader;
@@ -284,4 +290,14 @@ public class SystemMail {
 		this.sudailyreport = sudailyreport;
 	}
 
+	public String getSuoqcdone() {
+		return suoqcdone;
+	}
+
+	public void setSuoqcdone(String suoqcdone) {
+		this.suoqcdone = suoqcdone;
+	}
+
+	
+	
 }

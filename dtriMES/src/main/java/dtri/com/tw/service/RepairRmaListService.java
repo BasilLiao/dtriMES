@@ -48,7 +48,7 @@ public class RepairRmaListService {
 	ProductionHeaderDao headerDao;
 	@Autowired // 廠內維修紀錄
 	RepairDetailDao detailDao;
-	@Autowired // 信寄清單
+	@Autowired // 寄信清單
 	private SystemMailDao rmaMailListDao;
 	@Autowired // 系統寄信
 	BasicNotificationMailService mailService;
@@ -608,7 +608,8 @@ public class RepairRmaListService {
 							+ "<th>客戶問題敘述</th>" + "<th>復判不良原因</th>" + "<th>修復過程</th>" + "<th>備註</th>" + "</tr>");
 					// 取得維修資料
 					for (RepairRmaDetail rrd1 : xx) {
-						httpstr.append("<tr>").append("<td>").append(rrd1.getRmaresult()).append("</td>") // 維修結果 :
+						httpstr.append("<tr>")
+								.append("<td>").append(rrd1.getRmaresult()).append("</td>") // 維修結果 :
 								.append("<td>").append(rrd1.getRmasn()).append("</td>") // RMA號碼
 								.append("<td>").append(rrd1.getRmaguest()).append("</td>") // RMA客戶
 								.append("<td>").append(rrd1.getRmamodel()).append("</td>") // model

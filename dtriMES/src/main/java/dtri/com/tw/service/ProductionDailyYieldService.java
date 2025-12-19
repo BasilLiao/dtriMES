@@ -58,7 +58,6 @@ public class ProductionDailyYieldService {
 	EntityManager em;
 
 	// 取得當前 資料清單
-	@SuppressWarnings("unchecked")
 	public boolean getData() {
 
 		// ************************** 取得 MAIL 清單 ***********************

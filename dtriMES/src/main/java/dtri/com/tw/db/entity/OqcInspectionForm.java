@@ -23,7 +23,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      oif_p_nb:產品號<br>
  *      oif_p_name:產品名<br>
  *      oif_p_model:產品型號<br>
- * 		oif_p_specification:產品規格 <br>
  * 		oif_p_sn:產品序號區間<br>
  * 		oif_p_qty:出貨數 <br>
  * 		oif_t_qty:抽樣數<br>
@@ -103,11 +102,8 @@ public class OqcInspectionForm  {
 	@Column(name = "oif_p_name", nullable = false, columnDefinition = "varchar(50)") //產品名稱
 	private String oifpname;
 	
-	@Column(name = "oif_p_model", nullable = false, columnDefinition = "varchar(50)") //產品品名(產品型號)
+	@Column(name = "oif_p_model", nullable = false, columnDefinition = "varchar(100)") //產品品名(產品型號)
 	private String oifpmodel;
-	
-	@Column(name = "oif_p_specification", columnDefinition ="text default ''") //產品規格 (暫時取消)
-	private String oifpspecification;
 	
 	@Column(name = "oif_p_sn", nullable = false, columnDefinition = "varchar(50)") //產品序號區間 Ex:0001_0009
 	private String oifpsn;
@@ -130,7 +126,7 @@ public class OqcInspectionForm  {
 	@Column(name = "oif_c_user", nullable = false, columnDefinition = "varchar(50)") //製表人
 	private String oifcuser;
 	
-	@Column(name = "oif_e_date", nullable = false, columnDefinition = "TIMESTAMP default now()") //最後檢日
+	@Column(name = "oif_e_date", columnDefinition = "TIMESTAMP default now()") //最後檢日
 	private Date oifedate;
 	
 	@Column(name = "oif_e_user", columnDefinition = "varchar(50)") //最後鑑驗人
@@ -266,14 +262,6 @@ public class OqcInspectionForm  {
 
 	public void setOifpmodel(String oifpmodel) {
 		this.oifpmodel = oifpmodel;
-	}
-
-	public String getOifpspecification() {
-		return oifpspecification;
-	}
-
-	public void setOifpspecification(String oifpspecification) {
-		this.oifpspecification = oifpspecification;
 	}
 
 	public String getOifpsn() {

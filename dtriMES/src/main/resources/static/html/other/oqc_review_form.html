@@ -1,0 +1,887 @@
+<!-- 查詢項目 -->
+<style>
+.radio_size {
+	width: 22px;
+	height: 20px;
+}
+
+.datalist {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.datetimepicker {
+	margin-top: 50px;
+}
+
+.fixed_cell {
+	position: sticky;
+}
+
+#search .table-style {
+	min-height: 450px;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+</style>
+<div id="search">
+	<div class="shadow mt-0 text-left">
+		<div class="bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-search mr-1"></i>Search
+		</div>
+		<div class="row p-0 m-0 search_example_finds">
+			<!-- col-md-2/4/6/8/10/12 -->
+			<div class="col-md-2 p-2 search_example_input">
+				<div class="h6 mb-1 s_name">Search1</div>
+				<div class="p-0">
+					<input class="col p-1 border border-dark rounded s_value" type="text" />
+				</div>
+			</div>
+			<div class="col-md-2 p-2 search_example_selsect">
+				<div class="h6 mb-1 s_name">Search2</div>
+				<select class="col-12 custom-select custom-select-sm s_value">
+					<option class="example_select_def" value="" selected>select</option>
+					<option class="example_select_one" value="1">One</option>
+				</select>
+			</div>
+		</div>
+		<div class="row justify-content-end p-0 m-0 search_example_button">
+			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
+				<button id="search_btn" class="col-md-3 px-1 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
+				<button id="clear_btn" class="col-md-3  px-1 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+				<button id="review_btn" class="col-md-3  px-1 mt-1 btn btn-info btn-sm" type="button">快速審核</button>
+			</div>
+		</div>
+	</div>
+	<!-- 查詢結果 -->
+	<div class="shadow mt-2">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-list-ul mr-1"></i>Result
+		</div>
+		<div class="p-2">
+			<div class="pb-2 m-0 row">
+				<div class="col-6 h6 m-0 p-0 row justify-content-start search_example_action">
+					<div class="m-0 mr-2">
+						<button id="choose_s" class="col-md-12 m-0 pl-2 pr-2 btn btn-outline-primary btn-sm" type="submit">Action</button>
+					</div>
+					<div class="m-0 mt-1 mr-2 h6">
+						<i class="bi bi-shield"></i>Lock
+					</div>
+					<div class="m-0 mt-1 mr-2 h6">
+						<i class="bi bi-receipt"></i>Detail
+					</div>
+					<!--  Save as
+					<div class="m-0 mt-1 mr-2 h6">
+						<i class="bi bi-files"></i>Save as ...
+					</div>
+					-->
+					<div class="m-0 mt-1 mr-2 h6">
+						<i class="bi bi-vector-pen"></i>Modify
+					</div>
+					<!-- 刪除 
+					<div class="m-0 mt-1 mr-2 h6">
+						<i class="bi bi-x-octagon"></i>Delete
+					</div>
+					-->
+
+
+
+				</div>
+				<div class="col-6 m-0 p-0 row justify-content-end search_example_page">
+					<ul class="pagination pagination-sm m-0 row">
+						<li id="page_p" class="page-item"><a class="page-link" href="#"> Previous 10 </a></li>
+						<li id="page_1" class="page-item"><a class="page-link pr-3 pl-3" href="#">1</a></li>
+						<li id="page_2" class="page-item"><a class="page-link pr-3 pl-3" href="#">2</a></li>
+						<li id="page_3" class="page-item"><a class="page-link pr-3 pl-3" href="#">3</a></li>
+						<li id="page_4" class="page-item"><a class="page-link pr-3 pl-3" href="#">4</a></li>
+						<li id="page_5" class="page-item"><a class="page-link pr-3 pl-3" href="#">5</a></li>
+						<li id="page_6" class="page-item"><a class="page-link pr-3 pl-3" href="#">6</a></li>
+						<li id="page_7" class="page-item"><a class="page-link pr-3 pl-3" href="#">7</a></li>
+						<li id="page_8" class="page-item"><a class="page-link pr-3 pl-3" href="#">8</a></li>
+						<li id="page_9" class="page-item"><a class="page-link pr-3 pl-3" href="#">9</a></li>
+						<li id="page_10" class="page-item"><a class="page-link pr-3 pl-3" href="#">10</a></li>
+						<li id="page_n" class="page-item"><a class="page-link" href="#"> Next 10 </a></li>
+					</ul>
+				</div>
+			</div>
+			<table class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
+				<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
+					<tr class="">
+						<th class="p-1 fixed_cell bg-dark" style="min-width: 35px; left: 1px;"><i class="btn btn-outline-light p-0 pr-1 pl-1 bi bi-shield"></i></th>
+						<th class="p-1 fixed_cell bg-dark" style="min-width: 35px; left: 36px;"><i class="btn btn-outline-secondary p-0 pr-1 pl-1 bi bi-receipt"></i></th>
+						<!--  Save as
+						<th class="p-1 fixed_cell bg-dark p_cr" style="min-width: 35px; left: 72px;"><i class="btn btn-outline-success p-0 pr-1 pl-1 bi bi-files"></i></th>
+						-->
+						<th class="p-1 fixed_cell bg-dark p_mo" style="min-width: 35px; left: 72px;"><i class="btn btn-outline-warning p-0 pr-1 pl-1 bi bi-vector-pen"></i></th>
+						<!-- 刪除 
+						<th class="p-1 fixed_cell bg-dark p_de" style="min-width: 35px; left: 144px;"><i class="btn btn-outline-danger p-0 pr-1 pl-1 bi bi-x-octagon"></i></th>
+						-->
+						
+						
+						<th class="s_title_body" style="min-width: 150px;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Last</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+						<th class="s_title_last p-1" style="min-width: 150px; width: 100%;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Handle</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+								</div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="search_example_list" style="white-space: nowrap;">
+					<tr class="search_example_content">
+						<td class="p-0 search_radio_0 fixed_cell" style="left: 1px;"><label class="m-0 p-1" for="line_0_0"> <input type="radio" id="line_0_0" name="line_0"
+								class="mt-1 radio_size position-static" value="lock" />
+						</label></td>
+						<td class="p-0 search_radio_1 fixed_cell" style="left: 36px;"><label class="m-0 p-1" for="line_0_1"> <input type="radio" id="line_0_1" name="line_1"
+								class="mt-1 radio_size position-static" value="detail" />
+						</label></td>
+						<!--  Save as
+						<td class="p-0 search_radio_2 fixed_cell p_cr" style="left: 72px;"><label class="m-0 p-1" for="line_0_2"> <input type="radio" id="line_0_2" name="line_2"
+								class="mt-1 radio_size position-static" value="save_as" />
+						</label></td>
+						-->
+						<td class="p-0 search_radio_2 fixed_cell p_mo" style="left: 72px;"><label class="m-0 p-1" for="line_0_2"> <input type="radio" id="line_0_2" name="line_2"
+								class="mt-1 radio_size position-static" value="modify" />
+						</label></td>
+						<!-- 刪除 
+						<td class="p-0 search_radio_4 fixed_cell p_de" style="left: 144px;"><label class="m-0 p-1" for="line_0_4"> <input type="radio" id="line_0_4" name="line_4"
+								class="mt-1 radio_size position-static" value="delete" />
+						</label></td>
+						-->
+				
+				
+						<td title="" class="s_list_body">0</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- 子目錄 暫存區 -->
+			<table id="data_item_son" class="d-none">
+				<tbody class="search_example_list_son" style="white-space: nowrap;">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+//控制端
+search = new Vue({
+	el: "#search",
+	//資料區
+	data: {
+		//換頁樣式
+		page_total: main.page_total, //每次_總筆數
+		page_batch: main.page_batch, //每次_第幾批
+
+		page_show_size: main.page_show_size, //目前_每分頁顯示數量
+		page_now_size: main.page_now_size, //目前_實際筆數
+		page_now: main.page_now, //目前_頁數
+		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		data_item_f_id: "", //父類別ID
+		list_son:{},// 群組-子類別
+		modify_datas :[],
+	},
+	//初始化
+	created() {
+		console.log("search_OQC_ReviewForm.html(created)");
+	},
+	//可呼叫方法
+	methods: {
+		setDataTitle(title, html_permission) {
+			//標題注入資訊
+			//排序
+			console.log(title);
+			title = main.orderedSort(title);
+			fixed_cell = 0;
+			for (var i = 0; i < Object.keys(title).length - 1; i++) {
+				var one_item_header = $("#search .search_example_title .s_title_body").clone(); //複製樣本(header)
+				var key_id = Object.keys(title)[i];
+				var value_name = title[Object.keys(title)[i]].name;
+				var value_size = title[Object.keys(title)[i]].size;
+				var value_write = title[Object.keys(title)[i]].write;
+				//console.log(key_id+" "+value_name);
+				//header
+				one_item_header[0].className = "p-1 ";
+				one_item_header[0].id = key_id;
+				one_item_header[0].children[0].children[0].innerText = value_name;
+				one_item_header.insertBefore("#search .s_title_last");
+				$("#" + key_id).css("min-width", value_size);   //修改 style 裡面 min-width 的值
+				$("#" + key_id).css("max-width", value_size);	//修改 style 裡面 max-width 的值
+				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+				//body
+				var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+				one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+				one_item_body[0].innerText = value_name;
+				one_item_body.insertBefore("#search .s_list_body");
+			}
+			//結尾
+			var key_id = Object.keys(title)[Object.keys(title).length - 1]; //取得 title 物件的「最後一個 key 名稱」
+			var value_name = title[Object.keys(title)[Object.keys(title).length - 1]].name;
+			var value_write = title[Object.keys(title)[Object.keys(title).length - 1]].write;
+			//header
+			$("#search .s_title_last").attr("id", key_id);
+			$("#search .s_title_last .title_name").text(value_name);
+			$("#" + key_id).css("min-width", value_size);
+			$("#" + key_id).css("max-width", value_size);
+			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+			//body
+			var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+			one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+			one_item_body.insertBefore("#search .s_list_body");
+
+			//關閉範例
+			$("#search .s_title_body").addClass("d-none");
+			//權限設置
+			if (html_permission != null) {
+				if (html_permission['cr'] != 1) {
+					$(".p_cr input").attr("disabled", "disabled")
+				}
+				if (html_permission['mo'] != 1) {
+					$(".p_mo input").attr("disabled", "disabled")
+				}
+				if (html_permission['de'] != 1) {
+					$(".p_de input").attr("disabled", "disabled")
+				}
+				if (html_permission['do'] != 1) {
+					$(".p_do input").attr("disabled", "disabled")
+				}
+				//查詢
+				if (html_permission['se'] != 1) {
+					$("#search .search_example_finds input").attr("disabled", "disabled")
+				}
+				if (html_permission['se'] != 1) {
+					$("#search .search_example_finds select").attr("disabled", "disabled")
+				}
+			}
+		},
+		setDataList(list, list_son, body_type) {
+			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+			var data_item_sons = [];
+			this.data_type = body_type.type;
+			this.list_son = list_son;
+			console.log(list.length, body_type.type);
+			//console.log(new Date());
+			
+			//可能 初次載入就沒資料
+			if (list.length < 1) {
+				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+				if (this.page_batch >= 1) {
+					this.page_batch -= 1;
+				}
+				//***********   初次載入就沒資料 隱藏複製列 *************
+				//$("#search .search_example_content").addClass("d-none");;
+				return false;
+			}
+			//舊有資料清除
+			$("#search .search_example_list_son tr").remove();
+			$("#search .search_data_list").remove();
+
+			//開啟樣式
+			$("#search .s_list_body").removeClass("d-none");
+			$("#search .search_example_content").removeClass("d-none");
+			var fixed_cell_color = false;
+			
+			console.log(new Date());
+			for (var j = 0; j < list.length; j++) {
+				//固定顏色
+				if (fixed_cell_color) {
+					fixed_cell_color = false;
+				} else {
+					fixed_cell_color = true;
+				}
+
+				//排序
+				list[j] = main.orderedSort(list[j]);
+				//排序-子類別
+				if(list_son!=null){
+					var son_size = list_son[list[j]['02_b__ui_group_id']].length;
+					for(var s = 0;s<son_size;s++){
+						//排序
+						list_son[list[j]['02_b__ui_group_id']][s] = main.orderedSort(list_son[list[j]['02_b__ui_group_id']][s]);
+						//排序-子類別(將 02_b__ 替換掉)
+						var re_son = list_son[list[j]['02_b__ui_group_id']][s];
+						var new_son = {};
+						for(var y = 0;y<Object.keys(re_son).length;y++){
+							var key_id = Object.keys(re_son)[y];
+							var value_name = re_son[Object.keys(re_son)[y]];
+							key_id = key_id.split('_b__')[1];
+							new_son[key_id] = value_name+'';
+						}
+						//回寫
+						list_son[list[j]['02_b__ui_group_id']][s] = new_son;
+					}
+				}
+				//資料筆數
+				var list_item = $("#search .search_example_content").clone(); //複製樣本
+				//是否為群組
+				list_item[0].className = "search_data_list";
+				list_item[0].id = "search_data_" + (j + 1);
+				list_item.appendTo("#search .search_example_list");
+				//===按鈕設定:選紐換色===
+				if (fixed_cell_color) {
+					$("#" + list_item[0].id + " .fixed_cell").css("background-color", "#f8f9fc");
+				} else {
+					$("#" + list_item[0].id + " .fixed_cell").css("background-color", "#ebecef");
+				}
+				// 選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6) 權限false=disabled
+				for (var r = 0; r <=2; r++) { 
+					$("#" + list_item[0].id + " .search_radio_" + r + " input").attr("name", "line_" + (j + 1));
+					$("#" + list_item[0].id + " .search_radio_" + r + " input").attr("id", "line_" + (j + 1) + "_" + r);
+					$("#" + list_item[0].id + " .search_radio_" + r + " label").attr("for", "line_" + (j + 1) + "_" + r);
+				}
+				$("#" + list_item[0].id + " .search_radio_0 input").prop("checked", true);
+
+				//===每筆 資料欄位===
+				var fixed_cell_nb = 0;
+
+				var fixed_cell_wh = 108;  // 原始固定 數值252
+				for (var i = 0; i < Object.keys(list[j]).length; i++) {
+					var where_i = i+3;   //i+7  表格裡的前面7個 radio
+					var one_item = $("#search_data_" + (j + 1))[0].children;  //每個欄位-複製樣本
+					var key_id = Object.keys(list[j])[i];
+					var value_name = list[j][Object.keys(list[j])[i]];
+					//取得title Size顯示
+					// console.log(key_id+" "+value_name);
+					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth");
+					//取得title 是否顯示
+					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+						one_item[where_i].className = "datalist d-none";
+					} else {
+						one_item[where_i].className = "datalist ";
+					}
+	
+						//固定前2格
+						if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+								if (fixed_cell_color) {
+									one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+								} else {
+									one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+								}
+							$("#" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh);
+							$("#" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");
+							$("#" + key_id.replace("_b__", "_h__")).addClass("bg-dark");
+							one_item[where_i].className = "datalist fixed_cell ";
+							fixed_cell_wh += parseInt(value_size);
+							fixed_cell_nb += 1;
+						} else {
+							one_item[where_i].style = "max-width:" + value_size;
+						}
+					
+				
+					one_item[where_i].id = "";
+					one_item[where_i].title = key_id;
+					one_item[where_i].innerText = value_name;
+					//one_item.insertBefore("#" + list_item[0].id + " .s_list_body");
+				}
+				$("#search_data_" + (j+1) + " .s_list_body").remove();
+			}
+			console.log(new Date());
+			//關閉樣式
+			$("#search .s_list_body").addClass("d-none");
+			$("#search .search_example_content").addClass("d-none");
+			//分頁換算
+			this.pageInit();
+			//console.log(new Date());
+		},
+		setSearch(search) {
+			//查詢注入資訊
+			console.log(search);
+			for (var i = 0; i < search.length; i++) {
+				switch (search[i].tag) {
+					case "input":
+						var search_input = $("#search .search_example_input").clone(); //複製樣本
+						search_input[0].className = search[i].col + " p-2 search_true";
+						search_input[0].id = "search_" + search[i].id;
+						search_input.appendTo("#search .search_example_finds");
+						$("#" + search_input[0].id + " .s_name").text(search[i].name);
+						//$("#" + search_input[0].id + " .s_value").val(search[i].value);
+						//時間類型
+						if (search[i].type == 'date') {
+							$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
+						}
+						//預設
+						if (search[i].value != "") {
+							$("#" + search_input[0].id + " .s_value").attr("placeholder", search[i].value);
+						}
+						break;
+					case "select":
+						//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+						//id / value / type
+						var search_selsect = $("#search  .search_example_selsect").clone(); //複製樣本
+						search_selsect[0].className = search[i].col + " p-2 search_true";
+						search_selsect[0].id = "search_" + search[i].id;
+						search_selsect.appendTo("#search  .search_example_finds");
+						$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
+						for (var o = 0; o < search[i].values.length; o++) {
+							var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							one_option[0].id = "select_" + search[i]["values"][o]["key"];
+							one_option[0].value = search[i]["values"][o]["key"];
+							one_option[0].innerText = search[i]["values"][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo("#" + search_selsect[0].id + " select");
+						}
+						//********** 預設 為 已結單 顯示  *********** 
+						$("#select_1").prop("selected", true);
+						
+						//關閉樣式
+						break;
+					default:
+				}
+				//關閉樣式
+				$("#search .example_select_one").addClass("d-none");
+				$("#search .search_example_input").addClass("d-none");
+				$("#search .search_example_selsect").addClass("d-none");
+				main.loading(false);
+			}
+
+			//時間格式
+			$('#search .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});
+
+		},
+		selectAllInit() {
+			//監聽-同步相同屬性
+			//選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6)
+			//Lock
+			$(document).on("click", ".search_example_title .bi-shield", function (event) {
+				$(".search_radio_0 input").trigger("click");
+			});
+			
+			//Detail
+			$(document).on("click", ".search_example_title .bi-receipt", function (event) {
+				$(".search_radio_1 input").trigger("click");
+			});
+			
+			//Save as ...
+		//	$(document).on("click", ".search_example_title .bi-files", function (event) {
+		//		$(".search_radio_2 input").trigger("click");
+		//	});
+			
+			//Modify
+			$(document).on("click", ".search_example_title .bi-vector-pen", function (event) {
+				$(".search_radio_2 input").trigger("click");
+			});
+			
+			//Delete
+		//	$(document).on("click", ".search_example_title .bi-x-octagon", function (event) {
+		//		$(".search_radio_4 input").trigger("click");
+		//	});
+			
+
+			$(document).on("click", "#choose_s", function (event) {
+				console.log("choose_s");
+				search.actionDo();
+			});
+			$(document).on("click", "#search_btn", function (event) {
+				console.log("search_btn");
+				//回歸
+				search.page_total = main.page_total; //每次_總筆數
+				search.page_batch = main.page_batch; //每次_第幾批
+				search.page_show_size = main.page_show_size; //目前_每分頁顯示數量
+				search.page_now_size = main.page_now_size; //目前_實際筆數
+				search.page_now = main.page_now; //目前_頁數
+				search.pageInit();
+				search.searchSend();
+			});
+			$(document).on("click", "#clear_btn", function (event) {
+				console.log("clear_btn");
+				$("#search .search_example_finds input").val("");
+				$("#search .search_example_finds select").val("");
+			});
+			$(document).on("click", ".pagination .page-item", function (event) {
+				search.pageChange(event.currentTarget);
+				return false;
+			});
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#search .search_true input", function (event) {
+				if (event.which == 13) {
+					$('#search_btn').trigger('click');
+				}
+			});
+			//*********************  一鍵 審核按鈕  *********************
+			$(document).on("click", "#review_btn", function (event) {
+				console.log("search_btn");
+				
+				search.sendSave();
+			});
+			
+			//****************** 預設查詢 顯示 "資料狀態" "以結單"
+	//		$('#search_sys_status select option')
+	//			.filter(function () {
+	//			  return $(this).text() === '已結單';
+	//			})
+	//			.prop('selected', true);
+	//		search.searchSend(); // 第一次進入頁面會先搜尋'已結單'			
+			
+		},
+		//action
+		actionDo() {
+			//進行多選
+			var obj_all = {},
+				a_save_as = [],
+				a_detail = [];
+			var a_modify = [],
+				a_delete = [],
+				a_print = [];
+			var a_download = [];
+			for (var s = 0; s < $(".search_data_list").length; s++) {
+				var id = $(".search_data_list")[s].id;//哪一筆資料
+				var group_id = $("#" + id + " td")[8].textContent;//[7]是否群組 [8]群組ID
+
+				//選取?
+				var line_check = false;
+				var line_id = $("#" + id + ' input[name="' + id.replace("search_data_", "line_") + '"]:checked').val();
+
+				var sp = "_b__";
+				var arrays = $("#" + id + " .datalist");
+				var obj_one = {};
+				//key value 建置
+				for (var c = 0; c < arrays.length; c++) {
+					var key = arrays[c].title.split(sp)[1];
+					var value = arrays[c].innerHTML.replaceAll("<br>", "\n");
+					//console.log(key + " : " + value);
+					obj_one[key] = value;
+				}
+				//分類包裝
+				switch (line_id) {
+					case "detail":
+						a_detail.push(obj_one);
+						line_check = true;
+						break;
+					case "save_as":
+						a_save_as.push(obj_one);
+						line_check = true;
+						break;
+					case "modify":
+						a_modify.push(obj_one);
+						line_check = true;
+						break;
+					case "delete":
+						a_delete.push(obj_one);
+						line_check = true;
+						break;
+				//	case "print":
+				//		a_print.push(obj_one);
+				//		line_check = true;
+				//		break;
+				//	case "download":
+				//		a_download.push(obj_one);
+				//		line_check = true;
+				//		break;
+				}
+
+				//vv--group因為 父子類別 (只顯示父類資訊)/子類別另存--vv
+				if (this.data_type == "group" && line_check) {		
+					console.log(this.list_son[group_id]);
+					
+					for (var k = 0; k < this.list_son[group_id].length; k++) {
+						var obj_one_son = this.list_son[group_id][k];	
+						//分類包裝
+						switch (line_id) {
+							case "detail":
+								a_detail.push(obj_one_son);
+								break;
+							case "save_as":
+								a_save_as.push(obj_one_son);
+								break;
+							case "modify":
+								a_modify.push(obj_one_son);
+								break;
+							case "delete":
+								a_delete.push(obj_one_son);
+								break;
+						//	case "print":
+						//		a_print.push(obj_one_son);
+						//		break;
+						//	case "download":
+						//		a_download.push(obj_one_son);
+						//		break;
+						}
+					}
+					console.log(a_detail);
+				}
+				//^^--group因為 父子類別 (只顯示父類資訊)/子類別另存--^^
+			}
+			obj_all.a_detail = a_detail;
+			obj_all.a_save_as = a_save_as;
+			obj_all.a_modify = a_modify;
+			obj_all.a_delete = a_delete;
+		//	obj_all.a_print = a_print;
+		//	obj_all.a_download = a_download;
+			//自動(轉跳)點選
+			for (var i = 0; i < Object.keys(obj_all).length; i++) {
+				var key_id = Object.keys(obj_all)[i];
+				var key_value = obj_all[Object.keys(obj_all)[i]];
+				//console.log(key_value.length);
+				//modify_nav 分頁觸發
+				if (key_value.length > 0 && (key_id == "a_detail" || key_id == "a_save_as" || key_id == "a_modify" || key_id == "a_delete")) {
+					$("#modify_nav").trigger("click");
+					break;
+				}
+				//print_nav 分頁觸發
+				if (key_value.length > 0 && (key_id == "a_print")) {
+					$("#print_nav").trigger("click");
+					break;
+				}
+				//download_nav 分頁觸發
+				if (key_value.length > 0 && (key_id == "a_download")) {
+					$("#download_nav").trigger("click");
+					break;
+				}
+			}
+			modify.setData(obj_all);
+		},
+		
+		//存檔 或 更新
+		sendSave() {
+			main.loading(true);
+			//this.modify_datas.save;			
+			console.log("sendSave");	
+
+			for (let c = 0; c < $("#search .search_data_list").length; c++) {
+			    let $tr = $(".search_data_list").eq(c); //取得目前這一列 <tr>  $tr = 第 c 列
+			    // ✅【關鍵修正】判斷「td.p_mo 裡的 radio 是否被勾選」
+			    if ($tr.find("td.p_mo input[type='radio']:checked").length === 0) {
+			        continue;   //  沒勾選,直接跳過
+			    }
+			    let id = $tr.attr("id");	//取得這一列的 id	 	    
+			    let modify_one = {};
+			    // ✅ 正確抓每一個 td（不是 .datalist 專用）
+			    $("#" + id + " td").each(function () {
+			        let rawKey = $(this).attr("title");   // 01_b__oif_id
+			        if (!rawKey) return;
+			        // ✅ 只取真正欄位名稱
+			        let key = rawKey.split("__").pop();   //切割後,取出最後一個元素 oif_id (.pop() 是 Array（陣列）的方法)
+			        // ✅ td 一定要用 text()，不是 val()
+			        let value = $(this).text().trim();
+			        // ✅ 如果是 JSON
+			        if (value && value.indexOf('},') !== -1) {
+			            value = value.replaceAll('\n', '');
+			        }
+			        modify_one[key] = value;
+			       // console.log(key + " => " + value);
+			    });
+			    this.modify_datas.push(modify_one);   // ✅ 這時才是正確
+			}	
+	
+			// 裡面有沒"任何有效資料"（避免只有空物件 {}）
+			if (!this.modify_datas || this.modify_datas.length === 0) {
+			    t_alert.alertshow("warning", "未勾選modify欄位");
+			    main.loading(false);
+			    return false;
+			}
+			
+			var action = "AU";  
+			var	s_type ="PUT" ;    // 後端程式碼會辨別新增或更新 跟 MODIFY.HTML沒關
+			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
+			var	s_data = {};
+			var req = {}; //定義req為空物件後 準備添加資料
+			req.action=action; 
+			req.user=$('#name').text();
+			req.date=new Date();
+			req.body={};
+			req.body.oqc = this.modify_datas;
+			req.page_total=this.page_total;
+			req.page_batch=this.page_batch;
+			req.page_now_nb=this.page_now_nb;
+			req.html_body= "";
+			req.call_bk_fn="search";   //會在main裡判斷返回後還須執行那些函式	// 參數 會在main裡面判斷後執行 main.allData = event['resp_content']及customized.saveReturn()
+			req.call_bk_vals={};
+			req.call_bk_vals['search']=true;   //
+			s_data.req_content = req;
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		
+		
+		//search
+		searchSend() {
+			main.loading(true);
+			//查詢
+			//Ex:body:{search:{b:b,c:c}}
+			var search = {};
+			for (var s = 0; s < $("#search .search_true").length; s++) {
+				var key = $("#search .search_true")[s].id.replace("search_", "");
+				var value = $("#" + $("#search .search_true")[s].id + " .s_value").val();
+				//console.log(key+ " "+value);
+				search[key] = value;
+			}
+			//包裝
+			var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
+			var s_type = "POST";
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = "AR";
+			req.body = {};
+			req.body.search = search;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.page_now_nb = this.page_now_nb;
+			req.html_body = "";
+			req.call_bk_fn = "search";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		searchReturn() {
+			main.loading(false);
+			console.log("searchReturn");
+			//如果 資料包裝有-> body
+			if (main.allData.body != null) {
+				//可能 body->沒有資料
+				if (main.allData.body.search.length < 1) {
+					t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+					//回歸上一次分頁
+					this.pageChangeCheck(true);				
+					return false;
+				}else{
+					//body->有資料
+					this.setDataList(main.allData.body.search,
+						main.allData.body.search_son,
+						main.allData.body_type);
+	
+					if (main.allData.cell_refresh != null) {
+						console.log(main.allData.cell_refresh);
+						//編輯-模板更新
+						modify.setDataTitleUpdate(main.allData.cell_refresh);
+					}					
+				}
+			} else {
+				//回歸上一次分頁
+				this.pageChangeCheck(true);
+			}
+		},
+		//v====[分頁功能]====v
+		pageInit() {
+			//取得目前筆數
+			this.page_now_size = $(".search_data_list").length;
+			this.page_now = 1;
+			var show_p = Math.ceil(this.page_now_size / this.page_show_size);
+			//初始化換頁
+			var d = "disabled";
+			var a = "active";
+			$(".pagination li").removeClass(d).removeClass(a);
+			$(".pagination #page_1").addClass(a);
+			for (var h = 1; h <= 10; h++) { //開啟第一頁
+				$("#search_data_" + h).removeClass("d-none");
+			}
+
+			//是否有前一批 資料
+			if (this.page_batch == 0) {
+				$(".pagination #page_p").addClass(d);
+			}
+			//是否有下一批 資料
+			if (this.page_now_size != this.page_total) {
+				$(".pagination #page_n").addClass(d);
+			}
+			//分頁初始化
+			for (var p = 1; p <= 10; p++) {
+				if (p > show_p) $(".pagination #page_" + p).addClass(d);
+				$(".pagination #page_" + p + " a").text((this.page_batch * 10) + p);
+			}
+			//隱藏不需要顯示的分頁
+			for (var h = 1; h <= this.page_now_size; h++) {
+				if (h > this.page_show_size) {
+					$("#search_data_" + h).addClass("d-none");
+				}
+			}
+		},
+		pageChange(even) {
+			var id = even.id;
+			//console.log("page : " + id.replace("page_", ""));
+			if (id.replace("page_", "") == "n") {
+				//換頁批次 (下)
+				if (this.page_now_size != this.page_total) {
+					return false;
+				}
+				this.page_batch += 1;
+				this.searchSend();
+				for (var p = 1; p <= 10; p++) {
+					$(".pagination #page_" + p + " a").text((this.page_batch * 10) + p);
+				}
+			} else if (id.replace("page_", "") == "p") {
+				//換頁批次 (前)
+				if (this.page_batch == 0) {
+					return false;
+				}
+				this.page_batch -= 1;
+				this.searchSend();
+				for (var p = 1; p <= 10; p++) {
+					$(".pagination #page_" + p + " a").text((this.page_batch * 10) + p);
+				}
+			} else if (!$("#" + id).hasClass("disabled")) {
+				//換頁
+				var d = "disabled";
+				var a = "active";
+				var nb = parseInt(id.replace("page_", ""));
+				//分頁初始化
+				for (var p = 1; p <= 10; p++) {
+					$(".pagination #page_" + p).removeClass(a);
+				}
+				$(".pagination #page_" + nb).addClass(a);
+				//顯示換頁內容
+				for (var show = 1; show <= this.page_now_size; show++) {
+					if (show <= nb * this.page_show_size && show > nb * this.page_show_size - this.page_show_size) {
+						$("#search_data_" + show).removeClass("d-none");
+					} else {
+						$("#search_data_" + show).addClass("d-none");
+					}
+				}
+			} else {
+				return false;
+			}
+		},
+		//檢查下次是否有資料
+		pageChangeCheck(check) {
+			if (check && this.page_batch > 0) {
+				this.page_batch -= 1;
+				for (var p = 1; p <= 10; p++) {
+					$(".pagination #page_" + p + " a").text((this.page_batch * 10) + p);
+				}
+				var d = "disabled";
+				$(".pagination #page_n").addClass(d);
+			}
+		}
+		//^====[分頁功能]====^
+	},
+	//移除監聽事件
+	beforeDestroy() {
+		console.log("oqc_review_form.html(beforeDestroy)");
+		$(document).off("click", ".search_example_title .bi-shield");
+		$(document).off("click", ".search_example_title .bi-receipt");	//Detail	
+		$(document).off("click", ".search_example_title .bi-files"); //Save as ...
+		$(document).off("click", ".search_example_title .bi-vector-pen"); //>Modify
+		$(document).off("click", ".search_example_title .bi-x-octagon"); //Delete
+		$(document).off("click", ".search_example_title .bi-printer"); //Printer
+		$(document).off("click", ".search_example_title .bi-cloud-download");//Download
+		$(document).off("click", "#choose_s");
+		$(document).off("click", "#clear_btn");
+		$(document).off("click", "#search_btn");
+		$(document).off("click", "#review_btn"); //審核按鈕審核按鈕
+		$(document).off("click", ".pagination .page-item");
+		$(document).off("keypress", "#search .search_true input");
+	},
+});
+</script>

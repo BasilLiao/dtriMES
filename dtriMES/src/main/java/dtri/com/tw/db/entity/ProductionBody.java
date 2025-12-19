@@ -38,6 +38,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pb_shipping_date: 出貨日<br>
  *      pb_recycling_date :回收日<br>
  *      pb_l_path_oqc : 抽測LOG位置<br>
+ *      pb_l_note_oqc; // 標記被OQC檢驗的機台 檢驗的內容<br>
  * 
  */
 @IdClass(ProductionBody.PrimaryKey.class)

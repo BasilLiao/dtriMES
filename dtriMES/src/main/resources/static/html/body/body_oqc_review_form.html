@@ -76,7 +76,7 @@
 		},
 		//初始化前
 		created() {
-			console.log("body_oqc_result_list.html(created)");
+			console.log("body_oqc_review_form.html(created)");
 		},
 		//初始化後
 		mounted() {
@@ -91,7 +91,7 @@
                		new Date());
 			});
 			//查詢-模板
-			$("#index #search_tab").load("./html/model/search.html", function() {
+			$("#index #search_tab").load("./html/other/oqc_review_form.html", function() {
 				search.setDataTitle(main.allData.header,main.allData.html_permission);
 				search.setDataList(main.allData.body.search,
 	            		   main.allData.body.search_son,
@@ -118,23 +118,16 @@
 			//$("#index #workstation_tab").load("./html/model/workstation.html");
 			
 			//*******一開始轉跳時會先
-			$("#index #customized_tab").load("./html/other/oqc_result_list.html", function() {
-				console.log("main.allData_johnny_oqc_result_list");
-				console.log("main.allDat",main.allData);	
+	//		$("#index #customized_tab").load("./html/other/oqc_result_list.html", function() {
+	//			console.log("main.allData_johnny_oqc_result_list");
+	//			console.log("main.allDat",main.allData);	
 				//帶入模板內資料 
-//				customized.setDataTitle(
-//						main.allData.header['customized_header'],
-//						main.allData.header['customized_documents'],
-//						main.allData.html_permission); 
-				customized.setDataTitle(main.allData.cell_g_modify,
-						main.allData.html_permission);	
-				
-//				customized.setDataList(main.allData.body,
-//	            		main.allData.body.search_son,
-//	            		main.allData.body_type);  
-//				customized.setSearch(main.allData.cell_searchs.maintain_dtr);
-				customized.selectAllInit();	
-			});
+	//			customized.setDataTitle(main.allData.cell_g_modify,
+	//					main.allData.html_permission);				
+
+	//			customized.selectAllInit();	
+	//		});
+			
 			//模板-關閉不需要的分頁 disabled
             $("#index #home_nav").addClass("disabled");
             //$("#index #search_nav").addClass("disabled");
@@ -145,17 +138,17 @@
             $("#index #analysis_nav").addClass("disabled");
             $("#index #workstation_nav").addClass("disabled");
             //模板-預設分頁 active
-           // $("#index #search_nav").addClass("active");
-          //  $("#index #search_tab").addClass("show");
-          //  $("#index #search_tab").addClass("active");
+            $("#index #search_nav").addClass("active");
+            $("#index #search_tab").addClass("show");
+            $("#index #search_tab").addClass("active");
             
             //模板-預設分頁 active
-            $("#index #customized_nav").addClass("active");
-            $("#index #customized_tab").addClass("show");
-            $("#index #customized_tab").addClass("active");
+           $("#index #customized_nav").addClass("disabled");
+          //  $("#index #customized_tab").addClass("show");
+           // $("#index #customized_tab").addClass("active");
             
           	//單元名稱
-            $("#title_name").text(t_nav.nav_list['body_oqc_result_list']);
+            $("#title_name").text(t_nav.nav_list['body_oqc_review_form']);
 		},
 		//可呼叫方法
 		methods : {
@@ -163,7 +156,7 @@
 		},
 		//移除監聽事件
 		beforeDestroy() {
-			console.log("body_oqc_result_list.html(beforeDestroy)");
+			console.log("body_oqc_review_form.html(beforeDestroy)");
 
 		}
 	});
