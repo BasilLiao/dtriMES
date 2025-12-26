@@ -427,8 +427,8 @@ public class OqcInspectionFormService {
 						object_detail.put("ph_c_name", oif.getOifcname());// 客戶名稱
 						object_detail.put("ph_order_id", oif.getOifonb());// 訂單號碼
 						object_detail.put("pr_bom_id", oif.getOifpnb());// 產品料號 BOM料號(公司)
-						object_detail.put("pr_p_model", oif.getOifpname());// 產品型號
-						object_detail.put("pr_p_name", oif.getOifpmodel());// 產品規格 取至 MES製令內容的產品品名(規格)
+						object_detail.put("pr_p_model", oif.getOifpmodel());// 產品型號						
+						object_detail.put("pr_p_name", oif.getOifpname());// 產品規格 取至 MES製令內容的產品品名(規格)						
 						object_detail.put("oif_p_sn", oif.getOifpsn());// 產品序號區間
 						object_detail.put("ph_p_qty", oif.getOifpqty());// 出貨數 預計生產數
 						object_detail.put("oif_t_qty", oif.getOiftqty());// 抽樣數

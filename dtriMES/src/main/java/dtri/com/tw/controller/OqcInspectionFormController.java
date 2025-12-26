@@ -249,7 +249,7 @@ public class OqcInspectionFormController extends AbstractController {
 			return packageService.objToJson(resp);
 		}
 		
-		///***********************先不用 S3******************
+		///***********************先不用 S3 (已移轉到 一般-OQC檢驗登記 頁面) ******************
 		@ResponseBody
 		@RequestMapping(value = { "/ajax/oqc_inspection_form.basil.S3" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
 		public String reviewCustomized(@RequestBody String json_object) {

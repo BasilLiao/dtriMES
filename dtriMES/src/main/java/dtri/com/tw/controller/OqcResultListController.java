@@ -248,5 +248,33 @@ public class OqcResultListController extends AbstractController {
 			// 回傳-資料
 			return packageService.objToJson(resp);
 		}
+		@ResponseBody
+		@RequestMapping(value = { "/ajax/oqc_result_list.basil.S3" }, method = { RequestMethod.PUT }, produces = "application/json;charset=UTF-8")
+		public String reviewCustomized(@RequestBody String json_object) {
+			showSYS_CM("reviewCustomized");
+			show(json_object);
+			PackageBean req = new PackageBean();
+			PackageBean resp = new PackageBean();
+			boolean check = false;
+
+			// Step0.當前用戶資料-UI權限
+			SystemUser user = loginUser().getSystemUser();
+			// Step1.包裝解析
+			req = packageService.jsonToObj(new JSONObject(json_object));
+			
+			// Step2.進行查詢
+			check = oqcresultlistService.reviewCustomized(resp, req, user);
+			// Step3.進行判定
+			if (check) {
+				// Step4.包裝回傳
+				resp = packageService.setObjResp(resp, req, null);
+			} else {
+				// Step4.包裝Err回傳
+				packageService.setObjErrResp(resp, req);
+				resp = packageService.setObjResp(resp, req, null);
+			}
+			// 回傳-資料
+			return packageService.objToJson(resp);
+		}
 
 }

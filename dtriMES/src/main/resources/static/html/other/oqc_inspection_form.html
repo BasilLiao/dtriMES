@@ -218,7 +218,6 @@ input[type="radio"] {
 						disabled="disabled">
 				</div>
 			</div>
-
 			<div class="col-3 p-1 row m-0" id="pr_p_name">
 				<div class="col-0 p-1  mt-1">產品品名:</div>
 				<div class="col p-1 ">
@@ -249,8 +248,8 @@ input[type="radio"] {
 					class="col mb-1  ml-4 btn btn-danger btn-sm">Delete</button>
 				<button id="print_btn" type="submit"
 					class="col mb-1  ml-4 btn btn-info btn-sm">Print</button>
-				<button id="review_btn" type="submit"
-					class="col mb-1  ml-4 btn btn-warning btn-sm ">End Work Order(S3)</button>
+		<!--		<button id="review_btn" type="submit"
+					class="col mb-1  ml-4 btn btn-warning btn-sm ">End Work Order(S3)</button>  -->
 			</div>
 		</div>
 
@@ -571,14 +570,14 @@ customized = new Vue({
 			});	
 			
 	
-			//************* 結單按鈕  *************
-			$(document).on("click", "#review_btn", function (event) {
+			//************* 不使用 結單按鈕  (移轉到 一般-OQC檢驗登記 頁面)   *************
+	/*			$(document).on("click", "#review_btn", function (event) {
 				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）	
-				// << 新增的權限判斷 >>
-			   // if ($("#review_btn").attr("title") === "目前權限不可審核") {
-			   //     t_alert.alertshow("warning", "目前權限不可審核");
-			   //     return false;
-			   // }
+					// << 新增的權限判斷 >>
+				   // if ($("#review_btn").attr("title") === "目前權限不可審核") {
+				   //     t_alert.alertshow("warning", "目前權限不可審核");
+				   //     return false;
+				   // }
 				
 				if($("#dataTable tbody tr").length === 0){
 				    t_alert.alertshow("warning", "Table 表無資料"); 
@@ -595,7 +594,7 @@ customized = new Vue({
 				customized.modify_datas.action1 = "S3"; 
 				customized.sendSave();			
 			});				
-			//******************************************
+	*/		//******************************************
 			
 			//Print資料
 			$(document).on("click", "#print_btn", function (event) {
@@ -924,8 +923,8 @@ customized = new Vue({
 			oqc_title['oif_c_name'] =$('#ph_c_name input').val().trim()|| "";//客戶名稱			
 			oqc_title['oif_o_nb'] =$('#ph_order_id input').val().trim()|| "";//訂單號
 			oqc_title['oif_p_nb'] =$('#pr_bom_id input').val().trim()|| "";//產品料號:
-			oqc_title['oif_p_name'] =$('#pr_p_model input').val().trim()|| "";//產品名稱:				
-			oqc_title['oif_p_model'] =$('#pr_p_name input').val().trim()|| "";//產品品名:				
+			oqc_title['oif_p_name'] =$('#pr_p_name input').val().trim()|| "";//產品名稱:
+			oqc_title['oif_p_model'] =$('#pr_p_model input').val().trim()|| "";//產品品名:				
 			oqc_title['oif_p_ver'] =$('#oif_p_ver textarea').val().trim()|| "";//版本資訊:			
 				
 			oqc_title['oif_p_qty'] =$('#ph_p_qty input').val().trim()|| "";//出貨數量:
@@ -1015,7 +1014,7 @@ customized = new Vue({
 			main.loading(true);
 			//this.modify_datas.save;			
 			console.log("sendSave");	
-			var action = this.modify_datas.action1;  //目前動作 SAVE/UPDATE的"S2"  及  審核按鈕"AU"
+			var action = this.modify_datas.action1;  //目前動作 SAVE/UPDATE的"S2"  及  結單按鈕"AU"
 			var	s_type ="PUT" ;    // 後端程式碼會辨別新增或更新 跟 MODIFY.HTML沒關
 			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
 			var	s_data = {};

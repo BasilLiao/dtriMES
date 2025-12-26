@@ -3,7 +3,7 @@
 
 /* 固定檢查項目 的 table 高度   外層 div 控制高度 */
 .check-items .table-style {
-	height: calc(-385px + 100vh);
+	height: calc(100vh - 385px);
 	border-collapse: separate;
 	border-spacing: 0px;
 }
@@ -19,7 +19,7 @@ td.datalist {
 }
 
 /* 固定表頭  真正固定表頭應該搭配position: sticky */
-.search_example_title tr {
+.search_example_title th {
 	position: sticky;
 	top: 0px;
 	z-index: 3;
@@ -45,12 +45,15 @@ td .center-checked {
 					<input type="text" class="col p-1 border border-dark rounded detail_ri" id="search_orlow" placeholder="工單號碼">
 				</div>
 			</div>
-			<div class="col-3 row m-0 p-1 align-items-end">
-				<div class="col-md-6 p-1">
+			<div class="col-4 row m-0 p-1 align-items-end">
+				<div class="col-md-4 p-1">
 					<button type="submit" class="col-12 btn btn-primary btn-sm" id="search_orlow_btn">Search</button>
 				</div>
-				<div class="col-md-6 p-1">
+				<div class="col-md-4 p-1">
 					<button type="submit" class="col-12 btn btn-warning btn-sm" id="search_clear_btn">Clear</button>
+				</div>
+				<div class="col-md-4 p-1">
+					<button type="submit" class="col-12 btn btn-success btn-sm" id="review_btn">End Work Ender(S3)</button>
 				</div>
 			</div>
 		</div>
@@ -175,10 +178,10 @@ td .center-checked {
 						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center"	disabled="disabled" type="text">
 					</div>
 				</div>
-				<div class="m-0 p-1 col-4  row " >
-					<div class="col-0  m-0 p-0 "></div>
-					<div class="col-0  m-0 p-0 d-none">
-						<input	class="col pl-1 m-0 border border-dark rounded save_value text-center "	disabled="disabled" type="text">
+				<div class="m-0 p-1 col-4  row  " id="oif_t_qty" >
+					<div class="col-0  m-0 p-0 ">抽驗數量</div>
+					<div class="col-0  m-0 p-0 ">
+						<input	class="col pl-1 m-0 bg-warning rounded save_value text-center "	disabled="disabled" type="text">
 					</div>
 				</div>
 				<div class="mt-2 pt-3 p-1 col-4 text-right ">
@@ -253,12 +256,12 @@ td .center-checked {
 									<div class="title_name">檢查內容</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark" style="min-width: 100px; max-width: 290px;" id="oii_check_val">
+							<th class="p-1 bg-dark" style="min-width: 100px; max-width: 290px;" id="oif_check_result">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">檢查內結果</div>
 								</div>
 							</th>
-							<th class="p-1 bg-dark" style="min-width: 250px; width: 100%; max-width: 100px;" id="oii_check_val">
+							<th class="p-1 bg-dark" style="min-width: 250px; width: 100%; max-width: 100px;" id="oii_check_note">
 								<div class="row p-0 m-0 justify-content-between">
 									<div class="title_name">備註</div>
 								</div>
@@ -317,6 +320,7 @@ customized = new Vue({
 	//	save_as_example_tr:"",
 	//	modify_example_tr:"",		
 	//	delete_example_tr:"",	
+		orlow:"",
 	},
 	//初始化
 	created() {
@@ -428,23 +432,25 @@ customized = new Vue({
 		},	
 		
 		//初始化
-		selectAllInit() {	
+		selectAllInit() {			
+			let lastsearch="";
+			let lasttestitem="";
+			let locKed = false;
 			//快速查詢 監聽確認
-			$(document).on("keypress", "#customized #search_orlow", function (event) {
-				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
+			$(document).on("keypress", "#customized #search_orlow", function (event) {						
 				if (event.which == 13) {
+					event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）				
 					$('#search_orlow_btn').trigger('click');
 				}
 			});			
 			//快速查詢 監聽確認
-			$(document).on("keypress", "#customized #orl_p_sn", function (event) {
-				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）				
-				if (event.which == 13) {
-					$('#R_search_btn').trigger('click');
-				}
+			$(document).on("keypress", "#orl_p_sn input", function (event) {
+			    if (event.which === 13) {
+			        event.preventDefault(); // 只阻止 Enter
+			        $('#R_search_btn').trigger('click');
+			    }
 			});
-
-			let locKed = false;
+			
 			//查詢工單	
 			$(document).on("click", "#search_orlow_btn", function (event) {
 				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）			
@@ -468,6 +474,7 @@ customized = new Vue({
 				//傳送
 				let search = {};	
 				search.input_orlow= $('#search_orlow').val().trim(); //輸入工單號碼	
+				customized.orlow= $('#search_orlow').val().trim(); //工單號碼
 				//搜尋之前先清空 							
 				customized.searchSend(search);	
 				console.log("工單號碼");
@@ -481,8 +488,21 @@ customized = new Vue({
 			$(document).on("click", "#search_clear_btn", function (event) {	
 				$('#search_orlow').val("");
 				$('.detail_ri').val("");
-				$('.save_value').val("");
-				
+				$('.save_value').val("");				
+			});	
+			
+			//************* 結單按鈕  *************
+			$(document).on("click", "#review_btn", function (event) {
+				event.preventDefault(); // 防止表單預設行為（例如 Enter 觸發 submit）				
+				if( customized.orlow ==="" ){
+					t_alert.alertshow("warning", "請確認有 工單號碼 ，有搜尋過！");					
+					return false;	   
+				}
+				customized.modify_datas.oif_ow=customized.orlow;	
+				customized.modify_datas.oif_t_qty=$('#oif_t_qty input').val();//抽樣數量
+				console.log("打包轉存成JSON格式");
+				customized.modify_datas.action1 = "S3"; 
+				customized.sendSave();			
 			});	
 			
 			//查詢機台產品明細	
@@ -498,13 +518,22 @@ customized = new Vue({
 					t_alert.alertshow("warning", "，產品序號欄位請輸入機台號碼 ，產品序號欄位不能為空！");
 					setTimeout(() => { locKed = false; }, 1000);
 					return false;	   
-				}			
+				}				
 				//傳送
-				let search = {};	
-				search.orl_p_sn= $('#orl_p_sn input').val().trim()|| "";  //輸入機台號碼	
-				search.orl_ow= $('#orl_ow input').val().trim()|| "";  //工單	
+				let search = {};							
+				search.orl_ow= $('#orl_ow input').val().trim()|| "";  //工單					
+				search.orl_p_sn = $('#orl_p_sn input').val().trim()|| "";  //輸入機台號碼
+				search.testitem = $('#testitem select').val().trim(); //測試項目				
+				if(lastsearch === search.orl_p_sn && lasttestitem === search.testitem ) {
+					locKed = false; 	 //先解鎖,save才能被執行		
+					$('#save_btn').trigger('click');
+					console.log("與上一筆號碼相同執行SAVE");				
+					return false;	   
+				}
 				//搜尋之前先清空 							
 				customized.searchSend(search);	
+				lastsearch = search.orl_p_sn;  // 輸入機台號碼
+				lasttestitem = search.testitem  // 測試項目
 				console.log("工單號碼");
 				// 1 秒後解除鎖定false（可調整） 所有內容送出後，再解鎖
 				setTimeout(() => {
@@ -547,13 +576,14 @@ customized = new Vue({
 					return false;	   
 				}
 
-			customized.savereault();
-			customized.sendSave();
-			console.log("儲存檢查紀錄 檢測產品序號碼");
-			// 1 秒後解除鎖定（可調整） 所有內容送出後，再解鎖
-			setTimeout(() => {
-				locKed = false;
-			}, 1000);
+				customized.saveResult();
+				customized.modify_datas.action1 = "S2";   //使用 Vue 實例
+				customized.sendSave();
+				console.log("儲存檢查紀錄 檢測產品序號碼");
+				// 1 秒後解除鎖定（可調整） 所有內容送出後，再解鎖
+				setTimeout(() => {
+					locKed = false;
+				}, 1000);
 				
 			});	
 			
@@ -636,7 +666,7 @@ customized = new Vue({
 			console.log("searchSubmit");
 		},
 		
-		savereault(){
+		saveResult(){
 			//傳送
 			let oqc_resultsave = {};
 			oqc_resultsave['orl_oif_id']= $('#orl_oifid input').val().trim();	 //KEY
@@ -648,7 +678,7 @@ customized = new Vue({
 			oqc_resultsave['sys_note']= $('#sys_note input').val().trim()|| "";  //備註
 			this.modify_datas=oqc_resultsave;	
 			
-			console.log("儲存 savereault ");
+			console.log("儲存 saveResult ");
 		},
 		
 		//存檔 或 更新
@@ -656,7 +686,7 @@ customized = new Vue({
 			main.loading(true);
 			//this.modify_datas.save;			
 			console.log("sendSave");	
-			var action = "S2";  
+			var action = this.modify_datas.action1;  //目前動作 SAVE/UPDATE的"S2"  及  結單按鈕"AU"  
 			var	s_type ="PUT" ;    // 後端程式碼會辨別新增或更新 跟 MODIFY.HTML沒關
 			var s_url = (t_body.html_body+"."+action).replace('html','basil').replace('body_','');
 			var	s_data = {};
@@ -764,7 +794,7 @@ customized = new Vue({
 			            row.style.backgroundColor = bgColor;
 			            
 			            // 將 rma_b_sn 的值作為 class 名稱的一部份，這裡假設不含特殊字元
-			            row.classList.add(`sn_${results.rma_number}`,results.id); // 為 <tr> 設定 class
+			            row.classList.add(`sn_${result.rma_number}`,results.id); // 為 <tr> 設定 class
 			            row.id = `search_data_${index + 1}`;
 			        	// ${...} 是插值語法，其中的 JavaScript 表達式（例如 index + 1）會在字串生成時被計算，並替換成相應的值
 			        	// 建立 <td> 並讓 class 名稱來自 item 的變數
@@ -850,6 +880,7 @@ customized = new Vue({
 				$('#orl_OqcCT2Os input').val(main.allData.body.OqcCT2Os ); //Check T2 OS 數量
 				$('#orl_OqcAPI input').val(main.allData.body.OqcAPI ); //外觀/包裝檢驗數量
 				//$('#orl-pass input').val(main.allData.body.OqcPassQty ); //PASS數量
+				$('#oif_t_qty input').val(main.allData.body.oif_t_qty ); //抽樣數量
 			}
 			
 			//可能是新建立
@@ -986,6 +1017,7 @@ customized = new Vue({
 		console.log("OQC.html(beforeDestroy)");
 		$(document).off("click", "#search_orlow_btn");	//未正確移除 或 寫錯會導致去再按下按鈕後再去其他頁面後回來再按下按鈕導致後端會重複執行,若多次來回按鈕,後端多次執行		
 		$(document).off("click", "#search_clear_btn");
+		$(document).off("click", "#review_btn"); // 結單按鈕
 		
 		$(document).off("click", "#R_search_btn"); //搜尋機台號碼  產品細節
 		$(document).off("click", "#save_btn");  //save

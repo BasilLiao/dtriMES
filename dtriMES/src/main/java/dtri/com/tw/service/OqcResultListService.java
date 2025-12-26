@@ -26,6 +26,7 @@ import dtri.com.tw.db.pgsql.dao.OqcInspectionFormDao;
 import dtri.com.tw.db.pgsql.dao.OqcResultListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
+import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
@@ -33,6 +34,9 @@ public class OqcResultListService {
 	@Autowired // 通用-製令內容
 	private ProductionHeaderDao headerDao;
 
+	@Autowired  //訂單規格
+	private ProductionRecordsDao prDao;
+	
 	@Autowired // 產品細節
 	private ProductionBodyDao bodyDao;
 
@@ -141,7 +145,7 @@ public class OqcResultListService {
 			
 			bean.setCell_modify(obj_m);
 			
-//**********************在 客製化頁面設置	*********************************
+			//**********************在 客製化頁面設置	*********************************
 			
 			JSONArray obj_t = new JSONArray();				
 			a_val = new JSONArray();
@@ -518,7 +522,10 @@ public class OqcResultListService {
 					
 					orltitem="外觀/包裝檢驗";
 					count = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);										
-					object_body.put("OqcAPI", count);					
+					object_body.put("OqcAPI", count);	
+					
+					//抽樣數量oif_t_qty
+					object_body.put("oif_t_qty", oif.getOiftqty());// 抽樣數
 					
 					//*********************************************************************	
 					OqcResultLists.forEach(orl -> {
@@ -688,4 +695,105 @@ public class OqcResultListService {
 		}
 		return check;
 	}
+	// ************S3 結案按鈕 (對 "工單" 作結單)(更改 "通用-製令內容"裡的狀態為"已完成"***** ******************** Customized
+	// mode
+	@Transactional // 
+	public boolean reviewCustomized(PackageBean resp, PackageBean req, SystemUser user) {
+		JSONObject body = req.getBody();
+		boolean check = false;
+
+		String oifow = body.getJSONObject("oqc").getString("oif_ow");// 取得工單號碼
+
+		List<OqcInspectionForm> oifs = oifDao.findByOifow(oifow); // 要先確認Form表單資庫有無資料
+		OqcInspectionForm oIF = new OqcInspectionForm();	
+
+		JSONObject title = body.getJSONObject("oqc");
+	//	String oif_oii_data = body.getJSONObject("oqc").getJSONArray("oif_oii_data").toString();
+
+		try {
+			if (oifs.size() > 0) {
+				System.out.println("資料已存在進行更新");
+				// ******************* 更新資料
+				oIF = oifs.get(0);
+
+				int status = oIF.getSysstatus();// 抓取資料庫狀態值
+				if (status >= 2) { // 大於1不可更改
+					resp.setError_ms("此工單號[" + oifow + "] 已經審核後鎖定,如需修正請洽QC主管");
+					resp.autoMsssage("108"); // 回傳錯誤訊息 資料已鎖定或作廢
+					return check;
+				} // 資料狀態
+
+				//*********************** 計算指定工單號碼下，每一個測試項目 每個SN的最後一筆檢查結果為 PASS 的數量。 ****************************************			
+				//long count = orlDao.countLastPassByOrlow(oifow);
+				String orltitem="功能(測試OS)";
+				long count1 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);
+				orltitem="功能(T2 OS)";
+				long count2 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);
+				long count =count1+count2;
+				orltitem="外觀/包裝檢驗";
+				long count3 = orlDao.countLastPassByOrlowAndOrltitem(oifow,orltitem);	
+							
+				long oty=title.optInt("oif_t_qty");
+				
+				if (oty > count) {
+					resp.setError_ms("此工單『功能』檢驗數未達抽樣數量,不能結單");
+					resp.autoMsssage("109"); // 回傳錯誤訊息 資料已鎖定或作廢
+					return check;
+				}else if(oty > count3) {
+					resp.setError_ms("此工單『外觀/包裝檢驗』檢驗數未達抽樣數量,不能結單");
+					resp.autoMsssage("109"); // 回傳錯誤訊息 資料已鎖定或作廢
+					return check;
+				}
+				
+				//*********************************************************************		
+			//	oIF.setOifcname(title.getString("oif_c_name")); // 客戶名稱
+			//	oIF.setOifonb(title.getString("oif_o_nb")); // 訂單號
+			//	oIF.setOifpnb(title.getString("oif_p_nb")); // 產品料號
+			//	oIF.setOifpname(title.getString("oif_p_name")); // 產品名稱
+			//	oIF.setOifpmodel(title.getString("oif_p_model")); // 產品品名(產品型號)
+			//	oIF.setOifpsn(title.getString("oif_p_sn")); // 產品序號區間
+			//	oIF.setOifpqty(title.optInt("oif_p_qty")); // 出貨數
+			//	oIF.setOiftqty(title.optInt("oif_t_qty")); // 抽樣數
+			//	oIF.setOifpver(title.getString("oif_p_ver")); // 版本資訊 JSON 格式:
+				oIF.setSysstatus(1); //0:正常 1:已結單
+				oIF.setOifedate(new Date()); // 最後鑑驗日	
+				oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
+			//	oIF.setSysnote(title.getString("sys_note"));//備註				
+			//	oIF.setOifoiidata(oif_oii_data); // 配置的檢驗項目 //配置的檢驗項目 JSON
+				// "="被吃掉，是因為「沒有進行編碼 (encoding) 就把 HTML 放進 JSON 傳送」。
+				// 後端：收到後要 decode
+			//	String htmlEncoded = title.getString("oif_oii_form");
+			//	String html = URLDecoder.decode(htmlEncoded, "UTF-8"); // 還原回 HTML
+			//	System.out.println("接收到的 HTML: " + html);
+			//	oIF.setOifoiiform(html); // oif_oii_form:原始的HTML項目
+				oIF.setSysmdate(new Date());// 修改時間
+				oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
+			}else {
+				resp.setError_ms("此工單號[" + oifow + "]製表鑑驗單尚未建立在資料庫中");
+				resp.autoMsssage("108"); // 回傳錯誤訊息 資料已鎖定或作廢
+				return check;
+			}
+			oifDao.save(oIF);
+			
+			//****************************************對 工單制令作結單動作 *************************
+			// 用工單取出<ProductionRecords>訂單規格的資料 
+			String oif_ow=title.optString("oif_ow");
+			List<ProductionRecords> prs = prDao.findAllByPrid(oif_ow, null);
+			ProductionRecords pr=prs.get(0); //取出第一筆table表
+			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
+			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
+			ph.setSysstatus(2);  //2:已完成( 為結單)
+			//對製令內容 修改人與時間做更正
+			ph.setSysmdate(new Date());
+			ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
+			headerDao.save(ph);		
+			
+			check = true;
+		} catch (Exception e) {
+			System.out.println(e);
+			return check;
+		}
+		return check;
+	}
+
 }
