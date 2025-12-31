@@ -501,8 +501,8 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_e_date",
 					one.getPhedate() == null ? "" : Fm_Time.to_yMd_Hms(one.getPhedate()));
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_qty", one.getPhpqty());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_ok_quantity", one.getPhpokqty());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_a_ok_quantity", one.getPhpaokqty());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_ok_qty", one.getPhpokqty());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_p_a_ok_qty", one.getPhpaokqty());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_schedule", one.getPhschedule());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_order_id", one.getPhorderid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_c_name", one.getPhcname());

@@ -776,7 +776,14 @@ public class ProductionDailyService {
 							newDaily.setPdstime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 							newDaily.setPdetime(Fm_Time.toDateTime(Fm_Time.to_yMd_Hms(new Date())));
 							newDaily.setPdlsuid(w_class.getWclsuid());
-							newDaily.setPdlname(userDao.findAllBySuid(w_class.getWclsuid()).get(0).getSuname());
+							// 修正
+							List<SystemUser> users = userDao.findAllBySuid(w_class.getWclsuid()); // 假設回傳 UserBean
+							if (users != null && !users.isEmpty()) {
+							    newDaily.setPdlname(users.get(0).getSuname());
+							} else {
+							    newDaily.setPdlname("Unknown"); // 或設為空字串，防止報錯
+							    log.warn("查無負責人資料 ID: " + w_class.getWclsuid());
+							}
 							JSONArray o_pdprpbsns = new JSONArray().put(newDaily.getPdpbbsn());// 產品登記
 							newDaily.setPdpbbsn(new JSONObject().put("list", o_pdprpbsns) + "");
 							log.info("登記入每日報表[ProductionDaily] 新建?:" + newDaily.toString());
