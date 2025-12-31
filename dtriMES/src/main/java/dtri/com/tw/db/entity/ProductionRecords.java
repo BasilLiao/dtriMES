@@ -29,6 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  *      pr_e_b_sn : 燒錄序號 結束 EX:xxxxxx 01YW12042J044-<br>
  *      pr_specification: 產品規格敘述<br>
  *      pr_name: 產品品名<br>
+ *      pr_material: 產品物料號<br>
  * 
  */
 @Entity
@@ -45,6 +46,7 @@ public class ProductionRecords {
 		this.syssort = 0;
 		this.sysstatus = 0;
 		this.sysheader = false;
+		this.prmaterial = "";
 	}
 
 	// 共用型
@@ -93,10 +95,13 @@ public class ProductionRecords {
 	@Column(name = "pr_bom_c_id", nullable = false, columnDefinition = "varchar(50) default ''")
 	private String prbomcid;
 
-	@Column(name = "pr_specification",  columnDefinition = "varchar(150) default ''")
+	@Column(name = "pr_specification", columnDefinition = "varchar(150) default ''")
 	private String prspecification;
 
-	@Column(name = "pr_name",  columnDefinition = "varchar(150) default ''")
+	@Column(name = "pr_material", nullable = false, columnDefinition = "text default ''")
+	private String prmaterial;
+
+	@Column(name = "pr_name", columnDefinition = "varchar(150) default ''")
 	private String prname;
 
 	@Column(name = "pr_b_item", nullable = false, columnDefinition = "text default ''")
@@ -313,6 +318,20 @@ public class ProductionRecords {
 
 	public void setPrname(String prname) {
 		this.prname = prname;
+	}
+
+	/**
+	 * @return the prmaterial
+	 */
+	public String getPrmaterial() {
+		return prmaterial;
+	}
+
+	/**
+	 * @param prmaterial the prmaterial to set
+	 */
+	public void setPrmaterial(String prmaterial) {
+		this.prmaterial = prmaterial;
 	}
 
 }

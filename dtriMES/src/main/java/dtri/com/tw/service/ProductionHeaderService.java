@@ -705,7 +705,9 @@ public class ProductionHeaderService {
 							data.get("pr_b_item").toString().equals("") ? "{}" : data.get("pr_b_item").toString());
 					pro_r.setPrsitem(
 							data.get("pr_s_item").toString().equals("") ? "{}" : data.get("pr_s_item").toString());
-					// pro_r.setPrwcline();
+					pro_r.setPrmaterial(
+							data.get("pr_material").toString().equals("") ? "{}" : data.get("pr_material").toString());
+
 
 					// 有序號登記
 					if (!data.getString("ph_type").equals("A511_no_sn") //

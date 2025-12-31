@@ -113,9 +113,9 @@
 						<th class="p-1 fixed_cell bg-dark p_cr" style="min-width: 35px; left: 72px;"><i class="btn btn-outline-success p-0 pr-1 pl-1 bi bi-files"></i></th>
 						-->
 						<th class="p-1 fixed_cell bg-dark p_mo" style="min-width: 35px; left: 72px;"><i class="btn btn-outline-warning p-0 pr-1 pl-1 bi bi-vector-pen"></i></th>
-						<!-- 刪除 
-						<th class="p-1 fixed_cell bg-dark p_de" style="min-width: 35px; left: 144px;"><i class="btn btn-outline-danger p-0 pr-1 pl-1 bi bi-x-octagon"></i></th>
-						-->
+						<!-- 刪除 -->
+						<th class="p-1 fixed_cell bg-dark p_de" style="min-width: 35px; left: 108px;"><i class="btn btn-outline-danger p-0 pr-1 pl-1 bi bi-x-octagon"></i></th>
+						
 						
 						
 						<th class="s_title_body" style="min-width: 150px;">
@@ -152,11 +152,11 @@
 						<td class="p-0 search_radio_2 fixed_cell p_mo" style="left: 72px;"><label class="m-0 p-1" for="line_0_2"> <input type="radio" id="line_0_2" name="line_2"
 								class="mt-1 radio_size position-static" value="modify" />
 						</label></td>
-						<!-- 刪除 
-						<td class="p-0 search_radio_4 fixed_cell p_de" style="left: 144px;"><label class="m-0 p-1" for="line_0_4"> <input type="radio" id="line_0_4" name="line_4"
+						<!-- 刪除 -->
+						<td class="p-0 search_radio_3 fixed_cell p_de" style="left: 108px;"><label class="m-0 p-1" for="line_0_4"> <input type="radio" id="line_0_4" name="line_4"
 								class="mt-1 radio_size position-static" value="delete" />
 						</label></td>
-						-->
+						
 				
 				
 						<td title="" class="s_list_body">0</td>
@@ -332,7 +332,7 @@ search = new Vue({
 					$("#" + list_item[0].id + " .fixed_cell").css("background-color", "#ebecef");
 				}
 				// 選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6) 權限false=disabled
-				for (var r = 0; r <=2; r++) { 
+				for (var r = 0; r <=3; r++) { 
 					$("#" + list_item[0].id + " .search_radio_" + r + " input").attr("name", "line_" + (j + 1));
 					$("#" + list_item[0].id + " .search_radio_" + r + " input").attr("id", "line_" + (j + 1) + "_" + r);
 					$("#" + list_item[0].id + " .search_radio_" + r + " label").attr("for", "line_" + (j + 1) + "_" + r);
@@ -342,9 +342,9 @@ search = new Vue({
 				//===每筆 資料欄位===
 				var fixed_cell_nb = 0;
 
-				var fixed_cell_wh = 108;  // 原始固定 數值252
+				var fixed_cell_wh = 142;  // 原始固定 數值252
 				for (var i = 0; i < Object.keys(list[j]).length; i++) {
-					var where_i = i+3;   //i+7  表格裡的前面7個 radio
+					var where_i = i+4;   //i+7  表格裡的前面7個 radio
 					var one_item = $("#search_data_" + (j + 1))[0].children;  //每個欄位-複製樣本
 					var key_id = Object.keys(list[j])[i];
 					var value_name = list[j][Object.keys(list[j])[i]];
@@ -481,9 +481,9 @@ search = new Vue({
 			});
 			
 			//Delete
-		//	$(document).on("click", ".search_example_title .bi-x-octagon", function (event) {
-		//		$(".search_radio_4 input").trigger("click");
-		//	});
+			$(document).on("click", ".search_example_title .bi-x-octagon", function (event) {
+				$(".search_radio_3 input").trigger("click");
+			});
 			
 
 			$(document).on("click", "#choose_s", function (event) {

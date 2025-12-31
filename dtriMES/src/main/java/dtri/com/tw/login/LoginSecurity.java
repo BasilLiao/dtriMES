@@ -358,7 +358,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, oqc_result_list + ".S1").hasAuthority(actionRole(oqc_result_list, "S1"))// 查詢
 				.antMatchers(HttpMethod.PUT, oqc_result_list + ".S2").hasAuthority(actionRole(oqc_result_list, "S2"))// SAVE/UPDATE
 				
-				// ----請求-OQC站 審核OQC檢驗單-(訪問) ---- 202512
+				// ----請求 oqc_review_form   一般-OQC單據簽核- (訪問) ---- 202512
 				.antMatchers(HttpMethod.POST, oqc_review_form).hasAuthority(actionRole(oqc_review_form, ""))//
 				.antMatchers(HttpMethod.POST, oqc_review_form + ".AR").hasAuthority(actionRole(oqc_review_form, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, oqc_review_form + ".AC").hasAuthority(actionRole(oqc_review_form, "AC"))// (新增)

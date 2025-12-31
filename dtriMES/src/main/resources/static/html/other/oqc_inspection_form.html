@@ -547,26 +547,27 @@ customized = new Vue({
 				}
 				
 				//確認 "檢查結果"有無勾選
-				let allChecked = true;	
-				$(".oif_check_result").each(function () {
-				
+			//	let allChecked = true;	
+				$(".oif_check_result").each(function () {				
 				    let row = $(this).closest("tr");				
 				    // 若 index 在 div、span、text node，都能抓到
 				    let rowNumber = $.trim(row.find(".col-index").text());//抓取號碼				
 				    let checked = row.find("input[type='radio']:checked");				
 				    if (checked.length === 0) {
-				    	allChecked = false;	
+			//	    	allChecked = false;	
 				        t_alert.alertshow("warning", `檢查內結果欄位 號碼第 ${rowNumber} 列尚未勾選！`);
 				        return false; //跳出這回圈
 				    }				   
 				});	
-				if (!allChecked) return false;//再跳出這回圈	
-				
-				customized.edittitle();
-				customized.editlist();				
-				console.log("打包轉存成JSON格式");
-				customized.modify_datas.action1 = "S2";   //使用 Vue 實例
-			    customized.sendSave();		
+			//	if (!allChecked) return false;//再跳出這回圈
+			// 一秒後執行
+				setTimeout(() => {
+					customized.edittitle();
+					customized.editlist();				
+					console.log("打包轉存成JSON格式");
+					customized.modify_datas.action1 = "S2";   //使用 Vue 實例
+				    customized.sendSave();						
+				}, 3000);
 			});	
 			
 	
@@ -880,12 +881,30 @@ customized = new Vue({
 				    <title>列印</title>
 				    <link rel="stylesheet" href="./thirdparty/css/bootstrap-4.6.0.min.css" />
 				    <style>
-				      @page { margin: 2mm 5mm; }
-				      input { border: none; border-bottom: 1px solid #000; outline: none; }
-				      body { font-family: Arial; padding: 10px; color: #000; }
-				      table { border-collapse: collapse; width: 100%; }
-				      textarea { font-size: 12px !important; font-family: Arial Narrow, Arial; }
-				      .header { text-align: center; }
+				    @media print {
+
+				    	  table {
+				    	    page-break-inside: auto !important;
+				    	    break-inside: auto !important;
+				    	  }
+
+				    	  tr {
+				    	    page-break-inside: auto !important;
+				    	    break-inside: auto !important;
+				    	  }
+
+				    	  td {
+				    	    page-break-inside: auto !important;
+				    	    break-inside: auto !important;
+				    	  }
+
+				    	}
+				      @page { margin: 6mm 5mm 0mm 5mm; /* 上右下左空白 */ }
+				      	input { border: none; border-bottom: 1px solid #000; outline: none; }
+				      	body { font-family: Arial; padding: 10px; color: #000; }
+				      	table { border-collapse: collapse; width: 100%; }
+				      	textarea { font-size: 12px !important; font-family: Arial Narrow, Arial; }
+				      	.header { text-align: center; }
 				    </style>
 				  </head>
 				  <body>

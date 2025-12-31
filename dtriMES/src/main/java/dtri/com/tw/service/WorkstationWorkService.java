@@ -364,7 +364,7 @@ public class WorkstationWorkService {
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_path", pb_l_path);
 								// 避免資料太大
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pb_l_text",
-										pb_l_text.length() > 200000 ? "PLT_size>200000 略過顯示!" : pb_l_text);
+										pb_l_text.length() > 150000 ? "PLT_size>150000 略過顯示!" : pb_l_text);
 
 								object_body.put(FFM.choose(FFM.Hmb.M.toString()) + "pr_b_item",
 										one.getProductionRecords().getPrbitem());
