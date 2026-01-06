@@ -1096,17 +1096,38 @@
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-					$("#dp_excel").table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+			//		$("#dp_excel").table2excel({
+			//			// exclude CSS class
+			//			//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+			//			preserveColors: false,
+			//			exclude_img: true,
+			//			exclude_links: true,
+			//			exclude: ".noExl",
+			//			name: "Worksheet Name",
+			//			filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+			//			fileext: ".xls" // file extension
+			//		});
+					
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("dp_excel");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_production_"  + reportDate + ".xlsx");	
+					
+					
 				});
 				$(document).on("click", "#dp_all_export_btn", function (event) {
 					console.log("dp_all_export_btn");
@@ -1117,17 +1138,37 @@
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-					$("#dp_all_excel").table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+			//		$("#dp_all_excel").table2excel({
+			//			// exclude CSS class
+			//			//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+			//			preserveColors: false,
+			//			exclude_img: true,
+			//			exclude_links: true,
+			//			exclude: ".noExl",
+			//			name: "Worksheet Name",
+			//			filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+			//			fileext: ".xls" // file extension
+			//		});
+			
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("dp_all_excel");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_production_"  + reportDate + ".xlsx");	
+			
 				});
 				//良率
 				$(document).on("click", "#yield_export_btn", function (event) {
@@ -1139,18 +1180,39 @@
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-					$("#yield_excel").table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+			//		$("#yield_excel").table2excel({
+			//			// exclude CSS class
+			//			//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+			//			preserveColors: false,
+			//			exclude_img: true,
+			//			exclude_links: true,
+			//			exclude: ".noExl",
+			//			name: "Worksheet Name",
+			//			filename: "MES_Report_Daily_production_" + reportDate, //do not include extension
+			//			fileext: ".xls" // file extension
+			//		});
+					
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("yield_excel");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_Yield_"  + reportDate + ".xlsx");		
+									
 				});
+				
 				$(document).on("click", "#dwh_export_btn", function (event) {
 					console.log("dwh_export_btn");
 					//更新時間
@@ -1160,18 +1222,38 @@
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-					$("#dwh_excel").table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_Daily_working_hours_" + reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+				//	$("#dwh_excel").table2excel({
+				//		// exclude CSS class
+				//		//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+				//		preserveColors: false,
+				//		exclude_img: true,
+				//		exclude_links: true,
+				//		exclude: ".noExl",
+				//		name: "Worksheet Name",
+				//		filename: "MES_Report_Daily_working_hours_" + reportDate, //do not include extension
+				//		fileext: ".xls" // file extension
+				//	});
+					
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("dwh_excel");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_working_hours_"  + reportDate + ".xlsx");					
 				});
+				
 				$(document).on("click", "#dnoe_export_btn", function (event) {
 					console.log("dnoe_export_btn");
 					//更新時間
@@ -1181,17 +1263,38 @@
 						('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 						('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 						('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-					$("#dnoe_excel").table2excel({
-						// exclude CSS class
-						//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-						preserveColors: false,
-						exclude_img: true,
-						exclude_links: true,
-						exclude: ".noExl",
-						name: "Worksheet Name",
-						filename: "MES_Report_Daily_Number_of_employees_" + reportDate, //do not include extension
-						fileext: ".xls" // file extension
-					});
+				//	$("#dnoe_excel").table2excel({
+				//		// exclude CSS class
+				//		//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+				//		preserveColors: false,
+				//		exclude_img: true,
+				//		exclude_links: true,
+				//		exclude: ".noExl",
+				//		name: "Worksheet Name",
+				//		filename: "MES_Report_Daily_Number_of_employees_" + reportDate, //do not include extension
+				//		fileext: ".xls" // file extension
+				//	});
+					  // 1. 把 table 轉成 worksheet
+				    let table = document.getElementById("dnoe_excel");
+				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+				    // 2. 強制所有 cell 都轉成文字格式
+				    for (let cellAddr in ws) {
+				        if (!ws.hasOwnProperty(cellAddr)) continue;
+				        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+				        let cell = ws[cellAddr];
+				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+				        cell.t = "s"; // 設定為 string
+				        cell.z = "@"; // Excel 格式：文字
+				    }
+				    // 3. 建立 workbook 並加入 worksheet
+				    let wb = XLSX.utils.book_new();
+				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_Number_of_employees_"  + reportDate + ".xlsx");			
+				
+				
+					
 				});
 				$(document).on("click", ".bi-search", function (event) {
 					console.log("bi .bi-search");

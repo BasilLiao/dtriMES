@@ -191,7 +191,8 @@ public class ProductionHeaderService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_sort", FFS.h_t(sys_sort, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_ver", FFS.h_t(sys_ver, "100px", FFM.Wri.W_N));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "sys_status", FFS.h_t(sys_status, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_api_data",FFS.h_t(ph_api_data, "250px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "ph_api_data",
+					FFS.h_t(ph_api_data, "250px", FFM.Wri.W_Y));
 			bean.setHeader(object_header);
 
 			// 放入修改 [(key)](modify/Create/Delete) 格式
@@ -559,7 +560,7 @@ public class ProductionHeaderService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_ver", one.getSysver());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "sys_status", one.getSysstatus());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "ph_api_data", one.getPhapidata());
-			
+
 			object_bodys.put(object_body);
 		});
 		object_bodys_all.put("search", object_bodys);
@@ -705,9 +706,17 @@ public class ProductionHeaderService {
 							data.get("pr_b_item").toString().equals("") ? "{}" : data.get("pr_b_item").toString());
 					pro_r.setPrsitem(
 							data.get("pr_s_item").toString().equals("") ? "{}" : data.get("pr_s_item").toString());
-					pro_r.setPrmaterial(
-							data.get("pr_material").toString().equals("") ? "{}" : data.get("pr_material").toString());
-
+					// 避免沒有此值
+					// opt() 如果找不到 key 或值為 null，會回傳 null 而不噴 Exception
+					Object val = data.opt("pr_material");
+					// 進行判斷(避免異常)
+					String result;
+					if (val == null || val == JSONObject.NULL || val.toString().trim().isEmpty()) {
+						result = "{}";
+					} else {
+						result = val.toString();
+					}
+					pro_r.setPrmaterial(result);
 
 					// 有序號登記
 					if (!data.getString("ph_type").equals("A511_no_sn") //
@@ -757,7 +766,7 @@ public class ProductionHeaderService {
 					pro_h.setPhesdate(data.getString("ph_e_s_date"));
 					pro_h.setPhwcline(data.getString("ph_wc_line"));
 					pro_h.setPhapidata(body.toString());
-					
+
 					// 標籤?
 					if (data.has("ph_ll_g_name")) {
 						pro_h.setPhllgname(data.getString("ph_ll_g_name"));

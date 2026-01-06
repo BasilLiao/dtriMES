@@ -519,17 +519,36 @@ customized = new Vue({
 					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
 					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
 					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
-				$("#rd_excel").table2excel({
-					// exclude CSS class
-					//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
-					preserveColors: false,
-					exclude_img: true,
-					exclude_links: true,
-					exclude: ".noExl",
-					name: "Worksheet Name",
-					filename: "MES_Repair_Report_" + reportDate, //do not include extension
-					fileext: ".xls" // file extension
-				});
+			//	$("#rd_excel").table2excel({
+			//		// exclude CSS class
+			//		//https://www.jqueryscript.net/table/Export-Html-Table-To-Excel-Spreadsheet-using-jQuery-table2excel.html
+			//		preserveColors: false,
+			//		exclude_img: true,
+			//		exclude_links: true,
+			//		exclude: ".noExl",
+			//		name: "Worksheet Name",
+			//		filename: "MES_Repair_Report_" + reportDate, //do not include extension
+			//		fileext: ".xls" // file extension
+			//	});
+				
+				  // 1. 把 table 轉成 worksheet
+			    let table = document.getElementById("rd_excel");
+			    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
+			    // 2. 強制所有 cell 都轉成文字格式
+			    for (let cellAddr in ws) {
+			        if (!ws.hasOwnProperty(cellAddr)) continue;
+			        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+			        let cell = ws[cellAddr];
+			        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+			        cell.t = "s"; // 設定為 string
+			        cell.z = "@"; // Excel 格式：文字
+			    }
+			    // 3. 建立 workbook 並加入 worksheet
+			    let wb = XLSX.utils.book_new();
+			    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+			    // 4. 下載檔案（副檔名改成 .xlsx）
+			    XLSX.writeFile(wb, "MES_Repair_Report_"  + reportDate + ".xlsx");				
 			});
 			
 			//清除客戶資料
