@@ -19,11 +19,12 @@ td.datalist {
 }
 
 /* 固定表頭  真正固定表頭應該搭配position: sticky */
-.search_example_title th {
+.search_example_title tr {
 	position: sticky;
 	top: 0px;
 	z-index: 3;
 }
+
 
 /* tabel檢查表 "檢查內結果" "文字置中"  */
 td .center-checked {
@@ -31,6 +32,10 @@ td .center-checked {
 	text-align: center;
 	display: block; /* 確保能置中 */
 }
+/*   超大但保留邊界（90% 視窗）
+.checkItemModal {
+  max-width: 90vw;
+} */
 </style>
 <div id="customized">
 	<div class="align-items-center border border-light mb-3 shadow">
@@ -43,6 +48,12 @@ td .center-checked {
 				<div class="col-0 p-1 mt-1">工單號:</div>
 				<div class="col-0 p-1">
 					<input type="text" class="col p-1 border border-dark rounded detail_ri" id="search_orlow" placeholder="工單號碼">
+				</div>
+			</div>
+			<div class="col-4 row" id="search_ph_schedule">
+				<div class="col-0 p-1 mt-1">工單進度(X/X):</div>
+				<div class="col-0 p-1">
+					<input type="text" class="col p-1 border border-dark rounded detail_ri"  placeholder="工單進度(X/X)">
 				</div>
 			</div>
 			<div class="col-4 row m-0 p-1 align-items-end">
@@ -240,7 +251,7 @@ td .center-checked {
 
 		<!-- -***************************** 檢測項目 table ************-->
 		<div class="col-md-6 p-0">
-			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">	<i class="bi bi-calendar-check"></i>檢測項目
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row calendar-check">	<i class="bi bi-calendar-check"></i>檢測項目
 			</div>
 			<div class="m-0 check-items">
 				<table id="check-dataTable" class=" border border-dark table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
@@ -279,7 +290,7 @@ td .center-checked {
 		</div>
 		<!-- ********************************** 產品細節 table  ************************** -->
 		<div class="col-md-3 p-0 m-0  pbcreate_example" id="product-detail">
-			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row">
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row product_detail">
 				<i class="bi bi-box-arrow-in-down-right ml-1"></i>產品細節
 			</div>
 			<div class="p-0 m-0 create_example_pb border border-dark row text-left">
@@ -292,7 +303,41 @@ td .center-checked {
 			</div>
 		</div>
 	</div>
-	<!-- ********************************************* -->
+	<!-- **************** 產品細節 彈跳視窗 ************************* -->
+	<div class="modal fade" id="productDetailModal" tabindex="-1">
+	  <div class="modal-dialog modal-xl modal-fullscreen">
+	    <div class="modal-content">
+	
+	      <div class="modal-header">
+	        <h5 class="modal-title">產品細節</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+	      </div>
+	
+	      <div class="modal-body" id="productDetailModalBody"></div>
+	
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- **************** 檢測項目 彈跳視窗 ************************* -->
+	<div class="modal fade" id="checkItemModal" tabindex="-1">
+	  	<div class="modal-dialog modal-xl modal-dialog-centered checkItemModal">
+	    	<div class="modal-content">
+	
+	      	<div class="modal-header">
+	        	<!-- <h5 class="modal-title">檢測項目</h5> -->
+	        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+	      	</div>
+	
+			<!-- 重點：給高度，table 才能 sticky -->
+			<div class="modal-body p-0">
+			  	<div id="checkItemModalBody" class="h-100"></div>
+			</div>
+	
+	    	</div>
+	  	</div>
+	</div>
+<!-- ********************************** -->	
 </div>
 
 <script type="text/javascript">
@@ -648,7 +693,83 @@ customized = new Vue({
 			    // 4. 下載檔案（副檔名改成 .xlsx）
 			    XLSX.writeFile(wb, "MES_Repair_Report_" + reportDate + ".xlsx");
 			});
-						
+			
+			//******************  跳出 檢測項目 新視窗	************************	
+			$(document).on("click", ".calendar-check", function (event) {
+				console.log("跳出 檢測項目 新視窗")
+
+				// 1️ 複製「檢測項目」整包
+				let $clone = $("#check-dataTable").clone(true, true);
+				// clone 後改 radio 的 name
+				// radio name 隔離
+				$clone.find('input[type="radio"]').each(function () {
+				    let oldName = $(this).attr("name");
+				    $(this).attr("name", oldName + "_modal");
+				});
+				
+				// 2️ 避免 id 重複
+				$clone.find("#check-dataTable").removeAttr("id");
+				
+				// 3️ Modal 內高度滿版 + 捲動
+				$clone.css({
+				    height: "calc(100vh - 120px)",
+				    overflow: "auto"
+				});
+				
+				// 4️ table 撐滿
+				$clone.find("table").addClass("w-100");
+				
+				// 5️ 表頭 sticky（保險）
+				$clone.find("thead th").css({
+				    position: "sticky",
+				    top: 0,
+				    zIndex: 5
+				});
+				
+				// 6️ 塞進 Modal
+				$("#checkItemModalBody").empty().append($clone);
+				
+				// 7️ 顯示
+			    new bootstrap.Modal(
+			        document.getElementById("checkItemModal")
+			    ).show();
+			    
+			});
+			
+			
+			//******************  跳出 產品細節 新視窗	************************	
+			$(document).on("click", ".product_detail", function (event) {
+				
+			    // 1️ 複製整個產品細節區塊
+			    let $clone = $("#product-detail").clone(true, true);
+			    $clone.find(".product_detail").remove(); //不想顯示「產品細節」標題列
+			    // 2️ 移除原本的 id（避免 DOM 重複）
+			    $clone.removeAttr("id");
+			    
+			    // Modal 裡滿版
+			    $clone
+			      .removeClass("col-md-3")
+			      .addClass("container-fluid");
+
+			    // 每個欄位自動排版（手機1欄 / 平板2欄 / 桌機4欄）
+			    $clone.find(".save_key")
+			      .removeClass("col-md-6")
+			      .addClass("col-12 col-sm-6 col-lg-3");
+			 //   $clone.removeClass("col-md-3").addClass("col-12");//想讓 Modal 裡更乾淨
+			 
+			    // 3️ 視窗內只顯示，不允許修改
+			    $clone.find("input").prop("readonly", true);
+			  
+			    // 4️ 清空 modal 內容後塞入
+			    $("#productDetailModalBody").empty().append($clone);
+
+			    // 5️ 顯示 Modal
+			    new bootstrap.Modal(
+			        document.getElementById("productDetailModal")
+			    ).show();
+					
+			});
+			
 		},
 			
 		//清除所有資訊
@@ -767,6 +888,8 @@ customized = new Vue({
 	 			    console.error(" 解析 oqcdata 失敗，格式不是合法 JSON：", e);
 	 			    oqcdata = []; // 避免後面爆錯
 	 			}
+	 			//search_ph_schedule
+	 			$('#search_ph_schedule input').val(lists.detail["search_ph_schedule"]); // 配對製表檢驗單的id Key
 	 			$('#orl_oifid input').val(lists.detail["oif_id"]); // 配對製表檢驗單的id Key
 	 			$('#orl_ow input').val(lists.detail["oif_ow"]); //工單號
 	 			$('#orl_pnb input').val(lists.detail["oif_p_nb"]); //產品料號

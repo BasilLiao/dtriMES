@@ -538,7 +538,7 @@ public class OqcInspectionFormService {
 
 					List<String> lines = new ArrayList<>();
 					// *************************** 版本資訊 **************************************
-					lines.add("\n" + "*****************************軟體定義*****************************");
+					lines.add("\n" + "*************************  軟體定義  *************************");
 					// 處理 prsitem
 					for (int i = 0; i < prsArr.length(); i++) {
 						JSONObject obj = prsArr.getJSONObject(i);
@@ -549,7 +549,7 @@ public class OqcInspectionFormService {
 							lines.add("\n" + key + " : " + isVal);
 						}
 					}
-					lines.add("\n" + "*****************************規格定義*****************************");
+					lines.add("\n" + "*************************  規格定義  *************************");
 					// 處理 prbitem
 					for (int i = 0; i < prbArr.length(); i++) {
 						JSONObject obj = prbArr.getJSONObject(i);

@@ -1087,6 +1087,8 @@
 					$(".search_example_finds select").val("");
 					clearInterval(customized.Interval_update30s);
 				});
+				
+				//Daily production Qty(每日 總產量)
 				$(document).on("click", "#dp_export_btn", function (event) {
 					console.log("dp_export_btn");
 					//更新時間
@@ -1108,10 +1110,15 @@
 			//			fileext: ".xls" // file extension
 			//		});
 					
-					  // 1. 把 table 轉成 worksheet
+					// 1.複製 table（不影響畫面）
 				    let table = document.getElementById("dp_excel");
-				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
-				    // 2. 強制所有 cell 都轉成文字格式
+					// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+				    let cloneTable = table.cloneNode(true);
+					// 3.移除不匯出的欄位（th / td 都要）
+				    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+				 	// 4.轉成 worksheet
+				    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+				    // 5. 強制所有 cell 都轉成文字格式
 				    for (let cellAddr in ws) {
 				        if (!ws.hasOwnProperty(cellAddr)) continue;
 				        if (cellAddr[0] === "!") continue; // 跳過屬性
@@ -1119,16 +1126,16 @@
 				        let cell = ws[cellAddr];
 				        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
 				        cell.t = "s"; // 設定為 string
-				        cell.z = "@"; // Excel 格式：文字
+				        cell.z = "@"; // Excel 格式：文字				        
 				    }
-				    // 3. 建立 workbook 並加入 worksheet
+				    // 6. 建立 workbook 並加入 worksheet
 				    let wb = XLSX.utils.book_new();
 				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
-				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    // 7. 下載檔案（副檔名改成 .xlsx）
 				    XLSX.writeFile(wb, "MES_Report_Daily_production_"  + reportDate + ".xlsx");	
-					
-					
 				});
+				
+				//Daily production cumulative Qty(每日 累計總產量)
 				$(document).on("click", "#dp_all_export_btn", function (event) {
 					console.log("dp_all_export_btn");
 					//更新時間
@@ -1150,10 +1157,15 @@
 			//			fileext: ".xls" // file extension
 			//		});
 			
-					  // 1. 把 table 轉成 worksheet
+					// 1.複製 table（不影響畫面）
 				    let table = document.getElementById("dp_all_excel");
-				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
-				    // 2. 強制所有 cell 都轉成文字格式
+					// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+				    let cloneTable = table.cloneNode(true);
+					// 3.移除不匯出的欄位（th / td 都要）
+				    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+					// 4.轉成 worksheet
+				    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+				    // 5. 強制所有 cell 都轉成文字格式
 				    for (let cellAddr in ws) {
 				        if (!ws.hasOwnProperty(cellAddr)) continue;
 				        if (cellAddr[0] === "!") continue; // 跳過屬性
@@ -1163,14 +1175,15 @@
 				        cell.t = "s"; // 設定為 string
 				        cell.z = "@"; // Excel 格式：文字
 				    }
-				    // 3. 建立 workbook 並加入 worksheet
+				    // 6. 建立 workbook 並加入 worksheet
 				    let wb = XLSX.utils.book_new();
 				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
-				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    // 7. 下載檔案（副檔名改成 .xlsx）
 				    XLSX.writeFile(wb, "MES_Report_Daily_production_"  + reportDate + ".xlsx");	
 			
 				});
-				//良率
+				
+				//Daily production yield(每日 產量良率)
 				$(document).on("click", "#yield_export_btn", function (event) {
 					console.log("yield_export_btn");
 					//更新時間
@@ -1192,10 +1205,15 @@
 			//			fileext: ".xls" // file extension
 			//		});
 					
-					  // 1. 把 table 轉成 worksheet
+					// 1.複製 table（不影響畫面）
 				    let table = document.getElementById("yield_excel");
-				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
-				    // 2. 強制所有 cell 都轉成文字格式
+					// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+				    let cloneTable = table.cloneNode(true);
+					// 3.移除不匯出的欄位（th / td 都要）
+				    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+					// 4.轉成 worksheet					  
+				    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+				    // 5. 強制所有 cell 都轉成文字格式
 				    for (let cellAddr in ws) {
 				        if (!ws.hasOwnProperty(cellAddr)) continue;
 				        if (cellAddr[0] === "!") continue; // 跳過屬性
@@ -1205,14 +1223,14 @@
 				        cell.t = "s"; // 設定為 string
 				        cell.z = "@"; // Excel 格式：文字
 				    }
-				    // 3. 建立 workbook 並加入 worksheet
+				    // 6. 建立 workbook 並加入 worksheet
 				    let wb = XLSX.utils.book_new();
 				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
-				    // 4. 下載檔案（副檔名改成 .xlsx）
-				    XLSX.writeFile(wb, "MES_Report_Daily_Yield_"  + reportDate + ".xlsx");		
-									
+				    // 7. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_Yield_"  + reportDate + ".xlsx");	
 				});
 				
+				//Daily working hours(每日 總工時)
 				$(document).on("click", "#dwh_export_btn", function (event) {
 					console.log("dwh_export_btn");
 					//更新時間
@@ -1234,10 +1252,15 @@
 				//		fileext: ".xls" // file extension
 				//	});
 					
-					  // 1. 把 table 轉成 worksheet
-				    let table = document.getElementById("dwh_excel");
-				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
-				    // 2. 強制所有 cell 都轉成文字格式
+					// 1.複製 table（不影響畫面）
+				    let table = document.getElementById("dwh_excel");					  
+					// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+				    let cloneTable = table.cloneNode(true);
+					// 3.移除不匯出的欄位（th / td 都要）
+				    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+					// 4.轉成 worksheet					  
+				    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+				    // 5. 強制所有 cell 都轉成文字格式
 				    for (let cellAddr in ws) {
 				        if (!ws.hasOwnProperty(cellAddr)) continue;
 				        if (cellAddr[0] === "!") continue; // 跳過屬性
@@ -1247,13 +1270,14 @@
 				        cell.t = "s"; // 設定為 string
 				        cell.z = "@"; // Excel 格式：文字
 				    }
-				    // 3. 建立 workbook 並加入 worksheet
+				    // 6. 建立 workbook 並加入 worksheet
 				    let wb = XLSX.utils.book_new();
 				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
-				    // 4. 下載檔案（副檔名改成 .xlsx）
+				    // 7. 下載檔案（副檔名改成 .xlsx）
 				    XLSX.writeFile(wb, "MES_Report_Daily_working_hours_"  + reportDate + ".xlsx");					
 				});
 				
+				//Daily number of employees(每日 總人力
 				$(document).on("click", "#dnoe_export_btn", function (event) {
 					console.log("dnoe_export_btn");
 					//更新時間
@@ -1274,10 +1298,15 @@
 				//		filename: "MES_Report_Daily_Number_of_employees_" + reportDate, //do not include extension
 				//		fileext: ".xls" // file extension
 				//	});
-					  // 1. 把 table 轉成 worksheet
+					// 1.複製 table（不影響畫面）
 				    let table = document.getElementById("dnoe_excel");
-				    let ws = XLSX.utils.table_to_sheet(table, {raw: true});
-				    // 2. 強制所有 cell 都轉成文字格式
+					// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+				    let cloneTable = table.cloneNode(true);
+					// 3.移除不匯出的欄位（th / td 都要）
+				    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+					// 4.轉成 worksheet	
+				    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+				    // 5. 強制所有 cell 都轉成文字格式
 				    for (let cellAddr in ws) {
 				        if (!ws.hasOwnProperty(cellAddr)) continue;
 				        if (cellAddr[0] === "!") continue; // 跳過屬性
@@ -1287,15 +1316,13 @@
 				        cell.t = "s"; // 設定為 string
 				        cell.z = "@"; // Excel 格式：文字
 				    }
-				    // 3. 建立 workbook 並加入 worksheet
+				    // 6. 建立 workbook 並加入 worksheet
 				    let wb = XLSX.utils.book_new();
 				    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
-				    // 4. 下載檔案（副檔名改成 .xlsx）
-				    XLSX.writeFile(wb, "MES_Report_Daily_Number_of_employees_"  + reportDate + ".xlsx");			
-				
-				
-					
+				    // 7. 下載檔案（副檔名改成 .xlsx）
+				    XLSX.writeFile(wb, "MES_Report_Daily_Number_of_employees_"  + reportDate + ".xlsx");
 				});
+				
 				$(document).on("click", ".bi-search", function (event) {
 					console.log("bi .bi-search");
 					$(".search_example_finds").slideToggle("fast");

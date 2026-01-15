@@ -19,7 +19,8 @@ public interface RepairDetailDao extends JpaRepository<RepairDetail, String> {
 
 	// 查詢 維修單項目ID
 	ArrayList<RepairDetail> findAllByRdid(String rdid);
-
+	
+	
 	// 查詢 負責對象+維修單項目ID+SN產品號
 	@Query("SELECT d FROM RepairDetail d join d.register r join d.order o WHERE "//
 			+ "(:rdid is null or d.rdid LIKE %:rdid%) and "//

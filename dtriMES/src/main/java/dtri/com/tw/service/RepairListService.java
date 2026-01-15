@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.Customer;
@@ -69,7 +73,7 @@ public class RepairListService {
 		}
 
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("rdid").descending());
-		String search_rd_id = null;
+		String search_rd_id = null; //維修單-項目(序號)
 		String search_ro_id = null;
 		String search_rd_rr_sn = null;
 		String search_rr_pb_type = "產品";
@@ -114,9 +118,9 @@ public class RepairListService {
 
 			// 產品資料
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "200px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_p_qty", FFS.h_t(rr_ph_p_qty, "100px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "150px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_id", FFS.h_t(rr_pr_id, "200px", FFM.Wri.W_Y));  //"製令單
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_p_qty", FFS.h_t(rr_ph_p_qty, "100px", FFM.Wri.W_Y)); //製令數量
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "150px", FFM.Wri.W_Y));//產品型號
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_expired", FFS.h_t(rr_expired, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_ph_w_years", FFS.h_t(rr_ph_w_years, "100px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_sys_m_date", FFS.h_t(rr_pb_sys_m_date, "200px", FFM.Wri.W_Y));
@@ -142,8 +146,8 @@ public class RepairListService {
 			// 單據細節
 			obj_m = new JSONArray();
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "系統建立", "", FFM.Wri.W_N, "col-md-12", false, n_val, "rd_id", rd_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_ph_p_qty", rr_ph_p_qty));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "rr_pr_id", rr_pr_id));  //"製令單
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "rr_ph_p_qty", rr_ph_p_qty)); //製令數量
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "rd_rr_sn", rd_rr_sn));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.NUMB, "1", "1", FFM.Wri.W_N, "col-md-1", true, n_val, "rd_u_qty", rd_u_qty));
 
@@ -173,7 +177,7 @@ public class RepairListService {
 			// 產品或是物件 登記資訊
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-2", false, n_val, "rr_c_sn", rr_c_sn));
 			obj_m.put(
-					FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model));
+					FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-1", false, n_val, "rr_pr_p_model", rr_pr_p_model)); //產品型號
 			s_val = new JSONArray();
 			s_val.put((new JSONObject()).put("value", "保固期內").put("key", true));
 			s_val.put((new JSONObject()).put("value", "保固過期").put("key", false));
@@ -229,7 +233,7 @@ public class RepairListService {
 			// 進行-特定查詢
 			search_rd_rr_sn = body.getJSONObject("search").getString("rd_rr_sn");
 			search_rd_rr_sn = search_rd_rr_sn.equals("") ? null : search_rd_rr_sn;
-			search_rd_id = body.getJSONObject("search").getString("rd_id");
+			search_rd_id = body.getJSONObject("search").getString("rd_id");   //維修單-項目(序號)
 			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
 			search_rr_pb_type = body.getJSONObject("search").getString("rr_pb_type");
 			search_rr_pb_type = search_rr_pb_type.equals("") ? null : search_rr_pb_type;
@@ -266,9 +270,9 @@ public class RepairListService {
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rd_experience", rd.getRdexperience());
 
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_c_sn", rr.getRrcsn() == null ? "" : rr.getRrcsn());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_p_qty", rr.getRrphpqty());
-				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel());
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_id", rr.getRrprid());  //"製令單
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_p_qty", rr.getRrphpqty()); //製令數量
+				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pr_p_model", rr.getRrprpmodel()); //產品型號
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_expired", rr.getRrexpired());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_ph_w_years", rr.getRrphwyears());
 				object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "rr_pb_sys_m_date", rr.getRrpbsysmdate() == null ? "" : rr.getRrpbsysmdate());
@@ -404,10 +408,10 @@ public class RepairListService {
 					// Step2.帶入 製令資訊
 					List<ProductionHeader> headers = headerDao.findAllByPhpbgid(bodys.get(0).getPbgid());
 					if (headers.size() == 1) {
-						data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());
-						data.put("rr_ph_p_qty", headers.get(0).getPhpqty());
+						data.put("rr_pr_id", headers.get(0).getProductionRecords().getPrid());  //製令單
+						data.put("rr_ph_p_qty", headers.get(0).getPhpqty());  //製令數量
 						data.put("rr_ph_w_years", headers.get(0).getPhwyears());
-						data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel());
+						data.put("rr_pr_p_model", headers.get(0).getProductionRecords().getPrpmodel()); //產品型號
 						data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(bodys.get(0).getSysmdate()));// 產品製造日期 = 產品最後修改時間
 					} else {
 						resp.autoMsssage("WK004");
@@ -422,8 +426,8 @@ public class RepairListService {
 					data.put("rd_statement", data.getString("rd_statement").equals("") ? "Something project wrong" : data.getString("rd_statement"));
 					rd_new_list.put(ch_d, data);
 				} else {
-					data.put("rr_pr_id", "");
-					data.put("rr_ph_p_qty", 0);
+					data.put("rr_pr_id", "");  //製令單
+					data.put("rr_ph_p_qty", 0); //製令數量
 					data.put("rr_ph_w_years", 0);
 					data.put("rr_pb_sys_m_date", Fm_Time.to_yMd_Hms(new Date()));
 
@@ -486,9 +490,9 @@ public class RepairListService {
 						} else {
 							rr_one.setRrsn(data.getString("rr_sn"));
 							rr_one.setRrcsn(data.getString("rr_c_sn"));
-							rr_one.setRrprid(data.getString("rr_pr_id"));
-							rr_one.setRrphpqty(data.getInt("rr_ph_p_qty"));
-							rr_one.setRrprpmodel(data.getString("rr_pr_p_model"));
+							rr_one.setRrprid(data.getString("rr_pr_id"));   //製令單
+							rr_one.setRrphpqty(data.getInt("rr_ph_p_qty")); //製令數量
+							rr_one.setRrprpmodel(data.getString("rr_pr_p_model")); //產品型號
 							rr_one.setRrexpired(true);// rr_ph_w_years
 							rr_one.setRrphwyears(data.getInt("rr_ph_w_years"));
 							rr_one.setRrpbsysmdate(Fm_Time.toDateTime(data.getString("rr_pb_sys_m_date")));
@@ -697,8 +701,8 @@ public class RepairListService {
 			resp = new PackageBean();
 		}
 		// 查詢
-		String search_rr_sn = null;// 產品序號
-		String search_rd_id = null;// 維修項目
+		String search_rr_sn = null;// 產品序號   產品(序號) :
+		String search_rd_id = null;// 維修項目   維修單-項目(序號) :
 		String search_ro_id = null;// 維修單據
 
 		// 維修單據
@@ -712,7 +716,7 @@ public class RepairListService {
 			JSONObject customized_header = new JSONObject();
 			int ord = 0;
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rd_id", FFS.h_t(rd_id, "80px", FFM.Wri.W_N));
-			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "100px", FFM.Wri.W_Y));
+			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pr_p_model", FFS.h_t(rr_pr_p_model, "100px", FFM.Wri.W_Y)); //產品型號
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_sn", FFS.h_t(rr_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_c_sn", FFS.h_t(rr_c_sn, "150px", FFM.Wri.W_Y));
 			customized_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "rr_pb_type", FFS.h_t(rr_pb_type, "90px", FFM.Wri.W_Y));
@@ -798,9 +802,9 @@ public class RepairListService {
 			resp.setHeader(object_header);
 		} else {
 			// 進行-特定查詢
-			search_rr_sn = body.getJSONObject("search").getString("rr_sn");
+			search_rr_sn = body.getJSONObject("search").getString("rr_sn"); //產品(序號) :
 			search_rr_sn = search_rr_sn.equals("") ? null : search_rr_sn;
-			search_rd_id = body.getJSONObject("search").getString("rd_id");
+			search_rd_id = body.getJSONObject("search").getString("rd_id"); //維修單-項目(序號) 
 			search_rd_id = search_rd_id.equals("") ? null : search_rd_id;
 		}
 
@@ -813,51 +817,84 @@ public class RepairListService {
 
 		// 預設維修
 		JSONObject object_detail = new JSONObject();
-		object_detail.put("rd_ru_id", "");
-		object_detail.put("rr_sn", "");
+		object_detail.put("rd_ru_id", "");  //先建立空物件 key:rd_ru_id(帳號ID),,後面都有建應該可取消
+		object_detail.put("rr_sn", "");   //先建立空物件 key:rr_sn(產品序號),後面都有建立應該可取消
 
 		// Step1.維修人員?
-		Long rdruid = user.getSuid();
+		Long rdruid = user.getSuid();  // user ID
 		List<RepairUnit> units = unitDao.findAllByRepairUnit(null, rdruid, null, null, null, false, null);
 		if (units.size() == 0) {
 			resp.autoMsssage("MT004");
 			return false;
 		} else {
-			object_detail.put("rd_ru_id", units.get(0).getRugid());
+			object_detail.put("rd_ru_id", units.get(0).getRugid()); //
 		}
 
 		// Step2.所屬的[維修人員]產品 or 維修單項目?
-		Long rugid = units.get(0).getRugid();
+		Long rugid = units.get(0).getRugid(); //維修單位 群組ID
 		ArrayList<RepairDetail> details = new ArrayList<RepairDetail>();
-
+		//          search_rd_id=維修單-項目(序號)  / search_rr_sn=產品(序號)   // 取出rd_check: 1=已檢核(收到), ro_check : 檢核狀態(0=未結單 
 		details = detailDao.findAllByRdidAndRdruid(search_ro_id, search_rd_id, search_rr_sn, null, 1, 0, rugid, null);
 		if (details.size() >= 1 && (search_rr_sn != null || search_rd_id != null)) {
 			// 有相關資料帶出第一筆資料
 			RepairDetail rd = details.get(0);
 			RepairRegister rr = rd.getRegister();
-			object_detail.put("rd_id", rd.getRdid());
-			object_detail.put("rr_sn", rd.getRegister().getRrsn());
-			object_detail.put("rr_pb_type", rr.getRrpbtype());
-			object_detail.put("rr_v", rr.getRrv());
-			object_detail.put("rr_f_ok", rr.getRrfok() + "");
-			object_detail.put("rr_pr_p_model", rr.getRrprpmodel());
+			object_detail.put("rd_id", rd.getRdid()); // 單據項目_(單位)RAM類型:R001-R999/DTR類型:DTR1767110400000-D0004
+			
+			object_detail.put("rr_sn", rd.getRegister().getRrsn()); // ID(產品SN號)[產品/主板/有序號的]1:多[維修細節]
+			object_detail.put("rr_pb_type", rr.getRrpbtype()); 	//產品類型
+			object_detail.put("rr_v", rr.getRrv());				//產品/主板/小板 版本
+			object_detail.put("rr_f_ok", rr.getRrfok() + ""); 	//  修好?1 = 待修中/2 = 以處已/3 = 已報廢
+			object_detail.put("rr_pr_p_model", rr.getRrprpmodel());	//產品型號
 
-			object_detail.put("rd_check", rd.getRdcheck());
-			object_detail.put("rd_svg", rd.getRdsvg());
-			object_detail.put("rd_statement", rd.getRdstatement());
-			object_detail.put("rd_true", rd.getRdtrue());
-			object_detail.put("rd_solve", rd.getRdsolve());
-			object_detail.put("rd_experience", rd.getRdexperience());
+			object_detail.put("rd_check", rd.getRdcheck());	//檢核狀態(0=已申請(尚未收到) 1=已檢核(收到) 2=已處理(完成修復) 3=轉處理 4=修不好(丟棄報廢) 5=已寄回(結單)
+			object_detail.put("rd_svg", rd.getRdsvg()); //圖片資料
+			object_detail.put("rd_statement", rd.getRdstatement()); //問題描述
+			object_detail.put("rd_true", rd.getRdtrue());	//實際問題情況
+			object_detail.put("rd_solve", rd.getRdsolve());	// 解決方案
+			object_detail.put("rd_experience", rd.getRdexperience()); //修理心得
 
 			// 如果有:產品規格
 			if (rr.getRrprid() != null) {
-				ArrayList<ProductionRecords> pr = recordsDao.findAllByPrid(rr.getRrprid(), null);
+				ArrayList<ProductionRecords> pr = recordsDao.findAllByPrid(rr.getRrprid(), null); //用製令單號 抓取的ProductionRecords 表格資料
 				if (pr.size() == 1) {
-					object_detail.put("pr_b_item", pr.get(0).getPrbitem().replaceAll("},", "}, \n"));// 硬體
-					object_detail.put("pr_s_item", pr.get(0).getPrsitem().replaceAll("},", "}, \n"));// 軟體
+					object_detail.put("pr_b_item", pr.get(0).getPrbitem().replaceAll("},", "}, \n"));// 硬體 (j**產品規格**)
+					object_detail.put("pr_s_item", pr.get(0).getPrsitem().replaceAll("},", "}, \n"));// 軟體 (j**軟體定義**)
+			//		object_detail.put("pr_m_item", pr.get(0).getPrmaterial().replaceAll("},", "}, \n"));// add 產品Key Part
+					
+					String pr_m_item=pr.get(0).getPrmaterial();
+					ObjectMapper mapper = new ObjectMapper();
+					try {
+						Map<String, Map<String, String>> map =  mapper.readValue(pr_m_item, new TypeReference<Map<String, Map<String, String>>>(){} );
+						map.entrySet().removeIf(entry ->
+						        entry.getValue() == null ||
+						        entry.getValue().get("Is") == null ||
+						        entry.getValue().get("Is").isEmpty()
+						);
+	
+						 String result = mapper.writeValueAsString(map); //Java轉jssonString
+						
+						object_detail.put("pr_m_item", result.replaceAll("},", "}, \n"));// add 產品Key Part
+					} catch (Exception e) {					
+						System.out.println(e);
+					}
+					
 					object_detail.put("ph_esdate", pr.get(0).getHeader().getPhesdate()); // 預計出貨日
 				}
 			}
+			//*************************  增加 顯示維修紀錄   *********************************
+			details = detailDao.findAllByRdidAndRdruid(null, null, search_rr_sn, null, 2, 0, null, null);
+			String repairhistory = "";
+			for(RepairDetail detail: details) {
+				//String rdstatement = detail.getRdstatement();//問題描述
+				String rdtrue= detail.getRdtrue().trim();//實際問題情況
+				String rdsolve = detail.getRdsolve().trim();// 解決方案
+				detail.getSysmdate();//修改時間
+				repairhistory = repairhistory
+						+ "故障原因 :" + rdtrue + "\n解決問題 :" + rdsolve + "\n時間 :" +	detail.getSysmdate()+"\n"+"************"+"\n";
+			}
+			object_detail.put("rd_h_item", repairhistory);
+			
 			// 如果有:有零件
 			List<ProductionBody> pbs = bodyDao.findAllByPbbsn(rd.getRegister().getRrsn());
 			if (pbs.size() == 1) {
@@ -886,7 +923,7 @@ public class RepairListService {
 						e.printStackTrace();
 					}
 				}
-				// 有登記的硬體資訊
+				// **********************有登記的硬體資訊  (j**登記內容**)
 				object_detail.put("pb_i_item", pr_i_item.toString().replaceAll(",\"", ",\" \n"));
 			}
 		} else if (search_rr_sn != null || search_rd_id != null) {

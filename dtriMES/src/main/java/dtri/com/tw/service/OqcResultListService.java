@@ -469,19 +469,24 @@ public class OqcResultListService {
 				}
 				OqcInspectionForm oif = OqcInspectionForms.get(0);
 				long x= oif.getSysstatus();
-				if(x==2) {
+				if(x==2) {    
 					resp.setError_ms("已審核過，無法再檢驗登記");
 					resp.autoMsssage("109"); // 回傳錯誤訊息
 				}
 				if(x==3) {
 					resp.setError_ms("此單已作廢，無法再檢驗登記");
 					resp.autoMsssage("109"); // 回傳錯誤訊息
-				}				
+				}
+				//用"工單號"搜尋製令內容
+				List<ProductionHeader> phs = headerDao.findAllByProductionHeader(null, orl_ow, -1, null,null, null, null, null,	null, null, null, null, null);
+				ProductionHeader ph=phs.get(0);
+				
 				// step2.用工單搜尋有資料庫有無已經有檢驗的資料清單 存在 (完全比對) ,資料狀態=0 , 只搜尋 "資料狀態sys_status"為"正常"或已結單的資料
 				OqcResultLists = orlDao.findByOrlowAndOrlpsn(orl_ow, null);
 
 				if (OqcResultLists == null || OqcResultLists.isEmpty() || OqcResultLists.get(0) == null) {
 					System.out.println("no data,就只會 OqcInspectionForms 資料庫取出 檢查資料表");
+					object_detail.put("search_ph_schedule",ph.getPhschedule()); // 進度(X／X)
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號
@@ -495,6 +500,7 @@ public class OqcResultListService {
 					System.out.println("有資料,就從step1 OqcInspectionForms資料庫取出檢查資料表 step2. OqcResultLists資料庫取出檢驗登記清單");
 					// step 1.
 					//OqcInspectionForm oif = OqcInspectionForms.get(0);
+					object_detail.put("search_ph_schedule",ph.getPhschedule()); // 進度(X／X)
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號

@@ -168,13 +168,16 @@ select {
 					</div>
 				</div>
 				<div id="fi_btn" class="col p-1 row m-0 justify-content-end">
-					<div class="col-md-1 p-1 m-0">
+			 		<div class="col-md-1 p-1 m-0">
 						<button class="col btn btn-secondary btn-sm repair_part_fi_btn" type="button">Repair Part</button>
 					</div>
+					<!--
 					<div class="col-md-1 p-1 m-0">
 						<button class="col btn btn-info btn-sm project_content_fi_btn" type="button">Project...</button>
 					</div>
+						 -->
 					<div class="col-md-2 p-1 m-0"></div>
+					
 					<div class="col-md-1 p-1 m-0">
 						<button id="search_fi_btn" class="col btn btn-primary btn-sm" type="button">Search(S1)</button>
 					</div>
@@ -195,13 +198,13 @@ select {
 				<i class="bi bi-grid-3x3-gap mr-1 mb-1 btn btn-outline-dark p-0 pr-1 pl-1 shadow-sm"></i>Project Content
 			</div>
 		</div>
-		<div id="project_content" class="row p-0 m-0" style="display: none;">
+		<div id="project_content" class="row p-0 m-0">
 			<div class="col-md-12 row m-0 p-2 text-left" style="min-height: 450px">
 				<div class="col-md-3 m-0 p-1" id="pr_b_item">
 					<div class="col p-0">產品規格 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-3 m-0 p-1" id="pr_s_item">
+				<div class="col-md-2 m-0 p-1" id="pr_s_item">
 					<div class="col p-0">軟體定義 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
@@ -209,18 +212,25 @@ select {
 					<div class="col p-0">登記內容 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-4 m-0 p-1" id="pb_h_item">
+				<div class="col-md-2 m-0 p-1" id="rd_h_item">
 					<div class="col p-0">維修紀錄 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
+				<div class="col-md-3 m-0 p-1" id="pr_m_item">
+					<div class="col p-0">產品Key Part :</div>
+					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
+				</div>
+				
 			</div>
 			<div class=" col-12  row p-0 m-0 justify-content-end">
+			<!-- 
 				<div class="col-md-1 p-1 m-0">
 					<button class="col btn btn-secondary btn-sm repair_info_fi_btn" type="button">Repair Info</button>
 				</div>
 				<div class="col-md-1 p-1 m-0">
 					<button class="col btn btn-info btn-sm repair_part_fi_btn" type="button">Repair Part</button>
 				</div>
+			 -->	
 				<div class="col-md-2 p-1 m-0"></div>
 				<div class="col-md-1 p-1 m-0"></div>
 				<div class="col-md-1 p-1 m-0"></div>
@@ -279,9 +289,11 @@ select {
 				</tbody>
 			</table>
 			<div class=" col-12  row p-0 m-0 justify-content-end">
+			<!--  
 				<div class="col-md-1 p-1 m-0">
 					<button class="col btn btn-secondary btn-sm project_content_fi_btn" type="button">Project...</button>
 				</div>
+			-->	
 				<div class="col-md-1 p-1 m-0">
 					<button class="col btn btn-info btn-sm repair_info_fi_btn" type="button">Repair Info</button>
 				</div>
@@ -482,8 +494,7 @@ customized = new Vue({
 			$('#rr_v input').val(documents['rr_v']);
 			$('#rr_f_ok select').val(documents['rr_f_ok']);
 			$('#sys_note input').val(documents['sys_note']);
-			$('#ph_esdate input').val(documents['ph_esdate']);
-			
+			$('#ph_esdate input').val(documents['ph_esdate']);			
 			
 			$('#rd_statement textarea').val(documents['rd_statement']);
 			if(documents['rd_true']==null || documents['rd_true']==""){
@@ -493,9 +504,13 @@ customized = new Vue({
 			}
 			$('#rd_solve textarea').val(documents['rd_solve']);
 			$('#rd_experience textarea').val(documents['rd_experience']);
-			$('#pr_b_item textarea').val(documents['pr_b_item']);
-			$('#pr_s_item textarea').val(documents['pr_s_item']);
-			$('#pb_i_item textarea').val(documents['pb_i_item']);
+			$('#pr_b_item textarea').val(documents['pr_b_item']); //產品規格
+			$('#pr_s_item textarea').val(documents['pr_s_item']); //軟體定義
+			$('#pb_i_item textarea').val(documents['pb_i_item']); //登記內容
+			
+			$('#rd_h_item textarea').val(documents['rd_h_item']); //維修紀錄
+			$('#pr_m_item textarea').val(documents['pr_m_item']); //產品Key Part
+						
 			$('#rd_svg .c_save_value').val(documents['rd_svg']);
 			
 			//僅限於Img
@@ -661,6 +676,7 @@ customized = new Vue({
 				customized.searchSend(search);
 			});
 			//切換 維修清單
+	 
 			$(document).on("click", ".repair_part_fi_btn", function (event) {
 				console.log("repair_part_fi_btn");
 				$( ".bi-screwdriver" ).trigger( "click" );
@@ -674,10 +690,10 @@ customized = new Vue({
 				$( ".bi-tools" ).trigger( "click" );
 			});
 			//切換 產品資訊
-			$(document).on("click", ".project_content_fi_btn", function (event) {
-				console.log("project_content_fi_btn");
-				$( ".bi-grid-3x3-gap" ).trigger( "click" );
-			});
+	//		$(document).on("click", ".project_content_fi_btn", function (event) {
+	//			console.log("project_content_fi_btn");
+	//			$( ".bi-grid-3x3-gap" ).trigger( "click" );
+	//		});
 			//清除 維修資訊
 			$(document).on("click", "#clear_fi_btn", function (event) {
 				$('.detail_ri').val("");
@@ -842,33 +858,36 @@ customized = new Vue({
 				console.log("bi .bi-tools");
 				if($("#repair_part").css("display")=="none" || $("#repair_info").css("display")=="none"){ 
 					$("#repair_info").slideToggle("fast");
+					$("#project_content").slideToggle("fast");	
 				}
-				if($("#project_content").css("display")!="none"){
-					$("#project_content").slideToggle("fast");	 				
-				}
+//				if($("#project_content").css("display")!="none"){
+//					$("#project_content").slideToggle("fast");	 				
+//				}
 				if($("#repair_part").css("display")!="none"){
 					$("#repair_part").slideToggle("fast");
 				}
+				
+				
 			});
 			//產品維修 關閉/開啟(project_content)
-			$(document).on("click", ".bi-grid-3x3-gap", function (event) {
-				console.log("bi .bi-grid-3x3-gap");
-				if($("#repair_part").css("display")=="none" || $("#repair_info").css("display")=="none"){ 
-					$("#project_content").slideToggle("fast");
-				}
-				if($("#repair_part").css("display")!="none"){
-					$("#repair_part").slideToggle("fast");	 				
-				}
-				if($("#repair_info").css("display")!="none"){
-					$("#repair_info").slideToggle("fast");
-				}
-			});
+	//		$(document).on("click", ".bi-grid-3x3-gap", function (event) {
+	//			console.log("bi .bi-grid-3x3-gap");
+	//			if($("#repair_part").css("display")=="none" || $("#repair_info").css("display")=="none"){ 
+	//				$("#project_content").slideToggle("fast");
+	//			}
+	//			if($("#repair_part").css("display")!="none"){
+	//				$("#repair_part").slideToggle("fast");	 				
+	//			}
+	//			if($("#repair_info").css("display")!="none"){
+	//				$("#repair_info").slideToggle("fast");
+	//			}
+	//		});
 			//產品資訊 關閉/開啟(repair_part)
 			$(document).on("click", ".bi-screwdriver", function (event) {
 				console.log("bi .bi-screwdriver");
-				if($("#project_content").css("display")=="none" || $("#repair_info").css("display")=="none"){ 
+			//	if($("#project_content").css("display")=="none" || $("#repair_info").css("display")=="none"){ 
 					$("#repair_part").slideToggle("fast");
-				}
+			//	}
 				if($("#project_content").css("display")!="none"){
 					$("#project_content").slideToggle("fast");	 				
 				}
@@ -911,9 +930,10 @@ customized = new Vue({
 			modify_repair['rd_true'] =$('#rd_true textarea').val();
 			modify_repair['rd_solve'] =$('#rd_solve textarea').val();
 			modify_repair['rd_experience'] =$('#rd_experience textarea').val();
-			modify_repair['pr_b_item'] =$('#pr_b_item textarea').val();
-			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val();
-			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); 
+			modify_repair['pr_b_item'] =$('#pr_b_item textarea').val(); //產品規格
+			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val(); //軟體定義
+			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); //登記內容
+			
 			modify_repair['rd_svg'] =$('#rd_svg .c_save_value').val();
 			modify_repair['rd_check'] =$('#rd_check select').val();
 			modify_repair['rd_type'] =$('#rd_type select').val();
@@ -1024,7 +1044,7 @@ customized = new Vue({
 		$(document).off("click", "#search_fi_btn");
 		$(document).off("click", ".repair_part_fi_btn");
 		$(document).off("click", ".repair_info_fi_btn");
-		$(document).off("click", ".project_content_fi_btn");
+//		$(document).off("click", ".project_content_fi_btn");
 		
 		$(document).off("click", "#clear_fi_btn");
 		

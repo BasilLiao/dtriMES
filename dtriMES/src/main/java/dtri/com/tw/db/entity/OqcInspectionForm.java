@@ -99,10 +99,10 @@ public class OqcInspectionForm  {
 	@Column(name = "oif_p_nb", nullable = false, columnDefinition = "varchar(50)") //產品料號
 	private String oifpnb;
 	
-	@Column(name = "oif_p_name", nullable = false, columnDefinition = "varchar(200)") //產品品名(產品型號)
+	@Column(name = "oif_p_name", nullable = false, columnDefinition = "varchar(200)") //產品品名
 	private String oifpname;
 	
-	@Column(name = "oif_p_model", nullable = false, columnDefinition = "varchar(50)") //產品名稱
+	@Column(name = "oif_p_model", nullable = false, columnDefinition = "varchar(50)") //產品型號
 	private String oifpmodel;
 	
 	@Column(name = "oif_p_sn", nullable = false, columnDefinition = "varchar(50)") //產品序號區間 Ex:0001_0009
