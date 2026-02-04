@@ -250,7 +250,7 @@ public class OqcInspectionFormService {
 	// 新建資料 後 存檔 資料清單 到資料庫
 	@Transactional
 	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+//		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 
@@ -266,15 +266,15 @@ public class OqcInspectionFormService {
 	// 存檔 資料清單
 	@Transactional
 	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+//		JSONObject body = req.getBody();
 		boolean check = false;
 		check = true;
 		try {
-			JSONArray list = body.getJSONArray("save_as");
-			for (Object one : list) {
+//			JSONArray list = body.getJSONArray("save_as");
+//			for (Object one : list) {
 				// 物件轉換
-				JSONObject data = (JSONObject) one;
-			}
+//					JSONObject data = (JSONObject) one;
+//			}
 
 			resp.setError_ms("未開放此功能");
 			resp.autoMsssage("109"); // 回傳錯誤訊息
@@ -288,15 +288,15 @@ public class OqcInspectionFormService {
 	// 更新 資料清單 ************* 給modify使用**** 但 權限一般QC人員目前被設定無法使用 ************
 	@Transactional
 	public boolean updateData(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+//		JSONObject body = req.getBody();
 		boolean check = false;
 
 		try {
-			JSONArray list = body.getJSONArray("modify");
-			OqcInspectionForm oIF = new OqcInspectionForm();
-			for (Object one : list) {
+//			JSONArray list = body.getJSONArray("modify");
+//			OqcInspectionForm oIF = new OqcInspectionForm();
+//			for (Object one : list) {
 				// 物件轉換
-				JSONObject data = (JSONObject) one;
+//				JSONObject data = (JSONObject) one;
 //				oIF = oifDao.findAllByOifid(data.getLong("oif_id")).get(0);	
 //				oIF.setSysstatus(data.getInt("sys_status")); // 資料狀態
 //				oIF.setSysmdate(new Date());// 修改時間
@@ -305,7 +305,7 @@ public class OqcInspectionFormService {
 //				oifDao.save(oIF);
 //				check = true;
 				
-			}
+//			}
 			resp.setError_ms("未開放此功能");
 			resp.autoMsssage("109"); // 回傳錯誤訊息
 		} catch (Exception e) {

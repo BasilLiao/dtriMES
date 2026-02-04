@@ -73,6 +73,7 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String oqc_inspection_form="/ajax/oqc_inspection_form.basil";
 		String oqc_result_list="/ajax/oqc_result_list.basil";
 		String oqc_review_form="/ajax/oqc_review_form.basil";
+		String oqc_failure_rate="/ajax/oqc_failure_rate.html.basil";
 		
 		http.authorizeRequests()
 				// thirdparty && img 資料夾靜態資料可 直接 存取 (預設皆有 訪問權限 資料可[匿名]存取)
@@ -364,6 +365,13 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, oqc_review_form + ".AC").hasAuthority(actionRole(oqc_review_form, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, oqc_review_form + ".AU").hasAuthority(actionRole(oqc_review_form, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, oqc_review_form + ".AD").hasAuthority(actionRole(oqc_review_form, "AD"))// (移除)
+				
+				// --- 請求 oqc_failure_rate
+				.antMatchers(HttpMethod.POST, oqc_failure_rate).hasAuthority(actionRole(oqc_failure_rate, ""))//
+				.antMatchers(HttpMethod.POST, oqc_failure_rate + ".AR").hasAuthority(actionRole(oqc_failure_rate, "AR"))// (查詢)
+//				.antMatchers(HttpMethod.POST, oqc_failure_rate + ".AC").hasAuthority(actionRole(oqc_failure_rate, "AC"))// (新增)
+//				.antMatchers(HttpMethod.PUT, oqc_failure_rate + ".AU").hasAuthority(actionRole(oqc_failure_rate, "AU"))// (修改)
+//				.antMatchers(HttpMethod.DELETE, oqc_failure_rate + ".AD").hasAuthority(actionRole(oqc_failure_rate, "AD"))// (移除)				
 								
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();

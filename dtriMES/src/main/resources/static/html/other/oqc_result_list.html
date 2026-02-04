@@ -12,7 +12,7 @@
 td.datalist {
 	vertical-align: middle !important;
 }
-
+/*產品細節*/
 #product-detail .create_example_pb {
 	height: calc(100vh - 385px);
 	overflow-x: hidden;
@@ -36,6 +36,16 @@ td .center-checked {
 .checkItemModal {
   max-width: 90vw;
 } */
+/* 游標在圖示上方變成手指*/
+.icon-hover {
+  cursor: pointer;            /* 游標變手指 */
+  transition: color 0.2s;     /* 顏色平滑變化 */
+}
+/* 游標在圖示上方 顏色變化*/
+.icon-hover:hover {
+  color: red;             /* Bootstrap primary 藍 */
+}
+
 </style>
 <div id="customized">
 	<div class="align-items-center border border-light mb-3 shadow">
@@ -53,7 +63,7 @@ td .center-checked {
 			<div class="col-4 row" id="search_ph_schedule">
 				<div class="col-0 p-1 mt-1">工單進度(X/X):</div>
 				<div class="col-0 p-1">
-					<input type="text" class="col p-1 border border-dark rounded detail_ri"  placeholder="工單進度(X/X)">
+					<input type="text" class="col p-1 border border-dark rounded detail_ri"  placeholder="工單進度(X/X)" disabled="disabled">
 				</div>
 			</div>
 			<div class="col-4 row m-0 p-1 align-items-end">
@@ -251,7 +261,7 @@ td .center-checked {
 
 		<!-- -***************************** 檢測項目 table ************-->
 		<div class="col-md-6 p-0">
-			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row calendar-check">	<i class="bi bi-calendar-check"></i>檢測項目
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row calendar-check icon-hover">	<i class="bi bi-calendar-check"></i>檢測項目
 			</div>
 			<div class="m-0 check-items">
 				<table id="check-dataTable" class=" border border-dark table-style table table-sm table-hover table-striped table-bordered table-responsive m-0">
@@ -290,8 +300,8 @@ td .center-checked {
 		</div>
 		<!-- ********************************** 產品細節 table  ************************** -->
 		<div class="col-md-3 p-0 m-0  pbcreate_example" id="product-detail">
-			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row product_detail">
-				<i class="bi bi-box-arrow-in-down-right ml-1"></i>產品細節
+			<div class="col-md-12 bg-white rounded-top m-0 p-0 h4 row product_detail icon-hover">
+				<i class="bi bi-box-arrow-in-down-right ml-1 "></i>產品細節
 			</div>
 			<div class="p-0 m-0 create_example_pb border border-dark row text-left">
 				<div class="p-0 m-0 create_example_input ">
@@ -305,35 +315,33 @@ td .center-checked {
 	</div>
 	<!-- **************** 產品細節 彈跳視窗 ************************* -->
 	<div class="modal fade" id="productDetailModal" tabindex="-1">
-	  <div class="modal-dialog modal-xl modal-fullscreen">
-	    <div class="modal-content">
+	  	<div class="modal-dialog modal-xl modal-fullscreen">
+	    	<div class="modal-content">
 	
-	      <div class="modal-header">
-	        <h5 class="modal-title">產品細節</h5>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-	      </div>
+	      		<div class="modal-header">
+	       	    	<h5 class="modal-title">產品細節</h5>
+	       	   	
+	        		<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">  <span aria-hidden="true">&times;</span> </button>
+	      		</div>	
+	      	<div class="modal-body" id="productDetailModalBody"></div>
 	
-	      <div class="modal-body" id="productDetailModalBody"></div>
-	
-	    </div>
-	  </div>
+	    	</div>
+	  	</div>
 	</div>
 	
 	<!-- **************** 檢測項目 彈跳視窗 ************************* -->
 	<div class="modal fade" id="checkItemModal" tabindex="-1">
 	  	<div class="modal-dialog modal-xl modal-dialog-centered checkItemModal">
-	    	<div class="modal-content">
+	    	<div class="modal-content">	
+	      		<div class="modal-header">
+	        		<h5 class="modal-title">檢測項目</h5>
+	        		<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+	      		</div>
 	
-	      	<div class="modal-header">
-	        	<!-- <h5 class="modal-title">檢測項目</h5> -->
-	        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-	      	</div>
-	
-			<!-- 重點：給高度，table 才能 sticky -->
-			<div class="modal-body p-0">
-			  	<div id="checkItemModalBody" class="h-100"></div>
-			</div>
-	
+				<!-- 重點：給高度，table 才能 sticky -->
+				<div class="modal-body p-0">
+			  		<div id="checkItemModalBody" class="h-100"></div>
+				</div>	
 	    	</div>
 	  	</div>
 	</div>
@@ -405,8 +413,9 @@ customized = new Vue({
 						title[d].values;
 						title[d].col;
 					 **/ 
-					 //產品細節
-					switch(title[d].tag){
+					
+					switch(title[d].tag){					
+					// //產品細節
 					case "input":											
 						//另存模板
 						input =$(".pbcreate_example .create_example_input").clone();
@@ -417,7 +426,7 @@ customized = new Vue({
 					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("placeholder",title[d].placeholder);
 					//	$(".pbcreate_example ."+title[d].id+" .save_value").attr("value",title[d].value);												
 						break;				
-						
+					//	Inspection SN(登記-檢驗產品序號)
 					case "select":
 						//example_select_one					
 						$(".testitem.s_name").text(title[d].name);//改名字						
@@ -697,43 +706,33 @@ customized = new Vue({
 			//******************  跳出 檢測項目 新視窗	************************	
 			$(document).on("click", ".calendar-check", function (event) {
 				console.log("跳出 檢測項目 新視窗")
-
 				// 1️ 複製「檢測項目」整包
 				let $clone = $("#check-dataTable").clone(true, true);
-				// clone 後改 radio 的 name
-				// radio name 隔離
+				// clone 後改 radio 的 name	// radio name 隔離
 				$clone.find('input[type="radio"]').each(function () {
 				    let oldName = $(this).attr("name");
 				    $(this).attr("name", oldName + "_modal");
-				});
-				
+				});				
 				// 2️ 避免 id 重複
-				$clone.find("#check-dataTable").removeAttr("id");
-				
+				$clone.removeAttr("id");			
 				// 3️ Modal 內高度滿版 + 捲動
 				$clone.css({
 				    height: "calc(100vh - 120px)",
 				    overflow: "auto"
-				});
-				
+				});				
 				// 4️ table 撐滿
-				$clone.find("table").addClass("w-100");
-				
+				$clone.find("table").addClass("w-100");				
 				// 5️ 表頭 sticky（保險）
 				$clone.find("thead th").css({
 				    position: "sticky",
 				    top: 0,
-				    zIndex: 5
-				});
-				
+				    zIndex: 5,
+				    background: "#343a40" // 防止透明
+				});				
 				// 6️ 塞進 Modal
-				$("#checkItemModalBody").empty().append($clone);
-				
-				// 7️ 顯示
-			    new bootstrap.Modal(
-			        document.getElementById("checkItemModal")
-			    ).show();
-			    
+				$("#checkItemModalBody").empty().append($clone);				
+				// 7️ 顯示  Bootstrap 4 正確顯示方式			    
+			    $("#checkItemModal").modal("show");		    
 			});
 			
 			
@@ -746,6 +745,13 @@ customized = new Vue({
 			    // 2️ 移除原本的 id（避免 DOM 重複）
 			    $clone.removeAttr("id");
 			    
+			    //移除空的欄位
+			   // $clone.find(".save_key").each(function () {
+			   //     if (!$(this).find("input").val()) {
+			   //         $(this).remove();
+			  //      }
+			  //  });
+			   
 			    // Modal 裡滿版
 			    $clone
 			      .removeClass("col-md-3")
@@ -764,10 +770,8 @@ customized = new Vue({
 			    $("#productDetailModalBody").empty().append($clone);
 
 			    // 5️ 顯示 Modal
-			    new bootstrap.Modal(
-			        document.getElementById("productDetailModal")
-			    ).show();
-					
+			    // Bootstrap 4 正確顯示方式
+			    $("#productDetailModal").modal("show");	
 			});
 			
 		},

@@ -21,6 +21,12 @@
 select {
 	border-width: 2px;
 }
+/*產品細節*/
+#product-detail .create_example_pb {
+	height: 380px;
+	overflow-x: hidden;
+}
+
 </style>
 <div id="customized">
 	<!-- 維修處理 -->
@@ -32,7 +38,7 @@ select {
 				</div>
 			</div>
 			<div id="repair_info" class="row p-0 m-0">
-				<div class="col-md-6 m-0 p-2 text-left" style="min-height: 500px;">
+				<div class="col-md-5 m-0 p-2 text-left" style="min-height: 500px;">
 					<div class="col-md-12 p-0 m-0 row">
 						<div class="col-md-10 p-1 m-0 search_true" id="rd_id">
 							<div class="col p-0">維修單-項目(序號) :</div>
@@ -146,25 +152,45 @@ select {
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6 m-0 p-2 text-left" style="min-height: 500px;">
+				<div class="col-md-4 m-0 p-2 text-left" style="min-height: 500px;">
 					<div class="col-md-12 m-0 p-1" id="rd_statement" style="height: 65px">
 						<div class="col p-0">問題敘述 :</div>
 						<textarea class="col rounded p-1 detail_ri" rows="1" cols="" placeholder="問題敘述(必填)" disabled="disabled"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_true" style="height: 115px">
+					<div class="col-md-12 m-0 p-1" id="rd_true" style="min-height: 115px">
 						<div class="col p-0">故障原因 :</div>
 						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="3" cols="" placeholder="故障原因(必填) Ex: &#xD 1.面板不亮 &#xD 2.無法開機" style="border-width: 2px;"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_solve" style="height: 115px">
+					<div class="col-md-12 m-0 p-1" id="rd_solve" style="min-height: 115px">
 						<div class="col p-0">解決問題 :</div>
 						<textarea class="col rounded border-1 border-success p-1 detail_ri" rows="3" cols="" placeholder="解決問題(必填) Ex: &#xD 1.更換面板OK &#xD 2.更換開機按鈕OK" style="border-width: 2px;"></textarea>
 					</div>
-					<div class="col-md-12 m-0 p-1" id="rd_experience" style="height: 115px">
+					<div class="col-md-12 m-0 p-1" id="rd_experience" style="min-height: 115px">
 						<div class="col p-0">備註事項 :</div>
 						<textarea class="col rounded p-1 detail_ri" rows="3" cols="" placeholder="備註事項(選填)Ex: &#xD 1.電烙鐵得加溫至400度 ,會比較好弄"></textarea>
 					</div>
 					<div class="col-md-12 m-0 p-1" id="">
 						<div class="col p-0"></div>
+					</div>
+				</div>
+				<!-- ********************************** 產品細節 table  ************************** -->
+				<div class="col-md-3 m-0 p-2 text-left" style="min-height: 500px;">					
+					<div class="col p-0 m-0  pbcreate_example" id="product-detail">
+						<div class="col-md-12 bg-white rounded-top m-0 p-0 row product_detail icon-hover">
+							<i class="bi bi-box-arrow-in-down-right ml-1 "></i>產品細節
+						</div>
+						<div class="p-0 m-0 create_example_pb border border-dark row text-left">
+							<div class="p-0 m-0 create_example_input ">								
+								<div class="pl-1 m-0 h6 save_as_name">Name</div>
+								
+								<div class="p-0 m-0 row">
+									<button class="col-12 m-0 btn btn-success btn-sm btn-save" type="button">N/A</button>
+									<!--
+									<input class="col-10 pl-1 m-0 border border-dark rounded save_value" disabled="disabled" type="text">
+									-->
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="fi_btn" class="col p-1 row m-0 justify-content-end">
@@ -471,6 +497,25 @@ customized = new Vue({
 			}
 			$("#rr_pb_type select").val("").change();
 			
+			//************************* 產品細節 ****************
+			let titles=main.allData.cell_g_modify;
+			for(var d =0;d<titles.length;d++){
+				switch(titles[d].tag){	
+				case "input":											
+					//另存模板
+					input =$(".pbcreate_example .create_example_input").clone();
+					input[0].className="p-1 save_key "+titles[d].col+" "+titles[d].id; // 修改整組最上層的class名稱 (欄位名+輸入框)
+					input.appendTo(".create_example_pb"); //放入這裡面
+					//text(titles[d].name
+					
+					$(".pbcreate_example ."+titles[d].id+" .save_as_name").text(titles[d].name); //修改 顯示欄位的名稱	
+					if(titles[d].name === "MB(uuid)"){
+						$(".pbcreate_example ."+titles[d].id+" .save_as_name").text("主板序號(MB(uuid))"); //修改 顯示欄位的名稱	
+					}
+					break;
+				}				
+			}
+			$(".pbcreate_example .create_example_input").remove();
 			
 		},
 		setDataList(list, list_son, body_type) {
@@ -504,6 +549,49 @@ customized = new Vue({
 			}
 			$('#rd_solve textarea').val(documents['rd_solve']);
 			$('#rd_experience textarea').val(documents['rd_experience']);
+			
+			
+			// ********************  把後端資資料依順序填入***產品細節欄位  ********************
+						// 將物件轉成陣列，依 key 前面的數字排序（例如 "01_..."、"02_..."）
+			function objToArrayByLeadingNumber(obj) {
+			  return Object.keys(obj)
+			    .sort((a, b) => {
+			      // 從 key 開頭擷取數字（處理前導 0）
+			      let ma = a.match(/^0*(\d+)/);
+			      let mb = b.match(/^0*(\d+)/);
+			      let na = ma ? parseInt(ma[1], 10) : Number.MAX_SAFE_INTEGER;
+			      let nb = mb ? parseInt(mb[1], 10) : Number.MAX_SAFE_INTEGER;
+
+			      if (na !== nb) return na - nb;
+			      // 如果前綴一樣（不太可能），用字串序作後備
+			      return a.localeCompare(b);
+			    })
+			    .map(k => obj[k]);
+			}
+			
+			if (documents['productionbodyvaule'] != null) {
+
+				let listObj = documents['productionbodyvaule'];
+			  // 如果已經是陣列就不用轉；若是物件則用我們的轉法
+			  	let listArr = Array.isArray(listObj) ? listObj : objToArrayByLeadingNumber(listObj);
+			  // （選擇性）先清空欄位，避免殘留
+			  	$("#product-detail button[type=button]").text("");
+			  // 依序填入			  
+			  	$("#product-detail button[type=button]").each(function(index) {
+			    	if (index < listArr.length) {
+			    		$(this).parent().parent().removeClass('d-none');//移除d-none 要顯示
+			      		$(this).text(listArr[index]);
+			    	}
+			  		if(listArr[index]===""){
+			  			//$(this).parent().parent().remove(); //移除「上上一層（parent 的 parent）」(移除 整組欄位名稱+按鈕)
+			  			 $(this).parent().parent().addClass('d-none');
+		      		}	
+			  	});			
+			}else{
+				//沒有資料全部隱藏
+				$("#product-detail .save_key").addClass('d-none'); 
+			}
+			// *************************************************************************	
 			$('#pr_b_item textarea').val(documents['pr_b_item']); //產品規格
 			$('#pr_s_item textarea').val(documents['pr_s_item']); //軟體定義
 			$('#pb_i_item textarea').val(documents['pb_i_item']); //登記內容
@@ -701,6 +789,10 @@ customized = new Vue({
 				$('#rr_sn input').removeAttr("disabled","");
 				$('#rd_svg div img').attr('src','./img/imgFrame.png');
 				$('#rr_sn input').focus();
+				//btn-save
+				$('#product-detail .save_key').removeClass('d-none');//移除d-none後顯示
+				$('button.btn-save').text("N/A");
+				//save_key 
 			});
 			//清除問題敘述
 			$(document).on("click", "#rd_clear_btn", function (event) {
@@ -778,6 +870,18 @@ customized = new Vue({
         			 customized.file_reader_img(files[i],imgs);
         		 }
         	});
+        	 //*******************  產品細節 的按鈕  **********************
+        	$(document).on("click", ".btn-save", function (event) {
+        	    // 1️ 找到這顆按鈕所屬的那一組
+        	    let $group = $(this).closest(".save_key");         	  
+        	    let fieldName = $group.find(".save_as_name").text()   //欄位名稱      	     
+        	    let value = $group.find(".btn-save").text();	//按鈕 文字 資料
+        	 //   console.log("產品細節內容",fieldName + "序號為" + value);
+        	    let rd_solve_val= $('#rd_solve textarea').val();
+        	    $('#rd_solve textarea').val((rd_solve_val+ "\n"+"更換" +fieldName + "序號為" + value).trim());
+        	});
+        	 
+        	 
 			//新增監聽
 			$(document).on("click",".rd_list_add", function (event) {
 				console.log("rd_list_add "+$(event.target).attr('title'));
@@ -910,6 +1014,9 @@ customized = new Vue({
 			$('#rr_sn input').removeAttr("disabled","");
 			$('#rd_svg div img').attr('src','./img/imgFrame.png');
 			$('#rr_sn input').focus();
+			//btn-save
+			$('#product-detail .save_key').removeClass('d-none');//移除d-none後顯示
+			$('button.btn-save').text("N/A")
 		},
 		//存檔
 		sendSave() {
@@ -1019,6 +1126,7 @@ customized = new Vue({
 					main.allData.body.search_son,
 					main.allData.body_type);				
 			} 
+
 			//可能是新建立
 			if(main.allData.call_bk_vals.search){
 				console.log(main.allData.call_bk_vals);
@@ -1059,6 +1167,7 @@ customized = new Vue({
 		$(document).off("click", ".bi-grid-3x3-gap");
 		$(document).off("click", ".bi-screwdriver");
 		$(document).off("click", ".bi-tools");
+		$(document).off("click", ".btn-save"); //產品細節
 		
 		$(document).off("keypress", "#customized .search_true input");
 	},

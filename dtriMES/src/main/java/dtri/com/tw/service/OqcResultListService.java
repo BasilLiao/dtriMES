@@ -329,7 +329,7 @@ public class OqcResultListService {
 	// 新建資料 後 存檔 資料清單 到資料庫
 	@Transactional
 	public boolean createData(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+//		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
 			resp.setError_ms("未開放此功能");
@@ -343,14 +343,14 @@ public class OqcResultListService {
 	// 存檔 資料清單
 	@Transactional
 	public boolean save_asData(PackageBean resp, PackageBean req, SystemUser user) {
-		JSONObject body = req.getBody();
+//		JSONObject body = req.getBody();
 		boolean check = false;
 		try {
-			JSONArray list = body.getJSONArray("save_as");
-			for (Object one : list) {
+//			JSONArray list = body.getJSONArray("save_as");
+//			for (Object one : list) {
 				// 物件轉換
-				JSONObject data = (JSONObject) one;
-			}
+//				JSONObject data = (JSONObject) one;
+//			}
 		//	check = true;
 			resp.setError_ms("未開放此功能");
 			resp.autoMsssage("109"); // 回傳錯誤訊息
@@ -407,7 +407,7 @@ public class OqcResultListService {
 		return check;
 	}
 
-	// 移除 資料清單****************不給刪除*********
+	// 移除 資料清單****************20260120給刪除*********
 	@Transactional
 	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
 		JSONObject body = req.getBody();
@@ -417,14 +417,18 @@ public class OqcResultListService {
 			for (Object one : list) {
 				// 物件轉換
 				JSONObject data = (JSONObject) one;
-				// * Long x = data.getLong("oif_id");
-				// * System.out.println(x);
-
-				// * oifDao.deleteById(x);
+				Long x = data.getLong("orl_id");
+				Long y= data.getLong("sys_status");
+				if (y==0) {
+					System.out.println(x);
+					orlDao.deleteById(x);
+					return true;
+				}
+				resp.setError_ms("已審核檢核,無法刪除");
+				resp.autoMsssage("109"); // 回傳錯誤訊息 A511-251114008
+				return false;
 			}
-			// *check = true;
-			resp.setError_ms("未開放此功能");
-			resp.autoMsssage("109"); // 回傳錯誤訊息
+			check = true;
 			
 		} catch (Exception e) {
 			System.out.println(e);
@@ -445,7 +449,7 @@ public class OqcResultListService {
 		List<OqcResultList> OqcResultLists = new ArrayList<OqcResultList>();
 		String orl_ow = null; // "工單號"
 		String orl_p_sn = null; // "機台號碼"
-		int sys_status = 0;  //"資料狀態"
+//		int sys_status = 0;  //"資料狀態"
 		// 建立 object_body 物件 為最上層, 用於存放各個資訊
 		JSONObject object_body = new JSONObject();
 		// 建立空的JSONObject 的object_details物件 用來存放資料
@@ -598,16 +602,17 @@ public class OqcResultListService {
 				try {
 					// 有效設定的欄位
 					for (int k = 0; k < 50; k++) {
-						String in_name = "getPbvalue" + String.format("%02d", k + 1); //組合getter 方法名稱
+						String in_name = "getPbvalue" + String.format("%02d", k + 1); //組合getter 方法名稱字串getPbvalue01...
 						Method in_method = body_one.getClass().getMethod(in_name); //透過反射取得ProductionBody類別中明為getPbvalueXX()的方法
-						String value = (String) in_method.invoke(body_one);	// 執行這個方法 等於body_one.getPbvalueXX()的方法
+						String value = (String) in_method.invoke(body_one);	// 執行這個方法 等於body_one.getPbvalueXX()的方法 去取的欄位名稱 MB(UUID)....
 						// 欄位有定義的顯示
-						if (value != null && !value.equals("")) { //執行這個body_one.getPbvalueXX()的方法 不為null和 空 才能執行內容
+						if (value != null && !value.equals("")) { //執行這個body_one.getPbvalueXX()的方法 不為null和 空 才能執行內容,也就是有定義名稱(MB(UUID...)才會執行
 							// sn關聯表
-							String name_b = "getPbvalue" + String.format("%02d", k + 1);//組合getter 方法名稱
+							String name_b = "getPbvalue" + String.format("%02d", k + 1);//組合getter 方法名稱字串getPbvalue01...
+							
 							Method method_b = cb.getClass().getMethod(name_b);//透過反射取得ProductionBody類別中明為getPbvalueXX()的方法
-							String value_b = (String) method_b.invoke(cb); // 執行這個方法 等於cb.getPbvalueXX()的方法
-							String key_b = "pb_value" + String.format("%02d", k + 1);  //組合出名稱
+							String value_b = (String) method_b.invoke(cb); // 執行這個方法 等於cb.getPbvalueXX()的方法 "取得值 (006FABC90035.....)"
+							String key_b = "pb_value" + String.format("%02d", k + 1);  //組合出名稱"pb_value01"
 							productionbodyvaule.put(FFS.ord((ord += 1), FFM.Hmb.B) + key_b, (value_b == null ? "" : value_b));
 						}
 					}						
@@ -690,8 +695,9 @@ public class OqcResultListService {
 
 			orlDao.save(oRL);
 			
-			//******************** 登記到產品細節 "OQC檢驗的內容"欄位 **********************************************************			
-			cb.setPblnoteoqc(list.getString("orl_t_item")+" : "+list.getString("orl_t_results")+" 備註 : "+list.getString("sys_note"));			
+			//******************** 登記到產品細節 "OQC檢驗的內容"欄位 **********************************************************
+			String listOqc=cb.getPblnoteoqc(); //先抓資料(不管有無資料,可能同序號被Q兩次以上)
+			cb.setPblnoteoqc(listOqc+list.getString("orl_t_item")+" : "+list.getString("orl_t_results")+" 備註 : "+list.getString("sys_note")+"**");			
 			bodyDao.save(cb);			
 			check = true;		
 

@@ -1,0 +1,579 @@
+<!-- 查詢項目 -->
+<style>
+.radio_size {
+	width: 22px;
+	height: 20px;
+}
+
+.datalist {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.datetimepicker {
+	margin-top: 50px;
+}
+
+.fixed_cell {
+	position: sticky;
+}
+
+#search .table-style {
+	min-height: 400px;
+	height: 400px;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+.search_example_title tr {
+	top: 0px;
+	z-index: 3;
+}
+</style>
+<div id="search">
+	<div class="p-0 shadow mt-0 text-left">
+		<div class="bg-white rounded-top m-0 pl-1 h4">
+			<i class="bi bi-search mr-1"></i>Search
+		</div>
+		<div class="row p-0 m-0 search_example_finds">
+			<!-- col-md-2/4/6/8/10/12 -->
+			<div class="col-md-2 p-2 search_example_input">
+				<div class="h6 mb-1 s_name">Search1</div>
+				<div class="p-0">
+					<input class="col p-1 border border-dark rounded s_value" type="text" />
+				</div>
+			</div>
+			<div class="col-md-2 p-2 search_example_selsect">
+				<div class="h6 mb-1 s_name">Search2</div>
+				<select class="col-12 custom-select custom-select-sm s_value">
+					<option class="example_select_def" value="" selected>select</option>
+					<option class="example_select_one" value="1">One</option>
+				</select>
+			</div>
+		</div>
+		<div class="row justify-content-end p-0 m-0 search_example_button">
+			<div class="col-12 col-md-4 row justify-content-between m-0 p-2">
+				<button id="search_btn" class="col-md-5 mt-1 btn btn-primary btn-sm" type="submit">Search</button>
+				<button id="clear_btn" class="col-md-5 mt-1 btn btn-warning btn-sm" type="button">Clear</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- 查詢結果 -->
+	<div class="shadow mt-2">
+		<div class="text-left bg-white rounded-top m-0 pl-1 h4 row">
+			<div class="col-10 p-0">
+				<i class="bi bi-list-ul mr-1"></i>Result
+			</div>	
+			<div class="col-2">
+				<button id="oqc_export_btn" class="col-md-12 btn btn-info btn-sm" type="button">Export Excel</button>
+			</div>
+		</div>
+
+		<div class="p-2">
+			<table class="table-style table table-sm table-hover table-striped table-bordered table-responsive m-0" id="oqc_excel">
+				<thead class="thead bg-dark table-dark search_example_title" style="white-space: nowrap;">
+					<tr class="fixed_cell bg-dark">
+						<th class="s_title_body" style="min-width: 150px;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Last</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt  d-none"></i>
+								</div>
+							</div>
+						</th>
+						<th class="s_title_last p-1" style="min-width: 150px; width: 100%;">
+							<div class="row p-0 m-0 justify-content-between">
+								<div class="title_name">Handle</div>
+								<div class="title_order">
+									<i class="bi bi-sort-alpha-down "></i> <i class="bi bi-sort-alpha-up-alt d-none"></i>
+								</div>
+							</div>
+						</th>
+											
+						<th id="report_excel_th" class="text-center" style="min-width: 150px;" nowrap="nowrap">計數
+						</th>
+						
+					</tr>
+				</thead>
+				<tbody class="search_example_list" style="white-space: nowrap;">
+					<tr class="search_example_content">
+						<td title="" class="s_list_body">0</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- 子目錄 暫存區 -->
+			<table id="data_item_son" class="d-none">
+				<tbody class="search_example_list_son" style="white-space: nowrap;">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+//控制端
+search = new Vue({
+	el: "#search",
+	//資料區
+	data: {
+		//換頁樣式
+		page_total: main.page_total, //每次_總筆數
+		page_batch: main.page_batch, //每次_第幾批
+
+		page_show_size: main.page_show_size, //目前_每分頁顯示數量
+		page_now_size: main.page_now_size, //目前_實際筆數
+		page_now: main.page_now, //目前_頁數
+		data_type: "general", //資料: 一般模式(general) 父子群組模式(group)
+		data_item_f_id: "", //父類別ID
+		list_son:{},// 群組-子類別
+		list_modify:[],//修改資料清單
+	},
+	//初始化
+	created() {
+		console.log("search.html(created)");
+	},
+	//可呼叫方法
+	methods: {
+		//進入單元後 組合表頭資訊
+		setDataTitle(title, html_permission) {
+			//標題注入資訊
+			//排序
+			console.log(title);
+			title = main.orderedSort(title);
+			fixed_cell = 0;
+			for (var i = 0; i < Object.keys(title).length - 1; i++) {
+				var one_item_header = $("#search .search_example_title .s_title_body").clone(); //複製樣本(header)
+				//用索引 i 取得 title 物件的第 i 個 key名稱
+				var key_id = Object.keys(title)[i];	
+				var value_name = title[key_id].name; //取得key_id裡的key名稱為name的值
+				var value_size = title[key_id].size;
+				var value_write = title[key_id].write;
+				//console.log(key_id+" "+value_name);
+				//header
+				one_item_header[0].className = "p-1 "; //意思是把第0個資料class名稱改為 p-1,是指class="s_title_body" 變為 class="p-1"
+				one_item_header[0].id = key_id;
+				one_item_header[0].children[0].children[0].innerText = value_name; //把第0個資料的下一層再下一層插入文字內容
+				one_item_header.insertBefore("#search .s_title_last"); //插入在.s_title_last 前面
+				$("#" + key_id).css("min-width", value_size);
+				$("#" + key_id).css("max-width", value_size);
+				$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+				//body
+				var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+				one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+				one_item_body[0].innerText = value_name;
+				one_item_body.insertBefore("#search .s_list_body");
+			}
+			//結尾
+			var key_id = Object.keys(title)[Object.keys(title).length - 1];
+			var value_name = title[key_id].name;
+			var value_write = title[key_id].write;
+			//header
+			$("#search .s_title_last").attr("id", key_id);
+			$("#search .s_title_last .title_name").text(value_name);
+			$("#" + key_id).css("min-width", value_size);
+			$("#" + key_id).css("max-width", value_size);
+			$("#" + key_id).addClass(value_write == "disabled" ? "d-none" : "");
+			//body
+			var one_item_body = $("#search .search_example_content .s_list_body").clone(); //複製樣本(body)
+			one_item_body[0].className = (value_write == "disabled" ? "d-none" : "");
+			one_item_body.insertBefore("#search .s_list_body");
+
+			//關閉範例
+			$("#search .s_title_body").addClass("d-none");
+			
+		},
+		
+		//填入表格資訊
+		setDataList(list, list_son, body_type) {
+			//清單注入[資訊,類型(可能是一般類型(清單)/父子類型(壓縮))] general/group
+			this.list_modify=[];
+//			var data_item_sons = [];
+			this.data_type = body_type.type;
+			this.list_son = list_son;
+			console.log(list.length, body_type.type);
+			//console.log(new Date());
+			
+			//可能 初次載入就沒資料
+			if (list.length < 1) {
+				t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+				if (this.page_batch >= 1) {
+					this.page_batch -= 1;
+				}
+				return false;
+			}
+			//舊有資料清除
+			$("#search .search_example_list_son tr").remove();
+			$("#search .search_data_list").remove();
+
+			//開啟樣式
+			$("#search .s_list_body").removeClass("d-none");
+			$("#search .search_example_content").removeClass("d-none");
+			var fixed_cell_color = false;
+			
+			console.log(new Date());
+			for (var j = 0; j < list.length; j++) {
+				//固定顏色
+				if (fixed_cell_color) {
+					fixed_cell_color = false;
+				} else {
+					fixed_cell_color = true;
+				}
+
+				//排序
+				list[j] = main.orderedSort(list[j]);
+				//排序-子類別
+//				if(list_son!=null){
+//					var son_size = list_son[list[j]['02_b__ui_group_id']].length;
+//					for(var s = 0;s<son_size;s++){
+//						//排序
+//						list_son[list[j]['02_b__ui_group_id']][s] = main.orderedSort(list_son[list[j]['02_b__ui_group_id']][s]);
+//						//排序-子類別(將 02_b__ 替換掉)
+//						var re_son = list_son[list[j]['02_b__ui_group_id']][s];
+//						var new_son = {};
+//						for(var y = 0;y<Object.keys(re_son).length;y++){
+//							var key_id = Object.keys(re_son)[y];
+//							var value_name = re_son[Object.keys(re_son)[y]];
+//							key_id = key_id.split('_b__')[1];
+//							new_son[key_id] = value_name+'';
+//						}
+//						//回寫
+//						list_son[list[j]['02_b__ui_group_id']][s] = new_son;
+//					}
+//				}
+				
+				//資料筆數
+				var list_item = $("#search .search_example_content").clone(); //複製樣本
+				//是否為群組
+				list_item[0].className = "search_data_list";
+				//Object.keys(list[j]) 取得這個物件的 所有 key 名稱陣列
+				list_item[0].className+= " sn_"+list[j][Object.keys(list[j])[2]]; //取第j筆物件中，第3個key對應的「value」,並加成一個class名稱(key的順序是依物件建立時的順序)
+				list_item[0].id = "search_data_" + (j + 1);
+				list_item.appendTo("#search .search_example_list");
+
+				//===每筆 資料欄位===
+				var fixed_cell_nb = 0;
+				var fixed_cell_wh = 1;
+				for (var i = 0; i < Object.keys(list[j]).length; i++) {
+					var where_i = i;
+					var one_item = $("#search_data_" + (j + 1))[0].children;  //每個欄位-複製樣本
+					var key_id = Object.keys(list[j])[i];  				 //取得KEY名 稱  01_b__oif_id"
+					var value_name = list[j][Object.keys(list[j])[i]];	//取得Value的值  4
+					//取得title Size顯示
+					// console.log(key_id+" "+value_name);
+					var value_size = $("#" + key_id.replace("_b__", "_h__")).css("maxWidth"); //修改選擇器名稱後抓取符合選擇器資料內maxWidth的值,就是抓取表頭的寬度給欄位使用
+					//取得title 是否顯示
+					if ($("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+						one_item[where_i].className = "datalist d-none "+key_id.split('_b__')[1];//將第where_i個元素的class重設為datalist d-none,並加上由key_id拆解後取得的動態class名稱,用來隱藏並標記該欄位
+					} else {
+						one_item[where_i].className = "datalist "+key_id.split('_b__')[1];
+					}
+
+					//固定前2格     // 選擇器組合後用hasClass檢查class內是否含有 d-none
+					if (fixed_cell_nb < 2 && !$("#" + key_id.replace("_b__", "_h__")).hasClass('d-none')) {
+						if (fixed_cell_color) {
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#f8f9fc";
+						} else {
+							one_item[where_i].style = "left:" + fixed_cell_wh + "px; max-width:" + value_size + ";background-color:#ebecef";
+						}
+						$("#" + key_id.replace("_b__", "_h__")).css("left", fixed_cell_wh); //修改選擇器名稱後，找出對應的欄位,並設定其 left 屬性為 fixed_cell_wh 所帶入的值
+						$("#" + key_id.replace("_b__", "_h__")).addClass("fixed_cell");  // 修改選擇器名稱後，找出對應的欄位,並在 class 中新增 fixed_cell。
+						$("#" + key_id.replace("_b__", "_h__")).addClass("bg-dark");	//同上可以合併為.addClass("fixed_cell bg-dark")					
+						one_item[where_i].className = "datalist fixed_cell "+key_id.split('_b__')[1];
+						fixed_cell_wh += parseInt(value_size);  //強轉 數字 儲存
+						fixed_cell_nb += 1;
+					} else {
+						one_item[where_i].style = "max-width:" + value_size;
+					}
+					one_item[where_i].id = "";
+					one_item[where_i].title = key_id;
+					one_item[where_i].innerText = value_name;
+					//one_item.insertBefore("#" + list_item[0].id + " .s_list_body");
+				}
+				$("#search_data_" + (j+1) + " .s_list_body").text ( j + 1); //計數 數量
+			//	$("#search_data_" + (j+1) + " .s_list_body").remove(); //tr列 裡class=s_list_body的儲存格移除
+			}
+			console.log(new Date());
+			//關閉樣式
+		//	$("#search .s_list_body").addClass("d-none"); //註解掉避免計數被消失隱藏
+			$("#search .search_example_content").addClass("d-none");
+		
+		},
+		
+		//進入單元後 組合查詢輸入欄位
+		setSearch(search) {
+			//查詢注入資訊
+			console.log(search);
+			for (var i = 0; i < search.length; i++) {
+				switch (search[i].tag) {
+					case "input":
+						var search_input = $("#search .search_example_input").clone(); //複製樣本
+						search_input[0].className = search[i].col + " p-2 search_true";
+						search_input[0].id = "search_" + search[i].id;
+						search_input.appendTo("#search .search_example_finds");
+						$("#" + search_input[0].id + " .s_name").text(search[i].name);
+						//$("#" + search_input[0].id + " .s_value").val(search[i].value);
+						//時間類型
+						if (search[i].type == 'date') {
+							$("#" + search_input[0].id + " .s_value").addClass('datetimepicker_date');
+						}
+						//預設
+						if (search[i].value != "") {
+							$("#" + search_input[0].id + " .s_value").attr("placeholder", search[i].value);
+						}
+						break;
+					case "select":
+						//查詢物件練立search:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+						//id / value / type
+						var search_selsect = $("#search  .search_example_selsect").clone(); //複製樣本
+						search_selsect[0].className = search[i].col + " p-2 search_true";
+						search_selsect[0].id = "search_" + search[i].id;
+						search_selsect.appendTo("#search  .search_example_finds");
+						$("#" + search_selsect[0].id + " .s_name").text(search[i].name);
+						for (var o = 0; o < search[i].values.length; o++) {
+							var one_option = $("#" + search_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							one_option[0].id = "select_" + search[i]["values"][o]["key"];
+							one_option[0].value = search[i]["values"][o]["key"];
+							one_option[0].innerText = search[i]["values"][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo("#" + search_selsect[0].id + " select");
+						}
+						//關閉樣式
+						break;
+					default:
+				}
+				//關閉樣式
+				$("#search .example_select_one").addClass("d-none");
+				$("#search .search_example_input").addClass("d-none");
+				$("#search .search_example_selsect").addClass("d-none");
+				main.loading(false);
+			}
+
+			//時間格式
+			$('#search .datetimepicker_date').datetimepicker({
+				format: 'yyyy-mm-dd hh:ii:00',
+				pickerPosition: 'bottom-right',
+				//minView:1,
+				//hoursDisabled: [00, 1, 2, 3, 4, 5, 6, 7],
+				minuteStep: 30,
+				autoclose: true,
+				endDate: '+1d',
+				datesDisabled: '+1d',
+				todayBtn: true,
+				//......可以同上項目代碼自定義設置
+			});
+		},
+		
+	/*
+		setModify(modify) {
+			//修改選項
+			console.log(modify);
+			for (var i = 0; i < modify.length; i++) {
+				switch (modify[i].tag) {
+					case "input":
+						var modify_input = $("#search .modify_example_input").clone(); //複製樣本
+						modify_input[0].className = modify[i].col + " p-2 modify_true";
+						modify_input[0].id = "modify_" + modify[i].id;
+						modify_input.appendTo("#search .modify_example_finds");
+						$("#" + modify_input[0].id + " .s_name").text(modify[i].name);
+						//$("#" + modify_input[0].id + " .s_value").val(modify[i].value);
+						//時間類型
+						if (modify[i].type == 'date') {
+							$("#" + modify_input[0].id + " .s_value").addClass('datetimepicker_date');
+						}
+						//預設
+						if (modify[i].value != "") {
+							$("#" + modify_input[0].id + " .s_value").attr("placeholder", modify[i].value);
+						}
+						break;
+					case "select":
+						//查詢物件練立modify:[{"id":"","values":[{"key":"XXX","value":"XXX"},{...}],"type":"","name":""}]
+						//id / value / type
+						var modify_selsect = $("#search  .modify_example_selsect").clone(); //複製樣本
+						modify_selsect[0].className = modify[i].col + " p-2 modify_true";
+						modify_selsect[0].id = "modify_" + modify[i].id;
+						modify_selsect.appendTo("#search  .modify_example_finds");
+						$("#" + modify_selsect[0].id + " .s_name").text(modify[i].name);
+						for (var o = 0; o < modify[i].values.length; o++) {
+							var one_option = $("#" + modify_selsect[0].id + " select .example_select_one").clone(); //複製樣本
+							one_option[0].id = "select_" + modify[i]["values"][o]["key"];
+							one_option[0].value = modify[i]["values"][o]["key"];
+							one_option[0].innerText = modify[i]["values"][o]["value"];
+							one_option[0].className = "";
+							one_option.appendTo("#" + modify_selsect[0].id + " select");
+						}
+						//關閉樣式
+						break;
+					default:
+				}
+			}
+			//關閉樣式
+			$("#search .modify_example_input").addClass("d-none");
+			$("#search .modify_example_selsect").addClass("d-none");
+		},
+		
+		*/
+		
+		selectAllInit() {
+			//監聽-同步相同屬性
+			//選紐欄位(lock=0/save_as=1/detail=2/modify=3/delete=4/print=5/download=6)
+			$(document).on("click", "#search_btn", function (event) {
+				console.log("search_btn");
+				search.searchSend();
+			});
+			$(document).on("click", "#clear_btn", function (event) {
+				console.log("clear_btn");
+				$("#search .search_example_finds input").val("");
+				$("#search .search_example_finds select").val("");
+			});
+			
+			//快速查詢 監聽確認
+			$(document).on("keypress", "#search .search_true input", function (event) {
+				if (event.which == 13) {
+					$('#search_btn').trigger('click');
+				}
+			});
+			
+			//清除修改
+//			$(document).on("click", "#clear_modify_btn", function (event) {
+//				console.log("clear_modify_btn");
+//				$("#search .modify_true .s_value").val("");
+//			});
+			
+			//Daily number of employees
+			$(document).on("click", "#oqc_export_btn", function (event) {
+				console.log("oqc_export_btn");
+				//更新時間
+				let myDate = new Date();
+				let reportDate =
+					myDate.getFullYear() + '-' +
+					('0' + (myDate.getMonth() + 1)).slice(-2) + '-' +
+					('0' + myDate.getDate()).slice(-2) + ' ' + myDate.getHours() + ':' +
+					('0' + (myDate.getMinutes())).slice(-2) + ':' + myDate.getSeconds();
+				// 1.複製 table（不影響畫面）
+			    let table = document.getElementById("oqc_excel");
+				// 2.把 table 這個 DOM 元素,所有的 true為 複製本身加上所有子節點（tr、td、文字…）
+			    let cloneTable = table.cloneNode(true);
+				// 3.移除不匯出的欄位（th / td 都要）
+			    cloneTable.querySelectorAll(".noExl, .d-none").forEach(el => el.remove());
+				// 4.轉成 worksheet	
+			    let ws = XLSX.utils.table_to_sheet(cloneTable, {raw: true});
+			    // 5. 強制所有 cell 都轉成文字格式
+			    for (let cellAddr in ws) {
+			        if (!ws.hasOwnProperty(cellAddr)) continue;
+			        if (cellAddr[0] === "!") continue; // 跳過屬性
+
+			        let cell = ws[cellAddr];
+			        cell.v = String(cell.v === undefined ? "" : cell.v); // 轉成字串
+			        cell.t = "s"; // 設定為 string
+			        cell.z = "@"; // Excel 格式：文字
+			    }
+			    // 6. 建立 workbook 並加入 worksheet
+			    let wb = XLSX.utils.book_new();
+			    XLSX.utils.book_append_sheet(wb, ws, "Worksheet Name");
+			    // 7. 下載檔案（副檔名改成 .xlsx）
+			    XLSX.writeFile(wb, "MES_Report_of_OqcFailureRate"  + reportDate + ".xlsx");
+			});
+
+		},
+
+		//search
+		searchSend() {
+			main.loading(true);
+			//查詢
+			//Ex:body:{search:{b:b,c:c}}
+			var search = {};
+			for (var s = 0; s < $("#search .search_true").length; s++) {
+				var key = $("#search .search_true")[s].id.replace("search_", "");
+				var value = $("#" + $("#search .search_true")[s].id + " .s_value").val();
+				//console.log(key+ " "+value);
+				search[key] = value;
+			}
+			//包裝
+			var s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
+			var s_type = "POST";
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = "AR";
+			req.body = {};
+			req.body.search = search;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.html_body = "";
+			req.call_bk_fn = "search";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		//modify
+		modifySend() {
+			main.loading(true);
+
+			//修改
+			var modify = this.list_modify;
+			//包裝
+			var s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+			var s_type = "PUT";
+			var s_data = {};
+			var req = {};
+			req.user = $('#name').text();
+			req.date = new Date();
+			req.action = "AU";
+			req.body = {};
+			req.body.modify = modify;
+			req.page_total = this.page_total;
+			req.page_batch = this.page_batch;
+			req.html_body = "";
+			req.call_bk_fn = "search";
+			req.call_bk_vals = {};
+			s_data.req_content = req;
+
+			//console.log(s_url);
+			//傳送
+			main.ajaxSend(s_url, s_type, s_data);
+		},
+		searchReturn() {
+			main.loading(false);
+			console.log("searchReturn");
+			//如果 資料包裝有-> body
+			if (main.allData.body != null) {
+				//可能 body->沒有資料
+				if (main.allData.body.search.length < 1) {
+					t_alert.alertshow("warning", "[777] Didn't find anything [WARNING]!!");
+					//回歸上一次分頁
+					return false;
+				}else{
+					//body->有資料
+					this.setDataList(main.allData.body.search,
+						main.allData.body.search_son,
+						main.allData.body_type);
+	
+					if (main.allData.cell_refresh != null) {
+						console.log(main.allData.cell_refresh);
+						//編輯-模板更新
+						modify.setDataTitleUpdate(main.allData.cell_refresh);
+					}					
+				}
+			} else {
+				if(main.allData.action=="AU"){
+					search.searchSend();
+				}
+			}
+		},
+	},
+	//移除監聽事件
+	beforeDestroy() {
+		console.log("search.html(beforeDestroy)");
+		$(document).off("click", "#clear_btn");
+		$(document).off("click", "#search_btn");
+		$(document).off("click", "#oqc_export_btn");
+		
+		$(document).off("keypress", "#search .search_true input");
+	//	$(document).off("keypress", "#search #modify_rd_rr_sn input");
+	},
+});
+</script>
