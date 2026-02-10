@@ -948,7 +948,7 @@ public class RepairListService {
 					}
 				}
 				// ********************** 有登記的硬體資訊  (j**登記內容**)
-				object_detail.put("pb_i_item", pr_i_item.toString().replaceAll(",\"", ",\" \n"));
+				// object_detail.put("pb_i_item", pr_i_item.toString().replaceAll(",\"", ",\" \n"));
 				//前端填入 ************* 產品細節欄位 ****************
 				object_detail.put("productionbodyvaule", productionbodyvaule);
 			}

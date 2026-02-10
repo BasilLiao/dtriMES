@@ -230,15 +230,17 @@ select {
 					<div class="col p-0">產品規格 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-2 m-0 p-1" id="pr_s_item">
+				<div class="col-md-3 m-0 p-1" id="pr_s_item">
 					<div class="col p-0">軟體定義 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-2 m-0 p-1" id="pb_i_item">
+			<!--	
+		  		<div class="col-md-2 m-0 p-1" id="pb_i_item">
 					<div class="col p-0">登記內容 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
-				<div class="col-md-2 m-0 p-1" id="rd_h_item">
+			-->	
+				<div class="col-md-3 m-0 p-1" id="rd_h_item">
 					<div class="col p-0">維修紀錄 :</div>
 					<textarea class="col rounded p-1 detail_ri" rows="16" cols="" placeholder="暫無資料" disabled="disabled"></textarea>
 				</div>
@@ -594,7 +596,7 @@ customized = new Vue({
 			// *************************************************************************	
 			$('#pr_b_item textarea').val(documents['pr_b_item']); //產品規格
 			$('#pr_s_item textarea').val(documents['pr_s_item']); //軟體定義
-			$('#pb_i_item textarea').val(documents['pb_i_item']); //登記內容
+		//	$('#pb_i_item textarea').val(documents['pb_i_item']); //登記內容
 			
 			$('#rd_h_item textarea').val(documents['rd_h_item']); //維修紀錄
 			$('#pr_m_item textarea').val(documents['pr_m_item']); //產品Key Part
@@ -1039,7 +1041,7 @@ customized = new Vue({
 			modify_repair['rd_experience'] =$('#rd_experience textarea').val();
 			modify_repair['pr_b_item'] =$('#pr_b_item textarea').val(); //產品規格
 			modify_repair['pr_s_item'] =$('#pr_s_item textarea').val(); //軟體定義
-			modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); //登記內容
+		//	modify_repair['pb_i_item'] =$('#pb_i_item textarea').val(); //登記內容
 			
 			modify_repair['rd_svg'] =$('#rd_svg .c_save_value').val();
 			modify_repair['rd_check'] =$('#rd_check select').val();

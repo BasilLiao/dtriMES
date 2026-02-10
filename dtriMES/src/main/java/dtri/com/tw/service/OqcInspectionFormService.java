@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,7 @@ public class OqcInspectionFormService {
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
-		// int page = req.getPage_batch();
+		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<OqcInspectionForm> OqcInspectionForms = new ArrayList<OqcInspectionForm>();
 		List<OqcInspectionItems> Oiis = new ArrayList<OqcInspectionItems>();
@@ -57,7 +58,8 @@ public class OqcInspectionFormService {
 			// page = 0;
 			p_size = 100;
 		}
-
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
+		
 		String oif_c_name = null;
 		String oif_ow = null;
 		String oif_o_nb = null;
@@ -199,7 +201,7 @@ public class OqcInspectionFormService {
 		// ******* 放入包裝(body) [01
 		// 是排序][_b__***********資料顯示在SEARCH頁面下的TABLE表單資料***********
 		// 是分割直][資料庫欄位名稱]
-		OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status);
+		OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status,page_r);
 		JSONArray object_bodys = new JSONArray();
 		OqcInspectionForms.forEach(one -> {
 			int ord = 0;

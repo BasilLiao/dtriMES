@@ -2,6 +2,7 @@ package dtri.com.tw.db.pgsql.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -67,7 +68,7 @@ public interface OqcInspectionItemsDao extends JpaRepository<OqcInspectionItems,
 			   + "(:oiititleval  is null or b.oiititleval LIKE %:oiititleval%) and "  //標題值			   
 			   + "(:sysnote is null or b.sysnote LIKE %:sysnote%)  "
 			   + " order by b.oiititleval asc ,b.syssort asc ,b.oiicheckname asc")
-	List<OqcInspectionItems> findAllByOqcItems(String oiicheckname	,String oiicheckval,String oiichecktype,String oiicheckoptions,String oiititleval,String sysnote);
+	List<OqcInspectionItems> findAllByOqcItems(String oiicheckname	,String oiicheckval,String oiichecktype,String oiicheckoptions,String oiititleval,String sysnote,Pageable pageable);
 
 	//計算有無重複short
 	@Query("SELECT COUNT(b) FROM OqcInspectionItems b WHERE "

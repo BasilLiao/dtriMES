@@ -656,15 +656,15 @@ public class ProductionHeaderService {
 						// 檢核[SN]_區間是否用過
 						sn_f = pbsn_list.get(0).toString();
 						sn_e = pbsn_list.get(pbsn_list.length() - 1).toString();
-						if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) {
+						if (bodyDao.findAllByPbbsn(sn_f).size() > 0 || bodyDao.findAllByPbbsn(sn_e).size() > 0) { //產品細節productionBody裡有無重複
 							return false;
 						}
-						// 檢核[系統SN]_區間(之內)是否用過
+						// 檢核[系統SN]_區間(之內)是否用過     //j檢核productionRecordst產品規格是否用過?
 						if (recordsDao.findAllByRecordsESprssn(sn_f, sn_e).size() > 0) {
 							return false;
 						}
 						// Step3. 建立[產品資訊]
-						Long id_b_g = bodyDao.getProductionBodyGSeq();
+						Long id_b_g = bodyDao.getProductionBodyGSeq();  //j 取得G_ID && 累加 (每呼叫一次：sequence +1)
 
 						for (int i = 0; i < pbsn_list.length(); i++) {
 							// body
@@ -672,8 +672,8 @@ public class ProductionHeaderService {
 							pro_b.setSysver(0);
 							pro_b.setPbgid(id_b_g);
 							pro_b.setSysheader(false);
-							pro_b.setPbsn(pbsn_list.getString(i).replaceAll(" ", ""));
-							pro_b.setPbbsn(pbsn_list.getString(i).replaceAll(" ", ""));
+							pro_b.setPbsn(pbsn_list.getString(i).replaceAll(" ", ""));//序號 產品序號
+							pro_b.setPbbsn(pbsn_list.getString(i).replaceAll(" ", ""));//燒錄序號
 							pro_b.setPbcheck(false);
 							pro_b.setPbusefulsn(0);
 							pro_b.setPbwyears(data.getInt("ph_w_years"));
@@ -755,7 +755,7 @@ public class ProductionHeaderService {
 					pro_h.setSysmuser(user.getSuaccount());
 					pro_h.setSyscuser(user.getSuaccount());
 					pro_h.setPhtype(data.getString("ph_type"));
-					pro_h.setPhpbgid(id_b_g2);
+					pro_h.setPhpbgid(id_b_g2); //j 取至productionbody的 取得G_ID && 累加
 					pro_h.setPhcfrom(data.getString("ph_c_from").equals("") ? "MES" : data.getString("ph_c_from"));
 					pro_h.setPhcname(data.getString("ph_c_name"));
 					pro_h.setPhorderid(data.getString("ph_order_id"));
@@ -1299,10 +1299,10 @@ public class ProductionHeaderService {
 						return check;
 					}
 					// 移除
-					hoursDao.deleteByproductionRecords(pheader.getProductionRecords());
-					productionHeaderDao.deleteByPhidAndSysheader(data.getLong("ph_id"), true);
+					hoursDao.deleteByproductionRecords(pheader.getProductionRecords());//刪除產品紀錄
+					productionHeaderDao.deleteByPhidAndSysheader(data.getLong("ph_id"), true); //刪除 ProductionHeader
 					if (data.getLong("ph_pb_g_id") != 1L) {// 不能移除 NO SN
-						bodyDao.deleteByPbgid(data.getLong("ph_pb_g_id"));
+						bodyDao.deleteByPbgid(data.getLong("ph_pb_g_id")); //刪除 ProductionBody
 					}
 					check = true;
 				}

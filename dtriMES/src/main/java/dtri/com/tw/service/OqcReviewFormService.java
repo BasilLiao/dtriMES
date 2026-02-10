@@ -8,6 +8,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 //import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,7 @@ public class OqcReviewFormService {
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
-		// int page = req.getPage_batch();
+		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<OqcInspectionForm> OqcInspectionForms = new ArrayList<OqcInspectionForm>();
 //		List<OqcInspectionItems> Oiis = new ArrayList<OqcInspectionItems>();
@@ -69,7 +71,7 @@ public class OqcReviewFormService {
 			// page = 0;
 			p_size = 100;
 		}
-
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
 		String oif_c_name = null;
 		String oif_ow = null;
 		String oif_o_nb = null;
@@ -215,9 +217,9 @@ public class OqcReviewFormService {
 		
 		if (body.isEmpty()) {
 			//****************  讓第一次進入頁面會先搜尋'已結單   ********************
-			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, 1);
+			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, 1,page_r);
 		}else{
-			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status);
+			OqcInspectionForms = oifDao.findByoifowAndoifcnameAndoifonb(oif_ow, oif_c_name, oif_o_nb, sys_status,page_r);
 		}
 		JSONArray object_bodys = new JSONArray();
 		OqcInspectionForms.forEach(one -> {
@@ -355,6 +357,7 @@ public class OqcReviewFormService {
 					// 物件轉換
 					JSONObject data = (JSONObject) one;
 					oIF = oifDao.findAllByOifid(data.getLong("oif_id")).get(0);
+					oRFs= orlDao.findByOrlow(data.getString("oif_ow"));	
 					if(data.getInt("sys_status")==1)	{ //必須為 已結單 才能 審核
 						oIF.setSysstatus(2); // 資料狀態 
 						oIF.setOiffuser(user.getSuaccount()); //審核人
@@ -770,7 +773,7 @@ public class OqcReviewFormService {
 	@Transactional 
 	public boolean getDataOqc() {	
 		boolean check = false;
-		List<OqcInspectionForm> oifs = oifDao.findByoifowAndoifcnameAndoifonb(null,null,null,1); //  取出OQCForm資料狀態結單(工單結單)清單
+		List<OqcInspectionForm> oifs = oifDao.findByoifowAndoifcnameAndoifonb(null,null,null,1,null); //  取出OQCForm資料狀態結單(工單結單)清單
 	
 		try {
 			ArrayList<SystemMail> sysmlds = sysMailListDao.findAll();

@@ -14,6 +14,8 @@ import javax.persistence.EntityManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,7 @@ public class OqcInspectionItemsService {
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
-		// int page = req.getPage_batch();
+		 int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 		List<OqcInspectionItems> OqcInspectionItems = new ArrayList<OqcInspectionItems>();
 
@@ -47,6 +49,8 @@ public class OqcInspectionItemsService {
 			// page = 0;
 			p_size = 100;
 		}
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
+
 		String oii_check_name = null;
 		String oii_check_val = null;
 		String oii_check_type = null;
@@ -164,7 +168,7 @@ public class OqcInspectionItemsService {
 		}
 
 		OqcInspectionItems = oIIDao.findAllByOqcItems(oii_check_name, oii_check_val, oii_check_type, oii_check_options,
-				oii_title_val, sys_note);
+				oii_title_val, sys_note,page_r);
 
 		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();

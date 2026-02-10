@@ -2,6 +2,7 @@ package dtri.com.tw.db.pgsql.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,7 +24,7 @@ public interface OqcInspectionFormDao extends JpaRepository<OqcInspectionForm, L
 			+ "(:oifcname is null or d.oifcname LIKE %:oifcname%) and "//	
 			+ "(:oifonb is null or d.oifonb LIKE %:oifonb%) and "
 			+ "(:sysstatus is -1 or d.sysstatus =:sysstatus)")
-	List<OqcInspectionForm> findByoifowAndoifcnameAndoifonb(String oifow, String oifcname, String oifonb, int sysstatus);
+	List<OqcInspectionForm> findByoifowAndoifcnameAndoifonb(String oifow, String oifcname, String oifonb, int sysstatus,Pageable pageable);
 
 	
 	

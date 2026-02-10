@@ -11,6 +11,8 @@ import javax.persistence.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,17 +55,17 @@ public class OqcResultListService {
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
 		// 傳入參數
 		JSONObject body = req.getBody();
-		// int page = req.getPage_batch();
+		int page = req.getPage_batch();
 		int p_size = req.getPage_total();
 	//	List<OqcInspectionForm> OqcInspectionForms = new ArrayList<OqcInspectionForm>();
 		List<OqcResultList> OqcResultLists = new ArrayList<OqcResultList>();
 
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
-			// page = 0;
+			 page = 0;
 			p_size = 100;
 		}
-
+	//	PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
 		String orl_ow = null;
 		String orl_p_sn = null;
 		String orl_t_user=null;
@@ -794,6 +796,7 @@ public class OqcResultListService {
 			ProductionRecords pr=prs.get(0); //取出第一筆table表
 			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
 			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
+			ph.setPhedate(new Date());
 			ph.setSysstatus(2);  //2:已完成( 為結單)
 			//對製令內容 修改人與時間做更正
 			ph.setSysmdate(new Date());
