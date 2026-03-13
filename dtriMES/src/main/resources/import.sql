@@ -244,3 +244,7 @@ SELECT setval('public.customer_seq', 1, true);
 DROP sequence IF EXISTS MAINTENANCE_UNIT_G_SEQ CASCADE;
 create sequence MAINTENANCE_UNIT_G_SEQ start with 1 increment by 1;
 
+
+
+DROP sequence IF EXISTS PCBA_BODY_G_SEQ CASCADE;
+create sequence PCBA_BODY_G_SEQ start with 1 increment by 1;

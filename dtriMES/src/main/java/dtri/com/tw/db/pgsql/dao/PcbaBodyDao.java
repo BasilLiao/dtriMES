@@ -1,0 +1,124 @@
+package dtri.com.tw.db.pgsql.dao;
+
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import dtri.com.tw.db.entity.PcbaBody;
+
+public interface PcbaBodyDao extends JpaRepository<PcbaBody, Long> {
+	// 查詢 標籤
+	List<PcbaBody> findAllByPbid(Long id);
+
+	// 取得下當前筆ID
+	@Query(value = "SELECT CURRVAL('pcba_body_seq')", nativeQuery = true)
+	Long getPcbaBodySeq();
+
+	// 取得下當前筆ID
+	@Query(value = "SELECT NEXTVAL('pcba_body_seq')", nativeQuery = true)
+	Long getPcbaBodySeqNext();
+
+	// 取得G_ID && 累加
+	@Query(value = "SELECT NEXTVAL('pcba_body_g_seq')", nativeQuery = true)
+	Long getPcbaBodyGSeq();
+
+	// 查詢SN重複
+	List<PcbaBody> findAllByPbsn(String pbsn);
+
+
+	// 查詢燒錄 SN重複
+	List<PcbaBody> findAllByPbbsn(String pbbsn);
+
+	// 查詢燒錄_Like+是舊的SN
+	List<PcbaBody> findAllByPbbsnLike(String old_sn);
+
+	// 查詢燒錄_Like+不是舊的SN
+	List<PcbaBody> findAllByPbbsnAndPbbsnNotLike(String pbbsn, String not_old_sn);
+
+	// 查詢該群組_Like+不是舊的SN
+	@Query(value = "SELECT b FROM PcbaBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbbsn LIKE %:pbbsn% or b.pboldsn LIKE %:pboldsn% ) "// coalesce 回傳非NULL值
+			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
+	List<PcbaBody> findAllByPbgidAndPbbsnLikeOrPboldsnLike(Long pbgid, String pbbsn, String pboldsn);
+	
+	
+	
+	// 查詢SN and MB_uuid //johnny 故意使用 sysmuser 來對應RMA號碼 來造成查無資料
+//	@Query("SELECT b FROM PcbaBody b WHERE "
+//			   + "(:sysmuser is null or b.sysmuser  =:sysmuser) and "
+//			   + "(:pbsn is null or b.pbsn  =:pbsn) and "
+//		       + "(:pbvalue16 is null or b.pbvalue16 =:pbvalue16) ")			 
+//	List<PcbaBody> findAllByPbsnAndpbvalue16(String  sysmuser ,String pbsn ,String pbvalue16);
+	
+	// 查詢工單裡面的號碼"old"  可找出轉單數量資料johnny
+	@Query("SELECT b FROM PcbaBody b WHERE "			 
+			   + "(:pbsn is null or b.pbsn  LIKE %:pbsn%) and "
+		       + "(:pbgid is null or b.pbgid =:pbgid) ")			 
+	List<PcbaBody> findAllByOldAndPbgid(String pbsn, Long pbgid);
+
+
+	// 查詢SN重複+群組
+	List<PcbaBody> findAllByPbsnAndPbgid(String pbsn, Long pbgid);
+
+	// 查詢燒錄 SN重複+群組
+	List<PcbaBody> findAllByPbbsnAndPbgid(String pbbsn, Long pbgid);
+
+	// 查詢SN群組
+	List<PcbaBody> findAllByPbgidOrderByPbsnAsc(Long pbgid);
+
+	// 查詢SN群組+非no_sn
+	List<PcbaBody> findAllByPbgidAndPbbsnNotOrderByPbsnAsc(Long pbgid, String pbbsn);
+
+	// 查詢SN群組 已過站
+	@Query(value = "SELECT b.pbbsn FROM PcbaBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbschedule LIKE %:pbschedule% ) "// coalesce 回傳非NULL值
+			+ " order by b.pbsn asc")
+	List<String> findPbbsnPbscheduleList(Long pbgid, String pbschedule);
+
+	// 查詢SN群組 故障數
+	@Query(value = "SELECT b.pbbsn FROM PcbaBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and "//
+			+ "(b.pbfvalue LIKE %:pbfvalue% ) and "//
+			+ "(b.pbfvalue !='' and b.pbfvalue is not null ) "// coalesce 回傳非NULL值
+			+ " order by b.pbsn asc")
+	List<String> findPbbsnPbscheduleFixList(Long pbgid, String pbfvalue);
+
+	// 查詢SN群組(此工單 ->產品完成[總數])
+	@Query(value = "SELECT b.pbcheck FROM PcbaBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) and (b.pbcheck = true) order by b.pbsn asc")
+	List<Boolean> findPbcheckList(Long pbgid);
+
+	// 查詢SN群組(此工單 ->產品 SN重複)
+	@Query(value = "SELECT b.pbbsn FROM PcbaBody b WHERE "//
+			+ "( b.pbgid = :pbgid ) order by b.pbsn asc")
+	List<String> findPbbsnList(Long pbgid);
+
+	// 查詢一部分_Body
+	@Query(value = "SELECT b FROM PcbaBody b WHERE "//
+			+ "( b.sysstatus = :sysstatus ) and "//
+			+ "(coalesce(:pbid, null) is null or b.pbid IN :pbid ) and "// coalesce 回傳非NULL值
+			+ "(b.pbid!=0 or b.pbid!=1) and (b.sysheader!=true) "//
+			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
+	List<PcbaBody> findAllByPcbaBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id, Pageable pageable);
+
+	// 查詢一部分_Body By Check
+	@Query(value = "SELECT b FROM PcbaBody b WHERE "//
+			+ "( b.sysstatus = :sysstatus ) and "//
+			+ "(coalesce(:pbid, null) is null or b.pbid IN :pbid ) and "// coalesce 回傳非NULL值
+			+ "(b.pbid!=0 or b.pbid!=1) and (b.sysheader!=true) and  (b.pbcheck=:pbcheck)"//
+			+ " order by b.pbgid desc,b.pbid asc ,b.sysheader desc")
+	List<PcbaBody> findAllByPcbaBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id, @Param("pbcheck") Boolean pb_check,
+			Pageable pageable);
+
+	// 移除單一SN
+	Long deleteByPbid(Long id);
+
+	// 移除 群組
+	Long deleteByPbgid(Long id);
+
+}

@@ -302,7 +302,7 @@ public class WorkstationService {
 
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_must", one.getWmust());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_c_name", one.getWcname());
-			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname());
+			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_name", one.getWpbname()); //"w_pb_name", "工作站[名稱]"
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_pb_cell", one.getWpbcell());
 			object_son.put(FFS.ord((ord += 1), FFM.Hmb.B) + "w_sg_id", one.getWsgid());
 
@@ -380,7 +380,7 @@ public class WorkstationService {
 						sys_t_f.setWorkstationItem(sys_ti_f);
 						sys_t_f.setWcname(data.getString("w_c_name"));
 						sys_t_f.setWpbcell(w_pb_cell);
-						sys_t_f.setWpbname(w_pb_value);
+						sys_t_f.setWpbname(w_pb_value); //"w_pb_name", "工作站[名稱]"
 						sys_t_f.setWreplace(data.getBoolean("w_replace"));
 						sys_t_f.setWsgid(systemGroup.get(0).getSggid());
 						sys_t_f.setWsgname(systemGroup.get(0).getSgname());
@@ -425,7 +425,7 @@ public class WorkstationService {
 					sys_t.setWcname(sys_t_f.getWcname());
 					sys_t.setSysheader(false);
 					sys_t.setWpbcell(sys_t_f.getWpbcell());
-					sys_t.setWpbname(sys_t_f.getWpbname());
+					sys_t.setWpbname(sys_t_f.getWpbname()); //"w_pb_name", "工作站[名稱]"
 					sys_t.setWorkstationItem(sys_ti);
 					sys_t.setWreplace(sys_t_f.getWreplace());
 					sys_t.setWpicheck(data.has("w_pi_check") ? data.getInt("w_pi_check") : 0);
@@ -495,7 +495,7 @@ public class WorkstationService {
 						sys_t_f.setWorkstationItem(sys_ti_f);
 						sys_t_f.setWcname(data.getString("w_c_name"));
 						sys_t_f.setWpbcell(w_pb_cell);
-						sys_t_f.setWpbname(w_pb_value);
+						sys_t_f.setWpbname(w_pb_value); //"w_pb_name", "工作站[名稱]"
 						sys_t_f.setWreplace(data.getBoolean("w_replace"));
 						sys_t_f.setWpicheck(0);
 						sys_t_f.setWpiname("");
@@ -535,7 +535,7 @@ public class WorkstationService {
 					sys_t.setWcname(sys_t_f.getWcname());
 					sys_t.setSysheader(false);
 					sys_t.setWpbcell(sys_t_f.getWpbcell());
-					sys_t.setWpbname(sys_t_f.getWpbname());
+					sys_t.setWpbname(sys_t_f.getWpbname()); //"w_pb_name", "工作站[名稱]"
 					sys_t.setWorkstationItem(sys_ti);
 					sys_t.setWreplace(sys_t_f.getWreplace());
 					sys_t.setWpicheck(data.has("w_pi_check") ? data.getInt("w_pi_check") : 0);
@@ -616,7 +616,7 @@ public class WorkstationService {
 					sys_t.setWoption(0);
 					sys_t.setWgid(w_g_id);
 					sys_t.setWcname(w_c_name);
-					sys_t.setWpbname(w_pb_value);
+					sys_t.setWpbname(w_pb_value); //"w_pb_name", "工作站[名稱]"
 					sys_t.setWpbcell(w_pb_cell);
 					sys_t.setWreplace(w_replace);
 					sys_t.setWsgid(systemGroup.get(0).getSggid());
@@ -632,7 +632,7 @@ public class WorkstationService {
 
 					for (Workstation w : workstations) {
 						w.setWcname(data.getString("w_c_name"));
-						w.setWpbname(w_pb_value);
+						w.setWpbname(w_pb_value); //"w_pb_name", "工作站[名稱]"
 						w.setWpbcell(w_pb_cell);
 						w.setWsgid(systemGroup.get(0).getSggid());
 						w.setWsgname(systemGroup.get(0).getSgname());
@@ -655,7 +655,7 @@ public class WorkstationService {
 					sys_t.setSysheader(false);
 					sys_t.setWgid(w_g_id);
 					sys_t.setWcname(w_c_name);
-					sys_t.setWpbname(w_pb_value);
+					sys_t.setWpbname(w_pb_value); //"w_pb_name", "工作站[名稱]"
 					sys_t.setWpbcell(w_pb_cell);
 					sys_t.setWreplace(w_replace);
 					sys_t.setWpicheck(data.has("w_pi_check") ? data.getInt("w_pi_check") : 0);

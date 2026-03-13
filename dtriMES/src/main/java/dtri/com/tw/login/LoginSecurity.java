@@ -61,7 +61,6 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String repair_list = "/ajax/repair_list.basil";
 		String repair_list_bat = "/ajax/repair_list_bat.basil";
 		String repair_rma_list_bat = "/ajax/repair_rma_list_bat.basil";
-
 		String repair_rma_list = "/ajax/repair_rma_list.basil";
 		
 		String label_list = "/ajax/label_list.basil";
@@ -74,6 +73,13 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		String oqc_result_list="/ajax/oqc_result_list.basil";
 		String oqc_review_form="/ajax/oqc_review_form.basil";
 		String oqc_failure_rate="/ajax/oqc_failure_rate.html.basil";
+		
+		String pcba_conf = "/ajax/pcba_config.basil";
+		String pcba_workstation = "/ajax/pcba_workstation.basil";
+		String pcba_workstation_conf = "/ajax/pcba_workstation_config.basil";
+		String pcba_header="/ajax/pcba_header.html.basil";
+		
+		String pcba_workstation_prog = "/ajax/pcba_workstation_program.basil";
 		
 		http.authorizeRequests()
 				// thirdparty && img 資料夾靜態資料可 直接 存取 (預設皆有 訪問權限 資料可[匿名]存取)
@@ -369,10 +375,44 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				// --- 請求 oqc_failure_rate
 				.antMatchers(HttpMethod.POST, oqc_failure_rate).hasAuthority(actionRole(oqc_failure_rate, ""))//
 				.antMatchers(HttpMethod.POST, oqc_failure_rate + ".AR").hasAuthority(actionRole(oqc_failure_rate, "AR"))// (查詢)
-//				.antMatchers(HttpMethod.POST, oqc_failure_rate + ".AC").hasAuthority(actionRole(oqc_failure_rate, "AC"))// (新增)
-//				.antMatchers(HttpMethod.PUT, oqc_failure_rate + ".AU").hasAuthority(actionRole(oqc_failure_rate, "AU"))// (修改)
-//				.antMatchers(HttpMethod.DELETE, oqc_failure_rate + ".AD").hasAuthority(actionRole(oqc_failure_rate, "AD"))// (移除)				
-								
+			
+				// ----請求-pcba_header-(訪問) ----
+				.antMatchers(HttpMethod.POST, pcba_header).hasAuthority(actionRole(pcba_header, ""))//
+				.antMatchers(HttpMethod.POST, pcba_header + ".AR").hasAuthority(actionRole(pcba_header, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_header + ".AC").hasAuthority(actionRole(pcba_header, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_header + ".AU").hasAuthority(actionRole(pcba_header, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_header + ".AD").hasAuthority(actionRole(pcba_header, "AD"))// (移除)			
+				
+				// ----請求-pcba_config-(訪問) ----
+				.antMatchers(HttpMethod.POST, pcba_conf).hasAuthority(actionRole(pcba_conf, ""))//
+				.antMatchers(HttpMethod.POST, pcba_conf + ".AR").hasAuthority(actionRole(pcba_conf, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_conf + ".AC").hasAuthority(actionRole(pcba_conf, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_conf + ".AU").hasAuthority(actionRole(pcba_conf, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_conf + ".AD").hasAuthority(actionRole(pcba_conf, "AD"))// (移除)
+
+				// ----請求-pcba_workstation_config-(訪問) ----
+				.antMatchers(HttpMethod.POST, pcba_workstation_conf).hasAuthority(actionRole(pcba_workstation_conf, ""))//
+				.antMatchers(HttpMethod.POST, pcba_workstation_conf + ".AR").hasAuthority(actionRole(pcba_workstation_conf, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_workstation_conf + ".AC").hasAuthority(actionRole(pcba_workstation_conf, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_workstation_conf + ".AU").hasAuthority(actionRole(pcba_workstation_conf, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_workstation_conf + ".AD").hasAuthority(actionRole(pcba_workstation_conf, "AD"))// (移除)
+			
+				// ----請求-pcba_workstation-(訪問) ---- 檢核
+				.antMatchers(HttpMethod.POST, pcba_workstation).hasAuthority(actionRole(pcba_workstation, ""))//
+				.antMatchers(HttpMethod.POST, pcba_workstation + ".AR").hasAuthority(actionRole(pcba_workstation, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_workstation + ".AC").hasAuthority(actionRole(pcba_workstation, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_workstation + ".AU").hasAuthority(actionRole(pcba_workstation, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_workstation + ".AD").hasAuthority(actionRole(pcba_workstation, "AD"))// (移除)
+				//.antMatchers(HttpMethod.POST, pcba_workstation + ".PT").hasAuthority(actionRole(pcba_workstation, "PT"))// (列印)
+				
+				// ----請求-pcba_workstation_program-(訪問) ----
+				.antMatchers(HttpMethod.POST, pcba_workstation_prog).hasAuthority(actionRole(pcba_workstation_prog, ""))//
+				.antMatchers(HttpMethod.POST, pcba_workstation_prog + ".AR").hasAuthority(actionRole(pcba_workstation_prog, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_workstation_prog + ".AC").hasAuthority(actionRole(pcba_workstation_prog, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_workstation_prog + ".AU").hasAuthority(actionRole(pcba_workstation_prog, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_workstation_prog + ".AD").hasAuthority(actionRole(pcba_workstation_prog, "AD"))// (移除)
+				
+				
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();
 		// 下列-登入位置

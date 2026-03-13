@@ -642,10 +642,10 @@ public class ProductionHeaderService {
 							if (pbsn_list.length() == 0) {
 								// [自定義生成SN]
 								for (int i = 0; i < data.getInt("ph_p_qty"); i++) {
-									String pr_e_b_sn = data.getString("ps_b_f_sn")
+									String pr_e_b_sn = data.getString("ps_b_f_sn")  //pr_e_b_sn 燒錄序號(結束) ps_b_f_sn  SN_燒錄序號(固定)   
 											+ String.format("%0" + data.getString("ps_b_sn").length() + "d",
-													(data.getInt("ps_b_sn") + i));
-									pbsn_list.put(pr_e_b_sn);
+													(data.getInt("ps_b_sn") + i));  //SN_燒錄序號(流水)
+									pbsn_list.put(pr_e_b_sn); 
 								}
 							} else {
 								// [自動生成SN]

@@ -68,7 +68,7 @@ public class OqcReviewFormService {
 //		List<OqcInspectionItems> Oiis = new ArrayList<OqcInspectionItems>();
 		// 查詢的頁數，page=從0起算/size=查詢的每頁筆數
 		if (p_size < 1) {
-			// page = 0;
+			page = 0;
 			p_size = 100;
 		}
 		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());

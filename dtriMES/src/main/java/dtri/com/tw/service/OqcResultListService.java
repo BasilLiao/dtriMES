@@ -65,7 +65,7 @@ public class OqcResultListService {
 			 page = 0;
 			p_size = 100;
 		}
-	//	PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
+		PageRequest page_r = PageRequest.of(page, p_size, Sort.by("id").descending());
 		String orl_ow = null;
 		String orl_p_sn = null;
 		String orl_t_user=null;
@@ -266,6 +266,9 @@ public class OqcResultListService {
 
 		Query query = em.createNativeQuery(nativeQuery, OqcResultList.class);
 		
+		query.setFirstResult((int) page_r.getOffset()); //手動加分頁 從第幾筆開始
+		query.setMaxResults(page_r.getPageSize());//手動加分頁 每頁幾筆
+		
 		orl_ow = (orl_ow== null) ? "" : orl_ow;		// 工單
 		query.setParameter("orlow", "%" + orl_ow + "%");
 
@@ -273,8 +276,7 @@ public class OqcResultListService {
 		if(!orl_t_date_s.equals("") && !orl_t_date_e.equals("")) { 
 			query.setParameter("orltdates",  Fm_Time.toDateTime(orl_t_date_s));
 			query.setParameter("orltdatee",  Fm_Time.toDateTime(orl_t_date_e));				
-		}
-				
+		}				
 		orl_p_sn = (orl_p_sn== null) ? "" : orl_p_sn;  // "產品SN號"
 		query.setParameter("orlpsn", "%" + orl_p_sn + "%");		
 		
@@ -796,7 +798,7 @@ public class OqcResultListService {
 			ProductionRecords pr=prs.get(0); //取出第一筆table表
 			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
 			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
-			ph.setPhedate(new Date());
+			ph.setPhedate(new Date()); //登記製令 結束時間
 			ph.setSysstatus(2);  //2:已完成( 為結單)
 			//對製令內容 修改人與時間做更正
 			ph.setSysmdate(new Date());
