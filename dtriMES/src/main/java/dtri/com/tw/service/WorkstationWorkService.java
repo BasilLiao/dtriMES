@@ -78,7 +78,7 @@ public class WorkstationWorkService {
 	private FtpService ftpService;
 
 	@Autowired
-	private ForPrinterLabelService labelService;
+	private LabelForPrinterService labelService;
 	@Autowired
 	private LabelListService labelNService;
 

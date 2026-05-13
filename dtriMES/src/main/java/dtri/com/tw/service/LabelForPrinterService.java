@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ForPrinterLabelService {
+public class LabelForPrinterService {
 
 	/**
 	 * label_3X1 = 3*1 套版

@@ -194,7 +194,7 @@ select {
 			</div>
 			<div class="col-md m-0 p-2 text-left">
 				<div class="col-md-12 p-0 m-0 row">
-					<div class="col-md-12 m-0 p-1">
+					<div class="col-md-6 m-0 p-1">
 						<div class="col p-0">Label Choose(選擇標籤):</div>
 						<select id="label_choose"
 							class="col p-1 rounded border-1 border-success">
@@ -208,8 +208,20 @@ select {
 							value="" placeholder="Ex:6F2A">
 					</div>
 					<div class="col-md-6 m-0 p-1">
-						<div class="col p-0">Print Qty(數量):</div>
+						<div class="col p-0">W.O.(套用工單):</div>
+						<input id="print_wo"
+							class="col p-1 rounded border-1 border-success" type="text"
+							value="" placeholder="Ex:A511-123456789">
+					</div>
+					<div class="col-md-3 m-0 p-1">
+						<div class="col p-0">Qty(數量):</div>
 						<input id="print_qty"
+							class="col p-1 rounded border-1 border-success" type="number"
+							value="1" placeholder="Ex:1">
+					</div>
+					<div class="col-md-3 m-0 p-1">
+						<div class="col p-0">Repeat(重複):</div>
+						<input id="print_repeat"
 							class="col p-1 rounded border-1 border-success" type="number"
 							value="1" placeholder="Ex:1">
 					</div>
@@ -302,7 +314,7 @@ select {
 					</div>
 				</div>
 				<div id="label_blocks" class="col-md-12 m-0 p-2 text-left"
-					style="overflow: scroll; height: 530px;"></div>
+					style="overflow: scroll; height: calc(100vh - 580px);"></div>
 			</div>
 		</div>
 		<!-- 右半邊 -->
@@ -323,7 +335,7 @@ select {
 			<div id="preview_label" class="row p-0 m-0">
 				<!-- 背景網格 -->
 				<div class="col-md-12 m-0 p-2 text-left"
-					style="overflow: scroll; height: 630px;">
+					style="overflow: scroll; height: calc(100vh - 475px);">
 					<div id="bg_linear" style="min-height: 2000px; min-width: 2000px;">
 						<div id="bg_label"
 							style="height: 200px; width: 600px; background-color: #e9ecef80;">
@@ -340,7 +352,7 @@ select {
 				<!-- 區塊設定 -->
 				<div id="label_block_content"
 					class="col-md-12 p-0 row m-0 bg-light rounded border border-secondary shadow text-left"
-					style="position: absolute; top: 50px; left: 10px; width: 820px; display: none;">
+					style="position: absolute; top: 50px; left: 10px; width: 820px; display: none; z-index: 2;">
 					<div class="col-md-12 p-1 h4 m-0 bg-white" style="height: 35px">Block
 						Content(區塊內容)</div>
 					<div class="col-md-12 p-1 m-0 row" style="height: 65px">
@@ -370,11 +382,11 @@ select {
 								class="col btn btn-info btn-sm bc_all">Setting</button>
 						</div>
 					</div>
-					<div class="col-md-12 p-1 m-0" style="height: 495px;">
+					<div class="col-md-12 p-1 m-0" style="min-height: 495px;">
 						<!-- 文字樣式 -->
 						<div id="char_type_content"
 							class="col-md-12 p-0 m-0 rounded border border-secondary shadow">
-							<div class="col-md p-1 mb-2 bg-white">
+							<div class="col-md p-1 mb-0 bg-white">
 								<b class="h4">Char Type(文字類型)</b>
 							</div>
 							<div id="" class="col-md p-1 row m-0">
@@ -406,6 +418,7 @@ select {
 									</div>
 								</div>
 								<div class="col-md-6 p-0 m-0">
+
 									<div class="col-md-12 m-0 p-0 row rounded border">
 										<div class="col-md-12 p-1 m-0 h5">*Font</div>
 										<div class="col-md-6 p-1 m-0">
@@ -485,6 +498,31 @@ select {
 												<option class="" value="C">Middle</option>
 												<option class="" value="L">Left</option>
 												<option class="" value="R">Right</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-12 m-0 p-0 row rounded border border-danger">
+										<div class="col-md-12 p-1 m-0 h5">Test Auto Add 1</div>
+										<div class="col-md-4 p-1 m-0">
+											<div class="col p-0">Auto :</div>
+											<select id="ll_fd_auto"
+												class="col p-1 rounded border-1 border-info bc_all">
+												<option class="" value="" selected>OFF</option>
+												<option class="" value="true">ON</option>
+											</select>
+										</div>
+										<div class="col-md-4 p-1 m-0">
+											<div class="col p-0">Suffix(尾碼數):</div>
+											<input id="ll_fd_auto_lnb"
+												class="col p-1 rounded border-1 border-info bc_all"
+												type="number" value="3" placeholder="指定序號的尾碼">
+										</div>
+										<div class="col-md-4 p-1 m-0">
+											<div class="col p-0">Base(進制):</div>
+											<select id="ll_fd_auto_base"
+												class="col p-1 rounded border-1 border-info bc_all">
+												<option class="" value="" selected>10</option>
+												<option class="" value="16">16</option>
 											</select>
 										</div>
 									</div>
@@ -639,6 +677,31 @@ select {
 										Follow(跟隨欄位)時，選擇 工作站(外箱用)類型
 										請確保該標籤有[複數序號]登記，只有[單一序號]時，可能導致[空格or異常]出現！</div>
 								</div>
+								<div class="col-md-12 m-0 p-0 row rounded border border-danger">
+									<div class="col-md-12 p-1 m-0 h5">Test Auto Add 1</div>
+									<div class="col-md-4 p-1 m-0">
+										<div class="col p-0">Auto :</div>
+										<select id="ll_b_auto"
+											class="col p-1 rounded border-1 border-info bc_all">
+											<option class="" value="" selected>OFF</option>
+											<option class="" value="true">ON</option>
+										</select>
+									</div>
+									<div class="col-md-4 p-1 m-0">
+										<div class="col p-0">Suffix(尾碼數):</div>
+										<input id="ll_b_auto_lnb"
+											class="col p-1 rounded border-1 border-info bc_all"
+											type="number" value="3" placeholder="指定序號的尾碼">
+									</div>
+									<div class="col-md-4 p-1 m-0">
+										<div class="col p-0">Base(進制):</div>
+										<select id="ll_b_auto_base"
+											class="col p-1 rounded border-1 border-info bc_all">
+											<option class="" value="" selected>10</option>
+											<option class="" value="16">16</option>
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
 						<!-- 二維碼樣式 -->
@@ -705,6 +768,31 @@ select {
 									Follow(跟隨欄位)時，選擇 工作站(外箱用)類型
 									請確保該標籤有[複數序號]登記，只有[單一序號]時，可能導致[空格or異常]出現！</div>
 
+							</div>
+							<div class="col-md-12 m-0 p-0 row rounded border border-danger">
+								<div class="col-md-12 p-1 m-0 h5">Test Auto Add 1</div>
+								<div class="col-md-4 p-1 m-0">
+									<div class="col p-0">Auto :</div>
+									<select id="ll_bq_auto"
+										class="col p-1 rounded border-1 border-info bc_all">
+										<option class="" value="" selected>OFF</option>
+										<option class="" value="true">ON</option>
+									</select>
+								</div>
+								<div class="col-md-4 p-1 m-0">
+									<div class="col p-0">Suffix(尾碼數):</div>
+									<input id="ll_bq_auto_lnb"
+										class="col p-1 rounded border-1 border-info bc_all"
+										type="number" value="3" placeholder="指定序號的尾碼">
+								</div>
+								<div class="col-md-4 p-1 m-0">
+									<div class="col p-0">Base(進制):</div>
+									<select id="ll_bq_auto_base"
+										class="col p-1 rounded border-1 border-info bc_all">
+										<option class="" value="" selected>10</option>
+										<option class="" value="16">16</option>
+									</select>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -947,6 +1035,11 @@ customized = new Vue({
 									}
 									$("#ll_fd").val(bc_json.ll_fd);
 									$("#ll_fd_substring").val(bc_json.ll_fd_substring==null?"":bc_json.ll_fd_substring);
+									//Auto
+									$("#ll_fd_auto").val(bc_json.ll_fd_auto==null?"":bc_json.ll_fd_auto);
+									$("#ll_fd_auto_lnb").val(bc_json.ll_fd_auto_lnb==null?"":bc_json.ll_fd_auto_lnb);
+									$("#ll_fd_auto_base").val(bc_json.ll_fd_auto_base==null?"":bc_json.ll_fd_auto_base);
+									//
 									$("#ll_fd_f").val(bc_json.ll_fd_f).trigger('change');
 									$("#ll_fd_test").val(bc_json.ll_fd_test);
 									$("#ll_a_t").val(bc_json.ll_a_t=="A"?'':bc_json.ll_a_t);
@@ -982,6 +1075,10 @@ customized = new Vue({
 									$("#ll_a_b").val(bc_json.ll_a_b=='N'?'':bc_json.ll_a_b);
 									$("#ll_b_d").val(bc_json.ll_b_d);
 									$("#ll_b_efg").val(bc_json.ll_b_efg);
+									//Auto
+									$("#ll_b_auto").val(bc_json.ll_b_auto==null?"":bc_json.ll_b_auto);
+									$("#ll_b_auto_lnb").val(bc_json.ll_b_auto_lnb==null?"":bc_json.ll_b_auto_lnb);
+									$("#ll_b_auto_base").val(bc_json.ll_b_auto_base==null?"":bc_json.ll_b_auto_base);
 								break;
 								case"qr_code_type"://二維條碼
 									if($('#label_block_type').val()!='qr_code_type'){
@@ -995,6 +1092,10 @@ customized = new Vue({
 									$("#ll_bq_c").val(bc_json.ll_bq_c=='N'?'':bc_json.ll_bq_c);
 									$("#ll_bq_d").val("");
 									$("#ll_bq_e").val(bc_json.ll_bq_e);
+									//Auto
+									$("#ll_bq_auto").val(bc_json.ll_bq_auto==null?"":bc_json.ll_bq_auto);
+									$("#ll_bq_auto_lnb").val(bc_json.ll_bq_auto_lnb==null?"":bc_json.ll_bq_auto_lnb);
+									$("#ll_bq_auto_base").val(bc_json.ll_bq_auto_base==null?"":bc_json.ll_bq_auto_base);
 								break;							
 							}
 						}
@@ -1126,6 +1227,11 @@ customized = new Vue({
 						//防呆1.
 						$("#ll_fd").val($("#ll_fd").val()==""?"Text_FD":$("#ll_fd").val());
 						$("#ll_fd_substring").val($("#ll_fd_substring").val()==null?"":$("#ll_fd_substring").val());
+						//auto
+						$("#ll_fd_auto").val($("#ll_fd_auto").val()==null?"":$("#ll_fd_auto").val());
+						$("#ll_fd_auto_lnb").val($("#ll_fd_auto_lnb").val()==null?"":$("#ll_fd_auto_lnb").val());
+						$("#ll_fd_auto_base").val($("#ll_fd_auto_base").val()==null?"":$("#ll_fd_auto_base").val());
+						
 						$("#ll_fd_test").val($("#ll_fd_test").val()==""?"Test_FD":$("#ll_fd_test").val());
 						$("#ll_a_h").val($("#ll_a_h").val()==""?"1":$("#ll_a_h").val());
 						//防呆2.
@@ -1138,6 +1244,11 @@ customized = new Vue({
 						//文字性質
 						bc.ll_fd = $("#ll_fd").val();
 						bc.ll_fd_substring = $("#ll_fd_substring").val();
+						//auto
+						bc.ll_fd_auto = $("#ll_fd_auto").val();
+						bc.ll_fd_auto_lnb = $("#ll_fd_auto_lnb").val();
+						bc.ll_fd_auto_base = $("#ll_fd_auto_base").val();
+						
 						bc.ll_fd_test = $("#ll_fd_test").val();
 						bc.ll_fd_f = $("#ll_fd_f").val();
 						bc.ll_a_t = $("#ll_a_t").val()==''?'A':$("#ll_a_t").val();
@@ -1190,6 +1301,10 @@ customized = new Vue({
 						if($("#ll_b_h").val()==""||$("#ll_b_h").val()<1||$("#ll_b_h").val()>100){
 							$("#ll_b_h").val(30);
 						}
+						//auto
+						$("#ll_b_auto").val($("#ll_b_auto").val()==null?"":$("#ll_b_auto").val());
+						$("#ll_b_auto_lnb").val($("#ll_b_auto_lnb").val()==null?"":$("#ll_b_auto_lnb").val());
+						$("#ll_b_auto_base").val($("#ll_b_auto_base").val()==null?"":$("#ll_b_auto_base").val());
 
 						//一維條碼
 						bc.label_block_type = "barcode_type";
@@ -1204,6 +1319,11 @@ customized = new Vue({
 						bc.ll_b_c = $("#ll_b_c").val()==''?'N':$("#ll_b_c").val();
 						bc.ll_b_d = $("#ll_b_d").val();
 						bc.ll_b_efg = $("#ll_b_efg").val();
+						//auto
+						bc.ll_b_auto = $("#ll_b_auto").val();
+						bc.ll_b_auto_lnb = $("#ll_b_auto_lnb").val();
+						bc.ll_b_auto_base = $("#ll_b_auto_base").val();
+						
 						//預覽一維條碼
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content").html('<img src="./img/barcode.png"/>');
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content img").css('height',bc.ll_b_h+"px");
@@ -1219,7 +1339,10 @@ customized = new Vue({
 						if($("#ll_bq_e").val()==""||$("#ll_bq_e").val()<1||$("#ll_bq_e").val()>10){
 							$("#ll_bq_e").val(2);
 						}
-						
+						//auto
+						$("#ll_bq_auto").val($("#ll_bq_auto").val()==null?"":$("#ll_bq_auto").val());
+						$("#ll_bq_auto_lnb").val($("#ll_bq_auto_lnb").val()==null?"":$("#ll_bq_auto_lnb").val());
+						$("#ll_bq_auto_base").val($("#ll_bq_auto_base").val()==null?"":$("#ll_bq_auto_base").val());
 						
 						//二維條碼
 						bc.label_block_type ="qr_code_type";
@@ -1230,6 +1353,10 @@ customized = new Vue({
 						bc.ll_bq_c = $("#ll_bq_c").val()==''?'N':$("#ll_bq_c").val();
 						bc.ll_bq_d = $("#ll_bq_d").val()==''?'2':$("#ll_bq_d").val();
 						bc.ll_bq_e = $("#ll_bq_e").val();
+						//auto
+						bc.ll_bq_auto = $("#ll_bq_auto").val();
+						bc.ll_bq_auto_lnb = $("#ll_bq_auto_lnb").val();
+						bc.ll_bq_auto_base = $("#ll_bq_auto_base").val();
 						//預覽二維條碼
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content").html('<img src="./img/QRcode.png"/>');
 						$("#bg_pl_"+id.replace("ll_fo_list_","")).find(".pl_content img").css('width',(bc.ll_bq_e*20)+"px");
@@ -1544,6 +1671,8 @@ customized = new Vue({
 			print.label_choose = $("#label_choose").val();
 			print.print_code = $("#print_code").val();
 			print.print_qty = $("#print_qty").val();
+			print.print_repeat = $("#print_repeat").val();
+			print.print_wo = $("#print_wo").val();
 			
 			//包裝
 			var action = "S3";

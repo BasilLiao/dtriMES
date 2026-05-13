@@ -6,10 +6,13 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.print.PrintService;
 
 import org.apache.commons.codec.binary.Base64;
+import org.hibernate.mapping.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.gson.JsonObject;
 
 import dtri.com.tw.bean.LabelListBean;
 import dtri.com.tw.bean.PackageBean;
@@ -554,8 +559,16 @@ public class LabelListService {
 		try {
 			if (body != null && !body.isNull("print")) {
 				System.out.println(body.getJSONObject("print"));
-				String printName = body.getJSONObject("print").getString("print_code");// 標籤機代號
-				int printQty = Integer.parseInt(body.getJSONObject("print").getString("print_qty"));// 幾張
+				JSONObject printObj = body.getJSONObject("print");
+				String printName = printObj.getString("print_code");// 標籤機代號
+				String printWo = printObj.has("printWo") ? printObj.getString("printWo") : "";// 跟隨工單?
+				//
+				String rStr = printObj.has("print_repeat") ? printObj.getString("print_repeat") : "1";// 重複
+				int printRepeat = Integer.parseInt((rStr == null || rStr.isEmpty()) ? "1" : rStr);
+				//
+				String qStr = printObj.has("print_qty") ? printObj.getString("print_qty") : "1";// 幾張
+				int printQty = Integer.parseInt((qStr == null || qStr.isEmpty()) ? "1" : qStr);
+
 				ArrayList<LabelList> labels = new ArrayList<LabelList>();
 				// Y=測試用?N=正是用?
 				if (testPrint) {
@@ -662,21 +675,55 @@ public class LabelListService {
 
 					// label_all
 					String llxa = "";
-					// 共要跑幾張
+					// 要跑幾張
+					label_bean.setLl_l_qty(printQty);
+					HashMap<String, String> autoMaps = new HashMap<String, String>();
+
 					for (int y = 1; y <= label_bean.getLl_l_qty(); y++) {
 						label_bean.setLl_l_now(y);// 目前第幾張
 						label_bean.newFolist();
 
-						label_blocks.forEach(x -> {
+						for (Object x : label_blocks) {
+
 							JSONObject label_block = (JSONObject) x;
 							JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
-							String ll_fo_name = label_block.getString("ll_fo_name");
+							String ll_fo_name = label_block.getString("ll_fo_name");// 區塊名稱
+							
+							// auto 文字
+							String ll_fd_auto_base = ll_fo_c.has("ll_fd_auto_base")// 幾近制?
+									? (ll_fo_c.getString("ll_fd_auto_base").equals("") ? "10"
+											: ll_fo_c.getString("ll_fd_auto_base"))
+									: "10";
+							Integer ll_fd_auto_lnb = ll_fo_c.has("ll_fd_auto_lnb")// 尾碼數?
+									? ll_fo_c.getInt("ll_fd_auto_lnb")
+									: 1;
+							String ll_fd_auto = ll_fo_c.has("ll_fd_auto") ? ll_fo_c.getString("ll_fd_auto") : "";
+							// auto 一維碼
+							String ll_b_auto_base = ll_fo_c.has("ll_b_auto_base")// 幾近制?
+									? (ll_fo_c.getString("ll_b_auto_base").equals("") ? "10"
+											: ll_fo_c.getString("ll_b_auto_base"))
+									: "10";
+							Integer ll_b_auto_lnb = ll_fo_c.has("ll_b_auto_lnb")// 尾碼數?
+									? ll_fo_c.getInt("ll_b_auto_lnb")
+									: 1;
+							String ll_b_auto = ll_fo_c.has("ll_b_auto") ? ll_fo_c.getString("ll_b_auto") : "";
+							// auto 二維碼
+							String ll_bq_auto_base = ll_fo_c.has("ll_bq_auto_base")// 幾近制?
+									? (ll_fo_c.getString("ll_bq_auto_base").equals("") ? "10"
+											: ll_fo_c.getString("ll_bq_auto_base"))
+									: "10";
+							Integer ll_bq_auto_lnb = ll_fo_c.has("ll_bq_auto_lnb")// 尾碼數?
+									? ll_fo_c.getInt("ll_bq_auto_lnb")
+									: 1;
+							String ll_bq_auto = ll_fo_c.has("ll_bq_auto") ? ll_fo_c.getString("ll_bq_auto") : "";
+							
+							//
 							String llfo = "";
+
 							// 隱藏 = 頁數大於1 且被指定隱藏 = false
 							Boolean hidden = true;
-							if (label_bean.getLl_l_now() > 1) {
+							if (label_bean.getLl_l_now() > 1 && label_bean.getLl_o_h_b_name() != null) {
 								hidden = label_bean.getLl_o_h_b_name().indexOf(ll_fo_name) < 0;
-
 							}
 
 							if (hidden) {
@@ -730,6 +777,53 @@ public class LabelListService {
 									} else {
 										// 一張標籤->單項->固定 or 跟隨?
 										String ll_fd = ll_fo_c.getString("ll_fd");
+
+										// ====auto:限定單一項使用+TEST:是否有開啟自動+1====
+										// 是否有開啟自動+1
+										if ("true".equals(ll_fd_auto) && testPrint) {
+											int radix = "16".equals(ll_fd_auto_base) ? 16 : 10;
+
+											try {
+												// 先拆解原始字串，區分前綴與尾碼
+												String prefix = "";
+												String currentSuffix = "";
+
+												if (ll_fd != null && ll_fd.length() >= ll_fd_auto_lnb) {
+													int splitIndex = ll_fd.length() - ll_fd_auto_lnb;
+													prefix = ll_fd.substring(0, splitIndex); // 例如 "ASRI#"
+													currentSuffix = ll_fd.substring(splitIndex); // 例如 "0020"
+												}
+
+												if (autoMaps.containsKey(ll_fo_name)) {
+													// --- 情況 A：已經有紀錄 (從第二次開始) ---
+													// 拿上次「已經加過1」或「初始」的尾碼，再加 1
+													String lastSuffix = autoMaps.get(ll_fo_name);
+													int nextNb = Integer.parseInt(lastSuffix, radix) + 1;
+
+													String formatPattern = "%0" + ll_fd_auto_lnb
+															+ (radix == 16 ? "X" : "d");
+													String newSuffix = String.format(formatPattern, nextNb);
+
+													// 更新結果與 Map
+													ll_fd = prefix + newSuffix;
+													autoMaps.put(ll_fo_name, newSuffix);
+
+												} else {
+													// --- 情況 B：第一次執行 ---
+													// 1. 不做加 1 運算，ll_fd 保持原樣
+													// 2. 將原始尾碼存入 Map，讓下一次執行時可以從這個基礎開始加
+													if (!currentSuffix.isEmpty()) {
+														// 檢查一下格式是否正確，避免存入非法格式
+														Integer.parseInt(currentSuffix, radix);
+														autoMaps.put(ll_fo_name, currentSuffix);
+													}
+													// 此時 ll_fd 仍是原始讀取的內容，達成了「第一次不用更新」的需求
+												}
+											} catch (NumberFormatException e) {
+												// 防呆：格式不符時不動作，ll_fd 保持原樣
+											}
+										}
+
 										// 避免是空值
 										if (ll_fd.length() != 0) {
 											llfo = label_bean.getLlfd().replace("{一般文字}", ll_fd);
@@ -866,6 +960,53 @@ public class LabelListService {
 									} else {
 										// 固定 or 跟隨?
 										String ll_bfd = ll_fo_c.getString("ll_bfd");
+
+										// ====auto:限定單一項使用:是否有開啟自動+1====
+										// 是否有開啟自動+1
+										if ("true".equals(ll_b_auto) && testPrint) {
+											int radix = "16".equals(ll_b_auto_base) ? 16 : 10;
+
+											try {
+												// 先拆解原始字串，區分前綴與尾碼
+												String prefix = "";
+												String currentSuffix = "";
+
+												if (ll_bfd != null && ll_bfd.length() >= ll_b_auto_lnb) {
+													int splitIndex = ll_bfd.length() - ll_b_auto_lnb;
+													prefix = ll_bfd.substring(0, splitIndex); // 例如 "ASRI#"
+													currentSuffix = ll_bfd.substring(splitIndex); // 例如 "0020"
+												}
+
+												if (autoMaps.containsKey(ll_fo_name)) {
+													// --- 情況 A：已經有紀錄 (從第二次開始) ---
+													// 拿上次「已經加過1」或「初始」的尾碼，再加 1
+													String lastSuffix = autoMaps.get(ll_fo_name);
+													int nextNb = Integer.parseInt(lastSuffix, radix) + 1;
+
+													String formatPattern = "%0" + ll_b_auto_lnb
+															+ (radix == 16 ? "X" : "d");
+													String newSuffix = String.format(formatPattern, nextNb);
+
+													// 更新結果與 Map
+													ll_bfd = prefix + newSuffix;
+													autoMaps.put(ll_fo_name, newSuffix);
+
+												} else {
+													// --- 情況 B：第一次執行 ---
+													// 1. 不做加 1 運算，ll_b 保持原樣
+													// 2. 將原始尾碼存入 Map，讓下一次執行時可以從這個基礎開始加
+													if (!currentSuffix.isEmpty()) {
+														// 檢查一下格式是否正確，避免存入非法格式
+														Integer.parseInt(currentSuffix, radix);
+														autoMaps.put(ll_fo_name, currentSuffix);
+													}
+													// 此時 ll_b 仍是原始讀取的內容，達成了「第一次不用更新」的需求
+												}
+											} catch (NumberFormatException e) {
+												// 防呆：格式不符時不動作，ll_b 保持原樣
+											}
+										}
+
 										// 避免是空值
 										if (ll_bfd.length() != 0) {
 											// 如果只有一格字(code39 or 11)
@@ -940,6 +1081,53 @@ public class LabelListService {
 									} else {
 										// 固定 or 跟隨?
 										String ll_bqfd = ll_fo_c.getString("ll_bqfd");
+
+										// ====auto:限定單一項使用:是否有開啟自動+1====
+										// 是否有開啟自動+1
+										if ("true".equals(ll_bq_auto) && testPrint) {
+											int radix = "16".equals(ll_bq_auto_base) ? 16 : 10;
+
+											try {
+												// 先拆解原始字串，區分前綴與尾碼
+												String prefix = "";
+												String currentSuffix = "";
+
+												if (ll_bqfd != null && ll_bqfd.length() >= ll_bq_auto_lnb) {
+													int splitIndex = ll_bqfd.length() - ll_bq_auto_lnb;
+													prefix = ll_bqfd.substring(0, splitIndex); // 例如 "ASRI#"
+													currentSuffix = ll_bqfd.substring(splitIndex); // 例如 "0020"
+												}
+
+												if (autoMaps.containsKey(ll_fo_name)) {
+													// --- 情況 A：已經有紀錄 (從第二次開始) ---
+													// 拿上次「已經加過1」或「初始」的尾碼，再加 1
+													String lastSuffix = autoMaps.get(ll_fo_name);
+													int nextNb = Integer.parseInt(lastSuffix, radix) + 1;
+
+													String formatPattern = "%0" + ll_bq_auto_lnb
+															+ (radix == 16 ? "X" : "d");
+													String newSuffix = String.format(formatPattern, nextNb);
+
+													// 更新結果與 Map
+													ll_bqfd = prefix + newSuffix;
+													autoMaps.put(ll_fo_name, newSuffix);
+
+												} else {
+													// --- 情況 B：第一次執行 ---
+													// 1. 不做加 1 運算，ll_bq 保持原樣
+													// 2. 將原始尾碼存入 Map，讓下一次執行時可以從這個基礎開始加
+													if (!currentSuffix.isEmpty()) {
+														// 檢查一下格式是否正確，避免存入非法格式
+														Integer.parseInt(currentSuffix, radix);
+														autoMaps.put(ll_fo_name, currentSuffix);
+													}
+													// 此時 ll_bq 仍是原始讀取的內容，達成了「第一次不用更新」的需求
+												}
+											} catch (NumberFormatException e) {
+												// 防呆：格式不符時不動作，ll_bq 保持原樣
+											}
+										}
+
 										// 避免是空值
 										if (ll_bqfd.length() != 0) {
 											llfo = label_bean.getLlbqfd().replace("{條碼文字}", ll_bqfd);
@@ -957,10 +1145,19 @@ public class LabelListService {
 									break;
 								}
 							}
-						});
+						}
 						// Step4.編譯成ZPL
 						llxa += label_bean.getLlxa().replace("{ZPL打印內容}",
 								label_bean.getLlheader() + label_bean.getLlbody()) + "\n";
+						// 是否重複-打印?
+						if (printRepeat >= 2) {
+							for (int re = 2; re <= printRepeat; re++) {
+								// Step4.編譯成ZPL
+								llxa += label_bean.getLlxa().replace("{ZPL打印內容}",
+										label_bean.getLlheader() + label_bean.getLlbody()) + "\n";
+
+							}
+						}
 
 					}
 					// Step5.辨識標籤機
@@ -968,15 +1165,10 @@ public class LabelListService {
 					// Step5.送出
 					System.out.println(llxa);
 					if (pService != null && printQty >= 1) {
-						// 印幾次
-						String pxa = "";
-						for (int i = 0; i < printQty; i++) {
-							pxa += llxa;
-						}
-						// sendPrinter(pxa, pService);
+
 						// 採用序列方式
 						printerManager.NewLabelListService();
-						printerManager.sendPrinter(pxa, pService);
+						printerManager.sendPrinter(llxa, pService);
 						check = true;
 					}
 				}
