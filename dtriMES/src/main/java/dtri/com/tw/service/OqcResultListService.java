@@ -141,8 +141,9 @@ public class OqcResultListService {
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-			a_val.put((new JSONObject()).put("value", "鎖定").put("key", "1"));
-			a_val.put((new JSONObject()).put("value", "作廢").put("key", "2"));
+			a_val.put((new JSONObject()).put("value", "已結單").put("key", "1"));
+			a_val.put((new JSONObject()).put("value", "已審核").put("key", "2"));
+			a_val.put((new JSONObject()).put("value", "作廢").put("key", "3"));
 			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_N, "col-md-1", true, a_val, "sys_status", "資料狀態"));  //不給改
 			
 			bean.setCell_modify(obj_m);
@@ -428,7 +429,7 @@ public class OqcResultListService {
 					orlDao.deleteById(x);
 					return true;
 				}
-				resp.setError_ms("已審核檢核,無法刪除");
+				resp.setError_ms("已審核檢核或已結單,無法刪除");
 				resp.autoMsssage("109"); // 回傳錯誤訊息 A511-251114008
 				return false;
 			}
@@ -461,6 +462,10 @@ public class OqcResultListService {
 		// 建立空的JSONObject 的object_detail物件 用來存放資料
 		JSONObject object_detail = new JSONObject();
 		JSONArray object_results = new JSONArray();
+		//Phschedule 存放 進度
+		String phSchedule=null; //進度(X／X)		
+		long oif_T_Qty=0; //抽驗數量
+		
 		try {
 				//**************  取出 檢核表單 及 檢驗的資料清單 *********************
 			if (body.getJSONObject("search").has("input_orlow")) {
@@ -488,13 +493,13 @@ public class OqcResultListService {
 				//用"工單號"搜尋製令內容
 				List<ProductionHeader> phs = headerDao.findAllByProductionHeader(null, orl_ow, -1, null,null, null, null, null,	null, null, null, null, null);
 				ProductionHeader ph=phs.get(0);
-				
-				// step2.用工單搜尋有資料庫有無已經有檢驗的資料清單 存在 (完全比對) ,資料狀態=0 , 只搜尋 "資料狀態sys_status"為"正常"或已結單的資料
+				phSchedule =ph.getPhschedule();
+				// step2.用工單搜尋有資料庫有無已經有檢驗的資料清單 存在 (完全比對) ,資料狀態=0或1 (d.sysstatus IN (0, 1)") , 只搜尋 "資料狀態sys_status"為"正常"或已結單的資料
 				OqcResultLists = orlDao.findByOrlowAndOrlpsn(orl_ow, null);
 
 				if (OqcResultLists == null || OqcResultLists.isEmpty() || OqcResultLists.get(0) == null) {
 					System.out.println("no data,就只會 OqcInspectionForms 資料庫取出 檢查資料表");
-					object_detail.put("search_ph_schedule",ph.getPhschedule()); // 進度(X／X)
+					object_detail.put("search_ph_schedule",phSchedule); // 進度(X／X)
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號
@@ -508,7 +513,7 @@ public class OqcResultListService {
 					System.out.println("有資料,就從step1 OqcInspectionForms資料庫取出檢查資料表 step2. OqcResultLists資料庫取出檢驗登記清單");
 					// step 1.
 					//OqcInspectionForm oif = OqcInspectionForms.get(0);
-					object_detail.put("search_ph_schedule",ph.getPhschedule()); // 進度(X／X)
+					object_detail.put("search_ph_schedule",phSchedule); // 進度(X／X)
 					object_detail.put("oif_id", oif.getOifid()); // id
 					object_detail.put("oif_ow", oif.getOifow()); // 工單號
 					object_detail.put("oif_p_nb", oif.getOifpnb()); // 產品料號
@@ -540,6 +545,7 @@ public class OqcResultListService {
 					
 					//抽樣數量oif_t_qty
 					object_body.put("oif_t_qty", oif.getOiftqty());// 抽樣數
+					oif_T_Qty=oif.getOiftqty();
 					
 					//*********************************************************************	
 					OqcResultLists.forEach(orl -> {
@@ -598,7 +604,7 @@ public class OqcResultListService {
 				}
 				
 	
-				//***************** 產品細節 *** sn關聯表
+				//*****************紀錄OQC檢驗資料在 產品細節 *** sn關聯表  ******
 				
 				ProductionBody body_one = bodyDao.findAllByPbid(0l).get(0); //取得pbid=0的所有資料 然後再取第一筆資料來用做為資料的方法名稱
 				int ord = 0;			
@@ -629,11 +635,46 @@ public class OqcResultListService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}				
-				
+			
 				object_body.put("productionbodyvaule", productionbodyvaule);
 				resp.setBody(object_body);									
 				check = true;
 			}			
+			
+			//***20260515 ***** 自動辨別  抽檢驗數量 >=設定抽驗數量時  且  製令單內容的 "預計生產數=生產完成數" 自動登記"通用-製令內容"的"結束時間"欄位時間
+			
+			System.out.println(orl_ow); //"工單號"
+			System.out.println(oif_T_Qty); ////抽驗數量
+			
+			// 用工單取出<ProductionRecords>訂單規格的資料 			
+			List<ProductionRecords> prs = prDao.findAllByPrid(orl_ow, null);
+			ProductionRecords pr=prs.get(0); //取出第一筆table表
+			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
+			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
+			
+			//確認 通用-製令內容"的"結束時間"欄位時間 是否 未被登記   且  預計生產數=生產完成數
+			if (ph.getPhedate() == null && ph.getPhpqty() == ph.getPhpokqty()) {
+				//*********************** 計算指定工單號碼下，每一個測試項目 每個SN的最後一筆檢查結果為 PASS 的數量。 *************************************	
+				String orltitem="功能(測試OS)";
+				long count1 = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);
+				orltitem="功能(T2 OS)";
+				long count2 = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);
+				long count =count1+count2;
+				orltitem="外觀/包裝檢驗";
+				long count3 = orlDao.countLastPassByOrlowAndOrltitem(orl_ow,orltitem);	
+				
+				//如果 抽驗數量 <= 實際檢測數量 
+				if(oif_T_Qty<=count && oif_T_Qty<=count3 ) {
+					//****************************************對 工單制令作結單動作 *************************	
+					ph.setPhedate(new Date()); //登記製令 結束時間
+					ph.setSysstatus(2);  //2:已完成( 為結單)
+					//對製令內容 修改人與時間做更正
+					ph.setSysmdate(new Date());
+					ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
+					headerDao.save(ph);
+				}	
+			}	
+			
 			
 		} catch (Exception e) {
 			System.out.println(e);
@@ -703,6 +744,7 @@ public class OqcResultListService {
 			String listOqc=cb.getPblnoteoqc(); //先抓資料(不管有無資料,可能同序號被Q兩次以上)
 			cb.setPblnoteoqc(listOqc+list.getString("orl_t_item")+" : "+list.getString("orl_t_results")+" 備註 : "+list.getString("sys_note")+"**");			
 			bodyDao.save(cb);			
+			
 			check = true;		
 
 		} catch (Exception e) {
@@ -733,8 +775,8 @@ public class OqcResultListService {
 				oIF = oifs.get(0);
 
 				int status = oIF.getSysstatus();// 抓取資料庫狀態值
-				if (status >= 2) { // 大於1不可更改
-					resp.setError_ms("此工單號[" + oifow + "] 已經審核後鎖定,如需修正請洽QC主管");
+				if (status >= 1) { // 大於1 後 不能再登記OQC結單時間
+					resp.setError_ms("此工單號[" + oifow + "] 已經OQC結單後鎖定，無法二次登記最後鑑驗人與時間");
 					resp.autoMsssage("108"); // 回傳錯誤訊息 資料已鎖定或作廢
 					return check;
 				} // 資料狀態
@@ -762,26 +804,11 @@ public class OqcResultListService {
 				}
 				
 				//*********************************************************************		
-			//	oIF.setOifcname(title.getString("oif_c_name")); // 客戶名稱
-			//	oIF.setOifonb(title.getString("oif_o_nb")); // 訂單號
-			//	oIF.setOifpnb(title.getString("oif_p_nb")); // 產品料號
-			//	oIF.setOifpname(title.getString("oif_p_name")); // 產品名稱
-			//	oIF.setOifpmodel(title.getString("oif_p_model")); // 產品品名(產品型號)
-			//	oIF.setOifpsn(title.getString("oif_p_sn")); // 產品序號區間
-			//	oIF.setOifpqty(title.optInt("oif_p_qty")); // 出貨數
-			//	oIF.setOiftqty(title.optInt("oif_t_qty")); // 抽樣數
-			//	oIF.setOifpver(title.getString("oif_p_ver")); // 版本資訊 JSON 格式:
+	
 				oIF.setSysstatus(1); //0:正常 1:已結單
 				oIF.setOifedate(new Date()); // 最後鑑驗日	
 				oIF.setOifeuser(user.getSuaccount()); // 最後鑑驗人
-			//	oIF.setSysnote(title.getString("sys_note"));//備註				
-			//	oIF.setOifoiidata(oif_oii_data); // 配置的檢驗項目 //配置的檢驗項目 JSON
-				// "="被吃掉，是因為「沒有進行編碼 (encoding) 就把 HTML 放進 JSON 傳送」。
-				// 後端：收到後要 decode
-			//	String htmlEncoded = title.getString("oif_oii_form");
-			//	String html = URLDecoder.decode(htmlEncoded, "UTF-8"); // 還原回 HTML
-			//	System.out.println("接收到的 HTML: " + html);
-			//	oIF.setOifoiiform(html); // oif_oii_form:原始的HTML項目
+	
 				oIF.setSysmdate(new Date());// 修改時間
 				oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
 			}else {
@@ -792,18 +819,19 @@ public class OqcResultListService {
 			oifDao.save(oIF);
 			
 			//****************************************對 工單制令作結單動作 *************************
+			//*****要取消20260515 改為自動偵測 
 			// 用工單取出<ProductionRecords>訂單規格的資料 
-			String oif_ow=title.optString("oif_ow");
-			List<ProductionRecords> prs = prDao.findAllByPrid(oif_ow, null);
-			ProductionRecords pr=prs.get(0); //取出第一筆table表
-			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
-			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
-			ph.setPhedate(new Date()); //登記製令 結束時間
-			ph.setSysstatus(2);  //2:已完成( 為結單)
-			//對製令內容 修改人與時間做更正
-			ph.setSysmdate(new Date());
-			ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
-			headerDao.save(ph);		
+//			String oif_ow=title.optString("oif_ow");
+//			List<ProductionRecords> prs = prDao.findAllByPrid(oif_ow, null);
+//			ProductionRecords pr=prs.get(0); //取出第一筆table表
+//			List<ProductionHeader> phs = headerDao.findAllByProductionRecords(pr);//用table表 取出製令內容
+//			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
+//			ph.setPhedate(new Date()); //登記製令 結束時間
+//			ph.setSysstatus(2);  //2:已完成( 為結單)
+//			//對製令內容 修改人與時間做更正
+//			ph.setSysmdate(new Date());
+//			ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
+//			headerDao.save(ph);		
 			
 			check = true;
 		} catch (Exception e) {

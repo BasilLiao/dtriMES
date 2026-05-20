@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import dtri.com.tw.bean.FtpUtilBean;
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.LabelList;
+import dtri.com.tw.db.entity.OqcInspectionForm;
 import dtri.com.tw.db.entity.ProductionBody;
 import dtri.com.tw.db.entity.ProductionDaily;
 import dtri.com.tw.db.entity.ProductionHeader;
@@ -40,6 +41,8 @@ import dtri.com.tw.db.entity.SystemConfig;
 import dtri.com.tw.db.entity.SystemUser;
 import dtri.com.tw.db.entity.Workstation;
 import dtri.com.tw.db.entity.WorkstationProgram;
+import dtri.com.tw.db.pgsql.dao.OqcInspectionFormDao;
+import dtri.com.tw.db.pgsql.dao.OqcResultListDao;
 import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
 import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
 import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
@@ -93,6 +96,10 @@ public class WorkstationWorkService {
 
 	@Autowired
 	ProductionDailyService pDailyService;
+	@Autowired
+	private OqcInspectionFormDao oifDao;
+	@Autowired
+	private OqcResultListDao orlDao;
 
 	// 取得當前 資料清單
 	public boolean getData(PackageBean bean, PackageBean req, SystemUser user) {
@@ -492,6 +499,44 @@ public class WorkstationWorkService {
 			} else {
 				bean.autoMsssage("WK022");
 			}
+		}
+		
+		
+		//***20260515 ***** 自動辨別  抽檢驗數量 >=設定抽驗數量時  且  製令單內容的 "預計生產數=生產完成數" 自動登記"通用-製令內容"的"結束時間"欄位時間
+		
+		System.out.println(ph_pr_id); //"工單號"
+		if(ph_pr_id !=null) {
+			// 用工單取出<ProductionRecords>訂單規格的資料 			
+			List<ProductionRecords> prs = prDao.findAllByPrid(ph_pr_id, null);
+			ProductionRecords pr=prs.get(0); //取出第一筆table表
+			List<ProductionHeader> phs = phDao.findAllByProductionRecords(pr);//用table表 取出製令內容
+			ProductionHeader ph = phs.get(0); // 取出第一筆製令內容
+			
+			//確認 通用-製令內容"的"結束時間"欄位時間 是否 未被登記   且  預計生產數=生產完成數
+			if (ph.getPhedate() == null && ph.getPhpqty() == ph.getPhpokqty()) {
+				//*********************** 計算指定工單號碼下，每一個測試項目 每個SN的最後一筆檢查結果為 PASS 的數量。 *************************************	
+				String orltitem="功能(測試OS)";
+				long count1 = orlDao.countLastPassByOrlowAndOrltitem(ph_pr_id,orltitem);
+				orltitem="功能(T2 OS)";
+				long count2 = orlDao.countLastPassByOrlowAndOrltitem(ph_pr_id,orltitem);
+				long count =count1+count2;
+				orltitem="外觀/包裝檢驗";
+				long count3 = orlDao.countLastPassByOrlowAndOrltitem(ph_pr_id,orltitem);	
+				
+				List<OqcInspectionForm> oifs=oifDao.findByOifow(ph_pr_id);
+				OqcInspectionForm oif=oifs.get(0);
+				long oif_T_Qty=oif.getOiftqty(); //OQC設定的抽驗數量
+				//如果 抽驗數量 <= 實際檢測數量 
+				if(oif_T_Qty<=count && oif_T_Qty<=count3 ) {
+					//****************************************對 工單制令作結單動作 *************************	
+					ph.setPhedate(new Date()); //登記製令 結束時間
+					ph.setSysstatus(2);  //2:已完成( 為結單)
+					//對製令內容 修改人與時間做更正
+					ph.setSysmdate(new Date());
+					ph.setSysmuser(user.getSuaccount()+"("+user.getSuname()+")");
+					phDao.save(ph);
+				}	
+			}				
 		}
 		return true;
 	}

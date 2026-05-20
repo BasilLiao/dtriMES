@@ -1,6 +1,7 @@
-<!-- 查詢項目 -->
+<!-- 查詢與重工操作主項目 -->
 <div id="customized">
 	<div class="row m-0">
+		<!-- 左側：重工單登記區塊 -->
 		<div class="mt-0 text-left mb-2 col-6 p-0 pr-1 rounded ">
 			<div class=" bg-white rounded-top m-0 pl-1 h4">
 				<i class="bi bi-pen mr-1"></i>重工單(登記)
@@ -8,34 +9,58 @@
 			<div class="shadow row m-0" style="min-height: 220px">
 				<div class="col-lg-12 p-0" id="bulletinBoard">
 					<div class="col m-0 p-1 rounded">
+						
+						<!-- 1. 目前新重工單輸入列 -->
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4 text-center">[目前新]重工單</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_now_order" type="text" required="required" autofocus="autofocus" class="col-12 p-1 rounded m_input">
+							<div class="col-md-4 p-1 m-0 h4 text-center">[目前新]重工單</div>
+							<div class="col-md-5 p-1 pr-3 pl-3">
+								<!-- 支援 Enter 快速鍵監聽 -->
+								<input autocomplete="off" id="m_now_order" type="text"
+									required="required" autofocus="autofocus"
+									class="col-12 p-1 rounded m_input">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
 								<div class="row justify-content-between p-0 m-0">
-									<button id="check_order_btn" type="submit" class="col-5  p-1 btn btn-primary btn-sm" style="min-height: 36px;">Check</button>
-									<button id="locked_order_btn" type="submit" class="col-5  p-1 btn btn-warning btn-sm" style="min-height: 36px;">Unlock</button>
+									<!-- 優化：改用 Vue @click 觸發方法 -->
+									<button id="check_order_btn" type="button" @click="handleCheckOrder"
+										class="col-5 p-1 btn btn-primary btn-sm"
+										style="min-height: 36px;">Check</button>
+									<button id="locked_order_btn" type="button" @click="handleUnlockOrder"
+										class="col-5 p-1 btn btn-warning btn-sm"
+										style="min-height: 36px;">Unlock</button>
 								</div>
 							</div>
 						</div>
+						
+						<!-- 2. 原先舊製令單輸入列 (批次重工) -->
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[原先舊]製令單</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input disabled="disabled" autocomplete="off" id="m_old_order" type="text" required="required" class="col-12 p-1 rounded">
-							</div>
-							<div class="col-md-3 p-1 pr-3 pl-3"></div>
-						</div>
-						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[原先舊]產品SN</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_old_sn" type="text" required="required" class="col-12 p-1 rounded m_input">
+							<div class="col-md-4 p-1 m-0 h4">[原先舊]製令單</div>
+							<div class="col-md-5 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_old_bat_order" type="text"
+									required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN登記 [重工單]</button>
+								<button id="order_bat_btn" type="button" @click="sendCheck('order_bat_btn')"
+									class="col-12 m-0 p-1 btn btn-info btn-sm"
+									style="min-height: 36px;">製令SN重工 [批次]</button>
 							</div>
 						</div>
+						
+						<!-- 3. 原先舊產品SN輸入列 (單台重工) -->
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-4 p-1 m-0 h4">[原先舊]產品SN</div>
+							<div class="col-md-5 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_old_only_sn" type="text"
+									required="required" class="col-12 p-1 rounded m_input">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="order_only_btn" type="button" @click="sendCheck('order_only_btn')"
+									class="col-12 m-0 p-1 btn btn-info btn-sm"
+									style="min-height: 36px;">產品SN重工 [單台]</button>
+							</div>
+						</div>
+						
+						<!-- 4. 看板數據與新建狀態勾選區 -->
 						<div class="row p-1 m-0">
 							<div id="" class="col-md-6 h4 text-center">
 								登記數/總數(台) <b id="order_nb">?/?</b>
@@ -43,15 +68,20 @@
 							<div class="col-md-6 p-0">
 								<div class="row pr-3 pl-3 p-0 m-0 font-weight-bold">
 									<div class="p-0 h4">[新建產品SN身分 :</div>
-									<input class="mt-1 ml-1 p-1 rounded big-checkbox" id="check_create_data" name="" value="true" type="checkbox" style="height: 25px; width: 25px">
+									<input class="mt-1 ml-1 p-1 rounded big-checkbox"
+										id="check_create_data" name="" value="true" type="checkbox"
+										style="height: 25px; width: 25px">
 									<div class="p-0 h4">]</div>
 								</div>
 							</div>
 						</div>
+						
 					</div>
 				</div>
 			</div>
 		</div>
+		
+		<!-- 右側：重工單歸還(Rollback)區塊 -->
 		<div class="mt-0 text-left mb-2 col-6 p-0 pl-1 rounded">
 			<div class=" bg-white rounded-top m-0 pl-1 h4">
 				<i class="bi bi-reply mr-1"></i>重工單(歸還)
@@ -59,19 +89,42 @@
 			<div class="shadow row m-0" style="min-height: 220px">
 				<div class="col-lg-12 p-0">
 					<div class="col m-0 p-1 rounded">
+						
+						<!-- 1. 目前新製令單輸入列 (批次歸還) -->
 						<div class="row p-0 m-0 pb-2 text-center">
-							<div class="col-md-3 p-1 m-0 h4">[目前新]產品SN</div>
-							<div class="col-md-6 p-1 pr-3 pl-3">
-								<input autocomplete="off" id="m_return_sn" type="text" required="required" class="col-12 p-1 rounded">
+							<div class="col-md-4 p-1 m-0 h4">[目前新]製令單</div>
+							<div class="col-md-5 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_return_order" type="text"
+									required="required" class="col-12 p-1 rounded">
 							</div>
 							<div class="col-md-3 p-1 pr-3 pl-3">
-								<button id="return_order_btn" type="submit" class="col-12 m-0 p-1 btn btn-info btn-sm" style="min-height: 36px;">產品SN歸還 [製令單]</button>
+								<!-- Bug已修正：按鈕ID與事件對應調整為正確的批次識別 -->
+								<button id="return_order_bat_btn" type="button" @click="sendCheck('return_order_bat_btn')"
+									class="col-12 m-0 p-1 btn btn-info btn-sm"
+									style="min-height: 36px;">製令SN歸還 [批次]</button>
 							</div>
 						</div>
+						
+						<!-- 2. 目前新產品SN輸入列 (單台歸還) -->
+						<div class="row p-0 m-0 pb-2 text-center">
+							<div class="col-md-4 p-1 m-0 h4">[目前新]產品SN</div>
+							<div class="col-md-5 p-1 pr-3 pl-3">
+								<input autocomplete="off" id="m_return_sn" type="text"
+									required="required" class="col-12 p-1 rounded">
+							</div>
+							<div class="col-md-3 p-1 pr-3 pl-3">
+								<button id="return_order_only_btn" type="button" @click="sendCheck('return_order_only_btn')"
+									class="col-12 m-0 p-1 btn btn-info btn-sm"
+									style="min-height: 36px;">產品SN歸還 [單台]</button>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
+		
+		<!-- 下方：操作操作說明手冊 -->
 		<div class="mt-0 text-left mb-0 col-12 p-0 pl-1 rounded ">
 			<div class=" bg-white rounded-top m-0 pl-1 h4">
 				<i class="bi bi-question-diamond mr-1"></i>重工工單使用說明
@@ -82,31 +135,22 @@
 						<div class="col-md-12 row p-0 m-0">
 							<div class="col-md-6 p-1 text-left ">
 								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-									<b>(登記)方法</b>:使用 沿用[原先舊]產品SN 時,資料登記至 [新工單] 上,
-									<!--  -->
+									<b>(登記)方法</b>: 使用沿用[原先舊]產品SN時，將資料重導登記至[新工單]上。
 									<hr class="mt-2 mb-1">
-									<b>Step1.</b>輸入 [目前新]重工單
-									<!--  -->
-									<br> <b>Step2.</b>輸入 [原先舊]產品SN
-									<!--  -->
-									<br> <b>Step3.</b>按下 <b>Check</b> 檢查
-									<!--  -->
-									<br> <b>Step4.</b>顯示 登記數/總數(台) ?/?
-									<!--  -->
-									<br> <b>Step5.</b>按下 <b>產品SN登記 [重工單]</b>
-									<!--  -->
-									<br> <b>Step6.</b>變化 登記數/總數(台) ?/? ,
-									<!--  -->
-									<br>如果想更換 [目前新]重工單 按下 <b>Unlock</b>.
+									<b>Step1.</b> 輸入 [目前新]重工單<br> 
+									<b>Step2.</b> 輸入 [原先舊]產品SN<br> 
+									<b>Step3.</b> 按下 <b>Check</b> 進行資格檢查與鎖定<br> 
+									<b>Step4.</b> 系統帶出目前進度：登記數/總數(台) ?/?<br> 
+									<b>Step5.</b> 點擊 <b>產品SN重工 [單台]</b> 執行轉移<br> 
+									<b>Step6.</b> 數據成功更新。若想變更目標重工單，請按下 <b>Unlock</b>。
 								</div>
 							</div>
 							<div class="col-md-6 p-1 text-left ">
 								<div class="h6 shadow rounded bg-white p-1" style="min-height: 200px;">
-									<b>(歸還)方法</b>:返回 [目前新]產品SN 時,資料還原至 [舊工單] 上,
+									<b>(歸還)方法</b>: 當不小心配錯工單時，可將[目前新]產品還原至[舊工單]上。
 									<hr class="mt-2 mb-1">
-									<b>Step1.</b>輸入 [目前新]產品SN
-									<!--  -->
-									<br> <b>Step2.</b>按下 <b>產品SN歸還 [製令單]</b> 即可還原.
+									<b>Step1.</b> 輸入 [目前新]產品SN 或 [目前新]製令單<br> 
+									<b>Step2.</b> 按下 <b>產品SN歸還</b> 或 <b>製令SN歸還</b> 即可完成防錯回復。
 								</div>
 							</div>
 						</div>
@@ -116,141 +160,180 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
-	//控制端
-	customized = new Vue({
+	// 宣告並實體化控制端 Vue 物件
+	var customized = new Vue({
 		el : "#customized",
-		//資料區
+		// 資料狀態儲存區
 		data : {
-			check_order_btn : false,//檢查
+			check_order_btn : false // 用於判斷當前工單是否已通過 Check 驗證並鎖定
 		},
-		//初始化
+		// 1. 初始化階段：關閉全局 Loading 遮罩
 		created() {
 			console.log("repeat.html(created)");
 			main.loading(false);
 		},
-		//可呼叫方法
+		// 2. DOM 掛載完成階段：補齊缺失的初始化調用，啟用鍵盤事件監聽
+		mounted() {
+			console.log("repeat.html(mounted)");
+			this.selectAllInit();
+		},
+		// 方法行為定義區
 		methods : {
+			/**
+			 * 初始化頁面輸入狀態與設定鍵盤事件監聽 (Enter 鍵防呆捷徑)
+			 */
 			selectAllInit() {
 				$('#m_now_order').val('');
 				$('#m_now_order').focus();
-				//檢查工單製令 ?
-		   		$(document).on("click", "#check_order_btn", function (event) {
-					console.log("check_order_btn");
-					customized.sendCheck("check_order_btn");
-		   		});
-		   		//解鎖 ?
-		   		$(document).on("click", "#locked_order_btn", function (event) {
-					console.log("locked_order_btn");
-					$('#m_now_order').removeAttr("disabled");
-					$('#m_old_order').val('');
-					customized.check_order_btn = false;
-		   		});
-		   		//登記SN 重工 工工單
-		   		$(document).on("click", "#order_btn", function (event) {
-		   		    console.log("order_btn");
-		   			customized.sendCheck("order_btn");
-		   		});
-		   		//歸還SN
-		   		$(document).on("click", "#return_order_btn", function (event) {
-		   		    console.log("return_order_btn");
-		   			customized.sendCheck("return_order_btn");
-		   		});
-		   		//快速移動 監聽確認
-               $(document).on("keypress", ".m_input", function (event) {
-            	   if (event.which == 13) {
-            		   //位移
-            		   if($('#m_now_order').val()==""){
-            			   	$("#m_now_order").focus();
-            			   	return null;
-            		   }
-            		   if($('#m_old_sn').val()==""){
-            			   	$("#m_old_sn").focus();
-           	   				$("#m_old_sn").select();
-            			   	return null;
-            		   }
-            		   
-            		   //進行存檔
-            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!="" && customized.check_order_btn){
-            				$('#order_btn').trigger('click');
-	           			   	$("#m_old_sn").focus();
-	       	   				$("#m_old_sn").select();
-            			    return null;
-            		   }
-            		   
-            		   //進行檢查
-            		   if($('#m_old_sn').val()!="" && $('#m_now_order').val()!=""){
-            			   $('#check_order_btn').trigger('click');
-            			   return null;
-            		   } 
-            	    }
-               });
+				
+				// 監聽登記區塊的 Enter 鍵輸入行為
+				$(document).on("keypress", ".m_input", function (event) {
+					if (event.which == 13) { // 13 代表 Enter 鍵
+						if($('#m_now_order').val() == ""){
+							$("#m_now_order").focus();
+							return null;
+						}
+						if($('#m_old_only_sn').val() == ""){
+							$("#m_old_only_sn").focus();
+							$("#m_old_only_sn").select();
+							return null;
+						}
+						
+						// 條件符合（已有序號、已有工單、且已 Check 鎖定），直接執行存檔
+						if($('#m_old_only_sn').val() != "" && $('#m_now_order').val() != "" && customized.check_order_btn){
+							customized.sendCheck("order_only_btn");
+							$("#m_old_only_sn").focus();
+							$("#m_old_only_sn").select();
+							return null;
+						}
+						
+						// 有輸入但尚未驗證鎖定，則預先執行 Check 檢查
+						if($('#m_old_only_sn').val() != "" && $('#m_now_order').val() != ""){
+							customized.sendCheck("check_order_btn");
+							return null;
+						} 
+					}
+				});
 		   		
-				//歸還 監聽確認
+				// 監聽歸還區塊的單台序號 Enter 鍵行為
 				$(document).on("keypress", "#m_return_sn", function (event) {
 					if (event.which == 13) {
-					 	$("#m_return_sn").focus();
+						$("#m_return_sn").focus();
 						$("#m_return_sn").select();
-					   	$('#return_order_btn').trigger('click');
-					return null;
+						customized.sendCheck("return_order_only_btn");
+						return null;
 					}
 				});
 			},
-	   		//檢查
+
+			/**
+			 * 點擊 Check 按鈕之行為處理
+			 */
+			handleCheckOrder() {
+				console.log("check_order_btn clicked via Vue");
+				this.sendCheck("check_order_btn");
+			},
+
+			/**
+			 * 點擊 Unlock 按鈕之行為處理（解鎖並還原輸入控制權）
+			 */
+			handleUnlockOrder() {
+				console.log("locked_order_btn clicked via Vue");
+				$('#m_now_order').removeAttr("disabled");
+				$('#m_old_order').val('');
+				this.check_order_btn = false;
+			},
+
+	   		/**
+	   		 * 核心通訊派發器：負責收集表單參數，打包並發送 Ajax 至後端對應 API 接口
+	   		 * @param {String} action 動作識別符
+	   		 */
 	   		sendCheck(action) {
-	   			console.log("sendCheck");	
+	   			console.log("sendCheck action:", action);	
 	   			var req = {};
 	        	var obj = {};
 	        	var s_url = "";
-	        	var s_type = "POST";
-	        	req.call_bk_fn = "customized_search";
+	        	var s_type = "POST"; // 預設發送模式
+	        	
+	        	req.call_bk_fn = "customized_search"; // 預設回呼對應為查詢
+	        	
 	            switch(action){
-	            	case"check_order_btn":
-	            		//檢查 重工-工單
-		            	if($('#m_now_order').val()!=""){
+	            	case "check_order_btn":
+	            		// 驗證重工工單合法性
+		            	if($('#m_now_order').val() != ""){
 		            		obj['action'] = "check_order_btn";
 		            		obj['m_now_order'] = $('#m_now_order').val();
-		            		obj['m_old_sn'] = $('#m_old_sn').val();
+		            		obj['m_old_only_sn'] = $('#m_old_only_sn').val();
+		            		// 轉換成約定的後端路由名稱架構 (.AR)
 	            			s_url = (t_body.html_body + ".AR").replace("html", "basil").replace("body_", "");
 		            	}
 	            	break;
-	            	case"order_btn":
-	            		//登記 重工-工單
-	            		if(this.check_order_btn  && $('#m_old_sn').val()!=""){
-		            		if( $('#check_create_data').is(":checked")){
-		            			//自動新建
+	            	
+	            	case "order_only_btn":
+	            		// 單台序號登記重工
+	            		if(this.check_order_btn && $('#m_old_only_sn').val() != ""){
+		            		if($('#check_create_data').is(":checked")){
+		            			// 勾選了「新建身分」-> 走自動新建接口 (.AC)
 		            			s_url = (t_body.html_body + ".AC").replace("html", "basil").replace("body_", "");
 		            			obj['action'] = "order_btn_create_sn";
-		            			obj['m_now_order'] = $('#m_now_order').val();
-		            			obj['m_old_sn'] = $('#m_old_sn').val();
-		    	            }else if($('#m_old_sn').val()!=""){
-		    	            	//轉移
+		            		} else {
+		    	            	// 未勾選 -> 走標準序號工單轉移變更接口 (.AU)
 		    	            	s_type = "PUT";
 		    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
-		    	            	obj['action'] = "order_btn";
+		    	            	obj['action'] = "order_only_btn";
+		    	            }
+		            		obj['m_now_order'] = $('#m_now_order').val();
+		            		obj['m_old_only_sn'] = $('#m_old_only_sn').val();
+		            		req.call_bk_fn = "customized_save";
+	            		}
+	            	break;
+	            	
+	            	case "order_bat_btn":
+	            		// 整批製令單序號登記重工
+	            		if(this.check_order_btn && $('#m_old_bat_order').val() != ""){
+		            		if($('#check_create_data').is(":checked")){
+		            			alert('系統提示：批次模式下不支援建立全新 SN 產品身分！');
+		    	            } else {
+		    	            	s_type = "PUT";
+		    	            	s_url = (t_body.html_body + ".AU").replace("html", "basil").replace("body_", "");
+		    	            	obj['action'] = "order_bat_btn";
 		    	            	obj['m_now_order'] = $('#m_now_order').val();
-		    	            	obj['m_old_order'] = $('#m_old_order').val();
-		    	            	obj['m_old_sn'] = $('#m_old_sn').val();
+		    	            	obj['m_old_bat_order'] = $('#m_old_bat_order').val();
 		    	            }
 		            		req.call_bk_fn = "customized_save";
 	            		}
 	            	break;
-	            	case"return_order_btn":
-	            		//歸還/消除 工單
-	            		if($('#m_return_sn').val()!=""){
+	            	
+	            	case "return_order_only_btn":
+	            		// 單台產品序號退回歸還
+	            		if($('#m_return_sn').val() != ""){
 	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
-	            			s_type = "DELETE";
-	            			obj['action'] = "return_order_btn"; 
+	            			s_type = "DELETE"; // 符合 RESTful 刪除變更定義
+	            			obj['action'] = "return_order_only_btn"; 
 	            			obj['m_now_order'] = $('#m_now_order').val();
 	            			obj['m_return_sn'] = $('#m_return_sn').val();
 	            			req.call_bk_fn = "customized_save";
 	    	            }
 	            	break;
+	            	
+	            	case "return_order_bat_btn":
+	            		// Bug 修正：原欄位誤判成 m_return_sn，現導正為真正的批次單號欄位 m_return_order
+	            		if($('#m_return_order').val() != ""){
+	            			s_url = (t_body.html_body + ".AD").replace("html", "basil").replace("body_", "");
+	            			s_type = "DELETE";
+	            			obj['action'] = "return_order_bat_btn"; 
+	            			obj['m_now_order'] = $('#m_now_order').val();
+	            			obj['m_return_order'] = $('#m_return_order').val();
+	            			req.call_bk_fn = "customized_save";
+	    	            }
+	            	break;
 	            }
 	           
-	            //包裝
-				if(s_url!=""){
-					main.loading(true);
+	            // 依照系統架構標準規範，包裝傳遞物件 JSON 結構體
+				if(s_url != ""){
+					main.loading(true); // 啟動全局防重複點擊遮罩
 					var s_data = {};
 					req.user = $('#name').text();
 					req.date = new Date();
@@ -263,48 +346,51 @@
 					req.page_batch = 0;
 					req.page_now_nb = 0;
 					req.html_body = "";
-					//req.call_bk_fn = "customized";
 					req.call_bk_vals = {};
 					s_data.req_content = req;
-					console.log(s_url);
-					//傳送
-		           	main.ajaxSend(s_url, s_type, s_data);
+					
+					console.log("發送傳輸路徑: " + s_url, s_data);
+		           	main.ajaxSend(s_url, s_type, s_data); // 調用核心 Ajax 共用模組發送
 				}
 	   		},
-			//嘗試存檔後
+
+			/**
+			 * 後端存檔成功執行後的回呼控制方法 (由系統核心 Ajax 發送器動態回呼)
+			 */
 	   		saveReturn(){
 	   			main.loading(false);
 	   			this.check_order_btn = true;
-	   			$('#m_now_order').attr("disabled","disabled");
-	   			//檢查
-	   			if(main.allData.info_color=="success"){
+	   			$('#m_now_order').attr("disabled", "disabled"); // 鎖定工單欄位防篡改
+	   			
+	   			// 若存檔成功且色調回應安全，自動刷新前端計數看板數據
+	   			if(main.allData.info_color == "success"){
 	   				customized.sendCheck("check_order_btn");
 	   			}
 			},
-			//嘗試檢查後
+
+			/**
+			 * 後端工單查核、校對成功後的回呼控制方法 (由系統核心 Ajax 發送器動態回呼)
+			 */
 	   		searchReturn(){
 				main.loading(false);
-				if(main.allData.body==null){
-					//如果沒資料
+				if(main.allData.body == null){
+					// 工單不合法或查無此單，初始化計數看板
 					$('#order_nb').text("?/?");
 					$("#m_now_order").focus();
 					return null;
-				}else{
-					//有資料
+				} else {
+					// 查驗合法，將狀態鎖定，並帶出當前該製令工單已上線登記的比例數據
 			   		this.check_order_btn = true;
-		   			$('#m_now_order').attr("disabled","disabled");
+		   			$('#m_now_order').attr("disabled", "disabled");
 		   			$('#m_old_order').val(main.allData.body.search['m_old_order']);
-		   			$('#order_nb').text(main.allData.body.search['phpnumber_register']+'/'+main.allData.body.search['phpnumber_total']);
+		   			$('#order_nb').text(main.allData.body.search['phpnumber_register'] + '/' + main.allData.body.search['phpnumber_total']);
 				}
-			},
+			}
 		},
-		//移除監聽事件
+
+		// 3. 銷毀階段：確實解除全球 jQuery 監聽器，防止換頁時記憶體洩漏與重複綁定
 		beforeDestroy() {
 			console.log("repeat.html(beforeDestroy)");
-			$(document).off("click", "#check_order_btn");
-			$(document).off("click", "#locked_order_btn");
-			$(document).off("click", "#order_btn");
-			$(document).off("click", "#return_order_btn");
 			$(document).off("keypress", ".m_input");
 			$(document).off("keypress", "#m_return_sn");
 		}

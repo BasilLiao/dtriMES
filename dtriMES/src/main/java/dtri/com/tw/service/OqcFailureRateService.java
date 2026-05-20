@@ -18,43 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dtri.com.tw.bean.PackageBean;
 import dtri.com.tw.db.entity.OqcInspectionForm;
-//import dtri.com.tw.db.entity.OqcResultList;
-//import dtri.com.tw.db.entity.ProductionBody;
-//import dtri.com.tw.db.entity.ProductionHeader;
-//import dtri.com.tw.db.entity.ProductionRecords;
-//import dtri.com.tw.db.entity.SystemMail;
 import dtri.com.tw.db.entity.SystemUser;
-//import dtri.com.tw.db.pgsql.dao.OqcInspectionFormDao;
-
 import dtri.com.tw.db.pgsql.dao.OqcResultListDao;
-//import dtri.com.tw.db.pgsql.dao.ProductionBodyDao;
-//import dtri.com.tw.db.pgsql.dao.ProductionHeaderDao;
-//import dtri.com.tw.db.pgsql.dao.ProductionRecordsDao;
-//import dtri.com.tw.db.pgsql.dao.SystemMailDao;
 import dtri.com.tw.tools.Fm_Time;
 
 @Service
 public class OqcFailureRateService {
-//	@Autowired
-//	private OqcInspectionFormDao oifDao;
-	
+
 	@Autowired
-	private OqcResultListDao orlDao;
-
-//	@Autowired
-//	private ProductionRecordsDao prDao;
-	// 主產品製程表頭 (通用-製令內容)
-//	@Autowired
-//	private ProductionHeaderDao headerDao;
-
-//	@Autowired  // 產品細節
-//	private ProductionBodyDao bodyDao;
-	
-//	@Autowired // 寄信清單
-//	private SystemMailDao sysMailListDao;
-//	@Autowired // 系統寄信
-//	BasicNotificationMailService mailService;
-	
+	private OqcResultListDao orlDao;	
 	@Autowired
 	private EntityManager em;
 
@@ -122,66 +94,8 @@ public class OqcFailureRateService {
 
 			bean.setHeader(object_header);
 
-			// *************** 放入修改 [(key)](modify/Create/Delete) 格式**********進入後
-			// ******************************** 在 modify/Create/Delete) 顯示的畫面*****
-//			JSONArray obj_m = new JSONArray();
-			JSONArray n_val = new JSONArray();
-//			JSONArray a_val = new JSONArray();
-//			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "oif_id", "id")); // ID
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_title", "標題值"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_ow", "工單"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_c_name", "客戶名稱"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_o_nb", "訂單號"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_p_nb", "產品號"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_p_name", "產品名"));
-//
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_p_model", "產品型號"));
-//
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_p_sn", "產品序號區間"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_p_qty", "出貨數"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_t_qty", "抽樣數"));
-//			
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "orl_n_qty", "NG數"));			
-//		
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_c_date", "製表日"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_c_user", "製表人"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_e_date", "最後檢驗日"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_e_user", "最後檢驗人"));
-//
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-8", true, n_val,"sys_note", "備註"));			
-//
-//			a_val = new JSONArray();
-//			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-//			a_val.put((new JSONObject()).put("value", "已結單").put("key", "1"));
-//			a_val.put((new JSONObject()).put("value", "已審核").put("key", "2"));
-//			a_val.put((new JSONObject()).put("value", "作廢").put("key", "3"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, a_val, "sys_status", "資料狀態"));			
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", true, n_val, "oif_f_date", "審核日"));
-//			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", true, n_val, "oif_f_user", "審核人"));
-//
-//			bean.setCell_modify(obj_m);
-
-			//////////////////// 給Customized mode 用
-			//////////////////// 抓出以記錄的標題各一個給select///////////////////////////////
-
-//			JSONArray obj_t = new JSONArray();
-//			JSONArray t_val = new JSONArray();
-			// t_val = new JSONArray();
-//			Oiis = oIIDao.findMinIdPerTitle();
-//			if (Oiis != null && Oiis.size() > 0) { // 如果資料筆數大於 0 才進行處理。
-//				for (OqcInspectionItems Oii : Oiis) {
-//					JSONObject obj = new JSONObject();
-//					obj.put("value", Oii.getOiititleval());
-//					obj.put("key", Oii.getOiititleval());
-//					t_val.put(obj);
-//					System.out.println(obj);
-//				}
-//			}
-//			obj_t.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "", "0", FFM.Wri.W_Y, "col-md-1", true, t_val,	"oif_title", "標題值"));
-
-//			bean.setCell_g_modify(obj_t);
-			
 			// ****************************************************** 放入包裝(search) 
+			JSONArray n_val = new JSONArray();
 			JSONArray object_searchs = new JSONArray();
 			// "oii_check_name", "檢查項目名稱")
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "oif_ow", "工單", n_val));
@@ -191,12 +105,6 @@ public class OqcFailureRateService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "oif_e_date_s", "檢驗日(起)", n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.DATE, "", "col-md-2", "oif_e_date_e", "檢驗日(終)", n_val));
 
-//			a_val = new JSONArray();
-//			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
-//			a_val.put((new JSONObject()).put("value", "已結單").put("key", "1"));
-//			a_val.put((new JSONObject()).put("value", "已審核").put("key", "2"));
-//			a_val.put((new JSONObject()).put("value", "作廢").put("key", "3"));
-//			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "", "col-md-1", "sys_status", "資料狀態", a_val));
 
 			bean.setCell_searchs(object_searchs);
 		} else {
@@ -343,7 +251,6 @@ public class OqcFailureRateService {
 				// 物件轉換
 //				JSONObject data = (JSONObject) one;
 //			}
-
 			resp.setError_ms("未開放此功能");
 			resp.autoMsssage("109"); // 回傳錯誤訊息
 			
@@ -368,7 +275,6 @@ public class OqcFailureRateService {
 		return check;
 	}
 
-	// 移除 資料清單****************不給oqc刪除  但要給使用alex(目前不使用)*********
 	@Transactional
 	public boolean deleteData(PackageBean resp, PackageBean req, SystemUser user) {
 //		JSONObject body = req.getBody();
@@ -385,54 +291,5 @@ public class OqcFailureRateService {
 		return check;
 	}
 
-	// ==============客製化  ******* (目前沒使用) *********     ==============
 
-	// 取得 - Customized 當前表單式查詢資料 (資料庫有資料存在-取出資料 或 開始建立 新檢測單據)
-	@Transactional
-	public boolean getDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
-//		JSONObject body = req.getBody();
-
-		boolean check = false;
-
-		try {
-
-		} catch (Exception e) {
-			System.out.println(e);
-			return check;
-		}
-		return check;
-	}
-
-	// ==============客製化  *** (目前沒使用)****  ==============
-
-	// 更新/新增 資料清單 Customized mode
-	@Transactional // 存RMA維修資料johnny
-	public boolean updateDataCustomized(PackageBean resp, PackageBean req, SystemUser user) {
-//		JSONObject body = req.getBody();
-		boolean check = false;
-		try {
-
-			check = true;
-		} catch (Exception e) {
-			System.out.println(e);
-			return check;
-		}
-		return check;
-	}
-	
-	//===================  寫已結單但未審核的工單名單 for mail內容  每周寄送 =====================
-	@Transactional 
-	public boolean getDataOqc() {	
-		boolean check = false;
-//		List<OqcInspectionForm> oifs = oifDao.findByoifowAndoifcnameAndoifonb(null,null,null,1); //  取出OQCForm資料狀態結單(工單結單)清單
-	
-		try {
-			
-			check = true;
-		} catch (Exception e) {
-			System.out.println(e);
-			return check;
-		}
-		return check;
-	}
 }

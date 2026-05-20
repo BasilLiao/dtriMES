@@ -35,7 +35,8 @@ public class ProductionTestService {
 			p_size = 100;
 		}
 
-		PageRequest page_r = PageRequest.of(page, p_size, Sort.by(Sort.Direction.DESC, "sysmdate").and(Sort.by(Sort.Direction.ASC, "ptpbbsn")));
+		PageRequest page_r = PageRequest.of(page, p_size,
+				Sort.by(Sort.Direction.DESC, "sysmdate").and(Sort.by(Sort.Direction.ASC, "ptpbbsn")));
 		// 查詢
 		String search_pt_pb_b_sn = null, search_pt_pr_id = null, //
 				search_pt_pr_model = null, search_pt_pr_bom_id = null, //
@@ -64,12 +65,16 @@ public class ProductionTestService {
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pb_g_id", FFS.h_t(pt_pb_g_id, "100px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_id", FFS.h_t(pt_pr_id, "180px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_model", FFS.h_t(pt_pr_model, "130px", FFM.Wri.W_Y));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_bom_id", FFS.h_t(pt_pr_bom_id, "180px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_model",
+					FFS.h_t(pt_pr_model, "130px", FFM.Wri.W_Y));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_bom_id",
+					FFS.h_t(pt_pr_bom_id, "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pb_b_sn", FFS.h_t(pt_pb_b_sn, "180px", FFM.Wri.W_Y));
 
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_b_item", FFS.h_t(pt_pr_b_item, "150px", FFM.Wri.W_N));
-			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_s_item", FFS.h_t(pt_pr_s_item, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_b_item",
+					FFS.h_t(pt_pr_b_item, "150px", FFM.Wri.W_N));
+			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_pr_s_item",
+					FFS.h_t(pt_pr_s_item, "150px", FFM.Wri.W_N));
 
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_l_dt", FFS.h_t(pt_l_dt, "180px", FFM.Wri.W_Y));
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "pt_l_size", FFS.h_t(pt_l_size, "130px", FFM.Wri.W_Y));
@@ -92,36 +97,56 @@ public class ProductionTestService {
 			JSONArray n_val = new JSONArray();
 			JSONArray a_val = new JSONArray();
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_id", pt_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pb_g_id", pt_pb_g_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"pt_id", pt_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"pt_pb_g_id", pt_pb_g_id));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pr_id", pt_pr_id));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_pr_model", pt_pr_model));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pr_bom_id", pt_pr_bom_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"pt_pr_id", pt_pr_id));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"pt_pr_model", pt_pr_model));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"pt_pr_bom_id", pt_pr_bom_id));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_pb_b_sn", pt_pb_b_sn));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"pt_pb_b_sn", pt_pb_b_sn));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val, "pt_l_size", pt_l_size));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "pt_l_dt", pt_l_dt));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pt_l_path", pt_l_path));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val, "pt_l_text", pt_l_text));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"pt_l_size", pt_l_size));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"pt_l_dt", pt_l_dt));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val,
+					"pt_l_path", pt_l_path));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-12", false, n_val,
+					"pt_l_text", pt_l_text));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pt_pr_b_item", pt_pr_b_item));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val, "pt_pr_s_item", pt_pr_s_item));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val,
+					"pt_pr_b_item", pt_pr_b_item));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-6", false, n_val,
+					"pt_pr_s_item", pt_pr_s_item));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_date", sys_c_date));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_c_user", sys_c_user));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_date", sys_m_date));
-			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val, "sys_m_user", sys_m_user));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_c_date", sys_c_date));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_c_user", sys_c_user));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_m_date", sys_m_date));
+			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, n_val,
+					"sys_m_user", sys_m_user));
 
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val, "sys_note", sys_note));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val, "sys_sort", sys_sort));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val, "sys_ver", sys_ver));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.TTA, FFM.Type.TEXT, "", "", FFM.Wri.W_Y, "col-md-12", false, n_val,
+					"sys_note", sys_note));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"sys_sort", sys_sort));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.NUMB, "0", "0", FFM.Wri.W_N, "col-md-1", false, n_val,
+					"sys_ver", sys_ver));
 
 			a_val = new JSONArray();
 			a_val.put((new JSONObject()).put("value", "正常").put("key", "0"));
 			a_val.put((new JSONObject()).put("value", "異常").put("key", "1"));
-			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_N, "col-md-1", true, a_val, "sys_status", sys_status));
+			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_N, "col-md-1", true, a_val,
+					"sys_status", sys_status));
 			bean.setCell_modify(obj_m);
 
 			// 放入包裝(search)
@@ -129,9 +154,12 @@ public class ProductionTestService {
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pb_b_sn", pt_pb_b_sn, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_id", pt_pr_id, n_val));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_model", pt_pr_model, n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_bom_id", pt_pr_bom_id, n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_b_item", pt_pr_b_item, n_val));
-			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_s_item", pt_pr_s_item, n_val));
+			object_searchs
+					.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_bom_id", pt_pr_bom_id, n_val));
+			object_searchs
+					.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_b_item", pt_pr_b_item, n_val));
+			object_searchs
+					.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "pt_pr_s_item", pt_pr_s_item, n_val));
 			bean.setCell_searchs(object_searchs);
 		} else {
 
@@ -164,8 +192,10 @@ public class ProductionTestService {
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_g_id", one.getPtpbgid());
 
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_id", one.getPtprid());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model", one.getPtprmodel() == null ? "" : one.getPtprmodel());
-			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id", one.getPtprbomid() == null ? "" : one.getPtprbomid());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_model",
+					one.getPtprmodel() == null ? "" : one.getPtprmodel());
+			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_bom_id",
+					one.getPtprbomid() == null ? "" : one.getPtprbomid());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pb_b_sn", one.getPtpbbsn());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_b_item", one.getPtprbitem());
 			object_body.put(FFS.ord((ord += 1), FFM.Hmb.B) + "pt_pr_s_item", one.getPtprsitem());
@@ -187,6 +217,8 @@ public class ProductionTestService {
 			object_bodys.put(object_body);
 		});
 		bean.setBody(new JSONObject().put("search", object_bodys));
+		// 檢查移除3年前資料
+		testDao.deleteThreeYearsAgoRecords();
 		return true;
 	}
 

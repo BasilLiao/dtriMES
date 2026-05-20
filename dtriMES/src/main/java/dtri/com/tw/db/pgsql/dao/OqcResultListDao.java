@@ -63,8 +63,7 @@ public interface OqcResultListDao extends JpaRepository<OqcResultList, Long> {
 	// （計算指定工單和資料狀態為0中，只要 曾經出現 NG（不管後來有沒有 PASS）的數量）
     @Query("SELECT COUNT(DISTINCT d.orlpsn)"
     	+ "	FROM OqcResultList d"
-    	+ "	WHERE d.orlow =:orlow "
-    	+ "	  AND d.sysstatus = 0"
+    	+ "	WHERE d.orlow =:orlow " //   	+ "	  AND d.sysstatus = 0"
     	+ "	  AND d.orltresults = 'NG'")
     long countLastNgByOrlow( String orlow);
     

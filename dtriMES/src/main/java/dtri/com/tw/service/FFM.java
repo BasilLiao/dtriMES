@@ -70,8 +70,7 @@ public class FFM {
 			break;
 		case "IMG":
 			value = "img";
-			break;	
-			
+			break;
 		// Type
 		case "TEXT":
 			value = "text";

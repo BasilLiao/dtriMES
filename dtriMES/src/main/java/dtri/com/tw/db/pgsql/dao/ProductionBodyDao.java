@@ -28,7 +28,6 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 	// 查詢SN重複
 	List<ProductionBody> findAllByPbsn(String pbsn);
 
-
 	// 查詢燒錄 SN重複
 	List<ProductionBody> findAllByPbbsn(String pbbsn);
 
@@ -38,28 +37,25 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 	// 查詢燒錄_Like+不是舊的SN
 	List<ProductionBody> findAllByPbbsnAndPbbsnNotLike(String pbbsn, String not_old_sn);
 
+	// 查詢工單_Like+不是舊的SN
+	List<ProductionBody> findAllByPbgidAndPbbsnNotLike(Long pbgid, String not_old_sn);
+
 	// 查詢該群組_Like+不是舊的SN
 	@Query(value = "SELECT b FROM ProductionBody b WHERE "//
 			+ "( b.pbgid = :pbgid ) and "//
 			+ "(b.pbbsn LIKE %:pbbsn% or b.pboldsn LIKE %:pboldsn% ) "// coalesce 回傳非NULL值
 			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
 	List<ProductionBody> findAllByPbgidAndPbbsnLikeOrPboldsnLike(Long pbgid, String pbbsn, String pboldsn);
-	
-	
-	
-	// 查詢SN and MB_uuid //johnny 故意使用 sysmuser 來對應RMA號碼 來造成查無資料
-	@Query("SELECT b FROM ProductionBody b WHERE "
-			   + "(:sysmuser is null or b.sysmuser  =:sysmuser) and "
-			   + "(:pbsn is null or b.pbsn  =:pbsn) and "
-		       + "(:pbvalue16 is null or b.pbvalue16 =:pbvalue16) ")			 
-	List<ProductionBody> findAllByPbsnAndpbvalue16(String  sysmuser ,String pbsn ,String pbvalue16);
-	
-	// 查詢工單裡面的號碼"old"  可找出轉單數量資料johnny
-	@Query("SELECT b FROM ProductionBody b WHERE "			 
-			   + "(:pbsn is null or b.pbsn  LIKE %:pbsn%) and "
-		       + "(:pbgid is null or b.pbgid =:pbgid) ")			 
-	List<ProductionBody> findAllByOldAndPbgid(String pbsn, Long pbgid);
 
+	// 查詢SN and MB_uuid //johnny 故意使用 sysmuser 來對應RMA號碼 來造成查無資料
+	@Query("SELECT b FROM ProductionBody b WHERE " + "(:sysmuser is null or b.sysmuser  =:sysmuser) and "
+			+ "(:pbsn is null or b.pbsn  =:pbsn) and " + "(:pbvalue16 is null or b.pbvalue16 =:pbvalue16) ")
+	List<ProductionBody> findAllByPbsnAndpbvalue16(String sysmuser, String pbsn, String pbvalue16);
+
+	// 查詢工單裡面的號碼"old" 可找出轉單數量資料johnny
+	@Query("SELECT b FROM ProductionBody b WHERE " + "(:pbsn is null or b.pbsn  LIKE %:pbsn%) and "
+			+ "(:pbgid is null or b.pbgid =:pbgid) ")
+	List<ProductionBody> findAllByOldAndPbgid(String pbsn, Long pbgid);
 
 	// 查詢SN重複+群組
 	List<ProductionBody> findAllByPbsnAndPbgid(String pbsn, Long pbgid);
@@ -104,7 +100,8 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			+ "(coalesce(:pbid, null) is null or b.pbid IN :pbid ) and "// coalesce 回傳非NULL值
 			+ "(b.pbid!=0 or b.pbid!=1) and (b.sysheader!=true) "//
 			+ " order by b.pbgid desc,b.pbid asc, b.sysmdate desc ")
-	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id, Pageable pageable);
+	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status,
+			@Param("pbid") List<Long> pb_id, Pageable pageable);
 
 	// 查詢一部分_Body By Check
 	@Query(value = "SELECT b FROM ProductionBody b WHERE "//
@@ -112,8 +109,8 @@ public interface ProductionBodyDao extends JpaRepository<ProductionBody, Long> {
 			+ "(coalesce(:pbid, null) is null or b.pbid IN :pbid ) and "// coalesce 回傳非NULL值
 			+ "(b.pbid!=0 or b.pbid!=1) and (b.sysheader!=true) and  (b.pbcheck=:pbcheck)"//
 			+ " order by b.pbgid desc,b.pbid asc ,b.sysheader desc")
-	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status, @Param("pbid") List<Long> pb_id, @Param("pbcheck") Boolean pb_check,
-			Pageable pageable);
+	List<ProductionBody> findAllByProductionBody(@Param("sysstatus") Integer sys_status,
+			@Param("pbid") List<Long> pb_id, @Param("pbcheck") Boolean pb_check, Pageable pageable);
 
 	// 移除單一SN
 	Long deleteByPbid(Long id);

@@ -328,7 +328,7 @@ public class OqcReviewFormService {
 						oIF.setSysstatus(data.getInt("sys_status")); // 資料狀態
 						oIF.setOiffuser(user.getSuaccount()); //審核人
 						oIF.setOiffdate(new Date()); // 審核日						
-						oRFs.forEach(oRF -> oRF.setSysstatus(1)); //鎖定資料 後續不能刪除
+						oRFs.forEach(oRF -> oRF.setSysstatus(2)); //鎖定資料 後續不能刪除 (原本為1鎖定,要改為2審核)
 					//	for(OqcResultList oRF : oRFs) {
 					//		oRF.setSysstatus(1); //鎖定資料
 					//	}
@@ -365,7 +365,7 @@ public class OqcReviewFormService {
 						oIF.setSysmdate(new Date());// 修改時間
 						oIF.setSysmuser(user.getSuaccount());// 修改者(帳號)
 						
-						oRFs.forEach(oRF -> oRF.setSysstatus(1)); //鎖定資料 後續不能刪除	
+						oRFs.forEach(oRF -> oRF.setSysstatus(2)); //鎖定資料 後續不能刪除	(原本為1鎖定,要改為2審核)
 					//	for(OqcResultList oRF : oRFs) {
 					//		oRF.setSysstatus(1); //鎖定資料
 					//	}

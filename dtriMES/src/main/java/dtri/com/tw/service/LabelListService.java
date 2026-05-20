@@ -688,35 +688,38 @@ public class LabelListService {
 							JSONObject label_block = (JSONObject) x;
 							JSONObject ll_fo_c = label_block.getJSONObject("ll_fo_content");
 							String ll_fo_name = label_block.getString("ll_fo_name");// 區塊名稱
-							
+
 							// auto 文字
 							String ll_fd_auto_base = ll_fo_c.has("ll_fd_auto_base")// 幾近制?
 									? (ll_fo_c.getString("ll_fd_auto_base").equals("") ? "10"
 											: ll_fo_c.getString("ll_fd_auto_base"))
 									: "10";
-							Integer ll_fd_auto_lnb = ll_fo_c.has("ll_fd_auto_lnb")// 尾碼數?
-									? ll_fo_c.getInt("ll_fd_auto_lnb")
-									: 1;
+							Integer ll_fd_auto_lnb = ll_fo_c.has("ll_fd_auto_lnb")
+									&& !ll_fo_c.getString("ll_fd_auto_lnb").equals("")// 尾碼數?
+											? ll_fo_c.getInt("ll_fd_auto_lnb")
+											: 1;
 							String ll_fd_auto = ll_fo_c.has("ll_fd_auto") ? ll_fo_c.getString("ll_fd_auto") : "";
 							// auto 一維碼
 							String ll_b_auto_base = ll_fo_c.has("ll_b_auto_base")// 幾近制?
 									? (ll_fo_c.getString("ll_b_auto_base").equals("") ? "10"
 											: ll_fo_c.getString("ll_b_auto_base"))
 									: "10";
-							Integer ll_b_auto_lnb = ll_fo_c.has("ll_b_auto_lnb")// 尾碼數?
-									? ll_fo_c.getInt("ll_b_auto_lnb")
-									: 1;
+							Integer ll_b_auto_lnb = ll_fo_c.has("ll_b_auto_lnb")
+									&& !ll_fo_c.getString("ll_b_auto_lnb").equals("")// 尾碼數?
+											? ll_fo_c.getInt("ll_b_auto_lnb")
+											: 1;
 							String ll_b_auto = ll_fo_c.has("ll_b_auto") ? ll_fo_c.getString("ll_b_auto") : "";
 							// auto 二維碼
 							String ll_bq_auto_base = ll_fo_c.has("ll_bq_auto_base")// 幾近制?
 									? (ll_fo_c.getString("ll_bq_auto_base").equals("") ? "10"
 											: ll_fo_c.getString("ll_bq_auto_base"))
 									: "10";
-							Integer ll_bq_auto_lnb = ll_fo_c.has("ll_bq_auto_lnb")// 尾碼數?
-									? ll_fo_c.getInt("ll_bq_auto_lnb")
-									: 1;
+							Integer ll_bq_auto_lnb = ll_fo_c.has("ll_bq_auto_lnb")
+									&& !ll_fo_c.getString("ll_bq_auto_lnb").equals("")// 尾碼數?
+											? ll_fo_c.getInt("ll_bq_auto_lnb")
+											: 1;
 							String ll_bq_auto = ll_fo_c.has("ll_bq_auto") ? ll_fo_c.getString("ll_bq_auto") : "";
-							
+
 							//
 							String llfo = "";
 

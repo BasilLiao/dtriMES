@@ -54,7 +54,7 @@ public class SystemMailService {
 		// 初次載入需要標頭 / 之後就不用
 		if (body == null || body.isNull("search")) {
 
-			// 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
+			// ****************************************** 放入包裝(header) [01 是排序][_h__ 是分割直][資料庫欄位名稱]
 			JSONObject object_header = new JSONObject();
 			int ord = 0;
 			object_header.put(FFS.ord((ord += 1), FFM.Hmb.H) + "su_id", FFS.h_t("ID", "100px", FFM.Wri.W_N));
@@ -82,7 +82,7 @@ public class SystemMailService {
 			bean.setHeader(object_header);
 			
 			
-			// 放入修改 [(key)](modify/Create/Delete) 格式
+			//**************************************** 放入修改 [(key)](modify/Create/Delete) 格式
 			JSONArray obj_m = new JSONArray();
 			obj_m.put(FFS.h_m(FFM.Dno.D_N, FFM.Tag.INP, FFM.Type.TEXT, "", "", FFM.Wri.W_N, "col-md-2", false, new JSONArray(), "su_id", "ID"));
 
@@ -126,7 +126,7 @@ public class SystemMailService {
 //			obj_m.put(FFS.h_m(FFM.Dno.D_S, FFM.Tag.SEL, FFM.Type.TEXT, "0", "0", FFM.Wri.W_N, "col-md-1", true, values, "sys_status", "狀態"));
 			bean.setCell_modify(obj_m);
 
-			// 放入包裝(search)   //顯示搜巡 輸入的頁面
+			//************************************************** 放入包裝(search)   //顯示搜巡 輸入的頁面
 			JSONArray object_searchs = new JSONArray();
 //			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_account", "帳號", value));
 			object_searchs.put(FFS.h_s(FFM.Tag.INP, FFM.Type.TEXT, "", "col-md-2", "su_e_name", "英文名字", value));			
@@ -139,14 +139,14 @@ public class SystemMailService {
 //			values.put((new JSONObject()).put("value", "否").put("key", "N"));
 //			values.put((new JSONObject()).put("value", "主").put("key", "Y"));
 //			values.put((new JSONObject()).put("value", "副").put("key", "C"));
-//			
+		
 //			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "su_received", "收發貨", values));
 //			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1", "su_repairdone", "維修完成", values));
 //			object_searchs.put(FFS.h_s(FFM.Tag.SEL, FFM.Type.TEXT, "0", "col-md-1","su_dailyreport", "測試日報", values));
 			bean.setCell_searchs(object_searchs);
 			
 		} else {
-			// 進行-特定查詢
+			//***************************************************** 進行-特定查詢
 			su_e_name = body.getJSONObject("search").getString("su_e_name");
 			su_e_name = su_e_name.equals("") ? null : su_e_name;			
 			su_name = body.getJSONObject("search").getString("su_name");
@@ -166,7 +166,7 @@ public class SystemMailService {
 //		}
 			
 		//顯示在TABLE列表上		
-		// 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
+		//***************************************************** 放入包裝(body) [01 是排序][_b__ 是分割直][資料庫欄位名稱]
 		JSONArray object_bodys = new JSONArray();
 		rmaMail.forEach(one -> {
 			JSONObject object_body = new JSONObject();

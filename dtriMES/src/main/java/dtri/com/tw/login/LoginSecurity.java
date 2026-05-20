@@ -81,6 +81,12 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 		
 		String pcba_workstation_prog = "/ajax/pcba_workstation_program.basil";
 		
+		String pcba_rule_sn = "/ajax/pcba_rule_sn.basil"; //2.序號管理   L-1.設定-序號規則(Johnny)
+		String pcba_type = "/ajax/pcba_type.basil";  // 1.pcba製成   L-2.設定-板階種類 (定義 版階類型 與 序號規則)
+		String pcba_factorys= "/ajax/pcba_factorys.basil"; //PCBA工廠代號 :pcba_factorys
+		String pcba_precautions ="/ajax/pcba_precautions.basil";//PCBA板階注意事項
+		
+		
 		http.authorizeRequests()
 				// thirdparty && img 資料夾靜態資料可 直接 存取 (預設皆有 訪問權限 資料可[匿名]存取)
 				.antMatchers(HttpMethod.GET, "/thirdparty/**", "/img/**", "/login.basil", "/login.html").permitAll()
@@ -383,21 +389,21 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT, pcba_header + ".AU").hasAuthority(actionRole(pcba_header, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, pcba_header + ".AD").hasAuthority(actionRole(pcba_header, "AD"))// (移除)			
 				
-				// ----請求-pcba_config-(訪問) ----
+				// ----請求-pcba_config-(訪問) ----pcba製成 L-1.設定-料件名稱 (定義 綑綁欄位名稱)
 				.antMatchers(HttpMethod.POST, pcba_conf).hasAuthority(actionRole(pcba_conf, ""))//
 				.antMatchers(HttpMethod.POST, pcba_conf + ".AR").hasAuthority(actionRole(pcba_conf, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, pcba_conf + ".AC").hasAuthority(actionRole(pcba_conf, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, pcba_conf + ".AU").hasAuthority(actionRole(pcba_conf, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, pcba_conf + ".AD").hasAuthority(actionRole(pcba_conf, "AD"))// (移除)
 
-				// ----請求-pcba_workstation_config-(訪問) ----
+				// ----請求-pcba_workstation_config-(訪問) ---- 3.板階工作站  L-1.設定-工作站名稱
 				.antMatchers(HttpMethod.POST, pcba_workstation_conf).hasAuthority(actionRole(pcba_workstation_conf, ""))//
 				.antMatchers(HttpMethod.POST, pcba_workstation_conf + ".AR").hasAuthority(actionRole(pcba_workstation_conf, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, pcba_workstation_conf + ".AC").hasAuthority(actionRole(pcba_workstation_conf, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, pcba_workstation_conf + ".AU").hasAuthority(actionRole(pcba_workstation_conf, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, pcba_workstation_conf + ".AD").hasAuthority(actionRole(pcba_workstation_conf, "AD"))// (移除)
 			
-				// ----請求-pcba_workstation-(訪問) ---- 檢核
+				// ----請求-pcba_workstation-(訪問) ---- 3.板階工作站 --L-2.設定-工作站檢核
 				.antMatchers(HttpMethod.POST, pcba_workstation).hasAuthority(actionRole(pcba_workstation, ""))//
 				.antMatchers(HttpMethod.POST, pcba_workstation + ".AR").hasAuthority(actionRole(pcba_workstation, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, pcba_workstation + ".AC").hasAuthority(actionRole(pcba_workstation, "AC"))// (新增)
@@ -405,13 +411,46 @@ public class LoginSecurity extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.DELETE, pcba_workstation + ".AD").hasAuthority(actionRole(pcba_workstation, "AD"))// (移除)
 				//.antMatchers(HttpMethod.POST, pcba_workstation + ".PT").hasAuthority(actionRole(pcba_workstation, "PT"))// (列印)
 				
-				// ----請求-pcba_workstation_program-(訪問) ----
+				// ----請求-pcba_workstation_program-(訪問) ---- 3.板階工作站 --L-3.設定-工作站流程(Johnny)
 				.antMatchers(HttpMethod.POST, pcba_workstation_prog).hasAuthority(actionRole(pcba_workstation_prog, ""))//
 				.antMatchers(HttpMethod.POST, pcba_workstation_prog + ".AR").hasAuthority(actionRole(pcba_workstation_prog, "AR"))// (查詢)
 				.antMatchers(HttpMethod.POST, pcba_workstation_prog + ".AC").hasAuthority(actionRole(pcba_workstation_prog, "AC"))// (新增)
 				.antMatchers(HttpMethod.PUT, pcba_workstation_prog + ".AU").hasAuthority(actionRole(pcba_workstation_prog, "AU"))// (修改)
 				.antMatchers(HttpMethod.DELETE, pcba_workstation_prog + ".AD").hasAuthority(actionRole(pcba_workstation_prog, "AD"))// (移除)
 				
+				
+				// ----請求-pcba_rule_sn -(訪問) ---- 2.序號管理   L-1.設定-序號規則(Johnny)
+				.antMatchers(HttpMethod.POST, pcba_rule_sn).hasAuthority(actionRole(pcba_rule_sn, ""))//
+				.antMatchers(HttpMethod.POST, pcba_rule_sn + ".AR").hasAuthority(actionRole(pcba_rule_sn, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_rule_sn + ".AC").hasAuthority(actionRole(pcba_rule_sn, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_rule_sn + ".AU").hasAuthority(actionRole(pcba_rule_sn, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_rule_sn + ".AD").hasAuthority(actionRole(pcba_rule_sn, "AD"))// (移除)
+				
+				
+				// ----請求-pcba_type --(訪問) ---    1.pcba製成   L-2.設定-板階種類 (定義 版階類型 與 序號規則)
+				.antMatchers(HttpMethod.POST, pcba_type).hasAuthority(actionRole(pcba_type, ""))//
+				.antMatchers(HttpMethod.POST, pcba_type + ".AR").hasAuthority(actionRole(pcba_type, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_type + ".AC").hasAuthority(actionRole(pcba_type, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_type + ".AU").hasAuthority(actionRole(pcba_type, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_type + ".AD").hasAuthority(actionRole(pcba_type, "AD"))// (移除)
+				
+				// ----pcba_factorys --(訪問) ---板階設定  設定-工廠名稱代號
+				.antMatchers(HttpMethod.POST, pcba_factorys).hasAuthority(actionRole(pcba_factorys, ""))//
+				.antMatchers(HttpMethod.POST, pcba_factorys + ".AR").hasAuthority(actionRole(pcba_factorys, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_factorys + ".AC").hasAuthority(actionRole(pcba_factorys, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_factorys + ".AU").hasAuthority(actionRole(pcba_factorys, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_factorys + ".AD").hasAuthority(actionRole(pcba_factorys, "AD"))// (移除)
+				
+				
+				// ----pcba_precautions --(訪問) ---板階注意事項
+				.antMatchers(HttpMethod.POST, pcba_precautions).hasAuthority(actionRole(pcba_precautions, ""))//
+				.antMatchers(HttpMethod.POST, pcba_precautions + ".AR").hasAuthority(actionRole(pcba_precautions, "AR"))// (查詢)
+				.antMatchers(HttpMethod.POST, pcba_precautions + ".AC").hasAuthority(actionRole(pcba_precautions, "AC"))// (新增)
+				.antMatchers(HttpMethod.PUT, pcba_precautions + ".AU").hasAuthority(actionRole(pcba_precautions, "AU"))// (修改)
+				.antMatchers(HttpMethod.DELETE, pcba_precautions + ".AD").hasAuthority(actionRole(pcba_precautions, "AD"))// (移除)
+				.antMatchers(HttpMethod.PUT, pcba_precautions + ".S1").hasAuthority(actionRole(pcba_precautions, "S1"))// (上傳檔案)
+				.antMatchers(HttpMethod.DELETE, pcba_precautions + ".S2").hasAuthority(actionRole(pcba_precautions, "S2"))// (刪除檔案)
+				.antMatchers(HttpMethod.GET, pcba_precautions + ".S3").hasAuthority(actionRole(pcba_precautions, "S3"))// (下載檔案)
 				
 				// 請求需要檢驗-全部請求
 				.anyRequest().authenticated();
